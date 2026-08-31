@@ -1,0 +1,310 @@
+/* Akalbodhon - Theme & Custom Styles */
+
+@layer base {
+  :root {
+    --color-primary: #610000;
+    --color-primary-container: #8b0000;
+    --color-secondary: #735c00;
+    --color-secondary-container: #fed65b;
+    --color-tertiary: #b52619;
+    --color-surface: #fff8ef;
+    --color-surface-dim: #e1d9cb;
+    --color-on-surface: #1e1b13;
+    --color-on-surface-variant: #5a403c;
+    --color-outline: #8e706b;
+    --color-outline-variant: #e3beb8;
+  }
+
+  /* Vibrant, Luminous Dark Mode Palette - Maximum Contrast & Clarity */
+  .dark {
+    --color-primary: #ff8e7e;
+    --color-primary-container: #b52619;
+    --color-secondary: #ffe088;
+    --color-secondary-container: #d4af37;
+    --color-tertiary: #ff9081;
+    --color-surface: #16130d;
+    --color-surface-dim: #100e09;
+    --color-on-surface: #ffffff;
+    --color-on-surface-variant: #e8e0d5;
+    --color-outline: #bba998;
+    --color-outline-variant: rgba(254, 214, 91, 0.22);
+  }
+}
+
+/* Material Symbols Default Settings */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+.material-symbols-filled,
+.material-symbols-outlined[data-filled="true"] {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Atmospheric Background Texture */
+.kash-phool-bg {
+  background-image: radial-gradient(circle at 15% 15%, rgba(181, 38, 25, 0.04) 0%, transparent 40%),
+                    radial-gradient(circle at 85% 85%, rgba(254, 214, 91, 0.04) 0%, transparent 40%),
+                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%23b52619" stroke-width="0.75" fill="none" opacity="0.04" stroke-dasharray="3,3"/></svg>');
+  background-attachment: fixed;
+}
+
+.dark .kash-phool-bg {
+  background-color: #12100a;
+  background-image: radial-gradient(circle at 50% 15%, rgba(181, 38, 25, 0.22) 0%, transparent 60%),
+                    radial-gradient(circle at 80% 80%, rgba(254, 214, 91, 0.12) 0%, transparent 50%),
+                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%23fed65b" stroke-width="0.75" fill="none" opacity="0.06" stroke-dasharray="3,3"/></svg>');
+  background-attachment: fixed;
+}
+
+/* ======================================================== */
+/* APPLE-STYLE SCROLL REVEAL (DIM TO BRIGHT ANIMATION)      */
+/* ======================================================== */
+.reveal-on-scroll {
+  opacity: 0.12;
+  transform: translateY(32px) scale(0.97);
+  filter: blur(3px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s ease;
+  will-change: opacity, transform, filter;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+/* Staggered Delay Utilities for Grid Elements */
+.reveal-delay-1 { transition-delay: 70ms; }
+.reveal-delay-2 { transition-delay: 140ms; }
+.reveal-delay-3 { transition-delay: 210ms; }
+.reveal-delay-4 { transition-delay: 280ms; }
+.reveal-delay-5 { transition-delay: 350ms; }
+.reveal-delay-6 { transition-delay: 420ms; }
+
+/* Glassmorphism Divine Veil */
+.glass-panel {
+  background: rgba(255, 248, 239, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(227, 190, 184, 0.35);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.dark .glass-panel {
+  background: rgba(26, 22, 16, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(254, 214, 91, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel:hover {
+  border-color: rgba(254, 214, 91, 0.6);
+  box-shadow: 0 12px 32px rgba(181, 38, 25, 0.12);
+}
+
+.dark .glass-panel:hover {
+  border-color: rgba(254, 214, 91, 0.55);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(254, 214, 91, 0.15);
+}
+
+.glass-nav {
+  background: rgba(255, 248, 239, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(227, 190, 184, 0.3);
+}
+
+.dark .glass-nav {
+  background: rgba(20, 17, 12, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(254, 214, 91, 0.2);
+}
+
+/* Crimson & Gold Flourishes */
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #610000 0%, #b52619 60%, #8b0000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .crimson-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ffb4a8 50%, #fed65b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #d4af37 0%, #fed65b 50%, #9a7b1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .gold-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ffe088 60%, #fed65b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sound Wave Ring for Interactive Dhak */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.dhak-playing .soundwave-ring {
+  animation: pulse-ring 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Equalizer Visualizer Bars */
+.visualizer-bar {
+  width: 4px;
+  background: linear-gradient(to top, #b52619, #fed65b);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+
+.dark .visualizer-bar {
+  background: linear-gradient(to top, #ff7b6b, #ffe088);
+}
+
+.is-playing .visualizer-bar {
+  animation: audioPulse 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes audioPulse {
+  0% { height: 6px; }
+  100% { height: 38px; }
+}
+
+/* Ceremonial Soundboard Pad */
+.soundboard-pad {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.soundboard-pad:active,
+.soundboard-pad.is-triggered {
+  transform: scale(0.94);
+  box-shadow: 0 0 24px rgba(254, 214, 91, 0.5);
+}
+
+/* Dark Mode Text Enhancements - High Contrast Overrides */
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: #ffffff;
+}
+
+.dark .text-on-surface-variant {
+  color: #e5ded4;
+}
+
+.dark .text-outline-variant {
+  color: #d1c7b8;
+}
+
+/* Custom Scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+.dark ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(142, 112, 107, 0.3);
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(254, 214, 91, 0.4);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(181, 38, 25, 0.5);
+}
+
+/* Tab Transitions */
+.tab-content {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast Notifications */
+#toast-notification {
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Language Switcher & Google Translate styling */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-gadget,
+.skiptranslate {
+  display: none !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.lang-card {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lang-card:hover {
+  transform: translateY(-2px);
+}
+
+.lang-card.is-active {
+  border-color: #b52619;
+  background-color: rgba(181, 38, 25, 0.08);
+}
+
+.dark .lang-card.is-active {
+  border-color: #fed65b;
+  background-color: rgba(254, 214, 91, 0.12);
+}
+
