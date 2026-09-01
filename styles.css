@@ -276,8 +276,12 @@
 #goog-gt-tt,
 .goog-te-balloon-frame,
 .goog-te-gadget,
-.skiptranslate {
+.skiptranslate,
+iframe.goog-te-banner-frame {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 
 body {
@@ -288,6 +292,42 @@ body {
 .goog-text-highlight {
   background: transparent !important;
   box-shadow: none !important;
+}
+
+/* Translation Displacement Fixes & Responsive Text Layouts */
+* {
+  overflow-wrap: break-word;
+}
+
+.break-words {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Flexible text flow for multilingual translations */
+.font-headline-md, .font-display, h1, h2, h3, h4, p, span, a, button {
+  text-wrap: pretty;
+}
+
+/* Prevent translated text from clipping or breaking card boundaries */
+.app-section {
+  min-height: calc(100vh - 80px);
+}
+
+/* Modal scaling animation */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .lang-card {
@@ -307,4 +347,5 @@ body {
   border-color: #fed65b;
   background-color: rgba(254, 214, 91, 0.12);
 }
+
 

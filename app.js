@@ -1720,11 +1720,7 @@
           playerPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
           if (visualizerEl) visualizerEl.classList.remove('is-playing');
         }
-      });
-    }
-  }
-
-  // --- 14. THEME TOGGLE (LIGHT / DARK) ---
+     // --- 14. THEME TOGGLE (LIGHT / DARK) ---
   function initTheme() {
     const themeBtn = document.getElementById('theme-toggle-btn');
     const savedTheme = localStorage.getItem(Storage.KEY_THEME) || 'light';
@@ -1747,7 +1743,41 @@
     }
   }
 
-  // --- 15. LANGUAGE SYSTEM & MODAL ---
+  // --- 15. DYNAMIC DEVOTEES CONNECTED COUNTER ---
+  function initDevoteesCounter() {
+    const counterEl = document.getElementById('devotees-count-val');
+    if (!counterEl) return;
+
+    const STORAGE_KEY = 'akalbodhon_devotee_count';
+    const VISITOR_KEY = 'akalbodhon_visitor_logged';
+
+    let currentCount = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+    if (!currentCount || isNaN(currentCount) || currentCount < 1) {
+      currentCount = 1284; // Reset base baseline
+    }
+
+    // If new session/visitor, increment counter
+    if (!sessionStorage.getItem(VISITOR_KEY)) {
+      currentCount += 1;
+      sessionStorage.setItem(VISITOR_KEY, 'true');
+      localStorage.setItem(STORAGE_KEY, currentCount.toString());
+    }
+
+    counterEl.textContent = currentCount.toLocaleString();
+
+    // Subtle real-time live pulse increment every 25-50 seconds
+    setInterval(() => {
+      currentCount += Math.floor(Math.random() * 2) + 1;
+      localStorage.setItem(STORAGE_KEY, currentCount.toString());
+      if (counterEl) {
+        counterEl.textContent = currentCount.toLocaleString();
+        counterEl.classList.add('scale-110', 'text-secondary-container');
+        setTimeout(() => counterEl.classList.remove('scale-110', 'text-secondary-container'), 600);
+      }
+    }, 28000);
+  }
+
+  // --- 16. LANGUAGE SYSTEM & FLAGS MODAL ---
   function initLanguageSystem() {
     const langBtn = document.getElementById('lang-toggle-btn');
     const langModal = document.getElementById('language-modal');
@@ -1756,23 +1786,30 @@
     const langSearch = document.getElementById('lang-search-input');
     const currentLangCodeEl = document.getElementById('current-lang-code');
 
+    // Complete list with authentic national flags for Indian & International Languages
     const LANGUAGES = [
-      { code: 'en', name: 'English', native: 'English', flag: '🌐' },
-      { code: 'bn', name: 'Bengali', native: 'বাংলা', flag: '🌺' },
-      { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🪔' },
-      { code: 'as', name: 'Assamese', native: 'অসমীয়া', flag: '🌾' },
-      { code: 'ml', name: 'Malayalam', native: 'മലയാളം', flag: '🌴' },
-      { code: 'mr', name: 'Marathi', native: 'मराठी', flag: '🚩' },
-      { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ', flag: '🥁' },
-      { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી', flag: '🪡' },
-      { code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ', flag: '🛕' },
+      { code: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
+      { code: 'bn', name: 'Bengali', native: 'বাংলা', flag: '🇮🇳' },
+      { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
+      { code: 'as', name: 'Assamese', native: 'অসমীয়া', flag: '🇮🇳' },
+      { code: 'ml', name: 'Malayalam', native: 'മലയാളം', flag: '🇮🇳' },
+      { code: 'mr', name: 'Marathi', native: 'मরাঠী', flag: '🇮🇳' },
+      { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
+      { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી', flag: '🇮🇳' },
+      { code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ', flag: '🇮🇳' },
+      { code: 'ja', name: 'Japanese', native: '日本語', flag: '🇯🇵' },
       { code: 'de', name: 'German', native: 'Deutsch', flag: '🇩🇪' },
       { code: 'fr', name: 'French', native: 'Français', flag: '🇫🇷' },
       { code: 'es', name: 'Spanish', native: 'Español', flag: '🇪🇸' },
+      { code: 'it', name: 'Italian', native: 'Italiano', flag: '🇮🇹' },
+      { code: 'ru', name: 'Russian', native: 'Русский', flag: '🇷🇺' },
+      { code: 'pt', name: 'Portuguese', native: 'Português', flag: '🇵🇹' },
       { code: 'zh-CN', name: 'Chinese', native: '中文', flag: '🇨🇳' },
       { code: 'ko', name: 'Korean', native: '한국어', flag: '🇰🇷' },
-      { code: 'ja', name: 'Japanese', native: '日本語', flag: '🇯🇵' },
-      { code: 'ur', name: 'Urdu', native: 'اردو', flag: '🇵🇰' }
+      { code: 'ur', name: 'Urdu', native: 'اردو', flag: '🇵🇰' },
+      { code: 'ar', name: 'Arabic', native: 'العربية', flag: '🇸🇦' },
+      { code: 'nl', name: 'Dutch', native: 'Nederlands', flag: '🇳🇱' },
+      { code: 'tr', name: 'Turkish', native: 'Türkçe', flag: '🇹🇷' }
     ];
 
     function renderLangGrid(filter = '') {
@@ -1787,13 +1824,13 @@
           data-name="${lang.name}"
         >
           <div class="flex items-center gap-2.5">
-            <span class="text-xl">${lang.flag}</span>
-            <div>
-              <div class="font-bold text-sm text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">${lang.native}</div>
-              <div class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">${lang.name}</div>
+            <span class="text-2xl shrink-0">${lang.flag}</span>
+            <div class="min-w-0">
+              <div class="font-bold text-sm text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors truncate">${lang.native}</div>
+              <div class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate">${lang.name}</div>
             </div>
           </div>
-          <span class="text-xs uppercase font-mono px-2 py-0.5 rounded bg-surface-container-high dark:bg-[#1a160f] text-on-surface-variant dark:text-amber-300 font-semibold">${lang.code}</span>
+          <span class="text-xs uppercase font-mono px-2 py-0.5 rounded bg-surface-container-high dark:bg-[#1a160f] text-on-surface-variant dark:text-amber-300 font-semibold shrink-0">${lang.code}</span>
         </button>
       `).join('');
 
@@ -1803,15 +1840,19 @@
           const name = btn.dataset.name;
           if (currentLangCodeEl) currentLangCodeEl.textContent = code.toUpperCase().slice(0, 2);
 
-          // Trigger Google Translate element if present
+          // Trigger Google Translate select element if present
           const selectEl = document.querySelector('.goog-te-combo');
           if (selectEl) {
             selectEl.value = code;
             selectEl.dispatchEvent(new Event('change'));
           }
 
-          if (langModal) langModal.classList.add('hidden');
+          if (langModal) {
+            langModal.classList.add('hidden');
+            langModal.classList.remove('flex');
+          }
           showToast(`Language switched to ${name}`, 'translate');
+          setTimeout(initScrollReveal, 200);
         };
       });
     }
@@ -1832,14 +1873,24 @@
       };
     }
 
+    if (langModal) {
+      langModal.addEventListener('click', (e) => {
+        if (e.target === langModal) {
+          langModal.classList.add('hidden');
+          langModal.classList.remove('flex');
+        }
+      });
+    }
+
     if (langSearch) {
       langSearch.oninput = (e) => renderLangGrid(e.target.value);
     }
   }
 
-  // --- 16. INITIALIZATION ---
+  // --- 17. INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initDevoteesCounter();
     initLanguageSystem();
     initCountdown();
     initAudioHub();
@@ -1900,27 +1951,48 @@
     };
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 
-    // Social & Developer Links Dropdown Toggle
+    // Center Floating Social Links Modal Toggle
     const socialBtn = document.getElementById('social-links-btn');
-    const socialDropdown = document.getElementById('social-links-dropdown');
+    const socialModal = document.getElementById('social-links-modal');
+    const closeSocialBtn = document.getElementById('close-social-modal-btn');
 
-    if (socialBtn && socialDropdown) {
+    if (socialBtn && socialModal) {
       socialBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        socialDropdown.classList.toggle('hidden');
+        socialModal.classList.remove('hidden');
+        socialModal.classList.add('flex');
       });
+    }
 
-      document.addEventListener('click', (e) => {
-        if (!socialDropdown.contains(e.target) && !socialBtn.contains(e.target)) {
-          socialDropdown.classList.add('hidden');
+    if (closeSocialBtn && socialModal) {
+      closeSocialBtn.addEventListener('click', () => {
+        socialModal.classList.add('hidden');
+        socialModal.classList.remove('flex');
+      });
+    }
+
+    if (socialModal) {
+      socialModal.addEventListener('click', (e) => {
+        if (e.target === socialModal) {
+          socialModal.classList.add('hidden');
+          socialModal.classList.remove('flex');
         }
       });
     }
 
-    // Modal Close
+    // Detail Modal Close
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
       document.getElementById('pandal-detail-modal')?.classList.add('hidden');
     });
+
+    const pandalModal = document.getElementById('pandal-detail-modal');
+    if (pandalModal) {
+      pandalModal.addEventListener('click', (e) => {
+        if (e.target === pandalModal) {
+          pandalModal.classList.add('hidden');
+        }
+      });
+    }
 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();
