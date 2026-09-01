@@ -24,6 +24,9 @@
   <!-- Material Symbols Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 
+  <!-- YouTube IFrame Player API for Real Track Playback -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -268,8 +271,24 @@
           </div>
         </div>
 
-        <!-- Embedded Spotify Track Player (Instant Stream) -->
-        <div class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md bg-black/40">
+        <!-- Player Mode Selector -->
+        <div class="flex items-center justify-center gap-2 pt-1">
+          <button id="mode-stream-btn" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px]">graphic_eq</span> Monali Thakur (Live Audio)
+          </button>
+          <button id="mode-spotify-btn" class="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] border border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-1.5 hover:bg-surface-container">
+            <svg class="w-3.5 h-3.5 fill-[#1DB954]" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            Spotify Embed
+          </button>
+        </div>
+
+        <!-- Official Audio/Video Player Container (Plays Real Monali Thakur Track) -->
+        <div id="yt-player-box" class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md bg-black/80 aspect-video max-h-60 flex items-center justify-center">
+          <div id="yt-anthem-player-frame" class="w-full h-full"></div>
+        </div>
+
+        <!-- Embedded Spotify Track Player -->
+        <div id="spotify-player-box" class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md bg-black/40 hidden">
           <iframe 
             id="spotify-embed-iframe"
             style="border-radius:16px" 

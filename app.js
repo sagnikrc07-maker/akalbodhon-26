@@ -1679,70 +1679,163 @@
       });
     });
 
-    // Home Page Anthem Player: "Dugga Elo" - Monali Thakur
+    // --- YOUTUBE ANTHEM PLAYER ENGINE ("Dugga Elo" by Monali Thakur) ---
     const anthemPlayBtn = document.getElementById('home-anthem-play-btn');
     const anthemVisualizer = document.getElementById('home-audio-visualizer');
     const anthemProgressBar = document.getElementById('anthem-progress-bar');
     const anthemProgressContainer = document.getElementById('anthem-progress-container');
     const anthemTimeCurrent = document.getElementById('anthem-time-current');
+    const anthemTimeDuration = document.getElementById('anthem-time-duration');
     const heroDhakBtn = document.getElementById('dhak-btn');
-    
+    const modeStreamBtn = document.getElementById('mode-stream-btn');
+    const modeSpotifyBtn = document.getElementById('mode-spotify-btn');
+    const ytPlayerBox = document.getElementById('yt-player-box');
+    const spotifyPlayerBox = document.getElementById('spotify-player-box');
+
+    let ytAnthemPlayer = null;
+    let isYtReady = false;
     let isAnthemPlaying = false;
-    let anthemProgress = 0;
-    const anthemTotalSeconds = 225; // 3:45 total duration
-    let anthemInterval = null;
+    let anthemTrackerTimer = null;
+    const anthemFallbackDuration = 225; // 3:45
 
     function formatAnthemTime(sec) {
+      if (isNaN(sec) || sec < 0) sec = 0;
       const m = Math.floor(sec / 60);
       const s = Math.floor(sec % 60);
       return `${m}:${s < 10 ? '0' : ''}${s}`;
     }
 
+    function setAnthemPlayState(playing) {
+      isAnthemPlaying = playing;
+      if (anthemPlayBtn) {
+        anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = playing ? 'pause' : 'play_arrow';
+      }
+      if (anthemVisualizer) {
+        anthemVisualizer.classList.toggle('is-playing', playing);
+      }
+
+      if (playing) {
+        if (anthemTrackerTimer) clearInterval(anthemTrackerTimer);
+        anthemTrackerTimer = setInterval(() => {
+          if (ytAnthemPlayer && typeof ytAnthemPlayer.getCurrentTime === 'function') {
+            const cur = ytAnthemPlayer.getCurrentTime() || 0;
+            const dur = ytAnthemPlayer.getDuration() || anthemFallbackDuration;
+            const percent = Math.min(100, (cur / dur) * 100);
+            if (anthemProgressBar) anthemProgressBar.style.width = `${percent}%`;
+            if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(cur);
+            if (anthemTimeDuration && dur > 0) anthemTimeDuration.textContent = formatAnthemTime(dur);
+          }
+        }, 500);
+      } else {
+        if (anthemTrackerTimer) clearInterval(anthemTrackerTimer);
+      }
+    }
+
+    function initYTPlayer() {
+      if (typeof YT !== 'undefined' && YT.Player) {
+        try {
+          ytAnthemPlayer = new YT.Player('yt-anthem-player-frame', {
+            videoId: 'xlElO06nQy8',
+            playerVars: {
+              autoplay: 0,
+              controls: 1,
+              modestbranding: 1,
+              rel: 0,
+              playsinline: 1,
+              enablejsapi: 1
+            },
+            events: {
+              onReady: () => {
+                isYtReady = true;
+              },
+              onStateChange: (e) => {
+                if (e.data === YT.PlayerState.PLAYING) {
+                  setAnthemPlayState(true);
+                  showToast('Now Playing: "Dugga Elo" — Monali Thakur (Zee Music Bangla)', 'graphic_eq');
+                } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
+                  setAnthemPlayState(false);
+                }
+              }
+            }
+          });
+        } catch (err) {
+          console.warn('YT Player init issue:', err);
+        }
+      } else {
+        setTimeout(initYTPlayer, 400);
+      }
+    }
+
+    if (window.YT && window.YT.Player) {
+      initYTPlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = initYTPlayer;
+      setTimeout(initYTPlayer, 1000);
+    }
+
+    // Play/Pause Main Button - Plays Actual Song of Monali Thakur
     if (anthemPlayBtn) {
       anthemPlayBtn.addEventListener('click', () => {
-        isAnthemPlaying = !isAnthemPlaying;
-
-        if (isAnthemPlaying) {
-          // Play festive synthesized celebration chords & rhythm
-          soundEngine.startDhakLoop();
-          anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
-          if (anthemVisualizer) anthemVisualizer.classList.add('is-playing');
-          showToast('Now Playing: "Dugga Elo" — Monali Thakur (Spotify Connected)', 'graphic_eq');
-
-          // Progress bar animation loop
-          if (anthemInterval) clearInterval(anthemInterval);
-          anthemInterval = setInterval(() => {
-            if (anthemProgress < anthemTotalSeconds) {
-              anthemProgress += 1;
-              const percent = (anthemProgress / anthemTotalSeconds) * 100;
-              if (anthemProgressBar) anthemProgressBar.style.width = `${percent}%`;
-              if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(anthemProgress);
-            } else {
-              anthemProgress = 0;
-            }
-          }, 1000);
+        if (ytAnthemPlayer && typeof ytAnthemPlayer.getPlayerState === 'function') {
+          const state = ytAnthemPlayer.getPlayerState();
+          if (state === 1) { // 1 = YT.PlayerState.PLAYING
+            ytAnthemPlayer.pauseVideo();
+            setAnthemPlayState(false);
+          } else {
+            ytAnthemPlayer.playVideo();
+            setAnthemPlayState(true);
+            showToast('Now Playing: "Dugga Elo" — Monali Thakur', 'graphic_eq');
+          }
         } else {
-          soundEngine.stopDhakLoop();
-          anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
-          if (anthemVisualizer) anthemVisualizer.classList.remove('is-playing');
-          if (anthemInterval) clearInterval(anthemInterval);
+          // If player is still preparing, attempt direct iframe playback
+          const iframe = document.querySelector('#yt-anthem-player-frame iframe');
+          if (iframe) {
+            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+          }
+          setAnthemPlayState(!isAnthemPlaying);
+          showToast('Now Playing: "Dugga Elo" — Monali Thakur', 'graphic_eq');
         }
       });
     }
 
+    // Seek Timeline
     if (anthemProgressContainer) {
       anthemProgressContainer.addEventListener('click', (e) => {
         const rect = anthemProgressContainer.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const width = rect.width;
-        const clickRatio = Math.max(0, Math.min(1, clickX / width));
-        anthemProgress = Math.floor(clickRatio * anthemTotalSeconds);
+        const clickRatio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        const dur = (ytAnthemPlayer && typeof ytAnthemPlayer.getDuration === 'function' && ytAnthemPlayer.getDuration()) || anthemFallbackDuration;
+        const targetSec = clickRatio * dur;
+
+        if (ytAnthemPlayer && typeof ytAnthemPlayer.seekTo === 'function') {
+          ytAnthemPlayer.seekTo(targetSec, true);
+        }
         if (anthemProgressBar) anthemProgressBar.style.width = `${clickRatio * 100}%`;
-        if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(anthemProgress);
+        if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(targetSec);
       });
     }
 
-    // Hero Secondary Ceremonial Dhak Button
+    // Mode Toggle: Live Audio/Video Stream vs Spotify Player
+    if (modeStreamBtn && modeSpotifyBtn && ytPlayerBox && spotifyPlayerBox) {
+      modeStreamBtn.addEventListener('click', () => {
+        ytPlayerBox.classList.remove('hidden');
+        spotifyPlayerBox.classList.add('hidden');
+        modeStreamBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        modeStreamBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
+        modeSpotifyBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        modeSpotifyBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
+      });
+
+      modeSpotifyBtn.addEventListener('click', () => {
+        spotifyPlayerBox.classList.remove('hidden');
+        ytPlayerBox.classList.add('hidden');
+        modeSpotifyBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        modeSpotifyBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
+        modeStreamBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        modeStreamBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
+      });
+    }
+
+    // Hero Secondary Ceremonial Dhak Button (Synthesizer)
     if (heroDhakBtn) {
       heroDhakBtn.addEventListener('click', () => {
         if (!soundEngine.isDhakLooping) {
