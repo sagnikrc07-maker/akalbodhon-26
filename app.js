@@ -1663,21 +1663,172 @@
     setTimeout(initScrollReveal, 60);
   }
 
-  // --- 13. AUDIO & SOUNDBOARD CONTROLLER ---
-  function initAudioHub() {
-    document.querySelectorAll('.soundboard-pad').forEach(pad => {
-      pad.addEventListener('click', () => {
-        const sound = pad.dataset.sound;
-        pad.classList.add('is-triggered');
-        setTimeout(() => pad.classList.remove('is-triggered'), 200);
+  // --- PUJA RADIO 5 CURATED SONGS & MAHALAYA ENGINE ---
+  const PUJA_RADIO_SONGS = [
+    {
+      id: 'elo-je-maa',
+      title: 'Elo Je Maa',
+      artist: 'Abhijeet Bhattacharya & Shreya Ghoshal',
+      composer: 'Jeet Gannguli',
+      label: 'SVF Music',
+      film: 'Challenge 2',
+      duration: '4:22',
+      ytId: 'A3nFh_M5D8c',
+      spotifyUrl: 'https://open.spotify.com/search/Elo%20Je%20Maa%20SVF',
+      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+    },
+    {
+      id: 'dhak-baja-kashor-baaja',
+      title: 'Dhak Baja Kashor Baaja',
+      artist: 'Shreya Ghoshal',
+      composer: 'Jeet Gannguli',
+      label: 'SVF Music',
+      film: 'Durga Puja Special',
+      duration: '3:55',
+      ytId: 'A3nFh_M5D8c',
+      spotifyUrl: 'https://open.spotify.com/search/Dhak%20Baja%20Kashor%20Baaja%20Shreya%20Ghoshal',
+      cover: 'dugga_elo_cover.jpg'
+    },
+    {
+      id: 'dugga-maa-asche',
+      title: 'Dugga Maa Asche',
+      artist: 'Infra',
+      composer: 'Jakiruddin Khan & Infra',
+      label: 'Infra Music',
+      film: 'Festive Single',
+      duration: '3:40',
+      ytId: 'GzQ3Z4W6i-s',
+      spotifyUrl: 'https://open.spotify.com/search/Dugga%20Maa%20Asche%20Infra',
+      cover: 'dugga_elo_cover.jpg'
+    },
+    {
+      id: 'dhaker-taaley',
+      title: 'Dhaker Taaley',
+      artist: 'Abhijeet, Monali Thakur & Chorus',
+      composer: 'Jeet Gannguli',
+      label: 'SVF Music',
+      film: 'Poran Jai Jolia Re',
+      duration: '4:18',
+      ytId: 'o6A_qT3v2rI',
+      spotifyUrl: 'https://open.spotify.com/search/Dhaker%20Taaley%20SVF',
+      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+    },
+    {
+      id: 'dugga-maa',
+      title: 'Dugga Maa',
+      artist: 'Arijit Singh',
+      composer: 'Arindom',
+      label: 'SVF Music',
+      film: 'Bolo Dugga Maiki',
+      duration: '3:52',
+      ytId: 'sPuZ0Q3KDWo',
+      spotifyUrl: 'https://open.spotify.com/track/0U8dYmYjR6hV8jT2zL5vK8',
+      cover: 'dugga_elo_cover.jpg'
+    }
+  ];
 
-        if (sound === 'dhak-dha') soundEngine.playDhakBeat('dha');
-        else if (sound === 'dhak-kuti') soundEngine.playDhakBeat('kuti');
-        else if (sound === 'shankha') soundEngine.playShankha();
-        else if (sound === 'bell') soundEngine.playBell();
-        else if (sound === 'kanshi') soundEngine.playKanshi();
+  let ytMahalayaPlayer = null;
+  let ytRadioPlayer = null;
+  let activeRadioSongId = null;
+
+  function renderPujaRadioSongs() {
+    const listContainer = document.getElementById('puja-radio-songs-list');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = PUJA_RADIO_SONGS.map((song, index) => `
+      <div 
+        class="glass-panel p-4 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-300 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group"
+        id="song-card-${song.id}"
+      >
+        <div class="flex items-center gap-4 w-full sm:w-auto min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-sm text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20 group-hover:scale-105 transition-transform">
+            0${index + 1}
+          </div>
+          <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30">
+            <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover" />
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-display font-bold text-base text-on-surface dark:text-white truncate">${song.title}</h4>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 shrink-0">${song.label}</span>
+            </div>
+            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] truncate mt-0.5">${song.artist} • ${song.composer}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
+          <span class="text-xs font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
+          
+          <!-- Spotify Direct Link -->
+          <a 
+            href="${song.spotifyUrl}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all"
+            title="Open on Spotify"
+          >
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+          </a>
+
+          <!-- Play Button -->
+          <button 
+            class="play-radio-song-btn px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+            data-song-id="${song.id}"
+            data-yt-id="${song.ytId}"
+            data-title="${song.title}"
+            data-artist="${song.artist}"
+          >
+            <span class="material-symbols-outlined text-[16px]">play_arrow</span> Play Song
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Attach play song handlers
+    document.querySelectorAll('.play-radio-song-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const songId = btn.dataset.songId;
+        const ytId = btn.dataset.ytId;
+        const title = btn.dataset.title;
+        const artist = btn.dataset.artist;
+        playRadioSong(songId, ytId, title, artist);
       });
     });
+  }
+
+  function playRadioSong(songId, ytId, title, artist) {
+    activeRadioSongId = songId;
+    const activeBox = document.getElementById('radio-active-player-box');
+    const titleEl = document.getElementById('active-song-title');
+    const artistEl = document.getElementById('active-song-artist');
+    const visualizerEl = document.getElementById('active-song-visualizer');
+    const playerHolder = document.getElementById('radio-yt-player-holder');
+
+    if (activeBox) activeBox.classList.remove('hidden');
+    if (titleEl) titleEl.textContent = title;
+    if (artistEl) artistEl.textContent = artist;
+    if (visualizerEl) visualizerEl.classList.add('is-playing');
+
+    if (playerHolder) {
+      playerHolder.innerHTML = `
+        <iframe 
+          width="100%" 
+          height="100%" 
+          src="https://www.youtube.com/embed/${ytId}?autoplay=1&enablejsapi=1&playsinline=1&modestbranding=1&rel=0" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen
+          class="w-full h-full rounded-2xl"
+        ></iframe>
+      `;
+    }
+
+    showToast(`Playing: "${title}" (${artist})`, 'graphic_eq');
+  }
+
+  // --- 13. AUDIO & RADIO CONTROLLER ---
+  function initAudioHub() {
+    renderPujaRadioSongs();
 
     // --- YOUTUBE ANTHEM PLAYER ENGINE ("Dugga Elo" by Monali Thakur) ---
     const anthemPlayBtn = document.getElementById('home-anthem-play-btn');
@@ -1787,7 +1938,6 @@
             showToast('Now Playing: "Dugga Elo" — Monali Thakur', 'graphic_eq');
           }
         } else {
-          // If player is still preparing, attempt direct iframe playback
           const iframe = document.querySelector('#yt-anthem-player-frame iframe');
           if (iframe) {
             iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
@@ -1851,23 +2001,47 @@
       });
     }
 
-    // Radio Section: Mahishasuramardini Web Player
-    const playerPlayBtn = document.getElementById('player-play-btn');
-    const visualizerEl = document.getElementById('audio-visualizer-container');
-    let isWebPlayerActive = false;
+    // --- 14. HIGHLIGHT BROADCAST: MAHALAYA (SAREGAMA BENGALI) ---
+    const mahalayaPlayBtn = document.getElementById('mahalaya-play-btn');
+    const mahalayaVisualizer = document.getElementById('mahalaya-audio-visualizer');
+    const mahalayaProgressBar = document.getElementById('mahalaya-progress-bar');
+    const mahalayaProgressContainer = document.getElementById('mahalaya-progress-container');
+    const mahalayaTimeCurrent = document.getElementById('mahalaya-time-current');
+    const mahalayaContainer = document.getElementById('mahalaya-player-container');
+    
+    let isMahalayaPlaying = false;
+    let mahalayaDuration = 5325; // 1:28:45 in seconds
+    let mahalayaTimer = null;
 
-    if (playerPlayBtn) {
-      playerPlayBtn.addEventListener('click', () => {
-        isWebPlayerActive = !isWebPlayerActive;
-        if (isWebPlayerActive) {
-          soundEngine.startDhakLoop();
-          playerPlayBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
-          if (visualizerEl) visualizerEl.classList.add('is-playing');
-          showToast('Playing: Mahishasuramardini by Birendra Krishna Bhadra', 'graphic_eq');
+    if (mahalayaPlayBtn) {
+      mahalayaPlayBtn.addEventListener('click', () => {
+        isMahalayaPlaying = !isMahalayaPlaying;
+
+        if (isMahalayaPlaying) {
+          mahalayaPlayBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+          if (mahalayaVisualizer) mahalayaVisualizer.classList.add('is-playing');
+          if (mahalayaContainer) {
+            mahalayaContainer.classList.remove('hidden');
+            mahalayaContainer.innerHTML = `
+              <iframe 
+                width="100%" 
+                height="100%" 
+                src="https://www.youtube.com/embed/YQyo8QeoYhc?autoplay=1&enablejsapi=1&playsinline=1&modestbranding=1&rel=0" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen
+                class="w-full h-full rounded-2xl"
+              ></iframe>
+            `;
+          }
+          showToast('Now Broadcasting: Mahalaya (Mahishasuramardini) — Saregama Bengali', 'graphic_eq');
         } else {
-          soundEngine.stopDhakLoop();
-          playerPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
-          if (visualizerEl) visualizerEl.classList.remove('is-playing');
+          mahalayaPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+          if (mahalayaVisualizer) mahalayaVisualizer.classList.remove('is-playing');
+          if (mahalayaContainer) {
+            mahalayaContainer.innerHTML = '';
+            mahalayaContainer.classList.add('hidden');
+          }
         }
       });
     }
