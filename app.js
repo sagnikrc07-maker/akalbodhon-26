@@ -1679,30 +1679,86 @@
       });
     });
 
+    // Home Page Anthem Player: "Dugga Elo" - Monali Thakur
+    const anthemPlayBtn = document.getElementById('home-anthem-play-btn');
+    const anthemVisualizer = document.getElementById('home-audio-visualizer');
+    const anthemProgressBar = document.getElementById('anthem-progress-bar');
+    const anthemProgressContainer = document.getElementById('anthem-progress-container');
+    const anthemTimeCurrent = document.getElementById('anthem-time-current');
     const heroDhakBtn = document.getElementById('dhak-btn');
-    const heroDhakContainer = document.getElementById('dhak-container');
-    const heroSoundRings = heroDhakContainer ? heroDhakContainer.querySelectorAll('.soundwave-ring') : [];
+    
+    let isAnthemPlaying = false;
+    let anthemProgress = 0;
+    const anthemTotalSeconds = 225; // 3:45 total duration
+    let anthemInterval = null;
 
-    if (heroDhakBtn && heroDhakContainer) {
-      heroDhakBtn.addEventListener('click', () => {
-        if (!soundEngine.isDhakLooping) {
-          soundEngine.startDhakLoop((beatType) => {
-            heroSoundRings.forEach(ring => ring.classList.remove('hidden'));
-          });
-          heroDhakContainer.classList.add('dhak-playing');
-          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
-          heroDhakBtn.querySelector('span:last-child').textContent = 'Rhythm Active';
-          showToast('Dhak rhythmic tempo started! Feel the beats of Akalbodhon.', 'music_note');
+    function formatAnthemTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    if (anthemPlayBtn) {
+      anthemPlayBtn.addEventListener('click', () => {
+        isAnthemPlaying = !isAnthemPlaying;
+
+        if (isAnthemPlaying) {
+          // Play festive synthesized celebration chords & rhythm
+          soundEngine.startDhakLoop();
+          anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+          if (anthemVisualizer) anthemVisualizer.classList.add('is-playing');
+          showToast('Now Playing: "Dugga Elo" — Monali Thakur (Spotify Connected)', 'graphic_eq');
+
+          // Progress bar animation loop
+          if (anthemInterval) clearInterval(anthemInterval);
+          anthemInterval = setInterval(() => {
+            if (anthemProgress < anthemTotalSeconds) {
+              anthemProgress += 1;
+              const percent = (anthemProgress / anthemTotalSeconds) * 100;
+              if (anthemProgressBar) anthemProgressBar.style.width = `${percent}%`;
+              if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(anthemProgress);
+            } else {
+              anthemProgress = 0;
+            }
+          }, 1000);
         } else {
           soundEngine.stopDhakLoop();
-          heroDhakContainer.classList.remove('dhak-playing');
-          heroSoundRings.forEach(ring => ring.classList.add('hidden'));
-          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'music_note';
-          heroDhakBtn.querySelector('span:last-child').textContent = 'Play Dhak';
+          anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+          if (anthemVisualizer) anthemVisualizer.classList.remove('is-playing');
+          if (anthemInterval) clearInterval(anthemInterval);
         }
       });
     }
 
+    if (anthemProgressContainer) {
+      anthemProgressContainer.addEventListener('click', (e) => {
+        const rect = anthemProgressContainer.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const clickRatio = Math.max(0, Math.min(1, clickX / width));
+        anthemProgress = Math.floor(clickRatio * anthemTotalSeconds);
+        if (anthemProgressBar) anthemProgressBar.style.width = `${clickRatio * 100}%`;
+        if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(anthemProgress);
+      });
+    }
+
+    // Hero Secondary Ceremonial Dhak Button
+    if (heroDhakBtn) {
+      heroDhakBtn.addEventListener('click', () => {
+        if (!soundEngine.isDhakLooping) {
+          soundEngine.startDhakLoop();
+          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+          heroDhakBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+          showToast('Ceremonial Dhak rhythmic loop active!', 'album');
+        } else {
+          soundEngine.stopDhakLoop();
+          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'album';
+          heroDhakBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        }
+      });
+    }
+
+    // Radio Section: Mahishasuramardini Web Player
     const playerPlayBtn = document.getElementById('player-play-btn');
     const visualizerEl = document.getElementById('audio-visualizer-container');
     let isWebPlayerActive = false;

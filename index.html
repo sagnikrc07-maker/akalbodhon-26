@@ -201,22 +201,122 @@
         </p>
       </div>
 
-      <!-- Interactive Ceremonial Dhak Resonator -->
-      <div class="flex flex-col items-center justify-center py-4 reveal-on-scroll">
-        <div class="relative w-52 h-52 flex items-center justify-center" id="dhak-container">
-          <div class="soundwave-ring absolute w-full h-full rounded-full border-2 border-secondary-container/60 dark:border-amber-400/60 hidden pointer-events-none"></div>
-          <div class="soundwave-ring absolute w-full h-full rounded-full border-2 border-primary/40 dark:border-red-400/40 hidden pointer-events-none" style="animation-delay: 0.4s;"></div>
-          <div class="soundwave-ring absolute w-full h-full rounded-full border border-secondary-container/30 dark:border-amber-400/30 hidden pointer-events-none" style="animation-delay: 0.8s;"></div>
+      <!-- ==================== FESTIVE ANTHEM: DUGGA ELO (MONALI THAKUR) & SPOTIFY PLAYER ==================== -->
+      <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-2xl relative overflow-hidden max-w-3xl mx-auto space-y-6 reveal-on-scroll" id="home-anthem-card">
+        <!-- Top Ambient Glow -->
+        <div class="absolute -top-12 -right-12 w-48 h-48 bg-primary/20 dark:bg-amber-400/15 rounded-full blur-3xl pointer-events-none"></div>
 
-          <button id="dhak-btn" class="z-10 w-36 h-36 rounded-full bg-gradient-to-tr from-primary to-primary-container dark:from-[#8b0000] dark:to-[#b52619] text-white shadow-2xl border-4 border-secondary-container dark:border-amber-300 hover:scale-105 active:scale-95 transition-all flex flex-col items-center justify-center gap-1.5 group cursor-pointer">
-            <span class="material-symbols-outlined text-[44px] text-secondary-container dark:text-amber-300 group-hover:rotate-12 transition-transform">music_note</span>
-            <span data-i18n="play_dhak" class="font-display font-bold text-sm tracking-wide text-white">Play Dhak</span>
-            <span class="text-[10px] text-secondary-container/90 dark:text-amber-200 uppercase tracking-widest font-semibold">Web Audio</span>
+        <!-- Header / Spotify Tag -->
+        <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-4">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#1DB954] animate-pulse"></span>
+            <span class="text-xs uppercase tracking-widest text-on-surface-variant dark:text-amber-300 font-bold flex items-center gap-1.5">
+              <svg class="w-4 h-4 fill-[#1DB954]" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+              Official Spotify Anthem
+            </span>
+          </div>
+          <span class="text-xs px-2.5 py-0.5 rounded-full bg-secondary-container/40 dark:bg-amber-400/20 text-secondary dark:text-amber-300 font-semibold">Puja Anthem</span>
+        </div>
+
+        <!-- Main Player Content -->
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <!-- Album Art Cover -->
+          <div class="relative shrink-0 group">
+            <div class="w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden shadow-2xl border-2 border-secondary-container dark:border-amber-400 relative">
+              <img id="anthem-cover-img" src="dugga_elo_cover.jpg" alt="Dugga Elo - Monali Thakur" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+            </div>
+            <button id="home-anthem-play-btn" class="absolute -bottom-2 -right-2 w-12 h-12 rounded-full bg-gradient-to-tr from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-surface dark:border-[#16130d] group-hover:shadow-primary/40 cursor-pointer" title="Play Festive Anthem" aria-label="Play Anthem">
+              <span class="material-symbols-outlined text-[26px]">play_arrow</span>
+            </button>
+          </div>
+
+          <!-- Track Details & Visualizer -->
+          <div class="flex-1 min-w-0 text-center sm:text-left space-y-2 w-full">
+            <div>
+              <h3 class="font-display text-2xl sm:text-3xl font-bold text-on-surface dark:text-white truncate">Dugga Elo</h3>
+              <p class="text-sm font-medium text-primary dark:text-amber-300 flex items-center justify-center sm:justify-start gap-1.5 mt-0.5">
+                <span>Monali Thakur</span>
+                <span class="text-outline-variant dark:text-amber-400/40">•</span>
+                <span class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Music: Guddu</span>
+              </p>
+            </div>
+
+            <!-- Audio Frequency Visualizer -->
+            <div id="home-audio-visualizer" class="flex items-end justify-center sm:justify-start gap-1.5 h-8 py-1">
+              <div class="visualizer-bar h-2" style="animation-delay: 0.1s;"></div>
+              <div class="visualizer-bar h-4" style="animation-delay: 0.25s;"></div>
+              <div class="visualizer-bar h-6" style="animation-delay: 0.4s;"></div>
+              <div class="visualizer-bar h-8" style="animation-delay: 0.15s;"></div>
+              <div class="visualizer-bar h-5" style="animation-delay: 0.5s;"></div>
+              <div class="visualizer-bar h-7" style="animation-delay: 0.3s;"></div>
+              <div class="visualizer-bar h-3" style="animation-delay: 0.45s;"></div>
+              <div class="visualizer-bar h-6" style="animation-delay: 0.2s;"></div>
+              <div class="visualizer-bar h-2" style="animation-delay: 0.35s;"></div>
+            </div>
+
+            <!-- Interactive Seek Progress Bar -->
+            <div class="space-y-1">
+              <div class="w-full bg-surface-container-high dark:bg-[#2c261b] rounded-full h-1.5 overflow-hidden cursor-pointer relative" id="anthem-progress-container">
+                <div id="anthem-progress-bar" class="bg-gradient-to-r from-primary to-secondary-container dark:from-amber-400 dark:to-red-500 h-full w-0 transition-all duration-200"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-on-surface-variant dark:text-[#ded5c7]/70 font-mono">
+                <span id="anthem-time-current">0:00</span>
+                <span id="anthem-time-duration">3:45</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embedded Spotify Track Player (Instant Stream) -->
+        <div class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md bg-black/40">
+          <iframe 
+            id="spotify-embed-iframe"
+            style="border-radius:16px" 
+            src="https://open.spotify.com/embed/track/4UYaZipK6dMoyEGAs9BoLZ?utm_source=generator&theme=0" 
+            width="100%" 
+            height="152" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy"
+          ></iframe>
+        </div>
+
+        <!-- Action Buttons: Spotify Track Link + Artist Profile + Synthesized Dhak -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+          <!-- Spotify Direct Track Link -->
+          <a 
+            href="https://open.spotify.com/track/4UYaZipK6dMoyEGAs9BoLZ" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="px-4 py-2.5 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/30 hover:border-transparent text-xs font-bold flex items-center justify-center gap-2 transition-all group shadow-sm"
+          >
+            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            <span>Open on Spotify</span>
+          </a>
+
+          <!-- Monali Thakur Artist Profile -->
+          <a 
+            href="https://open.spotify.com/artist/4YRxDV8wJFPHPTeXepOstw" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="px-4 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] hover:bg-surface-container dark:hover:bg-[#322c1e] text-on-surface dark:text-white border border-outline-variant/30 dark:border-amber-400/20 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all"
+          >
+            <span class="material-symbols-outlined text-[16px] text-primary dark:text-amber-300">person</span>
+            <span>Monali Thakur</span>
+          </a>
+
+          <!-- Play Ceremonial Dhak Sound Button -->
+          <button 
+            id="dhak-btn" 
+            class="px-4 py-2.5 rounded-xl bg-primary/10 hover:bg-primary text-primary hover:text-white dark:bg-amber-400/15 dark:hover:bg-amber-400 dark:text-amber-300 dark:hover:text-black border border-primary/20 dark:border-amber-400/30 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            title="Trigger Synthesized Ceremonial Dhak Beat"
+          >
+            <span class="material-symbols-outlined text-[16px]">album</span>
+            <span>Play Dhak Beat</span>
           </button>
         </div>
-        <p data-i18n="dhak_desc" class="text-xs text-on-surface-variant dark:text-[#ded5c7] text-center max-w-sm mt-3">
-          Tap the sacred drum to synthesize real festive tempo beats directly in your browser.
-        </p>
       </div>
 
       <!-- Quick Actions Bento Grid (Puja Radio moved to the end) -->
@@ -435,6 +535,22 @@
             <span class="font-display font-bold text-sm text-on-surface dark:text-white">Kanshi</span>
             <span class="text-[10px] text-on-surface-variant dark:text-[#ded5c7] uppercase tracking-wider">Brass Gong</span>
           </button>
+        </div>
+      </div>
+
+      <!-- Spotify Curated Durga Puja Playlist Embed -->
+      <div class="glass-panel p-6 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 shadow-xl space-y-4 max-w-4xl mx-auto reveal-on-scroll">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5 fill-[#1DB954]" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            <h3 class="font-display text-lg font-bold text-on-surface dark:text-white">Spotify Sharodiya Top Hits</h3>
+          </div>
+          <a href="https://open.spotify.com/playlist/37i9dQZF1DX5cO1Kx65w3I" target="_blank" rel="noopener noreferrer" class="text-xs text-[#1DB954] hover:underline font-semibold flex items-center gap-1">
+            Open Playlist <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+          </a>
+        </div>
+        <div class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md">
+          <iframe style="border-radius:16px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX5cO1Kx65w3I?utm_source=generator&theme=0" width="100%" height="240" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
       </div>
     </section>
