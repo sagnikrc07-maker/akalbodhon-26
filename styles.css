@@ -272,11 +272,8 @@
 
 /* Language Switcher & Google Translate styling */
 .goog-te-banner-frame,
-.goog-te-banner-frame.skiptranslate,
 #goog-gt-tt,
 .goog-te-balloon-frame,
-.goog-te-gadget,
-.skiptranslate,
 iframe.goog-te-banner-frame {
   display: none !important;
   visibility: hidden !important;

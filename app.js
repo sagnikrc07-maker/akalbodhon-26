@@ -1720,7 +1720,11 @@
           playerPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
           if (visualizerEl) visualizerEl.classList.remove('is-playing');
         }
-     // --- 14. THEME TOGGLE (LIGHT / DARK) ---
+      });
+    }
+  }
+
+  // --- 14. THEME TOGGLE (LIGHT / DARK) ---
   function initTheme() {
     const themeBtn = document.getElementById('theme-toggle-btn');
     const savedTheme = localStorage.getItem(Storage.KEY_THEME) || 'light';
