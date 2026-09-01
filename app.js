@@ -1900,6 +1900,23 @@
     };
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 
+    // Social & Developer Links Dropdown Toggle
+    const socialBtn = document.getElementById('social-links-btn');
+    const socialDropdown = document.getElementById('social-links-dropdown');
+
+    if (socialBtn && socialDropdown) {
+      socialBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        socialDropdown.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!socialDropdown.contains(e.target) && !socialBtn.contains(e.target)) {
+          socialDropdown.classList.add('hidden');
+        }
+      });
+    }
+
     // Modal Close
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
       document.getElementById('pandal-detail-modal')?.classList.add('hidden');
