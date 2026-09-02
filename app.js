@@ -1688,7 +1688,7 @@
       duration: '3:55',
       ytId: 'A3nFh_M5D8c',
       spotifyUrl: 'https://open.spotify.com/search/Dhak%20Baja%20Kashor%20Baaja%20Shreya%20Ghoshal',
-      cover: 'dugga_elo_cover.jpg'
+      cover: 'logo.jpg'
     },
     {
       id: 'dugga-maa-asche',
@@ -1700,7 +1700,7 @@
       duration: '3:40',
       ytId: 'GzQ3Z4W6i-s',
       spotifyUrl: 'https://open.spotify.com/search/Dugga%20Maa%20Asche%20Infra',
-      cover: 'dugga_elo_cover.jpg'
+      cover: 'logo.jpg'
     },
     {
       id: 'dhaker-taaley',
@@ -1724,7 +1724,7 @@
       duration: '3:52',
       ytId: 'sPuZ0Q3KDWo',
       spotifyUrl: 'https://open.spotify.com/track/0U8dYmYjR6hV8jT2zL5vK8',
-      cover: 'dugga_elo_cover.jpg'
+      cover: 'logo.jpg'
     }
   ];
 
