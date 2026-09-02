@@ -283,28 +283,7 @@
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Language Switcher & Google Translate styling */
-.goog-te-banner-frame,
-#goog-gt-tt,
-.goog-te-balloon-frame,
-iframe.goog-te-banner-frame {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  width: 0 !important;
-}
-
-body {
-  top: 0px !important;
-  position: static !important;
-}
-
-.goog-text-highlight {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-/* Translation Displacement Fixes & Responsive Text Layouts */
+/* Typography & Layout Flow */
 * {
   overflow-wrap: break-word;
 }
@@ -314,12 +293,10 @@ body {
   overflow-wrap: anywhere;
 }
 
-/* Flexible text flow for multilingual translations */
 .font-headline-md, .font-display, h1, h2, h3, h4, p, span, a, button {
   text-wrap: pretty;
 }
 
-/* Prevent translated text from clipping or breaking card boundaries */
 .app-section {
   min-height: calc(100vh - 80px);
 }
@@ -328,7 +305,7 @@ body {
 @keyframes scaleUp {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(12px);
+    transform: scale(0.94) translateY(10px);
   }
   to {
     opacity: 1;
@@ -340,22 +317,139 @@ body {
   animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.lang-card {
+/* Puja Avatar Selector Items */
+.avatar-option {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
 }
 
-.lang-card:hover {
-  transform: translateY(-2px);
+.avatar-option:hover {
+  transform: translateY(-3px) scale(1.06);
 }
 
-.lang-card.is-active {
-  border-color: #b52619;
-  background-color: rgba(181, 38, 25, 0.08);
+.avatar-option.is-selected {
+  border-color: #b52619 !important;
+  background-color: rgba(181, 38, 25, 0.15) !important;
+  box-shadow: 0 0 16px rgba(181, 38, 25, 0.3);
 }
 
-.dark .lang-card.is-active {
-  border-color: #fed65b;
-  background-color: rgba(254, 214, 91, 0.12);
+.dark .avatar-option.is-selected {
+  border-color: #fed65b !important;
+  background-color: rgba(254, 214, 91, 0.2) !important;
+  box-shadow: 0 0 16px rgba(254, 214, 91, 0.35);
 }
+
+/* Creator Crown / Host Badge */
+.creator-badge {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* Member Avatar Overlap Stack */
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-stack > * {
+  margin-left: -8px;
+  transition: transform 0.2s ease;
+}
+
+.avatar-stack > *:first-child {
+  margin-left: 0;
+}
+
+.avatar-stack > *:hover {
+  transform: translateY(-4px) scale(1.15);
+  z-index: 10;
+}
+
+/* Plan Route Steps */
+.route-step-indicator {
+  position: relative;
+}
+
+.route-step-indicator::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -16px;
+  width: 2px;
+  height: 16px;
+  background-color: rgba(181, 38, 25, 0.3);
+  transform: translateX(-50%);
+}
+
+.dark .route-step-indicator::after {
+  background-color: rgba(254, 214, 91, 0.3);
+}
+
+.route-step-indicator.last-step::after {
+  display: none;
+}
+
+/* Social Share Button Styles */
+.share-btn-wa:hover {
+  background-color: #25D366 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+.share-btn-gmail:hover {
+  background-color: #EA4335 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(234, 67, 53, 0.35);
+}
+
+.share-btn-ig:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(225, 48, 108, 0.35);
+}
+
+.share-btn-snap:hover {
+  background-color: #FFFC00 !important;
+  color: #000000 !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(255, 252, 0, 0.4);
+}
+
+.share-btn-dc:hover {
+  background-color: #5865F2 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(88, 101, 242, 0.35);
+}
+
+.share-btn-copy:hover {
+  background-color: #b52619 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(181, 38, 25, 0.35);
+}
+
+.dark .share-btn-copy:hover {
+  background-color: #fed65b !important;
+  color: #000000 !important;
+}
+
+/* Timer active countdown pulsing */
+@keyframes timerPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.03); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.timer-running {
+  animation: timerPulse 2s infinite ease-in-out;
+}
+
 
 

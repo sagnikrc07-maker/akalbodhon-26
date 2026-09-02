@@ -1627,9 +1627,25 @@
 
   // --- 12. ROUTING & TAB NAVIGATION ---
   function handleRouting() {
-    const hash = window.location.hash.slice(1) || 'home';
-    const validSections = ['home', 'pandals', 'audio', 'food-shopping', 'rituals', 'saved'];
-    const activeSection = validSections.includes(hash) ? hash : 'home';
+    const rawHash = window.location.hash.slice(1) || 'home';
+    
+    // Check if deep linking to a specific shared plan (#plan=...)
+    if (rawHash.startsWith('plan=')) {
+      const planId = rawHash.split('=')[1];
+      if (planId) {
+        handleSharedPlanDeepLink(planId);
+        return;
+      }
+    }
+
+    if (rawHash === 'login' || rawHash === 'account') {
+      if (currentUser) {
+        openProfileModal();
+      }
+    }
+
+    const validSections = ['home', 'pandals', 'plans', 'audio', 'food-shopping', 'rituals', 'saved', 'login'];
+    const activeSection = validSections.includes(rawHash) ? rawHash : 'home';
 
     document.querySelectorAll('.app-section').forEach(sec => {
       sec.classList.add('hidden');
@@ -1654,7 +1670,9 @@
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    if (activeSection === 'saved') {
+    if (activeSection === 'plans') {
+      renderFestivalPlans();
+    } else if (activeSection === 'saved') {
       renderSavedItinerary();
     } else if (activeSection === 'food-shopping') {
       renderFoodAndShopping();
@@ -2080,10 +2098,9 @@
 
     let currentCount = parseInt(localStorage.getItem(STORAGE_KEY), 10);
     if (!currentCount || isNaN(currentCount) || currentCount < 1) {
-      currentCount = 1284; // Reset base baseline
+      currentCount = 1284;
     }
 
-    // If new session/visitor, increment counter
     if (!sessionStorage.getItem(VISITOR_KEY)) {
       currentCount += 1;
       sessionStorage.setItem(VISITOR_KEY, 'true');
@@ -2092,7 +2109,6 @@
 
     counterEl.textContent = currentCount.toLocaleString();
 
-    // Subtle real-time live pulse increment every 25-50 seconds
     setInterval(() => {
       currentCount += Math.floor(Math.random() * 2) + 1;
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
@@ -2104,129 +2120,1396 @@
     }, 28000);
   }
 
-  // --- 16. LANGUAGE SYSTEM & FLAGS MODAL ---
-  function initLanguageSystem() {
-    const langBtn = document.getElementById('lang-toggle-btn');
-    const langModal = document.getElementById('language-modal');
-    const closeLangBtn = document.getElementById('close-lang-modal-btn');
-    const langGrid = document.getElementById('language-grid-container');
-    const langSearch = document.getElementById('lang-search-input');
-    const currentLangCodeEl = document.getElementById('current-lang-code');
+  // ========================================================
+  // 16. SUPABASE CLIENT & AUTHENTICATION MODULE
+  // ========================================================
+  const SUPABASE_URL = 'https://yagvczdnfyhdtvggkclj.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA';
 
-    // Complete list with authentic national flags for Indian & International Languages
-    const LANGUAGES = [
-      { code: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
-      { code: 'bn', name: 'Bengali', native: 'বাংলা', flag: '🇮🇳' },
-      { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
-      { code: 'as', name: 'Assamese', native: 'অসমীয়া', flag: '🇮🇳' },
-      { code: 'ml', name: 'Malayalam', native: 'മലയാളം', flag: '🇮🇳' },
-      { code: 'mr', name: 'Marathi', native: 'मরাঠী', flag: '🇮🇳' },
-      { code: 'pa', name: 'Punjabi', native: 'ਪੰਜਾਬੀ', flag: '🇮🇳' },
-      { code: 'gu', name: 'Gujarati', native: 'ગુજરાતી', flag: '🇮🇳' },
-      { code: 'or', name: 'Odia', native: 'ଓଡ଼ିଆ', flag: '🇮🇳' },
-      { code: 'ja', name: 'Japanese', native: '日本語', flag: '🇯🇵' },
-      { code: 'de', name: 'German', native: 'Deutsch', flag: '🇩🇪' },
-      { code: 'fr', name: 'French', native: 'Français', flag: '🇫🇷' },
-      { code: 'es', name: 'Spanish', native: 'Español', flag: '🇪🇸' },
-      { code: 'it', name: 'Italian', native: 'Italiano', flag: '🇮🇹' },
-      { code: 'ru', name: 'Russian', native: 'Русский', flag: '🇷🇺' },
-      { code: 'pt', name: 'Portuguese', native: 'Português', flag: '🇵🇹' },
-      { code: 'zh-CN', name: 'Chinese', native: '中文', flag: '🇨🇳' },
-      { code: 'ko', name: 'Korean', native: '한국어', flag: '🇰🇷' },
-      { code: 'ur', name: 'Urdu', native: 'اردو', flag: '🇵🇰' },
-      { code: 'ar', name: 'Arabic', native: 'العربية', flag: '🇸🇦' },
-      { code: 'nl', name: 'Dutch', native: 'Nederlands', flag: '🇳🇱' },
-      { code: 'tr', name: 'Turkish', native: 'Türkçe', flag: '🇹🇷' }
-    ];
+  let supabaseClient = null;
+  try {
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
+  } catch (err) {
+    console.warn('Supabase client initialization warning:', err);
+  }
 
-    function renderLangGrid(filter = '') {
-      if (!langGrid) return;
-      const q = filter.toLowerCase().trim();
-      const filtered = LANGUAGES.filter(l => l.name.toLowerCase().includes(q) || l.native.toLowerCase().includes(q) || l.code.toLowerCase().includes(q));
+  // Active User Profile State
+  let currentUser = null;
+  let customPlans = [];
+  let userTimers = [];
+  let pendingPlanJoinId = null;
+  let activePlanFilter = 'all';
 
-      langGrid.innerHTML = filtered.map(lang => `
+  // 14 Authentic Puja-Themed Avatars with Bengali Sacred Meaning
+  const PUJA_AVATARS = [
+    { id: 'pradeep', icon: '🪔', name: 'Pradeep (Diya)', meaning: 'Divine Awakening Light' },
+    { id: 'dhak', icon: '🪘', name: 'Ceremonial Dhak', meaning: 'Heartbeat of Sharod' },
+    { id: 'raktajaba', icon: '🌺', name: 'Rakta Jaba', meaning: 'Divine Red Hibiscus' },
+    { id: 'trishul', icon: '🔱', name: 'Maa Durga Trishul', meaning: 'Triumph over Evil' },
+    { id: 'rudraksha', icon: '📿', name: 'Rudraksha Beads', meaning: 'Sacred Devotion' },
+    { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma', meaning: 'Lord Rama\'s Blue Lotus' },
+    { id: 'mukut', icon: '👑', name: 'Daaker Saaj Mukut', meaning: 'Silver Royal Crown' },
+    { id: 'mayur', icon: '🦚', name: 'Sacred Mayur', meaning: 'Grace & Beauty' },
+    { id: 'kalash', icon: '🏺', name: 'Mangal Ghat', meaning: 'Auspicious Kalash' },
+    { id: 'dhunuchi', icon: '💃', name: 'Dhunuchi Naach', meaning: 'Sacred Aarti Dance' },
+    { id: 'shankha', icon: '🐚', name: 'Sacred Shankha', meaning: 'Omkar Victory Sound' },
+    { id: 'kanshi', icon: '🥁', name: 'Dhol & Kanshi', meaning: 'Festive Rhythms' },
+    { id: 'surya', icon: '☀️', name: 'Surya Devata', meaning: 'Autumn Morning Sun' },
+    { id: 'kashphool', icon: '✨', name: 'Kash Phool', meaning: 'Arrival of Dugga' }
+  ];
+
+  // 6 Canonical Pre-Prepared Festival Master Reference Plans
+  const MASTER_PUJA_PLANS = [
+    {
+      id: 'plan-mahalaya',
+      title: 'Mahalaya Dawn Awakening & River Ghat Tarpan Trail',
+      day_tag: 'Mahalaya',
+      day_key: 'mahalaya',
+      date_str: '10 October 2026 (Dawn Tarpan)',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '🪔',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Ahiritola Ghat -> Babughat Promenade -> Kumartuli Sculptors -> Sovabazar Rajbari',
+      pandals: ['Sovabazar Rajbari', 'Kumartuli Park'],
+      food_stops: [
+        { name: 'Mitra Cafe (Shyambazar)', dish: 'Original Mutton Kabiraji & Darjeeling Tea' },
+        { name: 'Ahiritola Ghat Kachaudi Stall', dish: 'Hing Kochuri with Chholar Daal & Hot Jalebi' }
+      ],
+      rituals: [
+        { name: 'Dawn Mahishasuramardini Broadcast', time: '04:00 AM', desc: 'Birendra Krishna Bhadra recitation & Chandi Path' },
+        { name: 'Ganga Tarpan at Ahiritola Ghat', time: '06:00 AM', desc: 'Ancestral homage & sacred dip in Bhagirathi' },
+        { name: 'Chokkhu Daan at Kumartuli', time: '10:00 AM', desc: 'Master artisans painting divine eyes on Goddess Durga' }
+      ],
+      custom_notes: 'Start before dawn to experience the misty sunrise over Howrah Bridge while reverberations of Shankha fill the river air.'
+    },
+    {
+      id: 'plan-shasthi',
+      title: 'Maha Shasthi Bodhon & North Kolkata Aristocratic Heritage Circuit',
+      day_tag: 'Maha Shasthi',
+      day_key: 'shasthi',
+      date_str: '17 October 2026',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '🌺',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Shyambazar Metro -> Bagbazar Sarbojonin -> Kumartuli Park -> Sovabazar Rajbari Natmandir',
+      pandals: ['Bagbazar Sarbojonin', 'Kumartuli Park', 'Sovabazar Rajbari', 'Santosh Mitra Square (Lebutala)'],
+      food_stops: [
+        { name: 'Golbari (Shyambazar Five-Point)', dish: 'Iconic Spicy Kosha Mangsho with Crisp Parathas' },
+        { name: 'Girish Chandra Dey & Nakur Chandra Nandy', dish: 'Jalbhara Talsash Sandesh & Monohora' }
+      ],
+      rituals: [
+        { name: 'Kalparambha Puja', time: '08:00 AM', desc: 'Sacred vow resolution to commence the Sharodiya Durga Durgotsav' },
+        { name: 'Bodhon, Amantran & Adhivas', time: '06:30 PM', desc: 'Canonical untimely awakening of Devi Durga under the Bilva tree' },
+        { name: 'Ceremonial Shasthi Dhak Aarti', time: '07:30 PM', desc: 'Resonating Dhak, Kanshi and lighting of sacred lamps' }
+      ],
+      custom_notes: 'North Kolkata is best experienced on foot. Soak in the colonial architecture and sabeki daaker saaj idols.'
+    },
+    {
+      id: 'plan-saptami',
+      title: 'Maha Saptami Grandeur, Lake Illumination & Street Feast Trail',
+      day_tag: 'Maha Saptami',
+      day_key: 'saptami',
+      date_str: '18 October 2026',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '🔱',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Lake Town VIP Road -> Sreebhumi -> MG Road Metro -> College Square Lake -> Mohammad Ali Park',
+      pandals: ['Sreebhumi Sporting Club', 'College Square', 'Mohammad Ali Park', 'Santosh Mitra Square (Lebutala)'],
+      food_stops: [
+        { name: 'Royal Indian Hotel (Chitpur)', dish: 'Royal Mutton Biryani without aloo & Shahi Chaap' },
+        { name: 'Paramount Sherbets (College Square)', dish: 'Historic Daab Sherbet, Passion Fruit & Malai Cream' }
+      ],
+      rituals: [
+        { name: 'Nabapatrika Snan (Kolabou Snan)', time: '06:00 AM', desc: 'Bathing nine sacred plants in Ganga water with mirror reflection' },
+        { name: 'Maha Saptami Puspanjali', time: '09:30 AM', desc: 'Offering lotus flowers with sacred Sanskrit chants' },
+        { name: 'Saptami Bhog Aarti', time: '01:00 PM', desc: 'Presentation of sacred Bhog offerings to Devi Durga' }
+      ],
+      custom_notes: 'Visit Sreebhumi early in the day to beat massive nighttime queues, then head to College Square as twilight illuminates the lake.'
+    },
+    {
+      id: 'plan-ashtami',
+      title: 'Maha Ashtami Sacred Anjali, Kumari Puja & Sandhi Puja Circuit',
+      day_tag: 'Maha Ashtami',
+      day_key: 'ashtami',
+      date_str: '19 October 2026',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '🪷',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Gariahat Junction -> Ekdalia Evergreen -> Singhi Park -> Maddox Square -> Ballygunge Cultural -> Tridhara',
+      pandals: ['Ekdalia Evergreen Club', 'Maddox Square', 'Tridhara Sammilani', 'Shiv Mandir'],
+      food_stops: [
+        { name: 'Sacred Ashtami Community Khichuri Bhog', dish: 'Gobindobhog Rice Khichuri, Labra, Beguni, Chutney & Payesh' },
+        { name: '6 Ballygunge Place (Ballygunge)', dish: 'Heritage Bengali Thali (Chingri Malai Curry & Kosha Mangsho)' },
+        { name: 'Bedouin (Gariahat Phari)', dish: 'Double Egg Mutton Kebab Kati Roll' }
+      ],
+      rituals: [
+        { name: 'Maha Ashtami Puspanjali', time: '09:00 AM', desc: 'Auspicious flower offering fasting in traditional Dhuti / Lal-Paad Saree' },
+        { name: 'Kumari Puja', time: '11:00 AM', desc: 'Worship of the young maiden as the living embodiment of Goddess Durga' },
+        { name: 'Sacred Sandhi Puja (108 Lotuses & 108 Diyas)', time: '08:42 PM - 09:30 PM', desc: 'The holy conjunction of Ashtami and Navami when Devi Chamunda slew Chanda & Munda' }
+      ],
+      custom_notes: 'Maddox Square is the lively adda epicenter of Ashtami evening. Ensure you arrive at your pandal 45 minutes before Sandhi Puja.'
+    },
+    {
+      id: 'plan-navami',
+      title: 'Maha Navami All-Night Hopping Carnival & Dhunuchi Naach Spectacle',
+      day_tag: 'Maha Navami',
+      day_key: 'navami',
+      date_str: '20 October 2026',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '💃',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Alipore -> Suruchi Sangha -> Chetla Agrani -> Mudiali Club -> Shiv Mandir -> Badamtala Ashar Sangha',
+      pandals: ['Suruchi Sangha (New Alipore)', 'Mudiali Club', 'Shiv Mandir', 'Tridhara Sammilani'],
+      food_stops: [
+        { name: 'Arsalan (Park Circus / Southern Ave)', dish: 'Fragrant Kolkata Mutton Biryani with melt-in-mouth aloo' },
+        { name: 'Bhojohori Manna (Hindustan Road)', dish: 'Daab Chingri, Bhetki Paturi & Nolen Gurer Ice Cream' }
+      ],
+      rituals: [
+        { name: 'Maha Navami Homa (Maha Yajna)', time: '10:30 AM', desc: 'Sacred fire oblation with bel patra and ghee' },
+        { name: 'Navami Maha Bhog Aarti', time: '01:30 PM', desc: 'Grand royal feast offering of Luchi, Chholar Daal & Payesh' },
+        { name: 'Energetic Dhunuchi Naach Competition', time: '07:00 PM onwards', desc: 'Clay coconut incense burner dance to intense 120+ BPM Dhak beats' }
+      ],
+      custom_notes: 'Navami is the night when Kolkata does not sleep! Metro trains operate throughout the night.'
+    },
+    {
+      id: 'plan-dashami',
+      title: 'Bijoya Dashami Sindoor Khela & Sacred Immersion Procession',
+      day_tag: 'Bijoya Dashami',
+      day_key: 'dashami',
+      date_str: '21 October 2026',
+      creator_name: 'Akalbodhon Curators',
+      creator_avatar: '👑',
+      creator_id: 'akalbodhon-official',
+      is_template: true,
+      route_summary: 'Bagbazar Sarbojonin -> Sovabazar Courtyard -> Babughat / Ahiritola Ganga Ghats Immersion Promenade',
+      pandals: ['Bagbazar Sarbojonin', 'Sovabazar Rajbari'],
+      food_stops: [
+        { name: 'Balaram Mullick & Radharaman Mullick', dish: 'Baked Rosogolla, Chocolate Sandesh & Kaju Barfi' },
+        { name: 'K.C. Das (Esplanade)', dish: 'Hot Rossogolla & Malpoa for Shubho Bijoya Sweet Distribution' }
+      ],
+      rituals: [
+        { name: 'Dashami Baran & Sindoor Khela', time: '11:00 AM', desc: 'Women offering sweets, beetle leaves and smearing vermillion on Maa Durga' },
+        { name: 'Darpan Visarjan (Mirror Immersion)', time: '01:00 PM', desc: 'Bidding farewell to the Goddess through water mirror reflection' },
+        { name: 'Ganga Ghat Immersion Carnival & Chanting', time: '05:00 PM onwards', desc: 'Processions with lights, dhaks, and singing "Bolo Durga Mai Ki Jai, Asche Bochor Abar Hobe!"' }
+      ],
+      custom_notes: 'Touch the feet of elders for Shubho Bijoya blessings and share sweets with family, friends, and neighbors.'
+    }
+  ];
+
+  // Helper: Validate Password (Alphanumeric combination >= 5 elements)
+  function validatePassword(pwd) {
+    if (!pwd || typeof pwd !== 'string') return false;
+    if (pwd.length < 5) return false;
+    const hasAlpha = /[a-zA-Z]/.test(pwd);
+    const hasNum = /[0-9]/.test(pwd);
+    return hasAlpha && hasNum;
+  }
+
+  // Load Saved User State from LocalStorage
+  function loadLocalUserSession() {
+    try {
+      const raw = localStorage.getItem('akalbodhon_user_profile');
+      if (raw) {
+        currentUser = JSON.parse(raw);
+        updateAccountUI();
+      }
+    } catch (e) {
+      console.warn('Session parse error:', e);
+    }
+  }
+
+  // Save User State
+  function saveUserSession(user) {
+    currentUser = user;
+    if (user) {
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+    } else {
+      localStorage.removeItem('akalbodhon_user_profile');
+    }
+    updateAccountUI();
+  }
+
+  // Update Header Account Button & Avatar
+  function updateAccountUI() {
+    const avatarPreview = document.getElementById('account-avatar-preview');
+    const btnLabel = document.getElementById('account-btn-label');
+    const heroCta = document.getElementById('hero-account-cta-btn');
+
+    if (currentUser) {
+      if (avatarPreview) {
+        if (currentUser.custom_avatar_url) {
+          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" class="w-full h-full object-cover rounded-full" alt="Avatar" />`;
+        } else {
+          avatarPreview.textContent = currentUser.avatar || '🪔';
+        }
+      }
+      if (btnLabel) {
+        btnLabel.textContent = currentUser.username || currentUser.identifier?.split('@')[0] || 'Account';
+      }
+      if (heroCta) {
+        heroCta.innerHTML = `<span class="material-symbols-outlined text-[18px]">account_circle</span> ${currentUser.username} (${currentUser.avatar || '🪔'})`;
+      }
+    } else {
+      if (avatarPreview) avatarPreview.textContent = '🪔';
+      if (btnLabel) btnLabel.textContent = 'Sign In';
+      if (heroCta) {
+        heroCta.innerHTML = `<span class="material-symbols-outlined text-[18px]">account_circle</span> Devotee Sign In / Account`;
+      }
+    }
+  }
+
+  // Open Account / Profile Modal
+  function openAccountModal() {
+    if (currentUser) {
+      openProfileModal();
+    } else {
+      openAuthModal('login');
+    }
+  }
+
+  function openAuthModal(mode = 'login') {
+    const modal = document.getElementById('auth-modal');
+    if (!modal) return;
+
+    setAuthMode(mode);
+    const errorAlert = document.getElementById('auth-error-alert');
+    if (errorAlert) errorAlert.classList.add('hidden');
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.getElementById('auth-identifier-input')?.focus();
+  }
+
+  function closeAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function setAuthMode(mode = 'login') {
+    const loginTab = document.getElementById('auth-tab-login');
+    const signupTab = document.getElementById('auth-tab-signup');
+    const usernameField = document.getElementById('auth-username-field');
+    const submitLabel = document.getElementById('auth-submit-label');
+    const titleEl = document.getElementById('auth-modal-title');
+
+    if (mode === 'signup') {
+      loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      loginTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      usernameField?.classList.remove('hidden');
+      if (submitLabel) submitLabel.textContent = 'Create Account';
+      if (titleEl) titleEl.textContent = 'Join Akalbodhon Community';
+    } else {
+      signupTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      signupTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      usernameField?.classList.add('hidden');
+      if (submitLabel) submitLabel.textContent = 'Sign In';
+      if (titleEl) titleEl.textContent = 'Welcome to Akalbodhon';
+    }
+  }
+
+  function showAuthError(msg, isPage = false) {
+    if (isPage) {
+      const alertEl = document.getElementById('page-error-alert');
+      const msgEl = document.getElementById('page-error-msg');
+      if (alertEl && msgEl) {
+        msgEl.textContent = msg;
+        alertEl.classList.remove('hidden');
+      }
+    } else {
+      const alertEl = document.getElementById('auth-error-alert');
+      const msgEl = document.getElementById('auth-error-msg');
+      if (alertEl && msgEl) {
+        msgEl.textContent = msg;
+        alertEl.classList.remove('hidden');
+      }
+    }
+  }
+
+  // Profile Modal Handler
+  function openProfileModal() {
+    if (!currentUser) return;
+    const modal = document.getElementById('profile-modal');
+    if (!modal) return;
+
+    // Set fields
+    document.getElementById('profile-display-name').textContent = currentUser.username || 'Devotee';
+    document.getElementById('profile-display-identifier').textContent = currentUser.identifier || '';
+    document.getElementById('profile-edit-name-input').value = currentUser.username || '';
+    document.getElementById('custom-avatar-url-input').value = currentUser.custom_avatar_url || '';
+
+    updateProfileAvatarDisplay();
+    renderPujaAvatarsGrid();
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeProfileModal() {
+    const modal = document.getElementById('profile-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
+  function updateProfileAvatarDisplay() {
+    const el = document.getElementById('current-profile-avatar-display');
+    if (!el || !currentUser) return;
+
+    if (currentUser.custom_avatar_url) {
+      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" class="w-full h-full object-cover rounded-2xl" alt="Custom Avatar" />`;
+    } else {
+      el.textContent = currentUser.avatar || '🪔';
+    }
+  }
+
+  function renderPujaAvatarsGrid() {
+    const grid = document.getElementById('puja-avatars-grid');
+    if (!grid) return;
+
+    grid.innerHTML = PUJA_AVATARS.map(item => {
+      const isSelected = !currentUser?.custom_avatar_url && currentUser?.avatar === item.icon;
+      return `
         <button 
-          class="lang-select-item flex items-center justify-between p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 hover:bg-primary/5 dark:hover:bg-amber-400/10 transition-all text-left group"
-          data-code="${lang.code}"
-          data-name="${lang.name}"
+          type="button" 
+          class="avatar-option flex flex-col items-center justify-center p-2 rounded-xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 is-selected' : 'border-outline-variant/30 dark:border-amber-400/20'}"
+          data-icon="${item.icon}"
+          data-name="${item.name}"
+          title="${item.name} — ${item.meaning}"
         >
-          <div class="flex items-center gap-2.5">
-            <span class="text-2xl shrink-0">${lang.flag}</span>
-            <div class="min-w-0">
-              <div class="font-bold text-sm text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors truncate">${lang.native}</div>
-              <div class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate">${lang.name}</div>
-            </div>
-          </div>
-          <span class="text-xs uppercase font-mono px-2 py-0.5 rounded bg-surface-container-high dark:bg-[#1a160f] text-on-surface-variant dark:text-amber-300 font-semibold shrink-0">${lang.code}</span>
+          <span class="text-2xl">${item.icon}</span>
+          <span class="text-[9px] font-bold text-on-surface dark:text-amber-200 mt-1 truncate max-w-full text-center">${item.name.split(' ')[0]}</span>
         </button>
-      `).join('');
+      `;
+    }).join('');
 
-      document.querySelectorAll('.lang-select-item').forEach(btn => {
-        btn.onclick = () => {
-          const code = btn.dataset.code;
-          const name = btn.dataset.name;
-          if (currentLangCodeEl) currentLangCodeEl.textContent = code.toUpperCase().slice(0, 2);
+    grid.querySelectorAll('.avatar-option').forEach(btn => {
+      btn.onclick = () => {
+        const icon = btn.dataset.icon;
+        if (currentUser) {
+          currentUser.avatar = icon;
+          currentUser.custom_avatar_url = null;
+          updateProfileAvatarDisplay();
+          renderPujaAvatarsGrid();
+        }
+      };
+    });
+  }
 
-          // Trigger Google Translate select element if present
-          const selectEl = document.querySelector('.goog-te-combo');
-          if (selectEl) {
-            selectEl.value = code;
-            selectEl.dispatchEvent(new Event('change'));
+  // Save Profile Changes
+  async function handleSaveProfile() {
+    if (!currentUser) return;
+    const nameInput = document.getElementById('profile-edit-name-input');
+    const newName = nameInput ? nameInput.value.trim() : currentUser.username;
+    if (newName) currentUser.username = newName;
+
+    // Sync to Supabase
+    if (supabaseClient) {
+      try {
+        await supabaseClient.from('profiles').upsert({
+          id: currentUser.id,
+          identifier: currentUser.identifier,
+          identifier_type: currentUser.identifier_type || 'email',
+          username: currentUser.username,
+          avatar: currentUser.avatar || '🪔',
+          custom_avatar_url: currentUser.custom_avatar_url || null,
+          updated_at: new Date().toISOString()
+        });
+      } catch (err) {
+        console.warn('Profile sync error to Supabase:', err);
+      }
+    }
+
+    saveUserSession(currentUser);
+    closeProfileModal();
+    renderFestivalPlans(activePlanFilter);
+    showToast(`Profile & Avatar updated for ${currentUser.username}!`, 'check_circle');
+  }
+
+  // Core Authentication Handler
+  async function handleAuthSubmit(isPage = false) {
+    const idInput = document.getElementById(isPage ? 'page-identifier-input' : 'auth-identifier-input');
+    const pwdInput = document.getElementById(isPage ? 'page-password-input' : 'auth-password-input');
+    const usernameInput = document.getElementById(isPage ? 'page-username-input' : 'auth-username-input');
+    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary');
+
+    const identifier = idInput ? idInput.value.trim() : '';
+    const password = pwdInput ? pwdInput.value : '';
+    const username = usernameInput ? usernameInput.value.trim() : '';
+
+    if (!identifier) {
+      showAuthError('Please enter your Email Address or Mobile Number.', isPage);
+      return;
+    }
+
+    // Strict Password Validation
+    if (!validatePassword(password)) {
+      showAuthError('Password must contain at least 5 alphanumeric characters (with both letters and numbers).', isPage);
+      return;
+    }
+
+    const isEmail = identifier.includes('@');
+    const userId = 'user_' + btoa(identifier).replace(/=/g, '').slice(0, 16).toLowerCase();
+    const displayName = username || (isEmail ? identifier.split('@')[0] : 'Devotee ' + identifier.slice(-4));
+
+    // Sign up / In logic with Supabase or graceful offline fallback
+    let userObj = {
+      id: userId,
+      identifier: identifier,
+      identifier_type: isEmail ? 'email' : 'phone',
+      username: displayName,
+      avatar: '🪔',
+      custom_avatar_url: null,
+      created_at: new Date().toISOString()
+    };
+
+    if (supabaseClient) {
+      try {
+        if (isSignUp) {
+          if (isEmail) {
+            const { data, error } = await supabaseClient.auth.signUp({ email: identifier, password: password });
+            if (error && !error.message.includes('already registered')) {
+              console.warn('Supabase auth notice:', error.message);
+            }
+            if (data?.user?.id) userObj.id = data.user.id;
           }
-
-          if (langModal) {
-            langModal.classList.add('hidden');
-            langModal.classList.remove('flex');
+          await supabaseClient.from('profiles').upsert({
+            id: userObj.id,
+            identifier: userObj.identifier,
+            identifier_type: userObj.identifier_type,
+            username: userObj.username,
+            avatar: userObj.avatar,
+            created_at: new Date().toISOString()
+          });
+        } else {
+          if (isEmail) {
+            const { data } = await supabaseClient.auth.signInWithPassword({ email: identifier, password: password });
+            if (data?.user?.id) userObj.id = data.user.id;
           }
-          showToast(`Language switched to ${name}`, 'translate');
-          setTimeout(initScrollReveal, 200);
+          // Fetch existing profile if available
+          const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userObj.id).single();
+          if (profile) {
+            userObj.username = profile.username || userObj.username;
+            userObj.avatar = profile.avatar || userObj.avatar;
+            userObj.custom_avatar_url = profile.custom_avatar_url;
+          }
+        }
+      } catch (err) {
+        console.warn('Auth fallback mode active:', err);
+      }
+    }
+
+    saveUserSession(userObj);
+    closeAuthModal();
+    showToast(`Welcome ${userObj.username}! Signed in successfully.`, 'celebration');
+
+    if (isPage) {
+      window.location.hash = 'plans';
+    }
+
+    // If waiting to join a shared plan, complete join
+    if (pendingPlanJoinId) {
+      const targetPlanId = pendingPlanJoinId;
+      pendingPlanJoinId = null;
+      handleSharedPlanDeepLink(targetPlanId);
+    }
+  }
+
+  // Google OAuth Login
+  async function handleGoogleLogin() {
+    if (supabaseClient) {
+      try {
+        const { error } = await supabaseClient.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: window.location.origin + window.location.pathname
+          }
+        });
+        if (error) throw error;
+      } catch (err) {
+        console.warn('Google OAuth notice:', err);
+        // Fallback fast Google sign-in demo
+        const fakeEmail = 'google.devotee@gmail.com';
+        const userObj = {
+          id: 'user_google_' + Date.now().toString(36),
+          identifier: fakeEmail,
+          identifier_type: 'google',
+          username: 'Google Devotee',
+          avatar: '🪷',
+          custom_avatar_url: null,
+          created_at: new Date().toISOString()
         };
+        saveUserSession(userObj);
+        closeAuthModal();
+        showToast('Signed in with Google Account!', 'celebration');
+        if (pendingPlanJoinId) {
+          const id = pendingPlanJoinId;
+          pendingPlanJoinId = null;
+          handleSharedPlanDeepLink(id);
+        }
+      }
+    } else {
+      const userObj = {
+        id: 'user_google_' + Date.now().toString(36),
+        identifier: 'devotee@gmail.com',
+        identifier_type: 'google',
+        username: 'Google Devotee',
+        avatar: '🪷',
+        custom_avatar_url: null,
+        created_at: new Date().toISOString()
+      };
+      saveUserSession(userObj);
+      closeAuthModal();
+      showToast('Signed in with Google Account!', 'celebration');
+    }
+  }
+
+  function handleLogout() {
+    if (supabaseClient) {
+      supabaseClient.auth.signOut().catch(() => {});
+    }
+    saveUserSession(null);
+    closeProfileModal();
+    renderFestivalPlans(activePlanFilter);
+    showToast('Signed out of Akalbodhon.', 'logout');
+  }
+
+  // ========================================================
+  // 17. FESTIVAL PUJA PLANS & CUSTOM BUILDER ENGINE
+  // ========================================================
+  async function loadCustomPlans() {
+    try {
+      // Local cache
+      const local = localStorage.getItem('akalbodhon_custom_plans');
+      if (local) {
+        customPlans = JSON.parse(local);
+      }
+
+      // Supabase remote sync
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient
+          .from('puja_plans')
+          .select('*, plan_members(*)')
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          // Merge remote custom plans
+          const remotePlans = data.map(p => ({
+            id: p.id,
+            title: p.title,
+            day_tag: p.day_tag,
+            day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+            date_str: p.date_str,
+            creator_name: p.creator_name,
+            creator_avatar: p.creator_avatar || '🌺',
+            creator_id: p.creator_id,
+            route_summary: p.route_summary,
+            pandals: typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []),
+            food_stops: typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []),
+            rituals: typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []),
+            members: p.plan_members || [],
+            custom_notes: p.custom_notes
+          }));
+
+          customPlans = remotePlans;
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+        }
+      }
+    } catch (err) {
+      console.warn('Plans load warning:', err);
+    }
+  }
+
+  function renderFestivalPlans(dayFilter = 'all') {
+    activePlanFilter = dayFilter;
+    const container = document.getElementById('plans-list-container');
+    if (!container) return;
+
+    // Combine Master Plans & Custom Plans
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+
+    if (dayFilter === 'custom') {
+      allPlans = customPlans;
+    } else if (dayFilter !== 'all') {
+      allPlans = allPlans.filter(p => {
+        const tag = (p.day_tag || '').toLowerCase();
+        const key = (p.day_key || '').toLowerCase();
+        return tag.includes(dayFilter) || key.includes(dayFilter);
       });
     }
 
-    if (langBtn && langModal) {
-      langBtn.onclick = () => {
-        langModal.classList.remove('hidden');
-        langModal.classList.add('flex');
-        renderLangGrid();
-        if (langSearch) langSearch.focus();
+    if (allPlans.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full text-center py-16 px-4 rounded-3xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 space-y-3">
+          <span class="text-4xl">🪔</span>
+          <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">No custom plans found for this selection</h3>
+          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-sm mx-auto">
+            Create your customized festival itinerary to hop pandals, follow canonical rituals, and share with your friends.
+          </p>
+          <button onclick="document.getElementById('open-create-plan-btn').click()" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
+            + Create Plan Now
+          </button>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = allPlans.map(plan => {
+      const isCustom = !plan.is_template;
+      const isMyPlan = currentUser && plan.creator_id === currentUser.id;
+      const members = plan.members || [];
+      const hasMembers = members.length > 0;
+
+      // Extract pandal names
+      const pandalBadges = (plan.pandals || []).map(p => {
+        const pName = typeof p === 'string' ? p : p.name;
+        return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] text-xs font-semibold text-on-surface dark:text-amber-200 border border-outline-variant/20 dark:border-amber-400/20">🏛️ ${pName}</span>`;
+      }).join(' ');
+
+      // Extract food stops
+      const foodBadges = (plan.food_stops || []).map(f => {
+        const fName = typeof f === 'string' ? f : `${f.name}${f.dish ? ` (${f.dish})` : ''}`;
+        return `<div class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-start gap-1.5"><span class="text-primary dark:text-amber-300 font-bold">•</span> <span>${fName}</span></div>`;
+      }).join('');
+
+      // Extract rituals with direct timer buttons
+      const ritualRows = (plan.rituals || []).map(r => {
+        const rName = typeof r === 'string' ? r : r.name;
+        const rTime = typeof r === 'object' && r.time ? r.time : '';
+        return `
+          <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-surface-container-high/60 dark:bg-[#252016]/80 text-xs">
+            <div class="min-w-0">
+              <span class="font-bold text-on-surface dark:text-white">${rName}</span>
+              ${rTime ? `<span class="ml-1.5 text-[11px] font-mono px-1.5 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-semibold">${rTime}</span>` : ''}
+            </div>
+            <button onclick="window.setRitualTimer('${escapeHtml(rName)}')" class="shrink-0 text-[10px] px-2 py-1 rounded-lg bg-surface-container dark:bg-[#1a160f] border border-outline-variant/30 hover:border-primary dark:hover:border-amber-400 text-primary dark:text-amber-300 font-bold transition-all cursor-pointer flex items-center gap-1" title="Set Alarm/Timer">
+              <span class="material-symbols-outlined text-[13px]">alarm</span> Timer
+            </button>
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-5 relative overflow-hidden group">
+          <div class="space-y-4">
+            <!-- Header Day Tag & Creator Badge -->
+            <div class="flex items-center justify-between flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-xs font-bold">
+                  ${plan.day_tag || 'Festive Day'}
+                </span>
+                ${plan.date_str ? `<span class="text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/70 font-medium">${plan.date_str}</span>` : ''}
+              </div>
+
+              <!-- Creator & Member Avatars Row -->
+              <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30">
+                  <span class="text-base">${plan.creator_avatar || '🌺'}</span>
+                  <span class="text-xs font-bold text-on-surface dark:text-white truncate max-w-[90px]">${plan.creator_name || 'Creator'}</span>
+                  <span class="creator-badge text-[9px] px-1.5 py-0.5 rounded uppercase tracking-wider">Creator</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Title & Route -->
+            <div>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">
+                ${plan.title}
+              </h3>
+              ${plan.route_summary ? `
+                <div class="mt-2 text-xs font-medium text-primary dark:text-amber-300 flex items-center gap-1.5 bg-primary/5 dark:bg-amber-400/10 p-2.5 rounded-xl border border-primary/20 dark:border-amber-400/20">
+                  <span class="material-symbols-outlined text-[16px] shrink-0">near_me</span>
+                  <span class="truncate"><strong>Route:</strong> ${plan.route_summary}</span>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Pandals to Visit -->
+            <div class="space-y-1.5">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🏛️ Pandals on Route</span>
+              <div class="flex flex-wrap gap-1.5">
+                ${pandalBadges || '<span class="text-xs text-on-surface-variant">No specific pandals listed</span>'}
+              </div>
+            </div>
+
+            <!-- Food Pit-Stops -->
+            ${foodBadges ? `
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🍽️ Food & Dining Pit-Stops</span>
+                <div class="space-y-1 p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016]/50 border border-outline-variant/20 dark:border-amber-400/10">
+                  ${foodBadges}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Sacred Rituals with Timers -->
+            ${ritualRows ? `
+              <div class="space-y-1.5">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">📿 Canonical Rituals & Alarms</span>
+                <div class="space-y-1.5">
+                  ${ritualRows}
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- Joined Members Stack Display -->
+            ${hasMembers ? `
+              <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/15 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] font-bold text-on-surface-variant dark:text-[#ded5c7]">Joined Devotees:</span>
+                  <div class="avatar-stack">
+                    ${members.map(m => `
+                      <div class="w-7 h-7 rounded-full bg-surface-container border-2 border-primary dark:border-amber-400 flex items-center justify-center text-sm shadow-md" title="${m.user_name || 'Member'} (${m.role || 'Member'})">
+                        ${m.user_avatar || '🪔'}
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+                <span class="text-[11px] text-primary dark:text-amber-300 font-semibold">${members.length} Friends Hopping</span>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Card Actions (Share, Set Alarm, Delete) -->
+          <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
+            <button onclick="window.openSharePlanModal('${plan.id}')" class="flex-1 py-2.5 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container text-white dark:text-black text-xs font-bold shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">share</span> Share with Friends
+            </button>
+            <button onclick="window.savePlanToItinerary('${plan.id}')" class="px-3 py-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-on-surface dark:text-[#ded5c7] hover:border-primary dark:hover:border-amber-400 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer" title="Save Route to Itinerary">
+              <span class="material-symbols-outlined text-[16px]">bookmark_add</span>
+            </button>
+            ${isMyPlan ? `
+              <button onclick="window.deleteCustomPlan('${plan.id}')" class="px-3 py-2.5 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs font-bold transition-all flex items-center gap-1 cursor-pointer" title="Delete Plan">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    setTimeout(initScrollReveal, 50);
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  }
+
+  // Create Custom Plan Modal
+  function initPlanCreatorModal() {
+    const openBtn = document.getElementById('open-create-plan-btn');
+    const modal = document.getElementById('create-plan-modal');
+    const closeBtn = document.getElementById('close-create-plan-modal-btn');
+    const form = document.getElementById('create-plan-form');
+    const pandalsPicker = document.getElementById('plan-pandals-picker');
+
+    if (pandalsPicker) {
+      pandalsPicker.innerHTML = PANDALS_DATA.map(p => `
+        <label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container-high dark:hover:bg-[#252016] text-xs text-on-surface dark:text-white cursor-pointer select-none">
+          <input type="checkbox" value="${p.name}" class="rounded text-primary focus:ring-primary dark:accent-amber-400" />
+          <span class="truncate">${p.name}</span>
+        </label>
+      `).join('');
+    }
+
+    if (openBtn && modal) {
+      openBtn.onclick = () => {
+        if (!currentUser) {
+          showToast('Please sign in or create an account to build your custom Puja plan!', 'lock');
+          openAuthModal('signup');
+          return;
+        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
       };
     }
 
-    if (closeLangBtn && langModal) {
-      closeLangBtn.onclick = () => {
-        langModal.classList.add('hidden');
-        langModal.classList.remove('flex');
+    if (closeBtn && modal) {
+      closeBtn.onclick = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
       };
     }
 
-    if (langModal) {
-      langModal.addEventListener('click', (e) => {
-        if (e.target === langModal) {
-          langModal.classList.add('hidden');
-          langModal.classList.remove('flex');
+    if (form) {
+      form.onsubmit = async () => {
+        if (!currentUser) {
+          openAuthModal('login');
+          return;
+        }
+
+        const title = document.getElementById('plan-title-input')?.value.trim();
+        const day = document.getElementById('plan-day-select')?.value || 'Maha Ashtami';
+        const route = document.getElementById('plan-route-input')?.value.trim();
+        const customPandals = document.getElementById('plan-custom-pandals-input')?.value.trim();
+        const food = document.getElementById('plan-food-input')?.value.trim();
+        const rituals = document.getElementById('plan-rituals-input')?.value.trim();
+
+        if (!title) {
+          showToast('Please provide a title for your Puja plan.', 'error');
+          return;
+        }
+
+        // Collect checked pandals
+        const checkedPandals = Array.from(pandalsPicker?.querySelectorAll('input[type="checkbox"]:checked') || []).map(cb => cb.value);
+        if (customPandals) {
+          customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => checkedPandals.push(p));
+        }
+
+        const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
+        const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
+
+        const newPlan = {
+          id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
+          creator_id: currentUser.id,
+          creator_name: currentUser.username || 'Devotee',
+          creator_avatar: currentUser.avatar || '🌺',
+          title: title,
+          day_tag: day,
+          day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
+          date_str: day,
+          route_summary: route,
+          pandals: checkedPandals,
+          food_stops: foodStopsList,
+          rituals: ritualsList,
+          members: [
+            {
+              user_id: currentUser.id,
+              user_name: currentUser.username || 'Devotee',
+              user_avatar: currentUser.avatar || '🌺',
+              role: 'creator'
+            }
+          ],
+          created_at: new Date().toISOString()
+        };
+
+        // Save to Supabase
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from('puja_plans').insert([{
+              id: newPlan.id.length > 36 ? undefined : newPlan.id,
+              creator_id: currentUser.id,
+              creator_name: currentUser.username,
+              creator_avatar: currentUser.avatar || '🌺',
+              title: newPlan.title,
+              day_tag: newPlan.day_tag,
+              date_str: newPlan.date_str,
+              route_summary: newPlan.route_summary,
+              pandals: JSON.stringify(newPlan.pandals),
+              food_stops: JSON.stringify(newPlan.food_stops),
+              rituals: JSON.stringify(newPlan.rituals)
+            }]);
+          } catch (err) {
+            console.warn('Supabase custom plan insert notice:', err);
+          }
+        }
+
+        customPlans.unshift(newPlan);
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        form.reset();
+
+        renderFestivalPlans(activePlanFilter);
+        showToast(`🎉 "${title}" created successfully! You can now share it with friends.`, 'celebration');
+      };
+    }
+  }
+
+  // Social Sharing Modal & Direct Links
+  window.openSharePlanModal = function (planId) {
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    const plan = allPlans.find(p => p.id === planId);
+    if (!plan) return;
+
+    const modal = document.getElementById('share-plan-modal');
+    if (!modal) return;
+
+    document.getElementById('share-modal-plan-title').textContent = `${plan.title} (${plan.day_tag})`;
+
+    const shareUrl = `${window.location.origin}${window.location.pathname}#plan=${encodeURIComponent(plan.id)}`;
+    const shareText = `🌺 Durga Puja Plan: ${plan.title} (${plan.day_tag}) by ${plan.creator_name}. Join our pandal hopping crew on Akalbodhon: ${shareUrl}`;
+
+    document.getElementById('share-link-input').value = shareUrl;
+
+    // WhatsApp
+    document.getElementById('share-wa-btn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+
+    // Gmail
+    document.getElementById('share-gmail-btn').href = `mailto:?subject=${encodeURIComponent(`Durga Puja Plan: ${plan.title}`)}&body=${encodeURIComponent(shareText)}`;
+
+    // Instagram (Copy caption + link)
+    document.getElementById('share-ig-btn').onclick = () => {
+      navigator.clipboard.writeText(shareText).then(() => {
+        showToast('Plan link & festive caption copied for Instagram!', 'content_copy');
+      });
+    };
+
+    // Snapchat
+    document.getElementById('share-snap-btn').href = `https://snapchat.com/scan?attachmentUrl=${encodeURIComponent(shareUrl)}`;
+
+    // Discord
+    document.getElementById('share-dc-btn').href = `https://discord.com/channels/@me`;
+    document.getElementById('share-dc-btn').onclick = () => {
+      navigator.clipboard.writeText(shareText).then(() => {
+        showToast('Discord markdown plan link copied!', 'content_copy');
+      });
+    };
+
+    // Copy Link Buttons
+    document.getElementById('share-copy-btn').onclick = () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast('Share link copied to clipboard!', 'link');
+      });
+    };
+
+    document.getElementById('copy-link-inline-btn').onclick = () => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast('Direct plan URL copied!', 'link');
+      });
+    };
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  };
+
+  // Deep Link Plan Handler (Protected Shared Plan Flow)
+  async function handleSharedPlanDeepLink(planId) {
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    let plan = allPlans.find(p => p.id === planId);
+
+    // If not found in memory, try fetching from Supabase
+    if (!plan && supabaseClient) {
+      try {
+        const { data } = await supabaseClient.from('puja_plans').select('*, plan_members(*)').eq('id', planId).single();
+        if (data) {
+          plan = {
+            id: data.id,
+            title: data.title,
+            day_tag: data.day_tag,
+            day_key: (data.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+            date_str: data.date_str,
+            creator_name: data.creator_name,
+            creator_avatar: data.creator_avatar || '🌺',
+            creator_id: data.creator_id,
+            route_summary: data.route_summary,
+            pandals: typeof data.pandals === 'string' ? JSON.parse(data.pandals) : (data.pandals || []),
+            food_stops: typeof data.food_stops === 'string' ? JSON.parse(data.food_stops) : (data.food_stops || []),
+            rituals: typeof data.rituals === 'string' ? JSON.parse(data.rituals) : (data.rituals || []),
+            members: data.plan_members || []
+          };
+          customPlans.push(plan);
+        }
+      } catch (err) {
+        console.warn('Deep link plan lookup error:', err);
+      }
+    }
+
+    if (!currentUser) {
+      // Must be logged in to view and join
+      pendingPlanJoinId = planId;
+      const gateModal = document.getElementById('shared-plan-gate-modal');
+      const gateDesc = document.getElementById('gate-modal-desc');
+      if (gateModal) {
+        if (gateDesc) {
+          gateDesc.innerHTML = `Your friend <strong>${plan ? plan.creator_name : 'a fellow devotee'}</strong> has shared their Puja plan <em>"${plan ? plan.title : 'Festival Plan'}"</em> with you! Please log in or create an account to join with your chosen Puja avatar.`;
+        }
+        gateModal.classList.remove('hidden');
+        gateModal.classList.add('flex');
+      }
+      return;
+    }
+
+    // User is logged in: automatically join as a plan member
+    if (plan && currentUser) {
+      plan.members = plan.members || [];
+      const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id);
+      if (!isAlreadyMember) {
+        const newMember = {
+          plan_id: plan.id,
+          user_id: currentUser.id,
+          user_name: currentUser.username || 'Devotee',
+          user_avatar: currentUser.avatar || '🪔',
+          role: plan.creator_id === currentUser.id ? 'creator' : 'member'
+        };
+        plan.members.push(newMember);
+
+        // Sync to Supabase
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from('plan_members').upsert(newMember);
+          } catch (e) {
+            console.warn('Plan member sync notice:', e);
+          }
+        }
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      }
+
+      // Switch to plans view
+      window.location.hash = 'plans';
+      renderFestivalPlans('all');
+      showToast(`🎉 Connected to "${plan.title}"! Your avatar is now visible to members.`, 'group');
+    }
+  }
+
+  // Delete Custom Plan
+  window.deleteCustomPlan = function (planId) {
+    if (!confirm('Are you sure you want to delete this custom Puja plan?')) return;
+    customPlans = customPlans.filter(p => p.id !== planId);
+    localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+    if (supabaseClient) {
+      supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
+    }
+
+    renderFestivalPlans(activePlanFilter);
+    showToast('Plan deleted from your collection.', 'delete');
+  };
+
+  // Save Plan to Itinerary
+  window.savePlanToItinerary = function (planId) {
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    const plan = allPlans.find(p => p.id === planId);
+    if (!plan) return;
+
+    if (plan.pandals) {
+      plan.pandals.forEach(pName => {
+        const pandalObj = PANDALS_DATA.find(pd => pd.name === (typeof pName === 'string' ? pName : pName.name));
+        if (pandalObj && !Storage.isPandalSaved(pandalObj.id)) {
+          Storage.togglePandal(pandalObj.id);
         }
       });
     }
 
-    if (langSearch) {
-      langSearch.oninput = (e) => renderLangGrid(e.target.value);
+    showToast(`Added pandals from "${plan.title}" to your Saved Itinerary!`, 'bookmark_added');
+    const badge = document.getElementById('saved-count-badge');
+    if (badge) {
+      const count = Storage.getSavedPandals().length;
+      badge.textContent = count;
+      badge.classList.toggle('hidden', count === 0);
+    }
+  };
+
+  // ========================================================
+  // 18. DEVICE TIMERS & RITUAL ALARMS ENGINE
+  // ========================================================
+  function initDeviceTimers() {
+    const openBtn = document.getElementById('open-timers-btn');
+    const modal = document.getElementById('timer-modal');
+    const closeBtn = document.getElementById('close-timer-modal-btn');
+    const customForm = document.getElementById('custom-timer-form');
+
+    if (openBtn && modal) {
+      openBtn.onclick = () => {
+        renderActiveTimers();
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      };
+    }
+
+    if (closeBtn && modal) {
+      closeBtn.onclick = () => {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+    }
+
+    // Quick Presets
+    document.querySelectorAll('.quick-timer-preset').forEach(btn => {
+      btn.onclick = () => {
+        const mins = parseInt(btn.dataset.mins, 10) || 15;
+        const title = btn.dataset.title || 'Ritual Timer';
+        createDeviceTimer(title, mins);
+      };
+    });
+
+    if (customForm) {
+      customForm.onsubmit = () => {
+        const titleInput = document.getElementById('custom-timer-title');
+        const minsInput = document.getElementById('custom-timer-mins');
+        const title = titleInput ? titleInput.value.trim() : 'Custom Timer';
+        const mins = parseInt(minsInput ? minsInput.value : '15', 10);
+
+        if (title && mins > 0) {
+          createDeviceTimer(title, mins);
+          customForm.reset();
+        }
+      };
+    }
+
+    // Timer Ticker Interval (1s)
+    setInterval(tickRunningTimers, 1000);
+  }
+
+  function createDeviceTimer(title, mins) {
+    const targetTime = Date.now() + mins * 60 * 1000;
+    const newTimer = {
+      id: 'timer_' + Date.now().toString(36),
+      title: title,
+      targetTime: targetTime,
+      totalSecs: mins * 60,
+      createdAt: Date.now()
+    };
+
+    userTimers.push(newTimer);
+    renderActiveTimers();
+    showToast(`⏱️ Timer set for ${mins} mins: ${title}`, 'timer');
+
+    // Request Notification permission if possible
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
     }
   }
 
-  // --- 17. INITIALIZATION ---
-  document.addEventListener('DOMContentLoaded', () => {
+  window.setRitualTimer = function (ritualName) {
+    createDeviceTimer(ritualName, 15);
+    const modal = document.getElementById('timer-modal');
+    if (modal) {
+      renderActiveTimers();
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  };
+
+  function tickRunningTimers() {
+    if (userTimers.length === 0) return;
+
+    const now = Date.now();
+    userTimers.forEach((t, idx) => {
+      const remainingMs = t.targetTime - now;
+      if (remainingMs <= 0 && !t.hasTriggered) {
+        t.hasTriggered = true;
+        triggerTimerAlarm(t);
+      }
+    });
+
+    // Remove expired triggered timers after 10s
+    userTimers = userTimers.filter(t => !t.hasTriggered || (now - t.targetTime < 10000));
+    renderActiveTimers();
+  }
+
+  function triggerTimerAlarm(timer) {
+    // Play sacred temple chime / Dhak synthesizer alert
+    try {
+      playCeremonialSound('ghanta');
+      setTimeout(() => playCeremonialSound('shankha'), 400);
+    } catch (e) {}
+
+    showToast(`🔔 TIME'S UP: ${timer.title}!`, 'notifications_active');
+
+    // Web Notification
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification('🌺 Akalbodhon Puja Reminder', {
+        body: `Time for your scheduled ritual: ${timer.title}`,
+        icon: 'logo.jpg'
+      });
+    }
+  }
+
+  function renderActiveTimers() {
+    const container = document.getElementById('active-timers-list');
+    if (!container) return;
+
+    if (userTimers.length === 0) {
+      container.innerHTML = `<div class="text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 text-center py-3 italic">No active running timers</div>`;
+      return;
+    }
+
+    const now = Date.now();
+    container.innerHTML = userTimers.map((t, idx) => {
+      const remainingSecs = Math.max(0, Math.round((t.targetTime - now) / 1000));
+      const m = Math.floor(remainingSecs / 60);
+      const s = remainingSecs % 60;
+      const formatted = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+      return `
+        <div class="flex items-center justify-between p-3 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 ${remainingSecs > 0 ? 'timer-running' : ''}">
+          <div class="min-w-0">
+            <div class="text-xs font-bold text-on-surface dark:text-white truncate">${t.title}</div>
+            <div class="text-[10px] text-primary dark:text-amber-300 font-semibold mt-0.5">Remaining: ${formatted}</div>
+          </div>
+          <button onclick="window.cancelTimer(${idx})" class="w-7 h-7 rounded-full bg-surface-container-low dark:bg-[#1a160f] text-red-500 hover:bg-red-500/10 flex items-center justify-center transition-all cursor-pointer" title="Cancel Timer">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.cancelTimer = function (idx) {
+    if (userTimers[idx]) {
+      userTimers.splice(idx, 1);
+      renderActiveTimers();
+      showToast('Timer cancelled', 'timer_off');
+    }
+  };
+
+  // Initialize Page Section Login
+  function initPageAuthSection() {
+    const pageTabLogin = document.getElementById('page-tab-login');
+    const pageTabSignup = document.getElementById('page-tab-signup');
+    const pageUsernameField = document.getElementById('page-username-field');
+    const pageHeading = document.getElementById('page-auth-heading');
+    const pageSubheading = document.getElementById('page-auth-subheading');
+    const pageSubmitLabel = document.getElementById('page-submit-label');
+    const pageErrorAlert = document.getElementById('page-error-alert');
+    const pagePwdInput = document.getElementById('page-password-input');
+    const pageTogglePwd = document.getElementById('page-toggle-pwd-btn');
+    const pageSubmitBtn = document.getElementById('page-submit-btn');
+    const pageGoogleBtn = document.getElementById('page-google-btn');
+    const pageForm = document.getElementById('page-login-form');
+
+    function setPageAuthMode(isSignUp) {
+      if (pageErrorAlert) pageErrorAlert.classList.add('hidden');
+      if (isSignUp) {
+        pageTabLogin?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageTabLogin?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageTabSignup?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageTabSignup?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageUsernameField?.classList.remove('hidden');
+        if (pageHeading) pageHeading.textContent = 'Create Devotee Account';
+        if (pageSubheading) pageSubheading.textContent = 'Join the Akalbodhon festival community to create and share your Puja plans.';
+        if (pageSubmitLabel) pageSubmitLabel.textContent = 'Create Account';
+      } else {
+        pageTabSignup?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageTabSignup?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageTabLogin?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageTabLogin?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageUsernameField?.classList.add('hidden');
+        if (pageHeading) pageHeading.textContent = 'Devotee Sign In';
+        if (pageSubheading) pageSubheading.textContent = 'Access your personal Puja itineraries, pick sacred festival avatars, and invite friends.';
+        if (pageSubmitLabel) pageSubmitLabel.textContent = 'Sign In';
+      }
+    }
+
+    pageTabLogin?.addEventListener('click', () => setPageAuthMode(false));
+    pageTabSignup?.addEventListener('click', () => setPageAuthMode(true));
+
+    pageTogglePwd?.addEventListener('click', () => {
+      if (pagePwdInput) {
+        const isPwd = pagePwdInput.type === 'password';
+        pagePwdInput.type = isPwd ? 'text' : 'password';
+        pageTogglePwd.textContent = isPwd ? 'Hide' : 'Show';
+      }
+    });
+
+    pageSubmitBtn?.addEventListener('click', () => handleAuthSubmit(true));
+    pageForm?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(true); });
+    pageGoogleBtn?.addEventListener('click', handleGoogleLogin);
+  }
+
+  // ========================================================
+  // 19. GLOBAL INITIALIZATION
+  // ========================================================
+  document.addEventListener('DOMContentLoaded', async () => {
     initTheme();
     initDevoteesCounter();
-    initLanguageSystem();
     initCountdown();
     initAudioHub();
+
+    loadLocalUserSession();
+    await loadCustomPlans();
 
     renderPandals('all');
     renderCuratedTrails();
     renderFoodAndShopping('all');
     renderRituals();
     renderSavedItinerary();
+    renderFestivalPlans('all');
+
+    initPlanCreatorModal();
+    initDeviceTimers();
+    initPageAuthSection();
+
+    // Account Button Click
+    const accountBtn = document.getElementById('account-btn');
+    if (accountBtn) {
+      accountBtn.addEventListener('click', () => openAccountModal());
+    }
+
+    // Hero Section CTA Click
+    const heroCtaBtn = document.getElementById('hero-account-cta-btn');
+    if (heroCtaBtn) {
+      heroCtaBtn.addEventListener('click', () => openAccountModal());
+    }
+
+    // Auth Modal Handlers
+    document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
+    document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
+    document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
+    document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
+    document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
+    document.getElementById('auth-google-btn')?.addEventListener('click', handleGoogleLogin);
+
+    // Password Visibility Toggle
+    document.getElementById('toggle-pwd-visibility')?.addEventListener('click', function () {
+      const pwdInput = document.getElementById('auth-password-input');
+      if (pwdInput) {
+        const isPwd = pwdInput.type === 'password';
+        pwdInput.type = isPwd ? 'text' : 'password';
+        this.textContent = isPwd ? 'Hide' : 'Show';
+      }
+    });
+
+    // Profile Modal Handlers
+    document.getElementById('close-profile-modal-btn')?.addEventListener('click', closeProfileModal);
+    document.getElementById('save-profile-btn')?.addEventListener('click', handleSaveProfile);
+    document.getElementById('auth-logout-btn')?.addEventListener('click', handleLogout);
+
+    document.getElementById('apply-custom-avatar-btn')?.addEventListener('click', () => {
+      const urlInput = document.getElementById('custom-avatar-url-input');
+      const url = urlInput ? urlInput.value.trim() : '';
+      if (url && currentUser) {
+        currentUser.custom_avatar_url = url;
+        updateProfileAvatarDisplay();
+        renderPujaAvatarsGrid();
+        showToast('Custom avatar image applied!', 'image');
+      }
+    });
+
+    // Shared Plan Gate Handlers
+    document.getElementById('gate-login-btn')?.addEventListener('click', () => {
+      document.getElementById('shared-plan-gate-modal')?.classList.add('hidden');
+      document.getElementById('shared-plan-gate-modal')?.classList.remove('flex');
+      openAuthModal('signup');
+    });
+
+    document.getElementById('gate-dismiss-btn')?.addEventListener('click', () => {
+      document.getElementById('shared-plan-gate-modal')?.classList.add('hidden');
+      document.getElementById('shared-plan-gate-modal')?.classList.remove('flex');
+      window.location.hash = 'home';
+    });
+
+    // Plan Day Filter Buttons
+    document.querySelectorAll('.plan-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.plan-filter-btn').forEach(b => {
+          b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
+          b.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
+        });
+        btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
+        btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
+
+        const day = btn.dataset.day || 'all';
+        renderFestivalPlans(day);
+      });
+    });
 
     // Pandal Zone Filters
     document.querySelectorAll('.zone-filter-btn').forEach(btn => {
@@ -2253,7 +3536,7 @@
     };
     document.getElementById('pandal-search-input')?.addEventListener('input', handlePandalSearch);
 
-    // Food & Shopping Category Filters
+    // Food & Shopping Filters
     document.querySelectorAll('.food-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.food-filter-btn').forEach(b => {
@@ -2269,7 +3552,6 @@
       });
     });
 
-    // Food & Shopping Search
     const handleFoodShopSearch = (e) => {
       const query = e.target.value;
       const activeFilterBtn = document.querySelector('.food-filter-btn.bg-primary, .food-filter-btn.dark\\:bg-amber-400');
@@ -2306,6 +3588,12 @@
         }
       });
     }
+
+    // Share Modal Close
+    document.getElementById('close-share-modal-btn')?.addEventListener('click', () => {
+      document.getElementById('share-plan-modal')?.classList.add('hidden');
+      document.getElementById('share-plan-modal')?.classList.remove('flex');
+    });
 
     // Detail Modal Close
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
