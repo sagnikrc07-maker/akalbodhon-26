@@ -4,10 +4,10 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "handle": "filesystem" },
+    { "src": "/login", "dest": "/login.html" },
+    { "src": "/plans", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ],
   "headers": [
     {
@@ -24,15 +24,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
-        }
-      ]
-    },
-    {
-      "source": "/(styles\\.css|app\\.js)",
-      "headers": [
+        },
         {
           "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     }
