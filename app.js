@@ -900,33 +900,10 @@
     }, 3200);
   }
 
-  // --- 5. APPLE-STYLE SCROLL REVEAL OBSERVER ---
-  let scrollObserver = null;
-
+  // --- 5. SCROLL DISPLAY (NO BLURRING - CRISP & IMMEDIATELY CLEAR) ---
   function initScrollReveal() {
-    if (!('IntersectionObserver' in window)) {
-      document.querySelectorAll('.reveal-on-scroll').forEach(el => el.classList.add('is-revealed'));
-      return;
-    }
-
-    if (scrollObserver) {
-      scrollObserver.disconnect();
-    }
-
-    scrollObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-revealed');
-        }
-      });
-    }, {
-      root: null,
-      threshold: 0.08,
-      rootMargin: '0px 0px -30px 0px'
-    });
-
     document.querySelectorAll('.reveal-on-scroll').forEach(el => {
-      scrollObserver.observe(el);
+      el.classList.add('is-revealed');
     });
   }
 
@@ -936,6 +913,7 @@
     const hoursEl = document.getElementById('cd-hours');
     const minsEl = document.getElementById('cd-mins');
     const secsEl = document.getElementById('cd-secs');
+    const zeroMsg = document.getElementById('countdown-zero-message');
 
     // Akalbodhon / Maha Shasthi target: 16 October 2026, 6:30 PM
     const targetDate = new Date(2026, 9, 16, 18, 30, 0);
@@ -945,10 +923,15 @@
       let diff = targetDate - current;
 
       if (diff <= 0) {
-        // Dynamic next year fallback
-        const nextYearTarget = new Date(current.getFullYear() + 1, 9, 16, 18, 30, 0);
-        diff = nextYearTarget - current;
+        if (daysEl) daysEl.textContent = '00';
+        if (hoursEl) hoursEl.textContent = '00';
+        if (minsEl) minsEl.textContent = '00';
+        if (secsEl) secsEl.textContent = '00';
+        if (zeroMsg) zeroMsg.classList.remove('hidden');
+        return;
       }
+
+      if (zeroMsg) zeroMsg.classList.add('hidden');
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
@@ -1849,157 +1832,22 @@
     renderPujaRadioSongs();
 
     // --- YOUTUBE ANTHEM PLAYER ENGINE ("Dugga Elo" by Monali Thakur) ---
-    const anthemPlayBtn = document.getElementById('home-anthem-play-btn');
-    const anthemVisualizer = document.getElementById('home-audio-visualizer');
-    const anthemProgressBar = document.getElementById('anthem-progress-bar');
-    const anthemProgressContainer = document.getElementById('anthem-progress-container');
-    const anthemTimeCurrent = document.getElementById('anthem-time-current');
-    const anthemTimeDuration = document.getElementById('anthem-time-duration');
-    const heroDhakBtn = document.getElementById('dhak-btn');
-    const modeStreamBtn = document.getElementById('mode-stream-btn');
-    const modeSpotifyBtn = document.getElementById('mode-spotify-btn');
-    const ytPlayerBox = document.getElementById('yt-player-box');
-    const spotifyPlayerBox = document.getElementById('spotify-player-box');
+    // --- MAHALAYA BROADCAST (BIRENDRA KRISHNA BHADRA) ENGINE ---
+    const mahalayaChandiBtn = document.getElementById('mahalaya-chandi-jump-btn');
+    const mahalayaStartBtn = document.getElementById('mahalaya-start-jump-btn');
+    const mahalayaIframe = document.getElementById('mahalaya-youtube-iframe');
 
-    let ytAnthemPlayer = null;
-    let isYtReady = false;
-    let isAnthemPlaying = false;
-    let anthemTrackerTimer = null;
-    const anthemFallbackDuration = 225; // 3:45
-
-    function formatAnthemTime(sec) {
-      if (isNaN(sec) || sec < 0) sec = 0;
-      const m = Math.floor(sec / 60);
-      const s = Math.floor(sec % 60);
-      return `${m}:${s < 10 ? '0' : ''}${s}`;
-    }
-
-    function setAnthemPlayState(playing) {
-      isAnthemPlaying = playing;
-      if (anthemPlayBtn) {
-        anthemPlayBtn.querySelector('.material-symbols-outlined').textContent = playing ? 'pause' : 'play_arrow';
-      }
-      if (anthemVisualizer) {
-        anthemVisualizer.classList.toggle('is-playing', playing);
-      }
-
-      if (playing) {
-        if (anthemTrackerTimer) clearInterval(anthemTrackerTimer);
-        anthemTrackerTimer = setInterval(() => {
-          if (ytAnthemPlayer && typeof ytAnthemPlayer.getCurrentTime === 'function') {
-            const cur = ytAnthemPlayer.getCurrentTime() || 0;
-            const dur = ytAnthemPlayer.getDuration() || anthemFallbackDuration;
-            const percent = Math.min(100, (cur / dur) * 100);
-            if (anthemProgressBar) anthemProgressBar.style.width = `${percent}%`;
-            if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(cur);
-            if (anthemTimeDuration && dur > 0) anthemTimeDuration.textContent = formatAnthemTime(dur);
-          }
-        }, 500);
-      } else {
-        if (anthemTrackerTimer) clearInterval(anthemTrackerTimer);
-      }
-    }
-
-    function initYTPlayer() {
-      if (typeof YT !== 'undefined' && YT.Player) {
-        try {
-          ytAnthemPlayer = new YT.Player('yt-anthem-player-frame', {
-            videoId: 'xlElO06nQy8',
-            playerVars: {
-              autoplay: 0,
-              controls: 1,
-              modestbranding: 1,
-              rel: 0,
-              playsinline: 1,
-              enablejsapi: 1
-            },
-            events: {
-              onReady: () => {
-                isYtReady = true;
-              },
-              onStateChange: (e) => {
-                if (e.data === YT.PlayerState.PLAYING) {
-                  setAnthemPlayState(true);
-                  showToast('Now Playing: "Dugga Elo" — Monali Thakur (Zee Music Bangla)', 'graphic_eq');
-                } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
-                  setAnthemPlayState(false);
-                }
-              }
-            }
-          });
-        } catch (err) {
-          console.warn('YT Player init issue:', err);
-        }
-      } else {
-        setTimeout(initYTPlayer, 400);
-      }
-    }
-
-    if (window.YT && window.YT.Player) {
-      initYTPlayer();
-    } else {
-      window.onYouTubeIframeAPIReady = initYTPlayer;
-      setTimeout(initYTPlayer, 1000);
-    }
-
-    // Play/Pause Main Button - Plays Actual Song of Monali Thakur
-    if (anthemPlayBtn) {
-      anthemPlayBtn.addEventListener('click', () => {
-        if (ytAnthemPlayer && typeof ytAnthemPlayer.getPlayerState === 'function') {
-          const state = ytAnthemPlayer.getPlayerState();
-          if (state === 1) { // 1 = YT.PlayerState.PLAYING
-            ytAnthemPlayer.pauseVideo();
-            setAnthemPlayState(false);
-          } else {
-            ytAnthemPlayer.playVideo();
-            setAnthemPlayState(true);
-            showToast('Now Playing: "Dugga Elo" — Monali Thakur', 'graphic_eq');
-          }
-        } else {
-          const iframe = document.querySelector('#yt-anthem-player-frame iframe');
-          if (iframe) {
-            iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-          }
-          setAnthemPlayState(!isAnthemPlaying);
-          showToast('Now Playing: "Dugga Elo" — Monali Thakur', 'graphic_eq');
-        }
+    if (mahalayaChandiBtn && mahalayaIframe) {
+      mahalayaChandiBtn.addEventListener('click', () => {
+        mahalayaIframe.src = 'https://www.youtube-nocookie.com/embed/YQyo8QeoYhc?start=558&autoplay=1&rel=0&enablejsapi=1';
+        showToast('Playing Mahalaya: Chandi Path (9:18) — Birendra Krishna Bhadra', 'graphic_eq');
       });
     }
 
-    // Seek Timeline
-    if (anthemProgressContainer) {
-      anthemProgressContainer.addEventListener('click', (e) => {
-        const rect = anthemProgressContainer.getBoundingClientRect();
-        const clickRatio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        const dur = (ytAnthemPlayer && typeof ytAnthemPlayer.getDuration === 'function' && ytAnthemPlayer.getDuration()) || anthemFallbackDuration;
-        const targetSec = clickRatio * dur;
-
-        if (ytAnthemPlayer && typeof ytAnthemPlayer.seekTo === 'function') {
-          ytAnthemPlayer.seekTo(targetSec, true);
-        }
-        if (anthemProgressBar) anthemProgressBar.style.width = `${clickRatio * 100}%`;
-        if (anthemTimeCurrent) anthemTimeCurrent.textContent = formatAnthemTime(targetSec);
-      });
-    }
-
-    // Mode Toggle: Live Audio/Video Stream vs Spotify Player
-    if (modeStreamBtn && modeSpotifyBtn && ytPlayerBox && spotifyPlayerBox) {
-      modeStreamBtn.addEventListener('click', () => {
-        ytPlayerBox.classList.remove('hidden');
-        spotifyPlayerBox.classList.add('hidden');
-        modeStreamBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        modeStreamBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
-        modeSpotifyBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        modeSpotifyBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
-      });
-
-      modeSpotifyBtn.addEventListener('click', () => {
-        spotifyPlayerBox.classList.remove('hidden');
-        ytPlayerBox.classList.add('hidden');
-        modeSpotifyBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        modeSpotifyBtn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
-        modeStreamBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        modeStreamBtn.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#ded5c7]');
+    if (mahalayaStartBtn && mahalayaIframe) {
+      mahalayaStartBtn.addEventListener('click', () => {
+        mahalayaIframe.src = 'https://www.youtube-nocookie.com/embed/YQyo8QeoYhc?start=0&autoplay=1&rel=0&enablejsapi=1';
+        showToast('Playing Mahalaya from beginning — Birendra Krishna Bhadra', 'graphic_eq');
       });
     }
 
@@ -2144,20 +1992,20 @@
 
   // 14 Authentic Puja-Themed Avatars with Bengali Sacred Meaning
   const PUJA_AVATARS = [
-    { id: 'pradeep', icon: '🪔', name: 'Pradeep (Diya)', meaning: 'Divine Awakening Light' },
-    { id: 'dhak', icon: '🪘', name: 'Ceremonial Dhak', meaning: 'Heartbeat of Sharod' },
-    { id: 'raktajaba', icon: '🌺', name: 'Rakta Jaba', meaning: 'Divine Red Hibiscus' },
-    { id: 'trishul', icon: '🔱', name: 'Maa Durga Trishul', meaning: 'Triumph over Evil' },
-    { id: 'rudraksha', icon: '📿', name: 'Rudraksha Beads', meaning: 'Sacred Devotion' },
-    { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma', meaning: 'Lord Rama\'s Blue Lotus' },
-    { id: 'mukut', icon: '👑', name: 'Daaker Saaj Mukut', meaning: 'Silver Royal Crown' },
-    { id: 'mayur', icon: '🦚', name: 'Sacred Mayur', meaning: 'Grace & Beauty' },
-    { id: 'kalash', icon: '🏺', name: 'Mangal Ghat', meaning: 'Auspicious Kalash' },
-    { id: 'dhunuchi', icon: '💃', name: 'Dhunuchi Naach', meaning: 'Sacred Aarti Dance' },
-    { id: 'shankha', icon: '🐚', name: 'Sacred Shankha', meaning: 'Omkar Victory Sound' },
-    { id: 'kanshi', icon: '🥁', name: 'Dhol & Kanshi', meaning: 'Festive Rhythms' },
-    { id: 'surya', icon: '☀️', name: 'Surya Devata', meaning: 'Autumn Morning Sun' },
-    { id: 'kashphool', icon: '✨', name: 'Kash Phool', meaning: 'Arrival of Dugga' }
+    { id: 'pradeep', icon: '🪔', name: 'Pradeep (Diya)', meaning: 'The sacred brass oil lamp illuminated during Bodhon to dispel darkness and awaken divine presence.' },
+    { id: 'dhak', icon: '🪘', name: 'Ceremonial Dhak', meaning: 'The twin-headed sacred drum whose thunderous rhythmic beats form the very heartbeat of Sharadotsav.' },
+    { id: 'raktajaba', icon: '🌺', name: 'Rakta Jaba (Red Hibiscus)', meaning: 'The holy crimson flower most cherished by Maa Durga, representing raw cosmic Shakti and devotion.' },
+    { id: 'trishul', icon: '🔱', name: 'Maa Durga\'s Trishul', meaning: 'The supreme three-pronged trident symbolizing truth, wisdom, and triumph over Mahishasura.' },
+    { id: 'japamala', icon: '📿', name: 'Japa Mala (Rudraksha)', meaning: 'The sacred 108 rosary prayer beads used for devout chanting of Sri Sri Chandi Path and Devi Suktam.' },
+    { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma (Blue Lotus)', meaning: 'The celestial blue lotuses brought from Devidaha by Hanuman for Lord Rama\'s historic autumn Akalbodhon.' },
+    { id: 'mukut', icon: '👑', name: 'Daaker Saaj Mukut', meaning: 'The magnificent silver filigree crown worn by Goddess Durga in traditional Kolkata Bonedi Bari idols.' },
+    { id: 'mayur', icon: '🦚', name: 'Sacred Mayur (Peacock)', meaning: 'The glorious vahana mount of Lord Kartikeya, symbolizing divine majesty, vigilance, and regal beauty.' },
+    { id: 'kalash', icon: '🏺', name: 'Mangal Ghat (Kalash)', meaning: 'The consecrated sacred water vessel topped with mango leaves and coconut, invoking the Devi\'s presence.' },
+    { id: 'dhunuchi', icon: '🔥', name: 'Dhunuchi (Aarti Flame)', meaning: 'The traditional earthen incense chalice filled with burning coconut husk and camphor for the Sandhi Aarti dance.' },
+    { id: 'shankha', icon: '🐚', name: 'Sacred Shankha (Conch)', meaning: 'The holy conch shell blown during Aarti to sanctify the atmosphere with the primordial sound of Om.' },
+    { id: 'kanshi', icon: '🥁', name: 'Dhol & Kanshi', meaning: 'The resonating bell-metal gong and percussion accompanying pushpanjali prayers and ceremonial chants.' },
+    { id: 'surya', icon: '☀️', name: 'Sharad Surya (Autumn Sun)', meaning: 'The auspicious golden autumn dawn breaking on Mahalaya as Chandi Path echoes across Bengal.' },
+    { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken white wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
   ];
 
   // 6 Canonical Pre-Prepared Festival Master Reference Plans
@@ -2344,23 +2192,19 @@
 
     if (currentUser) {
       if (avatarPreview) {
-        if (currentUser.custom_avatar_url) {
-          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" class="w-full h-full object-cover rounded-full" alt="Avatar" />`;
-        } else {
-          avatarPreview.textContent = currentUser.avatar || '🪔';
-        }
+        avatarPreview.textContent = currentUser.avatar || '🪔';
       }
       if (btnLabel) {
         btnLabel.textContent = currentUser.username || currentUser.identifier?.split('@')[0] || 'Account';
       }
       if (heroCta) {
-        heroCta.innerHTML = `<span class="material-symbols-outlined text-[18px]">account_circle</span> ${currentUser.username} (${currentUser.avatar || '🪔'})`;
+        heroCta.innerHTML = `<span class="text-base">${currentUser.avatar || '🪔'}</span> <span class="font-bold">${currentUser.username}</span>`;
       }
     } else {
       if (avatarPreview) avatarPreview.textContent = '🪔';
       if (btnLabel) btnLabel.textContent = 'Sign In';
       if (heroCta) {
-        heroCta.innerHTML = `<span class="material-symbols-outlined text-[18px]">account_circle</span> Devotee Sign In / Account`;
+        heroCta.innerHTML = `<span class="text-base">🪔</span> <span class="font-bold">Sign In</span>`;
       }
     }
   }
@@ -2466,15 +2310,12 @@
     }
   }
 
+  let selectedAvatarPending = null;
+
   function updateProfileAvatarDisplay() {
     const el = document.getElementById('current-profile-avatar-display');
     if (!el || !currentUser) return;
-
-    if (currentUser.custom_avatar_url) {
-      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" class="w-full h-full object-cover rounded-2xl" alt="Custom Avatar" />`;
-    } else {
-      el.textContent = currentUser.avatar || '🪔';
-    }
+    el.textContent = currentUser.avatar || '🪔';
   }
 
   function renderPujaAvatarsGrid() {
@@ -2482,32 +2323,53 @@
     if (!grid) return;
 
     grid.innerHTML = PUJA_AVATARS.map(item => {
-      const isSelected = !currentUser?.custom_avatar_url && currentUser?.avatar === item.icon;
+      const isSelected = currentUser?.avatar === item.icon;
       return `
         <button 
           type="button" 
-          class="avatar-option flex flex-col items-center justify-center p-2 rounded-xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 is-selected' : 'border-outline-variant/30 dark:border-amber-400/20'}"
-          data-icon="${item.icon}"
-          data-name="${item.name}"
-          title="${item.name} — ${item.meaning}"
+          class="avatar-option flex items-center justify-center p-3 rounded-2xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 is-selected shadow-md scale-105' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          data-id="${item.id}"
+          title="${item.name}"
         >
-          <span class="text-2xl">${item.icon}</span>
-          <span class="text-[9px] font-bold text-on-surface dark:text-amber-200 mt-1 truncate max-w-full text-center">${item.name.split(' ')[0]}</span>
+          <span class="text-3xl">${item.icon}</span>
         </button>
       `;
     }).join('');
 
     grid.querySelectorAll('.avatar-option').forEach(btn => {
       btn.onclick = () => {
-        const icon = btn.dataset.icon;
-        if (currentUser) {
-          currentUser.avatar = icon;
-          currentUser.custom_avatar_url = null;
-          updateProfileAvatarDisplay();
-          renderPujaAvatarsGrid();
+        const id = btn.dataset.id;
+        const avatarObj = PUJA_AVATARS.find(a => a.id === id);
+        if (avatarObj) {
+          openAvatarDetailModal(avatarObj);
         }
       };
     });
+  }
+
+  function openAvatarDetailModal(avatarObj) {
+    selectedAvatarPending = avatarObj;
+    const modal = document.getElementById('avatar-detail-modal');
+    const iconEl = document.getElementById('detail-avatar-icon');
+    const nameEl = document.getElementById('detail-avatar-name');
+    const descEl = document.getElementById('detail-avatar-desc');
+
+    if (iconEl) iconEl.textContent = avatarObj.icon;
+    if (nameEl) nameEl.textContent = avatarObj.name;
+    if (descEl) descEl.textContent = avatarObj.meaning;
+
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+  }
+
+  function closeAvatarDetailModal() {
+    const modal = document.getElementById('avatar-detail-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
   }
 
   // Save Profile Changes
@@ -3472,16 +3334,45 @@
     document.getElementById('save-profile-btn')?.addEventListener('click', handleSaveProfile);
     document.getElementById('auth-logout-btn')?.addEventListener('click', handleLogout);
 
-    document.getElementById('apply-custom-avatar-btn')?.addEventListener('click', () => {
-      const urlInput = document.getElementById('custom-avatar-url-input');
-      const url = urlInput ? urlInput.value.trim() : '';
-      if (url && currentUser) {
-        currentUser.custom_avatar_url = url;
+    // Avatar Detail Overlay Handlers
+    document.getElementById('close-avatar-detail-btn')?.addEventListener('click', closeAvatarDetailModal);
+    document.getElementById('confirm-select-avatar-btn')?.addEventListener('click', () => {
+      if (selectedAvatarPending && currentUser) {
+        currentUser.avatar = selectedAvatarPending.icon;
         updateProfileAvatarDisplay();
         renderPujaAvatarsGrid();
-        showToast('Custom avatar image applied!', 'image');
+        showToast(`Avatar selected: ${selectedAvatarPending.name}`, 'check_circle');
       }
+      closeAvatarDetailModal();
     });
+
+    // Akalbodhon Sacred Story Presentation Modal Handlers
+    const storyModal = document.getElementById('akalbodhon-story-modal');
+    const openStoryBtn = document.getElementById('open-akalbodhon-story-btn');
+    const closeStoryBtn = document.getElementById('close-akalbodhon-story-btn');
+    const dismissStoryBtn = document.getElementById('dismiss-akalbodhon-story-btn');
+
+    if (openStoryBtn && storyModal) {
+      openStoryBtn.addEventListener('click', () => {
+        storyModal.classList.remove('hidden');
+        storyModal.classList.add('flex');
+      });
+    }
+
+    const closeStory = () => {
+      if (storyModal) {
+        storyModal.classList.add('hidden');
+        storyModal.classList.remove('flex');
+      }
+    };
+
+    closeStoryBtn?.addEventListener('click', closeStory);
+    dismissStoryBtn?.addEventListener('click', closeStory);
+    if (storyModal) {
+      storyModal.addEventListener('click', (e) => {
+        if (e.target === storyModal) closeStory();
+      });
+    }
 
     // Shared Plan Gate Handlers
     document.getElementById('gate-login-btn')?.addEventListener('click', () => {

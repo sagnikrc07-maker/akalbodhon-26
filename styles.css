@@ -60,32 +60,28 @@
 }
 
 /* ======================================================== */
-/* APPLE-STYLE SCROLL REVEAL (DIM TO BRIGHT ANIMATION)      */
+/* SCROLL DISPLAY (NO BLURRING - CRISP & IMMEDIATELY CLEAR)  */
 /* ======================================================== */
 .reveal-on-scroll {
-  opacity: 0.12;
-  transform: translateY(32px) scale(0.97);
-  filter: blur(3px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.5s ease;
-  will-change: opacity, transform, filter;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
 }
 
 .reveal-on-scroll.is-revealed {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  filter: blur(0);
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 /* Staggered Delay Utilities for Grid Elements */
-.reveal-delay-1 { transition-delay: 70ms; }
-.reveal-delay-2 { transition-delay: 140ms; }
-.reveal-delay-3 { transition-delay: 210ms; }
-.reveal-delay-4 { transition-delay: 280ms; }
-.reveal-delay-5 { transition-delay: 350ms; }
-.reveal-delay-6 { transition-delay: 420ms; }
+.reveal-delay-1 { transition-delay: 0ms; }
+.reveal-delay-2 { transition-delay: 0ms; }
+.reveal-delay-3 { transition-delay: 0ms; }
+.reveal-delay-4 { transition-delay: 0ms; }
+.reveal-delay-5 { transition-delay: 0ms; }
+.reveal-delay-6 { transition-delay: 0ms; }
 
 /* Glassmorphism Divine Veil */
 .glass-panel {
@@ -114,11 +110,12 @@
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(254, 214, 91, 0.15);
 }
 
+/* Navigation Blur Header */
 .glass-nav {
   background: rgba(255, 248, 239, 0.92);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(227, 190, 184, 0.3);
+  border-bottom: 1px solid rgba(227, 190, 184, 0.4);
 }
 
 .dark .glass-nav {
@@ -128,17 +125,23 @@
   border-bottom: 1px solid rgba(254, 214, 91, 0.2);
 }
 
-/* Crimson & Gold Flourishes */
+/* Crimson & Gold Flourishes with Ample Descender Room */
 .crimson-gradient-text {
   background: linear-gradient(135deg, #610000 0%, #b52619 60%, #8b0000 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  padding-bottom: 0.16em;
+  display: inline-block;
+  line-height: 1.25;
 }
 
 .dark .crimson-gradient-text {
   background: linear-gradient(135deg, #ffffff 0%, #ffb4a8 50%, #fed65b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  padding-bottom: 0.16em;
+  display: inline-block;
+  line-height: 1.25;
 }
 
 .gold-gradient-text {
