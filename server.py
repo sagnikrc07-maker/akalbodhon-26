@@ -14,11 +14,11 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        # Clean URL handling for /login -> /login.html
-        clean_path = self.path.split('?')[0]
-        if clean_path in ['/login', '/login/']:
+        # Clean URL handling for SPA routes
+        clean_path = self.path.split('?')[0].rstrip('/')
+        if clean_path == '/login':
             self.path = '/login.html'
-        elif clean_path in ['/plans', '/plans/']:
+        elif clean_path in ['/plans', '/pandals', '/rituals', '/food-shopping', '/audio', '/saved', '/account']:
             self.path = '/index.html'
         
         # API: Get Health

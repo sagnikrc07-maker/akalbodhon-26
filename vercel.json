@@ -1,13 +1,13 @@
 {
-  "version": 2,
-  "name": "akalbodhon",
   "cleanUrls": true,
-  "trailingSlash": false,
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/login", "dest": "/login.html" },
-    { "src": "/plans", "dest": "/index.html" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/plans", "destination": "/index.html" },
+    { "source": "/pandals", "destination": "/index.html" },
+    { "source": "/rituals", "destination": "/index.html" },
+    { "source": "/food-shopping", "destination": "/index.html" },
+    { "source": "/audio", "destination": "/index.html" },
+    { "source": "/saved", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -16,10 +16,6 @@
         {
           "key": "X-Content-Type-Options",
           "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
         },
         {
           "key": "X-XSS-Protection",

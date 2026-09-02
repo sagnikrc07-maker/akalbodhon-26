@@ -2290,10 +2290,13 @@
     if (!modal) return;
 
     // Set fields
-    document.getElementById('profile-display-name').textContent = currentUser.username || 'Devotee';
-    document.getElementById('profile-display-identifier').textContent = currentUser.identifier || '';
-    document.getElementById('profile-edit-name-input').value = currentUser.username || '';
-    document.getElementById('custom-avatar-url-input').value = currentUser.custom_avatar_url || '';
+    const dispName = document.getElementById('profile-display-name');
+    const dispId = document.getElementById('profile-display-identifier');
+    const nameInput = document.getElementById('profile-edit-name-input');
+
+    if (dispName) dispName.textContent = currentUser.username || 'Devotee';
+    if (dispId) dispId.textContent = currentUser.identifier || '';
+    if (nameInput) nameInput.value = currentUser.username || '';
 
     updateProfileAvatarDisplay();
     renderPujaAvatarsGrid();
@@ -3277,39 +3280,79 @@
   }
 
   // ========================================================
-  // 19. GLOBAL INITIALIZATION
+  // 19. GLOBAL INITIALIZATION & ROBUST ROUTING
   // ========================================================
-  document.addEventListener('DOMContentLoaded', async () => {
-    initTheme();
-    initDevoteesCounter();
-    initCountdown();
-    initAudioHub();
+  async function initApp() {
+    try {
+      initTheme();
+    } catch (e) { console.warn('initTheme error:', e); }
 
-    loadLocalUserSession();
-    await loadCustomPlans();
+    try {
+      initDevoteesCounter();
+    } catch (e) { console.warn('initDevoteesCounter error:', e); }
 
-    renderPandals('all');
-    renderCuratedTrails();
-    renderFoodAndShopping('all');
-    renderRituals();
-    renderSavedItinerary();
-    renderFestivalPlans('all');
+    try {
+      initCountdown();
+    } catch (e) { console.warn('initCountdown error:', e); }
 
-    initPlanCreatorModal();
-    initDeviceTimers();
-    initPageAuthSection();
+    try {
+      initAudioHub();
+    } catch (e) { console.warn('initAudioHub error:', e); }
 
-    // Account Button Click
+    try {
+      loadLocalUserSession();
+    } catch (e) { console.warn('loadLocalUserSession error:', e); }
+
+    try {
+      await loadCustomPlans();
+    } catch (e) { console.warn('loadCustomPlans error:', e); }
+
+    try {
+      renderPandals('all');
+      renderCuratedTrails();
+      renderFoodAndShopping('all');
+      renderRituals();
+      renderSavedItinerary();
+      renderFestivalPlans('all');
+    } catch (e) { console.warn('renderViews error:', e); }
+
+    try {
+      initPlanCreatorModal();
+      initDeviceTimers();
+      initPageAuthSection();
+    } catch (e) { console.warn('initModals error:', e); }
+
+    // Account Button Click Handlers
     const accountBtn = document.getElementById('account-btn');
     if (accountBtn) {
       accountBtn.addEventListener('click', () => openAccountModal());
     }
 
-    // Hero Section CTA Click
     const heroCtaBtn = document.getElementById('hero-account-cta-btn');
     if (heroCtaBtn) {
       heroCtaBtn.addEventListener('click', () => openAccountModal());
     }
+
+    // Hero Rituals CTA Click
+    const heroRitualsBtn = document.getElementById('hero-rituals-cta-btn');
+    if (heroRitualsBtn) {
+      heroRitualsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.hash = 'rituals';
+        handleRouting();
+      });
+    }
+
+    // Navigation Links Explicit Fallback Handling
+    document.querySelectorAll('[data-nav-target]').forEach(link => {
+      link.addEventListener('click', () => {
+        const target = link.dataset.navTarget;
+        if (target) {
+          window.location.hash = target;
+          handleRouting();
+        }
+      });
+    });
 
     // Auth Modal Handlers
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
@@ -3318,6 +3361,13 @@
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
     document.getElementById('auth-google-btn')?.addEventListener('click', handleGoogleLogin);
+
+    const authModal = document.getElementById('auth-modal');
+    if (authModal) {
+      authModal.addEventListener('click', (e) => {
+        if (e.target === authModal) closeAuthModal();
+      });
+    }
 
     // Password Visibility Toggle
     document.getElementById('toggle-pwd-visibility')?.addEventListener('click', function () {
@@ -3334,6 +3384,13 @@
     document.getElementById('save-profile-btn')?.addEventListener('click', handleSaveProfile);
     document.getElementById('auth-logout-btn')?.addEventListener('click', handleLogout);
 
+    const profileModal = document.getElementById('profile-modal');
+    if (profileModal) {
+      profileModal.addEventListener('click', (e) => {
+        if (e.target === profileModal) closeProfileModal();
+      });
+    }
+
     // Avatar Detail Overlay Handlers
     document.getElementById('close-avatar-detail-btn')?.addEventListener('click', closeAvatarDetailModal);
     document.getElementById('confirm-select-avatar-btn')?.addEventListener('click', () => {
@@ -3345,6 +3402,13 @@
       }
       closeAvatarDetailModal();
     });
+
+    const avatarDetailModal = document.getElementById('avatar-detail-modal');
+    if (avatarDetailModal) {
+      avatarDetailModal.addEventListener('click', (e) => {
+        if (e.target === avatarDetailModal) closeAvatarDetailModal();
+      });
+    }
 
     // Akalbodhon Sacred Story Presentation Modal Handlers
     const storyModal = document.getElementById('akalbodhon-story-modal');
@@ -3385,6 +3449,7 @@
       document.getElementById('shared-plan-gate-modal')?.classList.add('hidden');
       document.getElementById('shared-plan-gate-modal')?.classList.remove('flex');
       window.location.hash = 'home';
+      handleRouting();
     });
 
     // Plan Day Filter Buttons
@@ -3503,6 +3568,13 @@
     window.addEventListener('hashchange', handleRouting);
     handleRouting();
     initScrollReveal();
-  });
+  }
+
+  // Execute immediately if DOM is ready, or wait for DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+  } else {
+    initApp();
+  }
 
 })();
