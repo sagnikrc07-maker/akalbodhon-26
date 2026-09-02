@@ -8,7 +8,7 @@ import sys
 # Configure UTF-8 output
 sys.stdout.reconfigure(encoding='utf-8')
 
-PORT = 5000
+PORT = 8080
 SUPABASE_URL = "https://yagvczdnfyhdtvggkclj.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA"
 
