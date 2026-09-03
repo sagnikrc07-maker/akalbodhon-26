@@ -2383,7 +2383,6 @@
         playRadioSong(songId, ytId, title, artist);
       });
     });
-  });
   }
 
   function playRadioSong(songId, ytId, title, artist) {
