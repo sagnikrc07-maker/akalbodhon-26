@@ -205,10 +205,39 @@ body.modal-open {
   max-height: calc(88vh - 2rem);
   overflow-y: auto;
   overscroll-behavior: contain;
+  clip-path: inset(0 round 1.5rem);
 }
 
 .dark .modal-scrollable {
   scrollbar-color: rgba(254, 214, 91, 0.45) transparent;
+}
+
+.modal-scrollable::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-scrollable::-webkit-scrollbar-track {
+  margin-top: 54px;
+  margin-bottom: 32px;
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(142, 112, 107, 0.4);
+  border-radius: 9999px;
+}
+
+.dark .modal-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(254, 214, 91, 0.45);
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(181, 38, 25, 0.6);
+}
+
+.dark .modal-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(254, 214, 91, 0.8);
 }
 
 /* Navigation Blur Header */

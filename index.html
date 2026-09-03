@@ -130,8 +130,8 @@
         <span class="material-symbols-outlined text-[20px] hidden dark:inline">light_mode</span>
       </button>
 
-      <!-- About the Page & Developer Button -->
-      <button id="about-page-btn" class="w-9 h-9 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center justify-center text-primary dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 transition-all shadow-sm group cursor-pointer" title="About Akalbodhon & Developer" aria-label="About the Page">
+      <!-- Akalbodhon & Developer Button -->
+      <button id="about-page-btn" class="w-9 h-9 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center justify-center text-primary dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 transition-all shadow-sm group cursor-pointer" title="Akalbodhon & Developer" aria-label="Akalbodhon Information">
         <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">info</span>
       </button>
 
@@ -1152,141 +1152,144 @@
 
   <!-- ==================== ABOUT THE PAGE & DEVELOPER MODAL ==================== -->
   <div id="about-page-modal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
-      <!-- Cross Button on Top Right -->
-      <button id="close-about-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer" title="Close About Dialog">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right (Fixed above scroll area) -->
+      <button id="close-about-modal-btn" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105" title="Close Dialog">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
       
-      <!-- Top Sacred Header -->
-      <div class="text-center space-y-2 border-b border-outline-variant/20 dark:border-amber-400/20 pb-4">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center mx-auto text-3xl shadow-lg">
-          🪔
+      <!-- Scrollable Inner Content Area with Track Inset -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-6 flex-1">
+        <!-- Top Sacred Header -->
+        <div class="text-center space-y-2 border-b border-outline-variant/20 dark:border-amber-400/20 pb-4 pt-1">
+          <div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center mx-auto shadow-lg group">
+            <img src="logo.jpg" alt="Akalbodhon Emblem" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+          </div>
+          <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white">Akalbodhon</h3>
+          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-md mx-auto font-medium">
+            The comprehensive digital festival companion for Sharodiya Durga Puja 2026.
+          </p>
         </div>
-        <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white">About Akalbodhon</h3>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-md mx-auto font-medium">
-          The comprehensive digital festival companion for Sharodiya Durga Puja 2026.
-        </p>
-      </div>
 
-      <!-- Section 1: Developer Links & Socials (Kept on top as requested) -->
-      <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-3 text-center">
-        <span class="text-[10px] uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Created & Crafted By</span>
-        <h4 class="font-display text-lg font-bold text-on-surface dark:text-white">the.transparent.coder</h4>
-        
-        <!-- Social Icons (LinkedIn & Instagram) -->
-        <div class="flex items-center justify-center gap-4 pt-1">
-          <a href="https://www.linkedin.com/in/sagnik-roy-chowdhury-50b20a321" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-2xl bg-[#0077b5]/10 hover:bg-[#0077b5] text-[#0077b5] hover:text-white dark:bg-[#0077b5]/20 dark:hover:bg-[#0077b5] dark:text-[#5cb8ff] dark:hover:text-white border border-[#0077b5]/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-md" title="LinkedIn Profile" aria-label="LinkedIn">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-          </a>
-          <a href="https://www.instagram.com/the.transparent.coder?igsi=MXNlYmYyM21jc3Aycg==" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-2xl bg-[#e1306c]/10 hover:bg-gradient-to-tr hover:from-[#fd5949] hover:via-[#d6249f] hover:to-[#285AEB] text-[#e1306c] hover:text-white dark:bg-[#e1306c]/20 dark:text-[#ff7da7] dark:hover:text-white border border-[#e1306c]/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-md" title="Instagram Profile" aria-label="Instagram">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- Section 2: Features of the Page & User Experience -->
-      <div class="space-y-3">
-        <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px]">stars</span> Features & Experiences
-        </h4>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>🪔</span> Akalbodhon Chronicles
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Explore the illustrated 6-chapter story of Lord Rama's historic autumn invocation with 108 blue lotuses.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>📻</span> Mahalaya Broadcast
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Listen to Birendra Krishna Bhadra's immortal 1931 All India Radio narration of <em>Mahishasuramardini</em> with instant playback.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>🗺️</span> Pandals & Transit
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Discover top iconic pandals, curated walking circuits, and direct Google Maps navigation across North, South, Central & East Kolkata.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>📅</span> Sacred Rituals Guide
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Specific 2026 Puja dates from Mahalaya to Dashami with interactive ceremonial breakdowns.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>📝</span> Itinerary & Plans
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Pre-built date-wise master plans, custom itinerary builders, collaborative circles, and JSON itinerary export.
-            </p>
-          </div>
-          <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
-            <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-              <span>👑</span> 14 Sacred Avatars
-            </span>
-            <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-              Express your festival spirit with culturally authentic Bengali avatars complete with spiritual significance overlays.
-            </p>
+        <!-- Section 1: Developer Links & Socials (Kept on top as requested) -->
+        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-3 text-center">
+          <span class="text-[10px] uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Created & Crafted By</span>
+          <h4 class="font-display text-lg font-bold text-on-surface dark:text-white">the.transparent.coder</h4>
+          
+          <!-- Social Icons (LinkedIn & Instagram) -->
+          <div class="flex items-center justify-center gap-4 pt-1">
+            <a href="https://www.linkedin.com/in/sagnik-roy-chowdhury-50b20a321" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-2xl bg-[#0077b5]/10 hover:bg-[#0077b5] text-[#0077b5] hover:text-white dark:bg-[#0077b5]/20 dark:hover:bg-[#0077b5] dark:text-[#5cb8ff] dark:hover:text-white border border-[#0077b5]/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-md" title="LinkedIn Profile" aria-label="LinkedIn">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/the.transparent.coder?igsi=MXNlYmYyM21jc3Aycg==" target="_blank" rel="noopener noreferrer" class="w-12 h-12 rounded-2xl bg-[#e1306c]/10 hover:bg-gradient-to-tr hover:from-[#fd5949] hover:via-[#d6249f] hover:to-[#285AEB] text-[#e1306c] hover:text-white dark:bg-[#e1306c]/20 dark:text-[#ff7da7] dark:hover:text-white border border-[#e1306c]/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-md" title="Instagram Profile" aria-label="Instagram">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
           </div>
         </div>
-      </div>
 
-      <!-- Section 3: Technologies Behind the Website -->
-      <div class="space-y-3">
-        <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px]">code</span> Technologies Behind the Website
-        </h4>
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-2.5 text-xs">
-          <div class="flex items-start gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Frontend</span>
-            <span class="text-on-surface-variant dark:text-[#ded5c7]">Vanilla HTML5, Modern ES6+ JavaScript (zero heavy runtime overhead), responsive Single Page Application (SPA) hash router.</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Design & UI</span>
-            <span class="text-on-surface-variant dark:text-[#ded5c7]">Custom CSS3 design system with Glassmorphism, tailored Tailwind utility layout, and unified Day Parchment / Pandal Night dark mode.</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Backend & Auth</span>
-            <span class="text-on-surface-variant dark:text-[#ded5c7]">Supabase Cloud Platform (PostgreSQL database, Row Level Security policies, Email/Mobile auth, and Google One-Click OAuth).</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Audio Engine</span>
-            <span class="text-on-surface-variant dark:text-[#ded5c7]">Web Audio API procedural sound synthesizer (synthesizing ceremonial Dhak beats and temple chimes) & YouTube Embed API.</span>
-          </div>
-          <div class="flex items-start gap-2">
-            <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Deployment</span>
-            <span class="text-on-surface-variant dark:text-[#ded5c7]">Vercel Edge Network with clean SPA rewrites and instant client cache invalidation headers.</span>
+        <!-- Section 2: Features of the Page & User Experience -->
+        <div class="space-y-3">
+          <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">stars</span> Features & Experiences
+          </h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>🪔</span> Akalbodhon Chronicles
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Explore the illustrated 6-chapter story of Lord Rama's historic autumn invocation with 108 blue lotuses.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>📻</span> Mahalaya Broadcast
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Listen to Birendra Krishna Bhadra's immortal 1931 All India Radio narration of <em>Mahishasuramardini</em> with instant playback.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>🗺️</span> Pandals & Transit
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Discover top iconic pandals, curated walking circuits, and direct Google Maps navigation across North, South, Central & East Kolkata.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>📅</span> Sacred Rituals Guide
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Specific 2026 Puja dates from Mahalaya to Dashami with interactive ceremonial breakdowns.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>📝</span> Itinerary & Plans
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Pre-built date-wise master plans, custom itinerary builders, collaborative circles, and JSON itinerary export.
+              </p>
+            </div>
+            <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
+              <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
+                <span>👑</span> 14 Sacred Avatars
+              </span>
+              <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+                Express your festival spirit with culturally authentic Bengali avatars complete with spiritual significance overlays.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Section 4: Continuous Updates & Bug Fixes Notice (At the end as requested) -->
-      <div class="p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary-container/20 to-primary/10 dark:from-amber-400/15 dark:via-red-500/15 dark:to-amber-400/15 border border-primary/30 dark:border-amber-400/30 text-xs space-y-1.5">
-        <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold">
-          <span class="material-symbols-outlined text-[18px]">verified</span>
-          <span>Continuous Updates & Maintenance</span>
+        <!-- Section 3: Technologies Behind the Website -->
+        <div class="space-y-3">
+          <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">code</span> Technologies Behind the Website
+          </h4>
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-2.5 text-xs">
+            <div class="flex items-start gap-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Frontend</span>
+              <span class="text-on-surface-variant dark:text-[#ded5c7]">Vanilla HTML5, Modern ES6+ JavaScript (zero heavy runtime overhead), responsive Single Page Application (SPA) hash router.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Design & UI</span>
+              <span class="text-on-surface-variant dark:text-[#ded5c7]">Custom CSS3 design system with Glassmorphism, tailored Tailwind utility layout, and unified Day Parchment / Pandal Night dark mode.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Backend & Auth</span>
+              <span class="text-on-surface-variant dark:text-[#ded5c7]">Supabase Cloud Platform (PostgreSQL database, Row Level Security policies, Email/Mobile auth, and Google One-Click OAuth).</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Audio Engine</span>
+              <span class="text-on-surface-variant dark:text-[#ded5c7]">Web Audio API procedural sound synthesizer (synthesizing ceremonial Dhak beats and temple chimes) & YouTube Embed API.</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <span class="px-2 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold shrink-0">Deployment</span>
+              <span class="text-on-surface-variant dark:text-[#ded5c7]">Vercel Edge Network with clean SPA rewrites and instant client cache invalidation headers.</span>
+            </div>
+          </div>
         </div>
-        <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-          Akalbodhon is actively maintained and continually polished. The application will be updated frequently in case of finding out any bugs or introducing community-requested features to ensure the smoothest festival experience.
-        </p>
-      </div>
 
-      <!-- Close Button -->
-      <div class="pt-1">
-        <button id="dismiss-about-modal-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
-          Close About Section
-        </button>
+        <!-- Section 4: Continuous Updates & Bug Fixes Notice (At the end as requested) -->
+        <div class="p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary-container/20 to-primary/10 dark:from-amber-400/15 dark:via-red-500/15 dark:to-amber-400/15 border border-primary/30 dark:border-amber-400/30 text-xs space-y-1.5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px]">build_circle</span>
+            <span class="font-bold text-on-surface dark:text-white">Active Maintenance & Periodic Updates</span>
+          </div>
+          <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
+            Akalbodhon is actively maintained and continually polished. The application will be updated frequently in case of finding out any bugs or introducing community-requested features to ensure the smoothest festival experience.
+          </p>
+        </div>
+
+        <!-- Close Button -->
+        <div class="pt-1">
+          <button id="dismiss-about-modal-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
+            Close
+          </button>
+        </div>
       </div>
     </div>
   </div>
