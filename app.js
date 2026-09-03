@@ -597,50 +597,122 @@
     {
       day: 'Mahalaya',
       tithi: 'Amavasya Dawn',
-      date: 'Tarpan & Agomoni Invocation',
-      time: '04:00 AM - 07:30 AM',
-      rituals: ['Birendra Krishna Bhadra Chandi Path', 'Ganga Tarpan for ancestors', 'Chokkhu Daan (Painting Deity Eyes)'],
-      significance: 'Marks the descent of the Divine Mother Durga onto earth.'
+      date: '10 October 2026 (Saturday)',
+      ceremonies: [
+        {
+          name: 'Birendra Krishna Bhadra Chandi Path',
+          desc: 'The historic 4:00 AM All India Radio broadcast of Mahishasuramardini, chanting the sacred verses of Sri Sri Chandi depicting Devi Durga\'s invocation to defeat the demon king Mahishasura.'
+        },
+        {
+          name: 'Ganga Tarpan for Ancestors',
+          desc: 'Devotees gather at holy river ghats across Bengal at dawn to offer sacred water and sesame seeds (Tarpan) in loving reverence to departed ancestors.'
+        },
+        {
+          name: 'Chokkhu Daan (Painting Deity Eyes)',
+          desc: 'Kumartuli master clay sculptors apply the final sacred brushstrokes, painting the benevolent third eye of Devi Durga to symbolize the awakening of divine consciousness.'
+        }
+      ],
+      significance: 'Marks the divine descent of Mother Durga onto earth and heralds the sacred beginning of Devi Paksha.'
     },
     {
       day: 'Maha Shasthi',
       tithi: 'Shasthi Tithi',
-      date: 'Bodhon & Adhivas',
-      time: '06:30 PM - 09:00 PM',
-      rituals: ['Devi Bodhon under Bilva tree', 'Amontron and Adhivas rituals', 'Unveiling of the divine idols'],
-      significance: 'Formal awakening and welcome of Goddess Durga and her children.'
+      date: '17 October 2026 (Saturday)',
+      ceremonies: [
+        {
+          name: 'Devi Bodhon under Bilva Tree',
+          desc: 'The untimely invocation of Goddess Durga under a sacred wood-apple (Bel) tree, re-enacting Lord Rama\'s autumn awakening of Shakti before his war with Ravana.'
+        },
+        {
+          name: 'Amontron and Adhivas Rituals',
+          desc: 'Formal welcoming and Vedic consecration inviting the Mother Goddess and Her four divine children (Lakshmi, Saraswati, Ganesha, and Kartikeya) into the sanctum.'
+        },
+        {
+          name: 'Unveiling of the Divine Idols',
+          desc: 'The sacred drape is removed to reveal the resplendent face of Ma Durga amidst resonant Dhak beats, blowing of Shankha (conch), and ringing of bells.'
+        }
+      ],
+      significance: 'Formal awakening and celebratory welcome of Goddess Durga and Her divine family into pandals.'
     },
     {
       day: 'Maha Saptami',
       tithi: 'Saptami Tithi',
-      date: 'Kola Bou Snan & Prana Pratishtha',
-      time: '06:00 AM - 10:30 AM',
-      rituals: ['Nabapatrika (Kola Bou) river bathing procession', 'Prana Pratishtha consecration', 'Saptami Pushpanjali'],
-      significance: 'Infusion of vital divine breath into the idols and worship of nine sacred plants.'
+      date: '18 October 2026 (Sunday)',
+      ceremonies: [
+        {
+          name: 'Nabapatrika (Kola Bou) River Bathing',
+          desc: 'Nine sacred leaves and plants bundled together with a yellow-bordered red-fringed white sari are ritually bathed in the holy Ganges at dawn to venerate nature\'s divine bounty.'
+        },
+        {
+          name: 'Prana Pratishtha Consecration',
+          desc: 'Priests infuse the life breath (Prana) into the clay idols with Vedic mantras, sanctifying the deities as living vessels of divine energy.'
+        },
+        {
+          name: 'Saptami Pushpanjali',
+          desc: 'Devotees gather in fresh traditional festive clothing to chant Sanskrit hymns and offer fresh flowers and Bel leaves to the Mother.'
+        }
+      ],
+      significance: 'Infusion of vital divine breath into the idols and worship of the nine sacred botanicals of Shakti.'
     },
     {
       day: 'Maha Ashtami',
       tithi: 'Ashtami & Sandhi Tithi',
-      date: 'Kumari Puja & Sandhi Puja (Peak Ritual)',
-      time: 'Pushpanjali: 10:00 AM | Sandhi Puja: 05:48 PM',
-      rituals: ['Mass Pushpanjali in pristine attire', 'Kumari Puja (worship of prepubescent girl as Shakti)', '108 lotus offering & 108 clay lamps lit for Sandhi Puja'],
-      significance: 'The precise sacred junction when Devi Chamunda vanquished Chanda and Munda.'
+      date: '19 October 2026 (Monday)',
+      ceremonies: [
+        {
+          name: 'Grand Ashtami Pushpanjali',
+          desc: 'The most revered morning prayer of Durga Puja, where millions chant "Sarva Mangala Mangalye Shive Sarvartha Sadhike" with folded hands.'
+        },
+        {
+          name: 'Kumari Puja (Worship of Devi in Young Girl)',
+          desc: 'A young girl dressed in vibrant red silk and golden ornaments is worshiped as the living embodiment of pure cosmic Shakti, popularized by Swami Vivekananda.'
+        },
+        {
+          name: 'Sandhi Puja (Peak 48-Minute Conjunction)',
+          desc: 'The supreme sacred climax of Durga Puja at the transition of Ashtami to Navami, offering 108 blue lotuses and lighting 108 clay lamps when Devi Chamunda slew Chanda and Munda.'
+        }
+      ],
+      significance: 'The supreme sacred junction of Durga Puja when Devi Chamunda revealed Her cosmic triumph over demonic forces.'
     },
     {
       day: 'Maha Navami',
       tithi: 'Navami Tithi',
-      date: 'Maha Aarti & Dhunuchi Naach',
-      time: '11:00 AM - 08:30 PM',
-      rituals: ['Navami Homa / Yajna', 'High-energy Dhunuchi dance competitions to fiery Dhak beats', 'Daridra Narayana Seva'],
-      significance: 'Culmination of the cosmic battle of Good against Mahishasura.'
+      date: '20 October 2026 (Tuesday)',
+      ceremonies: [
+        {
+          name: 'Navami Maha Yajna / Homa',
+          desc: 'The grand sacred fire sacrifice where priests offer clarified butter (ghee) and wood-apple leaves into Vedic flames to culminate the sacred rites.'
+        },
+        {
+          name: 'High-Energy Dhunuchi Naach',
+          desc: 'Devotees balance smoking clay censers glowing with coconut husk and burning frankincense, dancing energetically to the thunderous syncopation of the Dhak.'
+        },
+        {
+          name: 'Universal Bhog Distribution',
+          desc: 'Sacred Khichuri Bhog, Labra (mixed vegetable curry), and sweet tomato chutney are offered to the Goddess and distributed freely to all pilgrims.'
+        }
+      ],
+      significance: 'Celebration of the victorious culmination of the battle against Mahishasura and universal spiritual grace.'
     },
     {
       day: 'Vijaya Dashami',
       tithi: 'Dashami Tithi',
-      date: 'Sindoor Khela & Immersion (Bishorjon)',
-      time: 'Sindoor Khela: 11:30 AM | Immersion: 04:00 PM onwards',
-      rituals: ['Devi Baran and Sindoor Khela among women', 'Kola Koli (warm embrace of universal brotherhood)', 'Ganga Immersion carnival & chanting "Asche Bochor Abar Hobe"'],
-      significance: 'Devi returns to Mount Kailash. Celebration of peace, sweets, and sweet anticipation.'
+      date: '21 October 2026 (Wednesday)',
+      ceremonies: [
+        {
+          name: 'Devi Baran & Sindoor Khela',
+          desc: 'Married women bid an emotional farewell to Ma Durga with sweets and betel leaves, followed by joyous smearing of vermilion (Sindoor) on one another wishing prosperity.'
+        },
+        {
+          name: 'Kola Koli & Universal Brotherhood',
+          desc: 'Traditional warm embraces across generations, touching elders\' feet for blessings and sharing traditional Bengali sweets (Rosogolla, Sandesh, Nimki).'
+        },
+        {
+          name: 'Ganga Immersion (Bishorjon)',
+          desc: 'The sacred clay idols are carried in grand processions to the river ghats and gently immersed into the holy Ganges with cries of "Asche Bochor Abar Hobe!"'
+        }
+      ],
+      significance: 'Devi Durga returns to Mount Kailash, leaving behind eternal blessings of courage, peace, and spiritual rebirth.'
     }
   ];
 
@@ -907,7 +979,7 @@
     });
   }
 
-  // --- 6. REAL-TIME FESTIVAL COUNTDOWN TO AKALBODHON ---
+  // --- 6. REAL-TIME FESTIVAL COUNTDOWN TO MAHALAYA ---
   function initCountdown() {
     const daysEl = document.getElementById('cd-days');
     const hoursEl = document.getElementById('cd-hours');
@@ -915,8 +987,8 @@
     const secsEl = document.getElementById('cd-secs');
     const zeroMsg = document.getElementById('countdown-zero-message');
 
-    // Akalbodhon / Maha Shasthi target: 16 October 2026, 6:30 PM
-    const targetDate = new Date(2026, 9, 16, 18, 30, 0);
+    // Mahalaya Dawn Awakening target: 10 October 2026, 4:00 AM
+    const targetDate = new Date(2026, 9, 10, 4, 0, 0);
 
     function update() {
       const current = new Date();
@@ -984,11 +1056,9 @@
     container.innerHTML = list.map((pandal, idx) => {
       const isSaved = Storage.isBookmarked(pandal.id);
       const delayClass = `reveal-delay-${(idx % 6) + 1}`;
-      const crowdBadgeClass = pandal.crowdLevel === 'high'
-        ? 'bg-error text-on-error'
-        : pandal.crowdLevel === 'medium'
-        ? 'bg-secondary-container text-on-secondary-container dark:bg-amber-400 dark:text-black'
-        : 'bg-emerald-700 text-white dark:bg-emerald-600';
+      const bookmarkBtnClass = isSaved
+        ? 'bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md'
+        : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30';
 
       return `
         <div class="bg-surface-container-lowest dark:bg-[#1c1810] rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}" data-pandal-id="${pandal.id}">
@@ -1000,11 +1070,8 @@
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               onerror="this.src='https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&w=800&q=80'"
             />
-            <div class="absolute top-3 right-3 ${crowdBadgeClass} px-3 py-1 rounded-full font-label-sm text-xs font-semibold flex items-center gap-1.5 shadow-md">
-              <span class="material-symbols-outlined text-[15px]">groups</span> ${pandal.crowd}
-            </div>
-            <div class="absolute bottom-3 left-3 bg-surface/95 dark:bg-[#12100a]/95 backdrop-blur-md text-primary dark:text-amber-300 px-3 py-1 rounded-full font-label-sm text-xs font-bold border border-outline-variant/40 dark:border-amber-400/30 shadow-sm">
-              ${pandal.zone} Zone • Est. ${pandal.estYear}
+            <div class="absolute bottom-3 left-3 bg-surface/95 dark:bg-[#12100a]/95 backdrop-blur-md text-primary dark:text-amber-300 px-3.5 py-1 rounded-full font-label-sm text-xs font-bold border border-outline-variant/40 dark:border-amber-400/30 shadow-md">
+              ${pandal.zone} Zone
             </div>
           </div>
           <div class="p-6 flex flex-col flex-1 justify-between gap-4">
@@ -1026,15 +1093,22 @@
                 target="_blank" 
                 rel="noopener"
                 class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
+                title="Open in Google Maps"
               >
-                <span class="material-symbols-outlined text-[16px]">near_me</span> Get Directions
+                <!-- Google Maps Logo -->
+                <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
+                  <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
+                  <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
+                  <circle cx="16" cy="12" r="3" fill="#4285F4"/>
+                </svg>
+                <span>Get Directions</span>
               </a>
               <button 
-                class="pandal-bookmark-btn w-10 h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-primary rounded-xl flex items-center justify-center transition-colors ${isSaved ? 'text-primary dark:text-amber-300 bg-primary/10 dark:bg-amber-400/20' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300'}"
+                class="pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer ${bookmarkBtnClass}"
                 data-id="${pandal.id}"
                 title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
               >
-                <span class="material-symbols-outlined text-[20px]">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
+                <span class="material-symbols-outlined text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
               </button>
               <button 
                 class="pandal-info-btn w-10 h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-xl flex items-center justify-center text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors"
@@ -1071,10 +1145,17 @@
           image: pandal.image
         });
 
-        btn.querySelector('.material-symbols-outlined').textContent = isSaved ? 'bookmark' : 'bookmark_border';
-        btn.classList.toggle('text-primary', isSaved);
-        btn.classList.toggle('dark:text-amber-300', isSaved);
-        btn.classList.toggle('bg-primary/10', isSaved);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+        }
+
+        if (isSaved) {
+          btn.className = 'pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md';
+        } else {
+          btn.className = 'pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30';
+        }
 
         soundEngine.playBell();
         showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
@@ -1429,29 +1510,54 @@
     const container = document.getElementById('rituals-timeline-container');
     if (!container) return;
 
+    // Wire up top Go Back to Home button
+    const backBtn = document.getElementById('rituals-go-back-btn');
+    if (backBtn && !backBtn.dataset.bound) {
+      backBtn.dataset.bound = 'true';
+      backBtn.onclick = (e) => {
+        e.preventDefault();
+        window.location.hash = 'home';
+        handleRouting();
+      };
+    }
+
     container.innerHTML = RITUALS_DATA.map((rit, idx) => `
       <div class="relative pl-8 md:pl-10 pb-8 last:pb-0 border-l-2 border-primary/20 dark:border-amber-400/40 group reveal-on-scroll reveal-delay-${(idx % 4) + 1}">
         <div class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary dark:bg-amber-400 text-on-primary dark:text-black flex items-center justify-center ring-4 ring-surface dark:ring-[#12100a] font-bold text-xs shadow-md">
           ${idx + 1}
         </div>
-        <div class="glass-panel p-6 rounded-2xl border border-outline-variant/30 dark:border-amber-400/25 hover:shadow-lg transition-all">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+        <div class="glass-panel p-6 sm:p-7 rounded-2xl border border-outline-variant/30 dark:border-amber-400/25 hover:shadow-lg transition-all space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 dark:border-amber-400/15 pb-3">
             <div>
               <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">${rit.tithi}</span>
-              <h3 class="font-headline-md text-2xl text-on-surface dark:text-white font-bold">${rit.day} — ${rit.date}</h3>
+              <h3 class="font-headline-md text-2xl text-on-surface dark:text-white font-bold">${rit.day}</h3>
             </div>
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-container/40 dark:bg-amber-400/20 text-secondary dark:text-amber-200 text-xs font-bold self-start md:self-auto border dark:border-amber-400/30">
-              <span class="material-symbols-outlined text-[15px]">schedule</span> ${rit.time}
+            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-200 text-xs font-bold self-start sm:self-auto border border-secondary-container/40 dark:border-amber-400/30 shadow-sm">
+              <span class="material-symbols-outlined text-[16px]">calendar_month</span> ${rit.date}
             </div>
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7] text-sm italic mb-4">${rit.significance}</p>
-          <div class="space-y-2">
-            <h4 class="font-label-sm text-xs font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300">Prescribed Ceremonies:</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-              ${rit.rituals.map(r => `
-                <div class="flex items-center gap-2 text-sm text-on-surface dark:text-[#f3ede2] bg-surface-container-low dark:bg-[#282217] p-2.5 rounded-lg border dark:border-amber-400/10 font-medium">
-                  <span class="material-symbols-outlined text-[16px] text-primary dark:text-amber-300">check_circle</span>
-                  <span>${r}</span>
+          
+          <p class="text-on-surface-variant dark:text-[#ded5c7] text-sm italic">${rit.significance}</p>
+          
+          <div class="space-y-2.5 pt-1">
+            <h4 class="font-label-sm text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">verified</span>
+              <span>Prescribed Ceremonies (Tap to read details)</span>
+            </h4>
+            
+            <div class="space-y-2">
+              ${rit.ceremonies.map(c => `
+                <div class="ceremony-item rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 overflow-hidden transition-all shadow-sm">
+                  <button class="ceremony-toggle-btn w-full px-4 py-3 text-left flex items-center justify-between gap-3 hover:bg-surface-container dark:hover:bg-[#2e271a] transition-colors cursor-pointer group" aria-expanded="false">
+                    <div class="flex items-center gap-2.5 font-semibold text-xs sm:text-sm text-on-surface dark:text-[#f3ede2]">
+                      <span class="w-1.5 h-1.5 rounded-full bg-primary dark:bg-amber-400"></span>
+                      <span class="group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">${c.name}</span>
+                    </div>
+                    <span class="material-symbols-outlined text-[18px] text-on-surface-variant dark:text-amber-300 transition-transform duration-300 ceremony-arrow shrink-0">chevron_right</span>
+                  </button>
+                  <div class="ceremony-desc hidden px-4 pb-3.5 pt-1 text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed border-t border-outline-variant/15 dark:border-amber-400/10 bg-surface-container-lowest/60 dark:bg-[#1a160f]/60">
+                    ${c.desc}
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -1459,6 +1565,28 @@
         </div>
       </div>
     `).join('');
+
+    // Attach click listeners to all ceremony accordion buttons
+    container.querySelectorAll('.ceremony-toggle-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const item = btn.closest('.ceremony-item');
+        if (!item) return;
+        const desc = item.querySelector('.ceremony-desc');
+        const arrow = item.querySelector('.ceremony-arrow');
+        const isClosed = desc.classList.contains('hidden');
+
+        if (isClosed) {
+          desc.classList.remove('hidden');
+          arrow.classList.add('rotate-90');
+          btn.setAttribute('aria-expanded', 'true');
+        } else {
+          desc.classList.add('hidden');
+          arrow.classList.remove('rotate-90');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      };
+    });
 
     initScrollReveal();
   }
@@ -1580,25 +1708,40 @@
     modal.querySelector('#modal-pandal-img').src = item.image;
     modal.querySelector('#modal-pandal-title').textContent = item.name;
 
+    const crowdBadge = modal.querySelector('#modal-pandal-crowd');
+    const estContainer = modal.querySelector('#modal-pandal-est')?.closest('div');
+
     if (type === 'pandal') {
       modal.querySelector('#modal-pandal-zone').textContent = `${item.zone} Zone`;
-      modal.querySelector('#modal-pandal-crowd').textContent = item.crowd;
+      if (crowdBadge) crowdBadge.classList.add('hidden');
       modal.querySelector('#modal-pandal-theme').textContent = item.theme;
-      modal.querySelector('#modal-pandal-est').textContent = item.estYear;
+      if (estContainer) estContainer.classList.add('hidden');
       modal.querySelector('#modal-pandal-transit').textContent = item.transit;
       modal.querySelector('#modal-pandal-highlights').textContent = item.highlights;
     } else if (type === 'food') {
       modal.querySelector('#modal-pandal-zone').textContent = item.categoryLabel;
-      modal.querySelector('#modal-pandal-crowd').textContent = item.timings;
+      if (crowdBadge) {
+        crowdBadge.classList.remove('hidden');
+        crowdBadge.textContent = item.timings;
+      }
       modal.querySelector('#modal-pandal-theme').textContent = item.desc;
-      modal.querySelector('#modal-pandal-est').textContent = 'Historic Landmark';
+      if (estContainer) {
+        estContainer.classList.remove('hidden');
+        modal.querySelector('#modal-pandal-est').textContent = 'Historic Landmark';
+      }
       modal.querySelector('#modal-pandal-transit').textContent = `${item.location} • ${item.metro}`;
       modal.querySelector('#modal-pandal-highlights').textContent = item.mustTry;
     } else if (type === 'shop') {
       modal.querySelector('#modal-pandal-zone').textContent = item.typeLabel;
-      modal.querySelector('#modal-pandal-crowd').textContent = item.bestTime;
+      if (crowdBadge) {
+        crowdBadge.classList.remove('hidden');
+        crowdBadge.textContent = item.bestTime;
+      }
       modal.querySelector('#modal-pandal-theme').textContent = item.desc;
-      modal.querySelector('#modal-pandal-est').textContent = 'Traditional Bazaar';
+      if (estContainer) {
+        estContainer.classList.remove('hidden');
+        modal.querySelector('#modal-pandal-est').textContent = 'Traditional Bazaar';
+      }
       modal.querySelector('#modal-pandal-transit').textContent = `${item.location} • ${item.metro}`;
       modal.querySelector('#modal-pandal-highlights').textContent = item.highlight;
     }
@@ -1641,7 +1784,9 @@
     }
 
     document.querySelectorAll('[data-nav-target]').forEach(link => {
-      const isTarget = link.dataset.navTarget === activeSection;
+      // When rituals is active, highlight 'home' yellow in the menu per user specifications
+      const effectiveSection = activeSection === 'rituals' ? 'home' : activeSection;
+      const isTarget = link.dataset.navTarget === effectiveSection;
       if (isTarget) {
         link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
         link.classList.remove('text-on-surface-variant', 'font-normal');
@@ -1659,6 +1804,8 @@
       renderSavedItinerary();
     } else if (activeSection === 'food-shopping') {
       renderFoodAndShopping();
+    } else if (activeSection === 'rituals') {
+      renderRituals();
     }
 
     setTimeout(initScrollReveal, 60);
@@ -3516,32 +3663,39 @@
     };
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 
-    // Center Floating Social Links Modal Toggle
-    const socialBtn = document.getElementById('social-links-btn');
-    const socialModal = document.getElementById('social-links-modal');
-    const closeSocialBtn = document.getElementById('close-social-modal-btn');
+    // About the Page & Developer Modal Handlers
+    const aboutBtn = document.getElementById('about-page-btn') || document.getElementById('social-links-btn');
+    const aboutModal = document.getElementById('about-page-modal') || document.getElementById('social-links-modal');
+    const closeAboutBtn = document.getElementById('close-about-modal-btn') || document.getElementById('close-social-modal-btn');
+    const dismissAboutBtn = document.getElementById('dismiss-about-modal-btn');
 
-    if (socialBtn && socialModal) {
-      socialBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        socialModal.classList.remove('hidden');
-        socialModal.classList.add('flex');
-      });
+    const openAbout = (e) => {
+      if (e) e.stopPropagation();
+      if (aboutModal) {
+        aboutModal.classList.remove('hidden');
+        aboutModal.classList.add('flex');
+      }
+    };
+
+    const closeAbout = () => {
+      if (aboutModal) {
+        aboutModal.classList.add('hidden');
+        aboutModal.classList.remove('flex');
+      }
+    };
+
+    if (aboutBtn && aboutModal) {
+      aboutBtn.addEventListener('click', openAbout);
     }
-
-    if (closeSocialBtn && socialModal) {
-      closeSocialBtn.addEventListener('click', () => {
-        socialModal.classList.add('hidden');
-        socialModal.classList.remove('flex');
-      });
+    if (closeAboutBtn) {
+      closeAboutBtn.addEventListener('click', closeAbout);
     }
-
-    if (socialModal) {
-      socialModal.addEventListener('click', (e) => {
-        if (e.target === socialModal) {
-          socialModal.classList.add('hidden');
-          socialModal.classList.remove('flex');
-        }
+    if (dismissAboutBtn) {
+      dismissAboutBtn.addEventListener('click', closeAbout);
+    }
+    if (aboutModal) {
+      aboutModal.addEventListener('click', (e) => {
+        if (e.target === aboutModal) closeAbout();
       });
     }
 
