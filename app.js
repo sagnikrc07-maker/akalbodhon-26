@@ -2441,6 +2441,7 @@
     }
 
     // Hero Secondary Ceremonial Dhak Button (Synthesizer)
+    const heroDhakBtn = document.getElementById('hero-dhak-btn');
     if (heroDhakBtn) {
       heroDhakBtn.addEventListener('click', () => {
         if (!soundEngine.isDhakLooping) {
