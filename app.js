@@ -10,300 +10,533 @@
 
   // 20 Iconic Durga Puja Pandals with Authentic High-Resolution Images & Google Maps
   const PANDALS_DATA = [
+    // --- NORTH KOLKATA ZONE ---
     {
-      id: 'bagbazar-sarbojonin',
-      name: 'Bagbazar Sarbojonin',
+      id: 'maniktala-chaltabagan',
+      name: 'Maniktala Chaltabagan Lohapatty',
       zone: 'North',
-      theme: 'Traditional Sabeki Ekchala Idol with Pure Silver Daaker Saaj',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/e/ea/Bagbazar_Sarbojanin_Arnab_Dutta_2010.JPG',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Shyambazar Metro (5 min walk)',
+      theme: 'Pioneering Environment & Crystal Glasswork Masterpiece',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'Girish Park / Sovabazar Sutanuti Metro (5 min walk)',
       transitType: 'metro',
-      estYear: '1919 (100+ years)',
-      highlights: 'Grand immersion carnival on Dashami, Sabeki pratima, heritage ambiance on the banks of the Ganges.',
-      locationUrl: 'https://maps.google.com/?q=Bagbazar+Sarbojonin+Durgotsav+Kolkata'
+      highlights: 'World-renowned crystal, brass, and glass art installations with glowing night illumination.',
+      locationUrl: 'https://maps.google.com/?q=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata'
     },
     {
-      id: 'maddox-square',
-      name: 'Maddox Square',
+      id: 'chorbagan-sarbojanin',
+      name: 'Chorbagan Sarbojanin',
+      zone: 'North',
+      theme: 'Fine Earthen Terracotta & Sustainable Bengal Clay Heritage',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      transit: 'Girish Park Metro / Rammohan Roy Sarani (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Poetic cultural narratives crafted through organic terracotta and rustic traditional craftsmanship.',
+      locationUrl: 'https://maps.google.com/?q=Chorbagan+Sarbojanin+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'kashi-bose-lane',
+      name: 'Kashi Bose Lane Durga Puja Samity',
+      zone: 'North',
+      theme: 'Social Empathy Installation & Intricate Wooden Sculpture',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Girish Park Metro / Manicktala Crossing (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Award-winning conceptual pandal blending touching social messages with Vedic sculpting.',
+      locationUrl: 'https://maps.google.com/?q=Kashi+Bose+Lane+Durga+Puja+Samity+Kolkata'
+    },
+    {
+      id: 'ahiritola-sarbojanin',
+      name: 'Ahiritola Sarbojanin Durgotsab',
+      zone: 'North',
+      theme: 'Ganga Riverside Heritage & Glorious Thematic Architecture',
+      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sovabazar Sutanuti Metro / Ahiritola Launch Ghat (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Historic North Kolkata century-old puja renowned for monumental riverfront gates and exquisite clay idol.',
+      locationUrl: 'https://maps.google.com/?q=Ahiritola+Sarbojanin+Durgotsab+Kolkata'
+    },
+    {
+      id: 'beniatola-sarbojanin',
+      name: 'Beniatola Sarbojanin Durgotsav',
+      zone: 'North',
+      theme: 'Indo-Saracenic Heritage Architecture & Dokra Metal Craft',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sovabazar Sutanuti Metro (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Rare brass Dokra relief sculptures and classical heritage ambience in North Kolkata.',
+      locationUrl: 'https://maps.google.com/?q=Beniatola+Sarbojanin+Durgotsav+Kolkata'
+    },
+    {
+      id: 'jagat-mukherjee-park',
+      name: 'Jagat Mukherjee Park',
+      zone: 'North',
+      theme: 'Ingenious Thematic Illusion & Kinetic Light Spectacle',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Shyambazar / Sovabazar Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Famed for out-of-the-box conceptual themes including underwater submarines and optical glass tunnels.',
+      locationUrl: 'https://maps.google.com/?q=Jagat+Mukherjee+Park+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'kumartuli-park',
+      name: 'Kumartuli Park Sarbojanin',
+      zone: 'North',
+      theme: 'Epic Royal Palace Replica & Sculptors Sacred Guild Heritage',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
+      transit: 'Sovabazar Sutanuti Metro (5 min walk through Kumartuli)',
+      transitType: 'metro',
+      highlights: 'Nestled in the legendary idol-makers quarter, showcasing world-class clay mastery and grand palace domes.',
+      locationUrl: 'https://maps.google.com/?q=Kumartuli+Park+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'pathuriaghata-rajbari',
+      name: 'Pathuriaghata Rajbari Durga Puja',
+      zone: 'North',
+      theme: 'Aristocratic 18th-Century Zamindari Bonedi Courtyard Heritage',
+      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+      transit: 'Girish Park / Sovabazar Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Ghosh family heritage Thakurdalan, traditional Ekchala idol with real silver ornaments and family rituals.',
+      locationUrl: 'https://maps.google.com/?q=Pathuriaghata+Rajbari+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'simla-byam-samity',
+      name: 'Simla Byam Samity',
+      zone: 'North',
+      theme: 'Patriotic Heritage & Majestic Traditional Pratima',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Girish Park Metro (3 min walk)',
+      transitType: 'metro',
+      highlights: 'Historic puja founded during the freedom movement with inspiring patriotic legacy and majestic classical idol.',
+      locationUrl: 'https://maps.google.com/?q=Simla+Byam+Samiti+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'hatibagan-sarbojanin',
+      name: 'Hatibagan Sarbojanin',
+      zone: 'North',
+      theme: 'Architectural Splendor & Traditional Folk Artistry',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'Shyambazar Metro (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Over a century of celebration with majestic thematic facades and authentic community culture.',
+      locationUrl: 'https://maps.google.com/?q=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
+    },
+    {
+      id: 'jatin-maitra-park',
+      name: 'Jatin Maitra Park',
+      zone: 'North',
+      theme: 'Earthy Folk Handicraft & Vibrant Bengali Adda',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sovabazar Sutanuti / Shyambazar Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Quaint North Kolkata park setting, intricate hand-painted murals, and family-friendly warmth.',
+      locationUrl: 'https://maps.google.com/?q=Jatin+Maitra+Park+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'nalin-sarkar-street',
+      name: 'Nalin Sarkar Street Sarbojanin',
+      zone: 'North',
+      theme: 'Raw Organic Material Artistry & Creative Clay Sculpture',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Shyambazar Metro (3 min walk)',
+      transitType: 'metro',
+      highlights: 'Masterful transformations of bamboo, pottery, and jute into breathtaking spatial sculptures.',
+      locationUrl: 'https://maps.google.com/?q=Nalin+Sarkar+Street+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'bagbazar-sarbojanin',
+      name: 'Bagbazar Sarbojanin',
+      zone: 'North',
+      theme: 'Centenary Traditional Sabeki Idol & Iconic Dhunuchi Naach',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/Bagbazar_Sarbojanin_Durga_Puja_Kolkata.jpg',
+      transit: 'Shyambazar Metro (7 min walk) / Bagbazar Ghat',
+      transitType: 'metro',
+      highlights: 'Pure Bengali tradition with iconic snow-white Daaker Saaj idol, classic Sindoor Khela, and carnival adda.',
+      locationUrl: 'https://maps.google.com/?q=Bagbazar+Sarbojanin+Durgotsav+Kolkata'
+    },
+    {
+      id: 'sovabazar-rajbari',
+      name: 'Sovabazar Rajbari',
+      zone: 'North',
+      theme: 'Aristocratic 1757 Bonedi Bari Open Courtyard Heritage',
+      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sovabazar Sutanuti Metro (2 min walk)',
+      transitType: 'metro',
+      highlights: 'Raja Nabakrishna Deb historical Natmandir courtyard, canonical Vedic ceremonies, and solemn grace.',
+      locationUrl: 'https://maps.google.com/?q=Sovabazar+Rajbari+Kolkata'
+    },
+
+    // --- SOUTH KOLKATA ZONE ---
+    {
+      id: 'singhi-park',
+      name: 'Singhi Park Sarbojanin',
       zone: 'South',
-      theme: 'Open-air Heritage Puja & Cultural Adda Epicenter',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/6/68/Durga_Puja_pandal_decorations_in_Kolkata.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Rabindra Sadan / Netaji Bhavan Metro (10 min walk)',
+      theme: 'Classical Indian Temple Monument & Majestic Traditional Idol',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Gariahat Phari / Dover Lane (Kalighat Metro auto-link)',
       transitType: 'metro',
-      estYear: '1935',
-      highlights: 'Sprawling park with traditional sabeki lighting, youth adda epicenter, live acoustic music.',
-      locationUrl: 'https://maps.google.com/?q=Maddox+Square+Durga+Puja+Kolkata'
+      highlights: 'Grand temple replicas paired with legendary lighting by Chandannagar electrical artists.',
+      locationUrl: 'https://maps.google.com/?q=Singhi+Park+Durga+Puja+Kolkata'
     },
     {
-      id: 'sreebhumi-sporting',
-      name: 'Sreebhumi Sporting Club',
-      zone: 'East',
-      theme: 'Majestic Architectural Wonder & Royal Palace Replica',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/3/30/Sreebhumi_Durga_Puja_2022.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Lake Town Crossing (VIP Road Auto / Bus)',
-      transitType: 'bus',
-      estYear: '1969',
-      highlights: 'Diamond and pure gold ornamented Goddess idol, breathtaking architectural replica with dynamic laser light show.',
-      locationUrl: 'https://maps.google.com/?q=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
+      id: 'badamtala-ashar-sangha',
+      name: 'Badamtala Ashar Sangha',
+      zone: 'South',
+      theme: 'Pioneering Creative Thematic Installation & Environmental Art',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Kalighat Metro Station (3 min walk via Nepal Bhattacharjee St)',
+      transitType: 'metro',
+      highlights: 'South Kolkata theme-puja benchmark with award-winning creative soundscapes and innovative idol craft.',
+      locationUrl: 'https://maps.google.com/?q=Badamtala+Ashar+Sangha+Kalighat+Kolkata'
+    },
+    {
+      id: 'jodhpur-park',
+      name: 'Jodhpur Park Sarbojanin',
+      zone: 'South',
+      theme: 'Monumental Eco-Craft Architecture & Laser Illumination',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
+      transit: 'Rabindra Sarobar Metro / Dhakuria Station (8 min walk)',
+      transitType: 'metro',
+      highlights: 'Sprawling park installation featuring experimental sustainable materials and musical lighting.',
+      locationUrl: 'https://maps.google.com/?q=Jodhpur+Park+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'hindustan-club',
+      name: 'Hindustan Club Sarbojanin',
+      zone: 'South',
+      theme: 'Regal Aesthetic Marvel & Royal Courtyard Ambience',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sarat Bose Road / Kalighat Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Lavish architectural designs with brilliant brass embellishments and peaceful devotion.',
+      locationUrl: 'https://maps.google.com/?q=Hindustan+Club+Durga+Puja+Sarat+Bose+Road+Kolkata'
+    },
+    {
+      id: 'ballygunge-cultural',
+      name: 'Ballygunge Cultural Association',
+      zone: 'South',
+      theme: 'Heritage Terracotta Courtyard & Soulful Classical Music',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      transit: 'Lake Temple Road / Kalighat Metro (8 min walk)',
+      transitType: 'metro',
+      highlights: 'Beloved South Kolkata legacy puja known for aristocratic restraint, classical morning chants, and warm adda.',
+      locationUrl: 'https://maps.google.com/?q=Ballygunge+Cultural+Association+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'bhowanipore-75-palli',
+      name: 'Bhowanipore 75 Palli',
+      zone: 'South',
+      theme: 'Rural Bengal Folk Art & Monumental Wooden Loom Tribute',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Netaji Bhavan Metro (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Promoting indigenous handloom weavers, terracotta artisans, and authentic rural Bengali craft.',
+      locationUrl: 'https://maps.google.com/?q=Bhowanipore+75+Palli+Durga+Puja+Kolkata'
+    },
+    {
+      id: '64-palli-durga-puja',
+      name: '64 Palli Durga Puja',
+      zone: 'South',
+      theme: 'Intricate Handcrafted Cane, Bamboo & Brass Devotion',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      transit: 'Kalighat / Netaji Bhavan Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Vibrant neighborhood solidarity, master-crafted cane structures, and heartwarming community cultural events.',
+      locationUrl: 'https://maps.google.com/?q=64+Palli+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'barisha-club',
+      name: 'Barisha Club',
+      zone: 'South',
+      theme: 'Profound Philosophical Installation & Motherhood Homage',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Sakherbazar / Behala Chowrasta Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Celebrated across India for deeply moving emotional sculptures honoring maternal resilience and humanity.',
+      locationUrl: 'https://maps.google.com/?q=Barisha+Club+Durga+Puja+Sakherbazar+Kolkata'
+    },
+    {
+      id: 'behala-nutan-dal',
+      name: 'Behala Nutan Dal',
+      zone: 'South',
+      theme: 'Contemporary Avant-Garde Space & Harmonic Acoustic Architecture',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
+      transit: 'Taratala / Behala Chowrasta Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Architectural marvel combining textured metallic acoustics, ambient chimes, and thought-provoking modern art.',
+      locationUrl: 'https://maps.google.com/?q=Behala+Nutan+Dal+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'rajdanga-naba-uday',
+      name: 'Rajdanga Naba Uday Sangha',
+      zone: 'South',
+      theme: 'Grand Rural Bengal Indigenous Artifacts & Tribal Motifs',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'Hemanta Mukherjee (Ruby) Metro / Kasba Crossing (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Spectacular large-scale installations utilizing earthen clay, bell metal, and handmade rural artifacts.',
+      locationUrl: 'https://maps.google.com/?q=Rajdanga+Naba+Uday+Sangha+Kasba+Kolkata'
     },
     {
       id: 'ekdalia-evergreen',
       name: 'Ekdalia Evergreen Club',
       zone: 'South',
-      theme: 'South Indian Temple Architecture Replica & German Chandelier',
+      theme: 'Grand South Indian Temple Architecture & German Chandeliers',
       image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
       transit: 'Gariahat Junction / Ballygunge Phari (7 min walk)',
       transitType: 'metro',
-      estYear: '1945',
       highlights: 'Glorious illuminated chandeliers, authentic South Indian temple art style with traditional idol.',
       locationUrl: 'https://maps.google.com/?q=Ekdalia+Evergreen+Club+Gariahat+Kolkata'
     },
+    {
+      id: 'suruchi-sangha',
+      name: 'Suruchi Sangha (New Alipore)',
+      zone: 'South',
+      theme: 'Pan-Indian State Craftsmanship & Living Cultural Heritage',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
+      transit: 'Majerhat Station / Taratala Metro (8 min walk)',
+      transitType: 'metro',
+      highlights: 'Different Indian state craftsmanship themes annually, sustainable eco-friendly materials and soulful folk music.',
+      locationUrl: 'https://maps.google.com/?q=Suruchi+Sangha+New+Alipore+Kolkata'
+    },
+    {
+      id: 'tridhara-sammilani',
+      name: 'Tridhara Sammilani',
+      zone: 'South',
+      theme: 'Tribal Folklore & Contemporary Bengal Installation Art',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Jatin Das Park / Kalighat Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Iconic street installation featuring indigenous art traditions, mesmerizing soundscapes, and expressive idols.',
+      locationUrl: 'https://maps.google.com/?q=Tridhara+Sammilani+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'mudiali-club',
+      name: 'Mudiali Club',
+      zone: 'South',
+      theme: 'Traditional Environmental Artistry & Exquisite Golden Idol',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Rabindra Sarobar / Kalighat Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Decades of classical beauty with nature-inspired hand-painted murals and dazzling golden Goddess ornaments.',
+      locationUrl: 'https://maps.google.com/?q=Mudiali+Club+Durga+Puja+Kolkata'
+    },
+
+    // --- CENTRAL KOLKATA ZONE ---
     {
       id: 'college-square',
       name: 'College Square',
       zone: 'Central',
       theme: 'Spectacular Water Reflection & Historic Illumination',
       image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
       transit: 'Central / Mahatma Gandhi Road Metro (5 min walk)',
       transitType: 'metro',
-      estYear: '1948',
       highlights: 'Huge illuminated lake reflecting thousands of synchronized bulbs, traditional idol by Sanatan Rudra Pal.',
       locationUrl: 'https://maps.google.com/?q=College+Square+Durga+Puja+Kolkata'
-    },
-    {
-      id: 'suruchi-sangha',
-      name: 'Suruchi Sangha (New Alipore)',
-      zone: 'South',
-      theme: 'Indian Cultural Diversity & Sustainable Craftsmanship',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Majerhat Station / Taratala Metro (8 min walk)',
-      transitType: 'metro',
-      estYear: '1954',
-      highlights: 'Different Indian state craftsmanship themes annually, sustainable eco-friendly materials and soulful folk music.',
-      locationUrl: 'https://maps.google.com/?q=Suruchi+Sangha+New+Alipore+Kolkata'
-    },
-    {
-      id: 'sovabazar-rajbari',
-      name: 'Sovabazar Rajbari',
-      zone: 'North',
-      theme: 'Aristocratic 18th-Century Bonedi Bari Heritage Courtyard',
-      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
-      crowd: 'Low Crowd',
-      crowdLevel: 'low',
-      transit: 'Sovabazar Sutanuti Metro (2 min walk)',
-      transitType: 'metro',
-      estYear: '1757 (Started by Raja Nabakrishna Deb)',
-      highlights: 'Historical Natmandir open courtyard, canonical Vaishnava-Shakta rituals, peaceful aristocratic devotion.',
-      locationUrl: 'https://maps.google.com/?q=Sovabazar+Rajbari+Kolkata'
-    },
-    {
-      id: 'fd-block-salt-lake',
-      name: 'FD Block Salt Lake',
-      zone: 'East',
-      theme: 'Monumental Conceptual Architecture & Festive Fairground',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Durga_Puja_Pandal_in_Salt_Lake%2C_Kolkata_2019.jpg',
-      crowd: 'Low Crowd',
-      crowdLevel: 'low',
-      transit: 'Karunamoyee / Central Park Metro (6 min walk)',
-      transitType: 'metro',
-      estYear: '1985',
-      highlights: 'Wide open green grounds, child-friendly walking avenues, vibrant Sharodiya fairgrounds and artisan stalls.',
-      locationUrl: 'https://maps.google.com/?q=FD+Block+Durga+Puja+Salt+Lake+Kolkata'
-    },
-    {
-      id: 'tridhara-sammilani',
-      name: 'Tridhara Sammilani',
-      zone: 'South',
-      theme: 'Avant-Garde Installation Art & Contemporary Aesthetics',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Tridhara_Sammilani_Durga_Puja_2016_39.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Kalighat / Jatin Das Park Metro (10 min walk)',
-      transitType: 'metro',
-      estYear: '1947',
-      highlights: 'Thought-provoking environmental themes, artistic sculpture craftsmanship, seamlessly blended lights.',
-      locationUrl: 'https://maps.google.com/?q=Tridhara+Sammilani+Manoharpukur+Road+Kolkata'
-    },
-    {
-      id: 'kumartuli-park',
-      name: 'Kumartuli Park',
-      zone: 'North',
-      theme: 'Homage to the Master Sculptors & Clay Artisans',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/5/52/DurgaPuja2022_-_Durga_Idol_of_Kumartuli_Park_29.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Sovabazar Sutanuti Metro (8 min walk)',
-      transitType: 'metro',
-      estYear: '1995',
-      highlights: 'Located adjacent to the world-famous clay idol sculpting alleys of Kumartuli; sublime idol craftsmanship.',
-      locationUrl: 'https://maps.google.com/?q=Kumartuli+Park+Durga+Puja+Kolkata'
-    },
-    {
-      id: 'santosh-mitra-square',
-      name: 'Santosh Mitra Square (Lebutala)',
-      zone: 'Central',
-      theme: 'High-Tech Laser Light Show & Grand Monumental Facade',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/3/33/Durga_Puja_Pandal_in_Kolkata%2C_2023_07.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Central / Sealdah Metro (8 min walk)',
-      transitType: 'metro',
-      estYear: '1936',
-      highlights: 'Nationally famous for opulent thematic structures, synchronized sphere lighting, and 3D architectural mapping.',
-      locationUrl: 'https://maps.google.com/?q=Santosh+Mitra+Square+Kolkata'
     },
     {
       id: 'mohammad-ali-park',
       name: 'Mohammad Ali Park',
       zone: 'Central',
-      theme: 'Palatial Heritage Monuments & Classical Illuminations',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/b/b3/DurgaPuja2017_-_Pandal_of_Mohammad_Ali_Park_08.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Mahatma Gandhi Road Metro (3 min walk)',
+      theme: 'Colossal Royal Fort & Historic Palace Monument Replica',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'MG Road Metro Station (2 min walk)',
       transitType: 'metro',
-      estYear: '1969',
-      highlights: 'Intricate replicas of historic Indian palaces with vibrant Chandannagar lighting surrounding a central water body.',
+      highlights: 'Sprawling park grounds dominated by towering architectural fort replicas and heritage lighting.',
       locationUrl: 'https://maps.google.com/?q=Mohammad+Ali+Park+Durga+Puja+Kolkata'
     },
     {
-      id: 'mudiali-club',
-      name: 'Mudiali Club',
-      zone: 'South',
-      theme: 'Traditional Environmental Motifs & Golden Illumination',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/3/36/Mudiali_club_Durga_puja_kolkata_2019_IMG_20191005_125557_04.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Rabindra Sarobar / Kalighat Metro (5 min walk)',
+      id: 'sealdah-railway-athletic',
+      name: 'Sealdah Railway Athletic Club',
+      zone: 'Central',
+      theme: 'Grand Indian Temple Architecture & Locomotive Heritage',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'Sealdah Metro / Railway Station Complex (2 min walk)',
       transitType: 'metro',
-      estYear: '1935',
-      highlights: 'Multi-award-winning aesthetic lighting, traditional idols, and organic natural art installations.',
-      locationUrl: 'https://maps.google.com/?q=Mudiali+Club+Southern+Avenue+Kolkata'
+      highlights: 'Towering temple gopuram replicas greeting thousands of festive commuters arriving in the city.',
+      locationUrl: 'https://maps.google.com/?q=Sealdah+Railway+Athletic+Club+Durga+Puja+Kolkata'
+    },
+
+    // --- EAST & SALT LAKE ZONE ---
+    {
+      id: 'sreebhumi-sporting',
+      name: 'Sreebhumi Sporting Club',
+      zone: 'East',
+      theme: 'Monumental World Wonder Architecture & Pure Gold Ornaments',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Sreebhumi_Durga_Puja_Pandal.jpg',
+      transit: 'VIP Road Lake Town (Bus / Taxi link to Ultadanga / Dum Dum Metro)',
+      transitType: 'bus',
+      highlights: 'Diamond and pure gold ornamented Goddess idol, breathtaking architectural replica with dynamic laser light show.',
+      locationUrl: 'https://maps.google.com/?q=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
     },
     {
-      id: 'shiv-mandir',
-      name: 'Shiv Mandir Sarbojonin',
-      zone: 'South',
-      theme: 'Sacred Vedic Architecture & Ethereal Sound Design',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Durga_Puja_Pandal_in_Kolkata%2C_2023_02.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Rabindra Sarobar Metro / Lake Market (4 min walk)',
-      transitType: 'metro',
-      estYear: '1936',
-      highlights: 'Adjacent to Rabindra Sarobar Lake, famous for intricate artistic idols and meditative soundscapes.',
-      locationUrl: 'https://maps.google.com/?q=Shiv+Mandir+Durga+Puja+Lake+Temple+Road+Kolkata'
+      id: 'lake-town-adibasi-brinda',
+      name: 'Lake Town Adibasi Brinda',
+      zone: 'East',
+      theme: 'Indigenous Tribal Heritage, Bamboo & Terracotta Art',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      transit: 'VIP Road Lake Town Footbridge (4 min walk)',
+      transitType: 'bus',
+      highlights: 'Authentic celebration of tribal folk folklore using forest wood, clay flutes, and earthen hues.',
+      locationUrl: 'https://maps.google.com/?q=Lake+Town+Adibasi+Brinda+Durga+Puja+Kolkata'
     },
     {
-      id: 'singhi-park',
-      name: 'Singhi Park Sarbojanin',
-      zone: 'South',
-      theme: 'Classical Indian Temple Heritage & Grand Chandeliers',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/c/c2/Durga_Puja_Idol_at_Singhi_Park%2C_Kolkata.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Gariahat Junction / Dover Lane (5 min walk)',
-      transitType: 'metro',
-      estYear: '1941',
-      highlights: 'Imposing replica of ancient Indian stone temples with classical sabeki pratima and Chandannagar lighting.',
-      locationUrl: 'https://maps.google.com/?q=Singhi+Park+Durga+Puja+Dover+Lane+Kolkata'
+      id: 'dum-dum-park-yubak-brinda',
+      name: 'Dum Dum Park Yubak Brinda',
+      zone: 'East',
+      theme: 'Bold Modern Conceptual Installation & Eco-Friendly Design',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
+      transit: 'VIP Road / Jessore Road Crossing (Dum Dum Metro auto-link)',
+      transitType: 'bus',
+      highlights: 'Striking artistic experiments with innovative materials, modern aesthetics, and ambient lights.',
+      locationUrl: 'https://maps.google.com/?q=Dum+Dum+Park+Yubak+Brinda+Durga+Puja+Kolkata'
     },
     {
-      id: 'chetla-agrani',
-      name: 'Chetla Agrani Club',
-      zone: 'South',
-      theme: 'Soulful Bengal Folk Heritage & Terracotta Mastery',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/Durga_Puja_Pandal_at_Chetla_Agrani%2C_Kolkata.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Kalighat / Rashbehari Metro (10 min walk)',
-      transitType: 'metro',
-      estYear: '1959',
-      highlights: 'Intricate handcrafted rural Bengal folk art, sculpted clay walls, and master-crafted deity idols.',
-      locationUrl: 'https://maps.google.com/?q=Chetla+Agrani+Club+Kolkata'
-    },
-    {
-      id: 'ahiritola-sarbojonin',
-      name: 'Ahiritola Sarbojonin',
-      zone: 'North',
-      theme: 'Heritage Riverfront Cultural Art & Societal Narratives',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/2/2a/DurgaPuja2022_-_Durga_Puja_Pandal_of_Ahiritola_Sarbojonin_22.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Sovabazar Sutanuti Metro / Ahiritola Launch Ghat (5 min walk)',
-      transitType: 'metro',
-      estYear: '1940',
-      highlights: 'Historic North Kolkata riverfront puja celebrated for thought-provoking social themes and artisanal artistry.',
-      locationUrl: 'https://maps.google.com/?q=Ahiritola+Sarbojanin+Durgotsab+Kolkata'
-    },
-    {
-      id: 'hatibagan-sarbojonin',
-      name: 'Hatibagan Sarbojonin',
-      zone: 'North',
-      theme: '90+ Years of Traditional Bengali Craftsmanship & Weaves',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Hatibagan_Sarbojanin_Durga_Puja_Idol.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Shyambazar Metro / Hatibagan Market (3 min walk)',
-      transitType: 'metro',
-      estYear: '1935',
-      highlights: 'Located in the historic theatre district, highlighting Bengal\'s rich handloom weaving traditions.',
-      locationUrl: 'https://maps.google.com/?q=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
+      id: 'dum-dum-park-sarbojanin',
+      name: 'Dum Dum Park Sarbojanin',
+      zone: 'East',
+      theme: 'Time-Honored Cultural Heritage & Architectural Grandeur',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Dum Dum Park Tank 2 / VIP Road link',
+      transitType: 'bus',
+      highlights: 'Pioneer of the famous Dum Dum Park puja hub, delivering timeless thematic beauty year after year.',
+      locationUrl: 'https://maps.google.com/?q=Dum+Dum+Park+Sarbojanin+Durga+Puja+Kolkata'
     },
     {
       id: 'dum-dum-park-bharat-chakra',
       name: 'Dum Dum Park Bharat Chakra',
       zone: 'East',
-      theme: 'Contemporary Installation Art & Multi-Sensory Environment',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Durga_Puja_Pandal_at_Dum_Dum_Park_Bharat_Chakra.jpg',
-      crowd: 'Moderate Crowd',
-      crowdLevel: 'medium',
-      transit: 'Dum Dum Metro / Nagerbazar Auto (10 min ride)',
-      transitType: 'metro',
-      estYear: '2001',
-      highlights: 'Stunning modern conceptual art installations with synchronized ambient acoustics and artistic lighting.',
+      theme: 'Social Empathy & Exquisite Textured Sculpture',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'VIP Road / Dum Dum Park (7 min walk from Footbridge)',
+      transitType: 'bus',
+      highlights: 'Profound societal messages translated through master clay and wood sculptures with moving soundtracks.',
       locationUrl: 'https://maps.google.com/?q=Dum+Dum+Park+Bharat+Chakra+Kolkata'
     },
     {
-      id: 'tala-prattoy',
-      name: 'Tala Prattoy',
-      zone: 'North',
-      theme: 'Pure Architectural Modernism & Experimental Sculpture',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/8/81/Durga_Puja_Idol_at_Tala_Prattoy_Kolkata.jpg',
-      crowd: 'Heavy Crowd',
-      crowdLevel: 'high',
-      transit: 'Shyambazar / Belgachia Metro (8 min walk)',
+      id: 'dum-dum-park-tarun-dal',
+      name: 'Dum Dum Park Tarun Dal',
+      zone: 'East',
+      theme: 'Surrealistic Spatial Architecture & Dynamic Kinetic Art',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'VIP Road / Dum Dum Park Tank 3',
+      transitType: 'bus',
+      highlights: 'Mind-bending geometric forms, kinetic wind sculptures, and immersive illuminated pathways.',
+      locationUrl: 'https://maps.google.com/?q=Dum+Dum+Park+Tarun+Dal+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'dum-dum-park-tarun-sangha',
+      name: 'Dum Dum Park Tarun Sangha',
+      zone: 'East',
+      theme: 'Nationally Acclaimed Thematic Installation & Master Clay Idol',
+      image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80',
+      transit: 'VIP Road / Dum Dum Park (5 min walk)',
+      transitType: 'bus',
+      highlights: 'Multiple Asian Paints Sharod Samman winner celebrating intricate craft, poignant themes, and divine artistry.',
+      locationUrl: 'https://maps.google.com/?q=Dum+Dum+Park+Tarun+Sangha+Kolkata'
+    },
+    {
+      id: 'dakshindari-youth',
+      name: 'Dakshindari Youth Club',
+      zone: 'East',
+      theme: 'Monumental Heritage Temple Replica & Chandannagar Lights',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'VIP Road / Ultadanga (Bidhan Nagar Road Station 8 min walk)',
+      transitType: 'bus',
+      highlights: 'Giant temple architectural setups along the VIP Road corridor with spectacular night illuminations.',
+      locationUrl: 'https://maps.google.com/?q=Dakshindari+Youth+Club+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'arjunpur-amra-sabai',
+      name: 'Arjunpur Amra Sabai Club',
+      zone: 'East',
+      theme: 'Avant-Garde Installation Art & Thought-Provoking Themes',
+      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      transit: 'VIP Road / Baguiati Crossing (Dum Dum Metro link)',
+      transitType: 'bus',
+      highlights: 'Renowned for courageous modern concepts, environmental messages, and masterly artistic idols.',
+      locationUrl: 'https://maps.google.com/?q=Arjunpur+Amra+Sabai+Club+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-bj-block',
+      name: 'Salt Lake BJ Block',
+      zone: 'East',
+      theme: 'Regal Palace Architecture & Massive Cultural Fairground',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Durga_Puja_Pandal_in_Salt_Lake%2C_Kolkata_2019.jpg',
+      transit: 'Karunamoyee Metro Station (6 min walk)',
       transitType: 'metro',
-      estYear: '1963',
-      highlights: 'Global award-winning monumental public art installations curated by leading Indian contemporary artists.',
-      locationUrl: 'https://maps.google.com/?q=Tala+Prattoy+Durga+Puja+Kolkata'
+      highlights: 'Extensive fairground with festive food stalls, royal palace replicas, and traditional community adda.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+BJ+Block+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-ag-block',
+      name: 'Salt Lake AG Block',
+      zone: 'East',
+      theme: 'Classical Heritage Indian Temple & Peaceful Garden Setting',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
+      transit: 'Central Park Metro / Karunamoyee Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Intricate temple craftsmanship surrounded by manicured greenery and serene devotional music.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AG+Block+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-laboni-estate',
+      name: 'Salt Lake Labony Estate',
+      zone: 'East',
+      theme: 'Pristine Community Spirit & Traditional Daaker Saaj Idol',
+      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      transit: 'City Centre Metro / Central Park Metro (4 min walk)',
+      transitType: 'metro',
+      highlights: 'One of the oldest community pujas in Salt Lake, famed for warm neighborhood bhog and artistic stages.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+Labony+Estate+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-aj-block',
+      name: 'Salt Lake AJ Block',
+      zone: 'East',
+      theme: 'Creative Folk Traditions & Sustainable Handicraft Heritage',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      transit: 'Karunamoyee / Central Park Metro (7 min walk)',
+      transitType: 'metro',
+      highlights: 'Rich artistic interpretation of Bengal rural heritage using natural fibers, clay, and terracotta.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AJ+Block+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-ah-block',
+      name: 'Salt Lake AH Block',
+      zone: 'East',
+      theme: 'Intricate Architectural Harmony & Community Cultural Evenings',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      transit: 'Karunamoyee Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Splendid classical pandal with joyous cultural competitions, musical evenings, and traditional idol.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AH+Block+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-fd-block',
+      name: 'Salt Lake FD Block',
+      zone: 'East',
+      theme: 'Monumental Conceptual Architecture & Festive Mega Fairground',
+      image: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Durga_Puja_Pandal_in_Salt_Lake%2C_Kolkata_2019.jpg',
+      transit: 'Karunamoyee / Central Park Metro (6 min walk)',
+      transitType: 'metro',
+      highlights: 'Salt Lakes largest crowd-puller featuring colossal architectural replicas and bustling festive melas.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+FD+Block+Durga+Puja+Kolkata'
     }
   ];
 
-  // 12 Iconic Kolkata Food Destinations
+  // Iconic Kolkata Puja Food Destinations
   const FOOD_DATA = [
     {
       id: 'food-1',
       name: 'Arsalan Restaurant',
       category: 'biryani',
       categoryLabel: 'Kolkata Biryani & Mughlai',
-      location: 'Park Circus 7-Point Crossing',
-      metro: 'Park Circus / Rabindra Sadan Metro (Auto link)',
-      desc: 'Legendary fragrant long-grain basmati biryani with melt-in-mouth mutton, giant spiced potato, and rich Chicken Chaap.',
+      location: 'Park Circus 7-Point / Ruby / Ultadanga',
+      metro: 'Park Circus / Hemanta Mukherjee (Ruby) Metro',
+      desc: 'Legendary fragrant long-grain basmati biryani with melt-in-mouth mutton, giant spiced golden potato, and rich Chicken Chaap.',
       mustTry: 'Mutton Special Biryani, Chicken Chaap & Shahi Firni',
-      timings: '11:00 AM - 4:00 AM (Open All Night during Puja)',
+      timings: 'All-Night Puja Service',
       image: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Kolkata_mutton_biryani.jpg',
       locationUrl: 'https://maps.google.com/?q=Arsalan+Restaurant+Park+Circus+Kolkata'
     },
@@ -316,7 +549,7 @@
       metro: 'Shyambazar Metro (1 min walk)',
       desc: 'Historic 100-year-old culinary institution famous for pitch-black, deeply spiced, slow-braised Kosha Mangsho served with fluffy hot Luchis.',
       mustTry: 'Kosha Mangsho with Layered Luchi & Tamarind Chutney',
-      timings: '12:00 PM - 11:30 PM',
+      timings: 'All-Day & Late Evening',
       image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
       locationUrl: 'https://maps.google.com/?q=Golbari+Shyambazar+Kolkata'
     },
@@ -329,7 +562,7 @@
       metro: 'Sovabazar Sutanuti Metro (2 min walk)',
       desc: 'Since 1920, the gold standard for traditional Kolkata snack cutlets with lacy egg webs and pungent Kasundi mustard.',
       mustTry: 'Diamond Fish Fry, Fish Kabiraji & Mutton Brain Cutlet',
-      timings: '4:00 PM - 11:00 PM',
+      timings: 'Afternoon & Evening',
       image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
       locationUrl: 'https://maps.google.com/?q=Mitra+Cafe+Shyambazar+Kolkata'
     },
@@ -338,117 +571,117 @@
       name: 'Peter Cat',
       category: 'food',
       categoryLabel: 'Park Street Continental Icon',
-      location: 'Park Street (Mother Teresa Sarani)',
-      metro: 'Park Street Metro (3 min walk)',
-      desc: 'Calcutta\'s most iconic dining room, globally famous for buttered aromatic rice served with grilled chicken/mutton skewers, egg, and sizzling platters.',
-      mustTry: 'Original Chelo Kebab & Sizzling Steaks',
-      timings: '11:30 AM - 11:30 PM',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+      location: 'Park Street (Near Stephen Court)',
+      metro: 'Park Street Metro (4 min walk)',
+      desc: 'Kolkata heritage institution renowned for its legendary Chelo Kebab served on buttered rice topped with poached egg.',
+      mustTry: 'Original Chelo Kebab, Sizzling Steaks & Cocktail Pitchers',
+      timings: 'Lunch to Late Night',
+      image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
       locationUrl: 'https://maps.google.com/?q=Peter+Cat+Park+Street+Kolkata'
     },
     {
       id: 'food-5',
-      name: 'Flurys',
-      category: 'sweets',
-      categoryLabel: '1927 British Heritage Tearoom',
-      location: 'Park Street',
-      metro: 'Park Street Metro (4 min walk)',
-      desc: 'Established in 1927, this European tearoom is quintessential Kolkata nostalgia for morning English breakfast, rum balls, and pastries.',
-      mustTry: 'Heritage Full English Breakfast, Rum Balls & Viennese Pastries',
-      timings: '7:30 AM - 11:00 PM',
-      image: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://maps.google.com/?q=Flurys+Park+Street+Kolkata'
+      name: 'Mocambo',
+      category: 'food',
+      categoryLabel: 'Park Street Vintage Continental',
+      location: 'Park Street / Free School St',
+      metro: 'Park Street Metro (3 min walk)',
+      desc: 'Serving Kolkata since 1956 with retro dining charm, live organ melodies, and decadent vintage continental recipes.',
+      mustTry: 'Deviled Crab, Chicken Tetrazzini & Baked Alaska',
+      timings: 'Lunch to Late Night',
+      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Mocambo+Restaurant+Park+Street+Kolkata'
     },
     {
       id: 'food-6',
       name: '6 Ballygunge Place',
       category: 'bengali',
-      categoryLabel: 'Authentic Bengali Fine Dining',
-      location: 'Ballygunge / Sector V',
-      metro: 'Ballygunge Phari / Gariahat (5 min walk)',
-      desc: 'Housed in a 100-year-old white colonial bungalow, offering aristocratic Bengali recipes from Thakur Bari (Tagore household) archives.',
-      mustTry: 'Daab Chingri (Prawns in tender coconut), Bhetki Paturi & Grand Thali',
-      timings: '12:00 PM - 11:00 PM',
-      image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
+      categoryLabel: 'Aristocratic Bengali Fine Dining',
+      location: 'Ballygunge / Salt Lake Sector 1',
+      metro: 'Ballygunge Station / City Centre Metro',
+      desc: 'Centuries-old recipes recreated in a restored colonial mansion with banana-leaf service and antique portraits.',
+      mustTry: 'Daab Chingri, Kacha Lonka Mangsho & Chhanar Paturi',
+      timings: 'Lunch & Dinner',
+      image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80',
       locationUrl: 'https://maps.google.com/?q=6+Ballygunge+Place+Kolkata'
     },
     {
       id: 'food-7',
-      name: 'Paramount Cold Drinks & Syrups',
-      category: 'sweets',
-      categoryLabel: '1918 Freedom Era Sherbet Oasis',
-      location: 'College Street (Near College Square)',
-      metro: 'Central / MG Road Metro (4 min walk)',
-      desc: 'Historic 1918 sherbet joint frequented by Subhas Chandra Bose and Satyajit Ray; cooling oasis during hot afternoon pandal walks.',
-      mustTry: 'Daab Sherbet (Tender coconut with secret spices), Passion Fruit & Malai Sherbet',
-      timings: '11:00 AM - 10:00 PM',
-      image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://maps.google.com/?q=Paramount+Cold+Drinks+College+Street+Kolkata'
-    },
-    {
-      id: 'food-8',
-      name: 'Balaram Mullick & Radharaman Mullick',
-      category: 'sweets',
-      categoryLabel: 'Centuries of Sweetmaking Mastery',
-      location: 'Bhowanipore / Salt Lake / Gariahat',
-      metro: 'Netaji Bhavan Metro (3 min walk)',
-      desc: 'Since 1885, pioneers of revolutionary confectionery, creating melt-in-mouth fusion and classical sandesh sweets.',
-      mustTry: 'Baked Rosogolla, Mishti Doi, Mango Gelato Sandesh & Nolen Gur Soufflé',
-      timings: '8:00 AM - 11:00 PM',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fc/Bengali_sandesh_Kolkata_-_West_Bengal_-_DSC_0044.jpg',
-      locationUrl: 'https://maps.google.com/?q=Balaram+Mullick+Radharaman+Mullick+Bhowanipore+Kolkata'
-    },
-    {
-      id: 'food-9',
-      name: 'Nizam\'s',
-      category: 'food',
-      categoryLabel: 'Birthplace of the Kathi Roll',
-      location: 'New Market (Hogg Street / Esplanade)',
-      metro: 'Esplanade Metro (5 min walk)',
-      desc: 'The historic restaurant that invented the Kathi Roll in 1932: smoky kebabs wrapped in flaky parathas with chopped onions and lime.',
-      mustTry: 'Double Mutton Single Egg Kathi Roll & Beef/Chicken Kebabs',
-      timings: '11:00 AM - 11:30 PM',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/c/c5/Paneer_kathi_roll_homemade.jpg',
-      locationUrl: 'https://maps.google.com/?q=Nizam+Restaurant+New+Market+Kolkata'
-    },
-    {
-      id: 'food-10',
-      name: 'Dacre Lane (Decker\'s Lane)',
-      category: 'food',
-      categoryLabel: 'Kolkata\'s Street Food Mecca',
-      location: 'Esplanade / BBD Bagh',
-      metro: 'Chandni Chowk / Esplanade Metro (3 min walk)',
-      desc: 'Legendary office alleyway acclaimed by UNESCO for historic street cuisine, led by Chittoda\'s pepper-infused chicken stew.',
-      mustTry: 'Chittoda\'s Chicken Stew with Butter Toast, Fish Fingers & Mutton Toast',
-      timings: '9:00 AM - 9:30 PM',
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://maps.google.com/?q=Dacres+Lane+Esplanade+Kolkata'
-    },
-    {
-      id: 'food-11',
       name: 'Bhojohori Manna',
       category: 'bengali',
-      categoryLabel: 'Grand Homestyle Bengali Feast',
-      location: 'Gariahat / Sector V / Hatibagan',
-      metro: 'Gariahat Crossing (2 min walk)',
-      desc: 'Named after Manna Dey\'s famous song, serving authentic homestyle seasonal fish curries, kosha dishes, and Gobindobhog delicacies.',
-      mustTry: 'Ilish Bhapa, Chingri Malai Curry, Kacha Lonka Murgi & Chitol Muitha',
-      timings: '12:00 PM - 10:30 PM',
-      image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80',
+      categoryLabel: 'Homestyle Bengali Cuisine',
+      location: 'Hindustan Road (Gariahat) / Salt Lake',
+      metro: 'Kalighat Metro / Karunamoyee Metro',
+      desc: 'Named after the famous Manna Dey song, celebrated for authentic home-cooked delicacies and river fish specials.',
+      mustTry: 'Ilish Barishali, Bhetki Paturi & Nolen Gurer Ice Cream',
+      timings: 'All-Day Dining',
+      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
       locationUrl: 'https://maps.google.com/?q=Bhojohori+Manna+Gariahat+Kolkata'
     },
     {
-      id: 'food-12',
-      name: 'Community Pandal Mahabhog',
+      id: 'food-8',
+      name: 'Paramount Sherbets & Syrups',
+      category: 'sweets',
+      categoryLabel: 'Historic Century-Old Sherbet Institution',
+      location: 'College Square (Bankim Chatterjee St)',
+      metro: 'Central / MG Road Metro (3 min walk)',
+      desc: 'Since 1918, founded by freedom fighters, patronized by Netaji Subhash Chandra Bose and Satyajit Ray.',
+      mustTry: 'Daab Sherbet with Tender Coconut Malai, Cocoa Malai & Cream Kesar',
+      timings: 'Morning to Night',
+      image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Paramount+Sherbets+College+Square+Kolkata'
+    },
+    {
+      id: 'food-9',
+      name: 'Campari',
       category: 'bengali',
-      categoryLabel: 'Sacred Divine Prasadam',
-      location: 'All Major Community Pandals (Bagbazar, Maddox, College Sq)',
-      metro: 'Nearest Metro to any major pandal',
-      desc: 'Sacred festive prasad cooked with pure desi ghee and fragrant Gobindobhog rice, served on sal leaves to thousands of devotees.',
-      mustTry: 'Bhoger Khichuri, Labra (Mixed Veg), Beguni, Plastic Chutney & Nolen Gur Payesh',
-      timings: '1:30 PM - 3:30 PM (Saptami to Navami)',
-      image: 'https://images.unsplash.com/photo-1596797038530-2c107229654b?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://maps.google.com/?q=Bagbazar+Sarbojonin+Durgotsav+Kolkata'
+      categoryLabel: 'Iconic South Kolkata Fry Joint',
+      location: 'Gariahat (Near Singhi Park / Dover Lane)',
+      metro: 'Kalighat Metro auto-link / Gariahat Crossing',
+      desc: 'Legendary standing snack counter serving crisp breadcrumbed diamond fish fries and royal mutton rolls to puja hoppers.',
+      mustTry: 'Bhetki Fish Roll, Chicken Cutlet & Mutton Roll',
+      timings: 'Afternoon & Evening',
+      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Campari+Gariahat+Kolkata'
+    },
+    {
+      id: 'food-10',
+      name: 'Kusum Rolls',
+      category: 'food',
+      categoryLabel: 'Kolkata Street Kati Roll Pioneer',
+      location: 'Park Street (Opposite Peter Cat)',
+      metro: 'Park Street Metro (3 min walk)',
+      desc: 'The iconic midnight snacking joint famed for flaky parathas wrapped around succulent chicken and mutton kebabs with lime and green chillies.',
+      mustTry: 'Double Egg Double Chicken Roll, Cheese Mutton Roll',
+      timings: 'Open Late Night during Puja',
+      image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Kusum+Rolls+Park+Street+Kolkata'
+    },
+    {
+      id: 'food-11',
+      name: 'Chittaranjan Sweets',
+      category: 'sweets',
+      categoryLabel: 'Centenary Sweet Confectioner',
+      location: 'Shyambazar (Sovabazar area)',
+      metro: 'Shyambazar Metro (2 min walk)',
+      desc: 'Over 115 years old, creator of spongy white syrupy Rosogollas and pure chhana sweetmeats made without additives.',
+      mustTry: 'Sponge Rosogolla, Madhuparka & Nolen Gur Sandesh',
+      timings: 'Morning to Night',
+      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Chittaranjan+Sweets+Shyambazar+Kolkata'
+    },
+    {
+      id: 'food-12',
+      name: 'Balaram Mullick & Radharaman Mullick',
+      category: 'sweets',
+      categoryLabel: 'Modern & Traditional Mishti Pioneer',
+      location: 'Bhowanipore (Near 75 Palli & 64 Palli)',
+      metro: 'Netaji Bhavan Metro (3 min walk)',
+      desc: 'Since 1885, pioneers of artisanal baked rosogolla, melt-in-mouth nolen gur delicacies, and festive dry-fruit sweets.',
+      mustTry: 'Baked Rosogolla, Chocolate Sandesh & Jalbhara Talsash',
+      timings: 'Morning to Night',
+      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
+      locationUrl: 'https://maps.google.com/?q=Balaram+Mullick+Radharaman+Mullick+Bhowanipore+Kolkata'
     }
   ];
 
@@ -1157,7 +1390,6 @@
           btn.className = 'pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30';
         }
 
-        soundEngine.playBell();
         showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
         renderSavedItinerary();
       };
@@ -1245,9 +1477,7 @@
                 <div class="absolute top-3 right-3 bg-secondary-container dark:bg-amber-400 text-on-secondary-container dark:text-black px-3 py-1 rounded-full font-label-sm text-xs font-bold flex items-center gap-1 shadow-md">
                   <span class="material-symbols-outlined text-[14px]">restaurant</span> ${food.categoryLabel}
                 </div>
-                <div class="absolute bottom-3 left-3 bg-surface/95 dark:bg-[#12100a]/95 backdrop-blur-md text-primary dark:text-amber-300 px-3 py-1 rounded-full font-label-sm text-xs font-bold border border-outline-variant/40 dark:border-amber-400/30 shadow-sm flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[14px]">schedule</span> ${food.timings}
-                </div>
+
               </div>
 
               <div class="p-6 flex flex-col flex-1 justify-between gap-4">
@@ -1271,7 +1501,13 @@
                     rel="noopener"
                     class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
                   >
-                    <span class="material-symbols-outlined text-[16px]">near_me</span> Get Directions
+                    <!-- Google Maps Logo -->
+                    <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
+                      <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
+                      <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
+                      <circle cx="16" cy="12" r="3" fill="#4285F4"/>
+                    </svg>
+                    <span>Get Directions</span>
                   </a>
                   <button 
                     class="food-bookmark-btn w-10 h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-primary rounded-xl flex items-center justify-center transition-colors ${isSaved ? 'text-primary dark:text-amber-300 bg-primary/10 dark:bg-amber-400/20' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300'}"
@@ -1348,7 +1584,13 @@
                     rel="noopener"
                     class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
                   >
-                    <span class="material-symbols-outlined text-[16px]">near_me</span> Get Directions
+                    <!-- Google Maps Logo -->
+                    <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
+                      <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
+                      <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
+                      <circle cx="16" cy="12" r="3" fill="#4285F4"/>
+                    </svg>
+                    <span>Get Directions</span>
                   </a>
                   <button 
                     class="shop-bookmark-btn w-10 h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-primary rounded-xl flex items-center justify-center transition-colors ${isSaved ? 'text-primary dark:text-amber-300 bg-primary/10 dark:bg-amber-400/20' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300'}"
@@ -1592,31 +1834,52 @@
   }
 
   // --- 10. RENDER SAVED ITINERARY ---
-  function renderSavedItinerary() {
+  let activeSavedTab = 'all';
+
+  function renderSavedItinerary(filterCategory = activeSavedTab) {
+    activeSavedTab = filterCategory;
     const container = document.getElementById('saved-itinerary-container');
-    const countBadge = document.getElementById('saved-count-badge');
-    const bookmarks = Storage.getBookmarks();
-
-    if (countBadge) {
-      countBadge.textContent = bookmarks.length;
-      countBadge.classList.toggle('hidden', bookmarks.length === 0);
-    }
-
     if (!container) return;
 
-    if (bookmarks.length === 0) {
+    const bookmarks = Storage.getBookmarks();
+    
+    // Split into categories
+    const pandalBookmarks = bookmarks.filter(b => b.category === 'Pandal');
+    const foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
+    const myPlans = customPlans || [];
+
+    // Update Tab Badges
+    const badgeAll = document.getElementById('saved-badge-all');
+    const badgePandals = document.getElementById('saved-badge-pandals');
+    const badgeFood = document.getElementById('saved-badge-food');
+    const badgePlans = document.getElementById('saved-badge-plans');
+
+    if (badgeAll) badgeAll.textContent = bookmarks.length + myPlans.length;
+    if (badgePandals) badgePandals.textContent = pandalBookmarks.length;
+    if (badgeFood) badgeFood.textContent = foodBookmarks.length;
+    if (badgePlans) badgePlans.textContent = myPlans.length;
+
+    // Update active tab styling
+    document.querySelectorAll('.saved-tab-btn').forEach(btn => {
+      const cat = btn.dataset.category;
+      if (cat === activeSavedTab) {
+        btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
+        btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
+      } else {
+        btn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
+        btn.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
+      }
+    });
+
+    if (bookmarks.length === 0 && myPlans.length === 0) {
       container.innerHTML = `
-        <div class="text-center py-16 glass-panel rounded-2xl p-8 border border-outline-variant/30 dark:border-amber-400/20 max-w-lg mx-auto reveal-on-scroll">
-          <span class="material-symbols-outlined text-5xl text-outline dark:text-amber-300 mb-3">bookmark_border</span>
-          <h3 class="font-headline-md text-xl text-on-surface dark:text-white font-bold mb-1">Your Itinerary is Empty</h3>
-          <p class="text-on-surface-variant dark:text-[#ded5c7] text-sm mb-6">Explore Pandals, Food Spots and Shopping Bazaars, and tap the bookmark icon to create your custom Puja schedule.</p>
-          <div class="flex justify-center gap-3">
-            <a href="#pandals" class="inline-flex items-center gap-2 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black px-6 py-2.5 rounded-full font-label-sm text-sm font-bold transition-all">
-              <span class="material-symbols-outlined text-[18px]">explore</span> Explore Pandals
-            </a>
-            <a href="#food-shopping" class="inline-flex items-center gap-2 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-white px-6 py-2.5 rounded-full font-label-sm text-sm font-bold transition-all border dark:border-amber-400/30">
-              <span class="material-symbols-outlined text-[18px]">restaurant</span> Explore Food
-            </a>
+        <div class="text-center py-16 px-4 glass-panel rounded-3xl p-8 border border-outline-variant/30 dark:border-amber-400/20 max-w-md mx-auto reveal-on-scroll">
+          <span class="material-symbols-outlined text-5xl text-outline dark:text-amber-300/60 mb-3">bookmark_border</span>
+          <h3 class="font-headline-md text-xl text-on-surface dark:text-white font-bold mb-2">Your Itinerary is Empty</h3>
+          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed mb-6">Explore the 40+ Pandals, iconic dining spots, or create your customized festival plan to save them here.</p>
+          <div class="flex flex-wrap justify-center gap-2.5">
+            <a href="#pandals" class="bg-primary dark:bg-amber-400 text-white dark:text-black px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:scale-105 transition-all">Explore Pandals</a>
+            <a href="#food-shopping" class="bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] px-4 py-2 rounded-xl text-xs font-bold border border-outline-variant/30 hover:border-primary transition-all">Food & Bazaars</a>
           </div>
         </div>
       `;
@@ -1624,63 +1887,153 @@
       return;
     }
 
-    container.innerHTML = `
-      <div class="flex items-center justify-between mb-6 reveal-on-scroll">
-        <h3 class="font-headline-md text-xl text-on-surface dark:text-white font-bold">Bookmarked Locations (${bookmarks.length})</h3>
-        <div class="flex gap-2">
-          <button id="export-itinerary-btn" class="bg-surface-container-high dark:bg-[#252016] hover:bg-surface-container text-on-surface dark:text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-outline-variant/30 dark:border-amber-400/30">
-            <span class="material-symbols-outlined text-[16px] text-primary dark:text-amber-300">file_download</span> Export JSON
-          </button>
-          <button id="clear-itinerary-btn" class="bg-error/10 hover:bg-error text-error hover:text-on-error px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all border border-error/20">
-            <span class="material-symbols-outlined text-[16px]">delete_sweep</span> Clear All
-          </button>
-        </div>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        ${bookmarks.map((b, idx) => `
-          <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-4 reveal-on-scroll reveal-delay-${(idx % 4) + 1}">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-bold">${b.category || 'Pandal'}</span>
-                ${b.zone ? `<span class="text-xs text-on-surface-variant dark:text-[#ded5c7]">${b.zone}</span>` : ''}
-              </div>
-              <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
-              <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
-                <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">near_me</span> ${b.location}
-              </p>
+    let html = '';
+
+    // 1. PANDALS & TRANSIT SECTION
+    if (activeSavedTab === 'all' || activeSavedTab === 'pandals') {
+      if (pandalBookmarks.length > 0) {
+        html += `
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary dark:text-amber-300">explore</span> Saved Pandals & Transit (${pandalBookmarks.length})
+              </h3>
             </div>
-            <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
-              <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">directions</span> Navigate in Maps
-              </a>
-              <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors" data-id="${b.id}">
-                <span class="material-symbols-outlined text-[18px]">delete</span>
-              </button>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${pandalBookmarks.map((b, idx) => `
+                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-4 reveal-on-scroll">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-bold">${b.zone || 'Kolkata'} Zone</span>
+                    </div>
+                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
+                    <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
+                      <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">near_me</span> ${b.location}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
+                    <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
+                      <!-- Google Maps Logo -->
+                      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
+                        <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
+                        <circle cx="16" cy="12" r="3" fill="#4285F4"/>
+                      </svg>
+                      Directions
+                    </a>
+                    <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
+                      <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
             </div>
           </div>
-        `).join('')}
-      </div>
-    `;
+        `;
+      } else if (activeSavedTab === 'pandals') {
+        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No pandals saved yet. Visit Pandals & Transit to bookmark.</div>`;
+      }
+    }
 
-    document.getElementById('clear-itinerary-btn')?.addEventListener('click', () => {
-      if (confirm('Clear all saved pandals and food items from your itinerary?')) {
+    // 2. FOOD & SHOPPING SECTION
+    if (activeSavedTab === 'all' || activeSavedTab === 'food-shopping') {
+      if (foodBookmarks.length > 0) {
+        html += `
+          <div class="space-y-4 pt-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary dark:text-amber-300">restaurant</span> Saved Food & Shopping Spots (${foodBookmarks.length})
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${foodBookmarks.map((b, idx) => `
+                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-4 reveal-on-scroll">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                      <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-300 text-[11px] font-bold">${b.category}</span>
+                    </div>
+                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
+                    <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
+                      <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">pin_drop</span> ${b.location}
+                    </p>
+                  </div>
+                  <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
+                    <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
+                      <!-- Google Maps Logo -->
+                      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 32 32" fill="none">
+                        <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
+                        <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
+                        <circle cx="16" cy="12" r="3" fill="#4285F4"/>
+                      </svg>
+                      Directions
+                    </a>
+                    <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
+                      <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (activeSavedTab === 'food-shopping') {
+        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No food or shopping spots saved yet. Visit Food & Shopping to bookmark.</div>`;
+      }
+    }
+
+    // 3. SAVED / CUSTOM PLANS SECTION
+    if (activeSavedTab === 'all' || activeSavedTab === 'plans') {
+      if (myPlans.length > 0) {
+        html += `
+          <div class="space-y-4 pt-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary dark:text-amber-300">event_note</span> Custom Festival Plans (${myPlans.length})
+              </h3>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${myPlans.map((p, idx) => `
+                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 reveal-on-scroll">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-1">
+                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-bold">${p.day_tag || 'Custom Plan'}</span>
+                      <span class="text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60">${p.date_str || ''}</span>
+                    </div>
+                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${p.title}</h4>
+                    ${p.route_summary ? `<p class="text-xs text-primary dark:text-amber-300 truncate">📍 ${p.route_summary}</p>` : ''}
+                  </div>
+                  <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between">
+                    <a href="#plans" onclick="renderFestivalPlans('custom')" class="text-xs font-bold text-primary dark:text-amber-300 hover:underline">View in Plans</a>
+                    <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-xs font-semibold cursor-pointer">Delete</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (activeSavedTab === 'plans') {
+        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No custom plans saved yet. Click 'Make Your Own Plan' in Puja Plans.</div>`;
+      }
+    }
+
+    container.innerHTML = html;
+
+    // Attach Category Tab click listeners
+    document.querySelectorAll('.saved-tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        const cat = btn.dataset.category;
+        renderSavedItinerary(cat);
+      };
+    });
+
+    document.getElementById('clear-all-bookmarks-btn')?.addEventListener('click', () => {
+      if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
         Storage.clearBookmarks();
         renderSavedItinerary();
         renderPandals();
         renderFoodAndShopping();
         showToast('Itinerary cleared', 'delete');
       }
-    });
-
-    document.getElementById('export-itinerary-btn')?.addEventListener('click', () => {
-      const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(Storage.getBookmarks(), null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute('href', dataStr);
-      downloadAnchor.setAttribute('download', 'Akalbodhon_Puja_Itinerary.json');
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast('Akalbodhon Itinerary JSON exported!', 'download');
     });
 
     document.querySelectorAll('.remove-single-bookmark').forEach(btn => {
@@ -1702,6 +2055,7 @@
 
   // --- 11. DETAILS MODAL HANDLER ---
   function openDetailModal(item, type = 'pandal') {
+    document.body.classList.add('modal-open');
     const modal = document.getElementById('pandal-detail-modal');
     if (!modal) return;
 
@@ -1727,7 +2081,7 @@
       modal.querySelector('#modal-pandal-theme').textContent = item.desc;
       if (estContainer) {
         estContainer.classList.remove('hidden');
-        modal.querySelector('#modal-pandal-est').textContent = 'Historic Landmark';
+        if (estContainer) estContainer.classList.add('hidden');
       }
       modal.querySelector('#modal-pandal-transit').textContent = `${item.location} • ${item.metro}`;
       modal.querySelector('#modal-pandal-highlights').textContent = item.mustTry;
@@ -1811,67 +2165,132 @@
     setTimeout(initScrollReveal, 60);
   }
 
-  // --- PUJA RADIO 5 CURATED SONGS & MAHALAYA ENGINE ---
+  // Curated Songs Grouped by 3 Vibe Modes
   const PUJA_RADIO_SONGS = [
+    // --- 1. PUJO HIP HOP & FESTIVE BEATS MODE ---
     {
-      id: 'elo-je-maa',
-      title: 'Elo Je Maa',
-      artist: 'Abhijeet Bhattacharya & Shreya Ghoshal',
-      composer: 'Jeet Gannguli',
-      label: 'SVF Music',
-      film: 'Challenge 2',
-      duration: '4:22',
-      ytId: 'A3nFh_M5D8c',
-      spotifyUrl: 'https://open.spotify.com/search/Elo%20Je%20Maa%20SVF',
+      id: 'dugga-elo',
+      mode: 'hiphop',
+      title: 'Dugga Elo',
+      artist: 'Monali Thakur & Guddu',
+      uploader: 'SVF',
+      duration: '3:45',
+      ytId: '6M-9X9f6n5Y',
+      spotifyUrl: 'https://open.spotify.com/search/Dugga%20Elo%20Monali%20Thakur',
+      youtubeUrl: 'https://www.youtube.com/watch?v=6M-9X9f6n5Y',
       cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
     },
     {
-      id: 'dhak-baja-kashor-baaja',
-      title: 'Dhak Baja Kashor Baaja',
-      artist: 'Shreya Ghoshal',
-      composer: 'Jeet Gannguli',
-      label: 'SVF Music',
-      film: 'Durga Puja Special',
-      duration: '3:55',
-      ytId: 'A3nFh_M5D8c',
-      spotifyUrl: 'https://open.spotify.com/search/Dhak%20Baja%20Kashor%20Baaja%20Shreya%20Ghoshal',
-      cover: 'logo.jpg'
-    },
-    {
-      id: 'dugga-maa-asche',
-      title: 'Dugga Maa Asche',
-      artist: 'Infra',
-      composer: 'Jakiruddin Khan & Infra',
-      label: 'Infra Music',
-      film: 'Festive Single',
-      duration: '3:40',
-      ytId: 'GzQ3Z4W6i-s',
-      spotifyUrl: 'https://open.spotify.com/search/Dugga%20Maa%20Asche%20Infra',
+      id: 'bolo-dugga-maiki',
+      mode: 'hiphop',
+      title: 'Bolo Dugga Maiki',
+      artist: 'Arijit Singh & Nikhita Gandhi',
+      uploader: 'SVF Music',
+      duration: '4:12',
+      ytId: 'X3s3uG1y-bA',
+      spotifyUrl: 'https://open.spotify.com/search/Bolo%20Dugga%20Maiki%20Arijit%20Singh',
+      youtubeUrl: 'https://www.youtube.com/watch?v=X3s3uG1y-bA',
       cover: 'logo.jpg'
     },
     {
       id: 'dhaker-taaley',
+      mode: 'hiphop',
       title: 'Dhaker Taaley',
-      artist: 'Abhijeet, Monali Thakur & Chorus',
-      composer: 'Jeet Gannguli',
-      label: 'SVF Music',
-      film: 'Poran Jai Jolia Re',
+      artist: 'Abhijeet Bhattacharya, Monali Thakur & Chorus',
+      uploader: 'SVF Music',
       duration: '4:18',
       ytId: 'o6A_qT3v2rI',
-      spotifyUrl: 'https://open.spotify.com/search/Dhaker%20Taaley%20SVF',
+      spotifyUrl: 'https://open.spotify.com/search/Dhaker%20Taaley%20Abhijeet',
+      youtubeUrl: 'https://www.youtube.com/watch?v=o6A_qT3v2rI',
+      cover: 'logo.jpg'
+    },
+    {
+      id: 'dhak-baja-kashor-baaja',
+      mode: 'hiphop',
+      title: 'Dhak Baja Kashor Baaja',
+      artist: 'Shreya Ghoshal & Jeet Gannguli',
+      uploader: 'SVF Music',
+      duration: '3:55',
+      ytId: 'GzQ3Z4W6i-s',
+      spotifyUrl: 'https://open.spotify.com/search/Dhak%20Baja%20Kashor%20Baaja%20Shreya%20Ghoshal',
+      youtubeUrl: 'https://www.youtube.com/watch?v=GzQ3Z4W6i-s',
+      cover: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80'
+    },
+
+    // --- 2. PUJA PLEASANT MODE ---
+    {
+      id: 'elo-je-maa',
+      mode: 'pleasant',
+      title: 'Elo Je Maa',
+      artist: 'Abhijeet Bhattacharya & Shreya Ghoshal',
+      uploader: 'SVF Music',
+      duration: '4:22',
+      ytId: 'A3nFh_M5D8c',
+      spotifyUrl: 'https://open.spotify.com/search/Elo%20Je%20Maa%20Abhijeet',
+      youtubeUrl: 'https://www.youtube.com/watch?v=A3nFh_M5D8c',
       cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
     },
     {
-      id: 'dugga-maa',
-      title: 'Dugga Maa',
-      artist: 'Arijit Singh',
-      composer: 'Arindom',
-      label: 'SVF Music',
-      film: 'Bolo Dugga Maiki',
-      duration: '3:52',
-      ytId: 'sPuZ0Q3KDWo',
-      spotifyUrl: 'https://open.spotify.com/track/0U8dYmYjR6hV8jT2zL5vK8',
+      id: 'joy-maa-durga',
+      mode: 'pleasant',
+      title: 'Joy Maa Durga',
+      artist: 'Pandit Ajoy Chakrabarty & Kaushiki Chakraborty',
+      uploader: 'Saregama Bengali',
+      duration: '5:10',
+      ytId: 'YQyo8QeoYhc',
+      spotifyUrl: 'https://open.spotify.com/search/Joy%20Maa%20Durga%20Ajoy%20Chakrabarty',
+      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
       cover: 'logo.jpg'
+    },
+    {
+      id: 'bajlo-tomar-alor-benu',
+      mode: 'pleasant',
+      title: 'Bajlo Tomar Alor Benu',
+      artist: 'Suprava Sarkar',
+      uploader: 'Saregama Bengali',
+      duration: '3:30',
+      ytId: 'YQyo8QeoYhc',
+      spotifyUrl: 'https://open.spotify.com/search/Bajlo%20Tomar%20Alor%20Benu',
+      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
+      cover: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=400&q=80'
+    },
+
+    // --- 3. MAHALAYA MODE ---
+    {
+      id: 'mahalaya-full-chandi',
+      mode: 'mahalaya',
+      title: 'Mahishasuramardini (Full Dawn Narration)',
+      artist: 'Birendra Krishna Bhadra',
+      uploader: 'Saregama Bengali',
+      duration: '1:28:45',
+      ytId: 'YQyo8QeoYhc',
+      spotifyUrl: 'https://open.spotify.com/album/42v3gD94Q8JoxD57sL20Qx',
+      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
+      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+    },
+    {
+      id: 'jaago-tumi-jaago',
+      mode: 'mahalaya',
+      title: 'Jaago Tumi Jaago',
+      artist: 'Dwijen Mukhopadhyay',
+      uploader: 'Saregama Bengali',
+      duration: '4:15',
+      ytId: 'YQyo8QeoYhc',
+      spotifyUrl: 'https://open.spotify.com/search/Jaago%20Tumi%20Jaago%20Dwijen%20Mukhopadhyay',
+      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
+      cover: 'logo.jpg'
+    },
+    {
+      id: 'rupang-dehi-jayang-dehi',
+      mode: 'mahalaya',
+      title: 'Rupang Dehi Jayang Dehi',
+      artist: 'Birendra Krishna Bhadra & Chorus',
+      uploader: 'Saregama Bengali',
+      duration: '4:50',
+      ytId: 'YQyo8QeoYhc',
+      spotifyUrl: 'https://open.spotify.com/search/Rupang%20Dehi%20Jayang%20Dehi%20Birendra%20Krishna%20Bhadra',
+      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
+      cover: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80'
     }
   ];
 
@@ -1880,57 +2299,79 @@
   let activeRadioSongId = null;
 
   function renderPujaRadioSongs() {
-    const listContainer = document.getElementById('puja-radio-songs-list');
-    if (!listContainer) return;
+    const hiphopContainer = document.getElementById('radio-songs-hiphop-list');
+    const pleasantContainer = document.getElementById('radio-songs-pleasant-list');
+    const mahalayaContainer = document.getElementById('radio-songs-mahalaya-list');
+    const legacyList = document.getElementById('puja-radio-songs-list');
 
-    listContainer.innerHTML = PUJA_RADIO_SONGS.map((song, index) => `
+    const renderSongItem = (song, index) => `
       <div 
         class="glass-panel p-4 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-300 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group"
         id="song-card-${song.id}"
       >
-        <div class="flex items-center gap-4 w-full sm:w-auto min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-sm text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20 group-hover:scale-105 transition-transform">
+        <div class="flex items-center gap-3.5 w-full sm:w-auto min-w-0">
+          <div class="w-10 h-10 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-xs text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20">
             0${index + 1}
           </div>
           <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30">
-            <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover" />
+            <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
           </div>
           <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <h4 class="font-display font-bold text-base text-on-surface dark:text-white truncate">${song.title}</h4>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 shrink-0">${song.label}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 shrink-0">${song.uploader}</span>
             </div>
-            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] truncate mt-0.5">${song.artist} • ${song.composer}</p>
+            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] truncate mt-0.5">${song.artist}</p>
           </div>
         </div>
 
-        <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
+        <div class="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
           <span class="text-xs font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
           
-          <!-- Spotify Direct Link -->
+          <!-- Spotify Direct Play Link -->
           <a 
             href="${song.spotifyUrl}" 
             target="_blank" 
             rel="noopener noreferrer" 
-            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all"
-            title="Open on Spotify"
+            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-sm"
+            title="Stream on Spotify"
           >
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
           </a>
 
-          <!-- Play Button -->
+          <!-- YouTube Direct Play Link -->
+          <a 
+            href="${song.youtubeUrl}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="w-9 h-9 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-500/20 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white flex items-center justify-center transition-all shadow-sm"
+            title="Stream on YouTube"
+          >
+            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+
+          <!-- Interactive Play In-App Button -->
           <button 
-            class="play-radio-song-btn px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+            class="play-radio-song-btn px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
             data-song-id="${song.id}"
             data-yt-id="${song.ytId}"
             data-title="${song.title}"
             data-artist="${song.artist}"
           >
-            <span class="material-symbols-outlined text-[16px]">play_arrow</span> Play Song
+            <span class="material-symbols-outlined text-[16px]">play_arrow</span> Play
           </button>
         </div>
       </div>
-    `).join('');
+    `;
+
+    const hiphopSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'hiphop');
+    const pleasantSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'pleasant');
+    const mahalayaSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'mahalaya');
+
+    if (hiphopContainer) hiphopContainer.innerHTML = hiphopSongs.map(renderSongItem).join('');
+    if (pleasantContainer) pleasantContainer.innerHTML = pleasantSongs.map(renderSongItem).join('');
+    if (mahalayaContainer) mahalayaContainer.innerHTML = mahalayaSongs.map(renderSongItem).join('');
+    if (legacyList) legacyList.innerHTML = PUJA_RADIO_SONGS.map(renderSongItem).join('');
 
     // Attach play song handlers
     document.querySelectorAll('.play-radio-song-btn').forEach(btn => {
@@ -1942,6 +2383,7 @@
         playRadioSong(songId, ytId, title, artist);
       });
     });
+  });
   }
 
   function playRadioSong(songId, ytId, title, artist) {
@@ -2060,7 +2502,21 @@
     }
   }
 
-  // --- 14. THEME TOGGLE (LIGHT / DARK) ---
+  // --- 14. THEME TOGGLE (LIGHT / DARK WITH SUN <-> MOON MORPHING) ---
+  function triggerCelestialThemeTransition(toDark) {
+    const overlay = document.getElementById('theme-transition-overlay');
+    if (!overlay) return;
+
+    overlay.classList.remove('morph-to-dark', 'morph-to-light', 'active');
+    void overlay.offsetWidth; // Force reflow
+
+    overlay.classList.add(toDark ? 'morph-to-dark' : 'morph-to-light', 'active');
+
+    setTimeout(() => {
+      overlay.classList.remove('active');
+    }, 750);
+  }
+
   function initTheme() {
     const themeBtn = document.getElementById('theme-toggle-btn');
     const savedTheme = localStorage.getItem(Storage.KEY_THEME) || 'light';
@@ -2075,10 +2531,13 @@
 
     if (themeBtn) {
       themeBtn.addEventListener('click', () => {
-        const isDark = document.documentElement.classList.toggle('dark');
+        const isDark = !document.documentElement.classList.contains('dark');
+        triggerCelestialThemeTransition(isDark);
+
+        document.documentElement.classList.toggle('dark', isDark);
         document.documentElement.classList.toggle('light', !isDark);
         localStorage.setItem(Storage.KEY_THEME, isDark ? 'dark' : 'light');
-        showToast(isDark ? 'Pandal Night High-Contrast View activated' : 'Day Parchment View activated', isDark ? 'dark_mode' : 'light_mode');
+        showToast(isDark ? 'Pandal Night View activated' : 'Off-White Day View activated', isDark ? 'dark_mode' : 'light_mode');
       });
     }
   }
@@ -2155,34 +2614,29 @@
     { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken white wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
   ];
 
-  // 6 Canonical Pre-Prepared Festival Master Reference Plans
+  // 6 Pandal-Hopping Festival Master Reference Plans
   const MASTER_PUJA_PLANS = [
     {
       id: 'plan-mahalaya',
-      title: 'Mahalaya Dawn Awakening & River Ghat Tarpan Trail',
+      title: 'Mahalaya Artisan Trail: Kumartuli Deity Eye-Drawing (Chokkhu Daan)',
       day_tag: 'Mahalaya',
       day_key: 'mahalaya',
-      date_str: '10 October 2026 (Dawn Tarpan)',
+      date_str: '10 October 2026 (Dawn Chokkhu Daan)',
       creator_name: 'Akalbodhon Curators',
       creator_avatar: '🪔',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Ahiritola Ghat -> Babughat Promenade -> Kumartuli Sculptors -> Sovabazar Rajbari',
-      pandals: ['Sovabazar Rajbari', 'Kumartuli Park'],
+      route_summary: 'Sovabazar Metro -> Kumartuli Artisan Quarter -> Kumartuli Park -> Ahiritola Sarbojanin',
+      pandals: ['Kumartuli Park Sarbojanin', 'Ahiritola Sarbojanin Durgotsab', 'Sovabazar Rajbari', 'Beniatola Sarbojanin Durgotsav'],
       food_stops: [
-        { name: 'Mitra Cafe (Shyambazar)', dish: 'Original Mutton Kabiraji & Darjeeling Tea' },
-        { name: 'Ahiritola Ghat Kachaudi Stall', dish: 'Hing Kochuri with Chholar Daal & Hot Jalebi' }
+        { name: 'Mitra Cafe (Shyambazar)', dish: 'Original Diamond Fish Fry & Hot Tea' },
+        { name: 'Chittaranjan Sweets', dish: 'Fresh Sponge Rosogollas' }
       ],
-      rituals: [
-        { name: 'Dawn Mahishasuramardini Broadcast', time: '04:00 AM', desc: 'Birendra Krishna Bhadra recitation & Chandi Path' },
-        { name: 'Ganga Tarpan at Ahiritola Ghat', time: '06:00 AM', desc: 'Ancestral homage & sacred dip in Bhagirathi' },
-        { name: 'Chokkhu Daan at Kumartuli', time: '10:00 AM', desc: 'Master artisans painting divine eyes on Goddess Durga' }
-      ],
-      custom_notes: 'Start before dawn to experience the misty sunrise over Howrah Bridge while reverberations of Shankha fill the river air.'
+      custom_notes: 'Arrive at Kumartuli pottery lanes early morning to witness the legendary master sculptors draw the third eye and lotus eyes (Chokkhu Daan) on the clay idols of Maa Durga, heralding the advent of Devi Paksha.'
     },
     {
       id: 'plan-shasthi',
-      title: 'Maha Shasthi Bodhon & North Kolkata Aristocratic Heritage Circuit',
+      title: 'Maha Shasthi North Kolkata Heritage & Bodhon Pandal Trail',
       day_tag: 'Maha Shasthi',
       day_key: 'shasthi',
       date_str: '17 October 2026',
@@ -2190,22 +2644,16 @@
       creator_avatar: '🌺',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Shyambazar Metro -> Bagbazar Sarbojonin -> Kumartuli Park -> Sovabazar Rajbari Natmandir',
-      pandals: ['Bagbazar Sarbojonin', 'Kumartuli Park', 'Sovabazar Rajbari', 'Santosh Mitra Square (Lebutala)'],
+      route_summary: 'Shyambazar Metro -> Bagbazar -> Hatibagan -> Nalin Sarkar St -> Kashi Bose Lane -> Chaltabagan',
+      pandals: ['Bagbazar Sarbojanin', 'Hatibagan Sarbojanin', 'Nalin Sarkar Street Sarbojanin', 'Kashi Bose Lane Durga Puja Samity', 'Maniktala Chaltabagan Lohapatty'],
       food_stops: [
-        { name: 'Golbari (Shyambazar Five-Point)', dish: 'Iconic Spicy Kosha Mangsho with Crisp Parathas' },
-        { name: 'Girish Chandra Dey & Nakur Chandra Nandy', dish: 'Jalbhara Talsash Sandesh & Monohora' }
+        { name: 'Golbari (Shyambazar)', dish: 'Legendary Kosha Mangsho & Crisp Parathas' }
       ],
-      rituals: [
-        { name: 'Kalparambha Puja', time: '08:00 AM', desc: 'Sacred vow resolution to commence the Sharodiya Durga Durgotsav' },
-        { name: 'Bodhon, Amantran & Adhivas', time: '06:30 PM', desc: 'Canonical untimely awakening of Devi Durga under the Bilva tree' },
-        { name: 'Ceremonial Shasthi Dhak Aarti', time: '07:30 PM', desc: 'Resonating Dhak, Kanshi and lighting of sacred lamps' }
-      ],
-      custom_notes: 'North Kolkata is best experienced on foot. Soak in the colonial architecture and sabeki daaker saaj idols.'
+      custom_notes: 'North Kolkata is best explored on foot. Experience the classic century-old sabeki daaker saaj idols and majestic thematic lighting.'
     },
     {
       id: 'plan-saptami',
-      title: 'Maha Saptami Grandeur, Lake Illumination & Street Feast Trail',
+      title: 'Maha Saptami VIP Road & Central Lake Illumination Circuit',
       day_tag: 'Maha Saptami',
       day_key: 'saptami',
       date_str: '18 October 2026',
@@ -2213,22 +2661,17 @@
       creator_avatar: '🔱',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Lake Town VIP Road -> Sreebhumi -> MG Road Metro -> College Square Lake -> Mohammad Ali Park',
-      pandals: ['Sreebhumi Sporting Club', 'College Square', 'Mohammad Ali Park', 'Santosh Mitra Square (Lebutala)'],
+      route_summary: 'VIP Road Lake Town -> Sreebhumi -> Dum Dum Park Cluster -> College Square -> Mohammad Ali Park',
+      pandals: ['Sreebhumi Sporting Club', 'Dum Dum Park Tarun Sangha', 'Dum Dum Park Bharat Chakra', 'College Square', 'Mohammad Ali Park'],
       food_stops: [
-        { name: 'Royal Indian Hotel (Chitpur)', dish: 'Royal Mutton Biryani without aloo & Shahi Chaap' },
-        { name: 'Paramount Sherbets (College Square)', dish: 'Historic Daab Sherbet, Passion Fruit & Malai Cream' }
+        { name: 'Paramount Sherbets (College Square)', dish: 'Iconic Daab Sherbet with Tender Coconut' },
+        { name: 'Arsalan Restaurant', dish: 'Kolkata Mutton Biryani' }
       ],
-      rituals: [
-        { name: 'Nabapatrika Snan (Kolabou Snan)', time: '06:00 AM', desc: 'Bathing nine sacred plants in Ganga water with mirror reflection' },
-        { name: 'Maha Saptami Puspanjali', time: '09:30 AM', desc: 'Offering lotus flowers with sacred Sanskrit chants' },
-        { name: 'Saptami Bhog Aarti', time: '01:00 PM', desc: 'Presentation of sacred Bhog offerings to Devi Durga' }
-      ],
-      custom_notes: 'Visit Sreebhumi early in the day to beat massive nighttime queues, then head to College Square as twilight illuminates the lake.'
+      custom_notes: 'Hop Sreebhumi and Dum Dum Park early in the day to beat massive queues, then take the metro to College Square as dusk illuminates the lake.'
     },
     {
       id: 'plan-ashtami',
-      title: 'Maha Ashtami Sacred Anjali, Kumari Puja & Sandhi Puja Circuit',
+      title: 'Maha Ashtami Sacred Morning Anjali & South Kolkata Grandeur Hop',
       day_tag: 'Maha Ashtami',
       day_key: 'ashtami',
       date_str: '19 October 2026',
@@ -2236,23 +2679,17 @@
       creator_avatar: '🪷',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Gariahat Junction -> Ekdalia Evergreen -> Singhi Park -> Maddox Square -> Ballygunge Cultural -> Tridhara',
-      pandals: ['Ekdalia Evergreen Club', 'Maddox Square', 'Tridhara Sammilani', 'Shiv Mandir'],
+      route_summary: 'Nearest Local Neighborhood Pandal -> Badamtala Ashar Sangha -> Ballygunge Cultural -> Singhi Park -> Ekdalia Evergreen -> Maddox Square',
+      pandals: ["Respective Nearest Locality Pandal (Morning Pushpanjali)", 'Badamtala Ashar Sangha', 'Ballygunge Cultural Association', 'Singhi Park Sarbojanin', 'Ekdalia Evergreen Club', 'Tridhara Sammilani'],
       food_stops: [
-        { name: 'Sacred Ashtami Community Khichuri Bhog', dish: 'Gobindobhog Rice Khichuri, Labra, Beguni, Chutney & Payesh' },
-        { name: '6 Ballygunge Place (Ballygunge)', dish: 'Heritage Bengali Thali (Chingri Malai Curry & Kosha Mangsho)' },
-        { name: 'Bedouin (Gariahat Phari)', dish: 'Double Egg Mutton Kebab Kati Roll' }
+        { name: 'Campari (Gariahat)', dish: 'Bhetki Fish Roll & Cutlet' },
+        { name: 'Bhojohori Manna', dish: 'Traditional Bhog-style Chholar Daal & Luchi' }
       ],
-      rituals: [
-        { name: 'Maha Ashtami Puspanjali', time: '09:00 AM', desc: 'Auspicious flower offering fasting in traditional Dhuti / Lal-Paad Saree' },
-        { name: 'Kumari Puja', time: '11:00 AM', desc: 'Worship of the young maiden as the living embodiment of Goddess Durga' },
-        { name: 'Sacred Sandhi Puja (108 Lotuses & 108 Diyas)', time: '08:42 PM - 09:30 PM', desc: 'The holy conjunction of Ashtami and Navami when Devi Chamunda slew Chanda & Munda' }
-      ],
-      custom_notes: 'Maddox Square is the lively adda epicenter of Ashtami evening. Ensure you arrive at your pandal 45 minutes before Sandhi Puja.'
+      custom_notes: 'Start the sacred morning with Pushpanjali and flower offerings at your own respective nearest pandal in your locality. In the afternoon and evening, head out for the legendary South Kolkata pandal hopping circuit.'
     },
     {
       id: 'plan-navami',
-      title: 'Maha Navami All-Night Hopping Carnival & Dhunuchi Naach Spectacle',
+      title: 'Maha Navami All-Night Carnival & Mega Theme Pandal Hop',
       day_tag: 'Maha Navami',
       day_key: 'navami',
       date_str: '20 October 2026',
@@ -2260,22 +2697,17 @@
       creator_avatar: '💃',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Alipore -> Suruchi Sangha -> Chetla Agrani -> Mudiali Club -> Shiv Mandir -> Badamtala Ashar Sangha',
-      pandals: ['Suruchi Sangha (New Alipore)', 'Mudiali Club', 'Shiv Mandir', 'Tridhara Sammilani'],
+      route_summary: 'New Alipore -> Suruchi Sangha -> Chetla Agrani -> Mudiali Club -> Behala Nutan Dal -> Barisha Club',
+      pandals: ['Suruchi Sangha (New Alipore)', 'Mudiali Club', 'Behala Nutan Dal', 'Barisha Club', 'Rajdanga Naba Uday Sangha'],
       food_stops: [
-        { name: 'Arsalan (Park Circus / Southern Ave)', dish: 'Fragrant Kolkata Mutton Biryani with melt-in-mouth aloo' },
-        { name: 'Bhojohori Manna (Hindustan Road)', dish: 'Daab Chingri, Bhetki Paturi & Nolen Gurer Ice Cream' }
+        { name: 'Peter Cat (Park Street)', dish: 'Chelo Kebab' },
+        { name: 'Kusum Rolls', dish: 'Double Chicken Egg Roll' }
       ],
-      rituals: [
-        { name: 'Maha Navami Homa (Maha Yajna)', time: '10:30 AM', desc: 'Sacred fire oblation with bel patra and ghee' },
-        { name: 'Navami Maha Bhog Aarti', time: '01:30 PM', desc: 'Grand royal feast offering of Luchi, Chholar Daal & Payesh' },
-        { name: 'Energetic Dhunuchi Naach Competition', time: '07:00 PM onwards', desc: 'Clay coconut incense burner dance to intense 120+ BPM Dhak beats' }
-      ],
-      custom_notes: 'Navami is the night when Kolkata does not sleep! Metro trains operate throughout the night.'
+      custom_notes: 'Navami is the night when the entire city stays awake! Metro trains run late into the night. Enjoy dramatic thematic installations and mesmerizing Dhunuchi Naach.'
     },
     {
       id: 'plan-dashami',
-      title: 'Bijoya Dashami Sindoor Khela & Sacred Immersion Procession',
+      title: 'Bijoya Dashami Sindoor Khela & Sacred Immersion at Respective Local Pandal',
       day_tag: 'Bijoya Dashami',
       day_key: 'dashami',
       date_str: '21 October 2026',
@@ -2283,18 +2715,10 @@
       creator_avatar: '👑',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Bagbazar Sarbojonin -> Sovabazar Courtyard -> Babughat / Ahiritola Ganga Ghats Immersion Promenade',
-      pandals: ['Bagbazar Sarbojonin', 'Sovabazar Rajbari'],
-      food_stops: [
-        { name: 'Balaram Mullick & Radharaman Mullick', dish: 'Baked Rosogolla, Chocolate Sandesh & Kaju Barfi' },
-        { name: 'K.C. Das (Esplanade)', dish: 'Hot Rossogolla & Malpoa for Shubho Bijoya Sweet Distribution' }
-      ],
-      rituals: [
-        { name: 'Dashami Baran & Sindoor Khela', time: '11:00 AM', desc: 'Women offering sweets, beetle leaves and smearing vermillion on Maa Durga' },
-        { name: 'Darpan Visarjan (Mirror Immersion)', time: '01:00 PM', desc: 'Bidding farewell to the Goddess through water mirror reflection' },
-        { name: 'Ganga Ghat Immersion Carnival & Chanting', time: '05:00 PM onwards', desc: 'Processions with lights, dhaks, and singing "Bolo Durga Mai Ki Jai, Asche Bochor Abar Hobe!"' }
-      ],
-      custom_notes: 'Touch the feet of elders for Shubho Bijoya blessings and share sweets with family, friends, and neighbors.'
+      route_summary: 'Respective Nearest Locality Pandal -> Local Community Ghat / Riverfront for Bisarjan',
+      pandals: ["Respective Nearest Locality Pandal (Sindoor Khela & Baran)", "Local Neighborhood Immersion Ghat (Visarjan)"],
+      food_stops: [], // As requested, no food/dining pit stops suggested for Bijoya Dashami
+      custom_notes: 'Perform the emotional farewell rituals of Devi Baran and Sindoor Khela at your respective nearest pandal in your locality, sharing warm Shubho Bijoya greetings and sweets with family and neighbors.'
     }
   ];
 
@@ -2366,6 +2790,7 @@
   }
 
   function openAuthModal(mode = 'login') {
+    document.body.classList.add('modal-open');
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
 
@@ -2379,6 +2804,7 @@
   }
 
   function closeAuthModal() {
+    document.body.classList.remove('modal-open');
     const modal = document.getElementById('auth-modal');
     if (modal) {
       modal.classList.add('hidden');
@@ -2432,6 +2858,7 @@
 
   // Profile Modal Handler
   function openProfileModal() {
+    document.body.classList.add('modal-open');
     if (!currentUser) return;
     const modal = document.getElementById('profile-modal');
     if (!modal) return;
@@ -2453,6 +2880,7 @@
   }
 
   function closeProfileModal() {
+    document.body.classList.remove('modal-open');
     const modal = document.getElementById('profile-modal');
     if (modal) {
       modal.classList.add('hidden');
@@ -2798,23 +3226,6 @@
         return `<div class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-start gap-1.5"><span class="text-primary dark:text-amber-300 font-bold">•</span> <span>${fName}</span></div>`;
       }).join('');
 
-      // Extract rituals with direct timer buttons
-      const ritualRows = (plan.rituals || []).map(r => {
-        const rName = typeof r === 'string' ? r : r.name;
-        const rTime = typeof r === 'object' && r.time ? r.time : '';
-        return `
-          <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-surface-container-high/60 dark:bg-[#252016]/80 text-xs">
-            <div class="min-w-0">
-              <span class="font-bold text-on-surface dark:text-white">${rName}</span>
-              ${rTime ? `<span class="ml-1.5 text-[11px] font-mono px-1.5 py-0.5 rounded bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-semibold">${rTime}</span>` : ''}
-            </div>
-            <button onclick="window.setRitualTimer('${escapeHtml(rName)}')" class="shrink-0 text-[10px] px-2 py-1 rounded-lg bg-surface-container dark:bg-[#1a160f] border border-outline-variant/30 hover:border-primary dark:hover:border-amber-400 text-primary dark:text-amber-300 font-bold transition-all cursor-pointer flex items-center gap-1" title="Set Alarm/Timer">
-              <span class="material-symbols-outlined text-[13px]">alarm</span> Timer
-            </button>
-          </div>
-        `;
-      }).join('');
-
       return `
         <div class="glass-panel p-6 sm:p-7 rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-5 relative overflow-hidden group">
           <div class="space-y-4">
@@ -2852,7 +3263,7 @@
 
             <!-- Pandals to Visit -->
             <div class="space-y-1.5">
-              <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🏛️ Pandals on Route</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🏛️ Pandals to Visit or Watch</span>
               <div class="flex flex-wrap gap-1.5">
                 ${pandalBadges || '<span class="text-xs text-on-surface-variant">No specific pandals listed</span>'}
               </div>
@@ -2864,16 +3275,6 @@
                 <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🍽️ Food & Dining Pit-Stops</span>
                 <div class="space-y-1 p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016]/50 border border-outline-variant/20 dark:border-amber-400/10">
                   ${foodBadges}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Sacred Rituals with Timers -->
-            ${ritualRows ? `
-              <div class="space-y-1.5">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">📿 Canonical Rituals & Alarms</span>
-                <div class="space-y-1.5">
-                  ${ritualRows}
                 </div>
               </div>
             ` : ''}
@@ -3565,12 +3966,14 @@
 
     if (openStoryBtn && storyModal) {
       openStoryBtn.addEventListener('click', () => {
+        document.body.classList.add('modal-open');
         storyModal.classList.remove('hidden');
         storyModal.classList.add('flex');
       });
     }
 
     const closeStory = () => {
+      document.body.classList.remove('modal-open');
       if (storyModal) {
         storyModal.classList.add('hidden');
         storyModal.classList.remove('flex');
@@ -3672,12 +4075,14 @@
     const openAbout = (e) => {
       if (e) e.stopPropagation();
       if (aboutModal) {
+        document.body.classList.add('modal-open');
         aboutModal.classList.remove('hidden');
         aboutModal.classList.add('flex');
       }
     };
 
     const closeAbout = () => {
+      document.body.classList.remove('modal-open');
       if (aboutModal) {
         aboutModal.classList.add('hidden');
         aboutModal.classList.remove('flex');
@@ -3701,12 +4106,14 @@
 
     // Share Modal Close
     document.getElementById('close-share-modal-btn')?.addEventListener('click', () => {
+      document.body.classList.remove('modal-open');
       document.getElementById('share-plan-modal')?.classList.add('hidden');
       document.getElementById('share-plan-modal')?.classList.remove('flex');
     });
 
     // Detail Modal Close
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
+      document.body.classList.remove('modal-open');
       document.getElementById('pandal-detail-modal')?.classList.add('hidden');
     });
 
@@ -3714,6 +4121,7 @@
     if (pandalModal) {
       pandalModal.addEventListener('click', (e) => {
         if (e.target === pandalModal) {
+          document.body.classList.remove('modal-open');
           pandalModal.classList.add('hidden');
         }
       });

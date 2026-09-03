@@ -99,7 +99,7 @@
       </a>
     </div>
 
-    <!-- Desktop Navigation Links (Home, Pandals, Puja Plans, Food, Rituals, Itinerary, Radio) -->
+    <!-- Desktop Navigation Links (Home, Pandals, Food, Puja Plans, Radio, Itinerary) -->
     <nav class="hidden md:flex items-center gap-6 lg:gap-7 text-sm font-medium">
       <a href="#home" data-nav-target="home" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
         <span class="material-symbols-outlined text-[18px]">home</span> <span>Home</span>
@@ -107,18 +107,18 @@
       <a href="#pandals" data-nav-target="pandals" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
         <span class="material-symbols-outlined text-[18px]">explore</span> <span>Pandals & Transit</span>
       </a>
+      <a href="#food-shopping" data-nav-target="food-shopping" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
+        <span class="material-symbols-outlined text-[18px]">restaurant</span> <span>Food & Shopping</span>
+      </a>
       <a href="#plans" data-nav-target="plans" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
         <span class="material-symbols-outlined text-[18px]">event_note</span> <span>Puja Plans</span>
       </a>
-      <a href="#food-shopping" data-nav-target="food-shopping" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
-        <span class="material-symbols-outlined text-[18px]">restaurant</span> <span>Food & Shopping</span>
+      <a href="#audio" data-nav-target="audio" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
+        <span class="material-symbols-outlined text-[18px]">radio</span> <span>Puja Radio</span>
       </a>
       <a href="#saved" data-nav-target="saved" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1 relative">
         <span class="material-symbols-outlined text-[18px]">bookmark</span> <span>Itinerary</span>
         <span id="saved-count-badge" class="hidden absolute -top-1 -right-2.5 bg-primary dark:bg-amber-400 text-white dark:text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-sm">0</span>
-      </a>
-      <a href="#audio" data-nav-target="audio" class="hover:text-primary dark:hover:text-amber-300 dark:text-[#f3ede2] transition-colors flex items-center gap-1.5 py-1">
-        <span class="material-symbols-outlined text-[18px]">radio</span> <span>Puja Radio</span>
       </a>
     </nav>
 
@@ -342,168 +342,124 @@
     </section>
 
     <!-- ======================================================== -->
+    <!-- ======================================================== -->
     <!-- 3. SECTION: PUJA RADIO & AUDIO HUB -->
     <!-- ======================================================== -->
     <section id="section-audio" class="app-section hidden space-y-10">
-      <div class="text-center max-w-2xl mx-auto space-y-2 reveal-on-scroll">
+      <div class="text-center max-w-2xl mx-auto space-y-3 reveal-on-scroll">
         <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Sound Sanctuary • Puja Radio</span>
         <h2 class="font-display text-3xl md:text-4xl font-bold text-on-surface dark:text-white">Puja Radio & Festive Anthem Hub</h2>
-        <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Experience the eternal dawn broadcast of Mahalaya by Saregama Bengali and stream the iconic top 5 Durga Puja anthems with live interactive player controls.</p>
+        <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Immerse in curated festival rhythms, high-energy dhak-infused hip hop, serene Agomoni melodies, and eternal Mahalaya chants with direct streaming on Spotify and YouTube.</p>
+
+        <!-- Clickable Spotify & YouTube Playlist Links -->
+        <div class="flex items-center justify-center gap-3 pt-2 flex-wrap">
+          <a 
+            id="spotify-sharodiya-playlist-btn"
+            href="https://open.spotify.com/playlist/37i9dQZF1DX5cO1Kx65w3I" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="px-4 py-2 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/30 text-xs font-bold flex items-center gap-2 transition-all shadow-sm group cursor-pointer"
+            title="Open Sharodiya Top Hits Playlist on Spotify"
+          >
+            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            <span>Sharodiya Top Hits (Spotify)</span>
+          </a>
+          <a 
+            id="yt-sharodiya-playlist-btn"
+            href="https://www.youtube.com/playlist?list=PL4fGSIFgk93e7G7vG6j1B1Mh0uXQf_7H-" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="px-4 py-2 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-500/20 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white border border-red-500/30 text-xs font-bold flex items-center gap-2 transition-all shadow-sm group cursor-pointer"
+            title="Open Sharodiya Top Hits Playlist on YouTube"
+          >
+            <svg class="w-4 h-4 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            <span>Sharodiya Top Hits (YouTube)</span>
+          </a>
+        </div>
       </div>
 
-      <!-- ==================== 1. TOP HIGHLIGHT BROADCAST: MAHALAYA (MAHISHASURAMARDINI) ==================== -->
-      <div class="glass-panel p-6 sm:p-8 rounded-3xl border-2 border-secondary-container dark:border-amber-400/40 shadow-2xl relative overflow-hidden max-w-4xl mx-auto space-y-6 reveal-on-scroll" id="radio-mahalaya-card">
-        <!-- Top Ambient Glow -->
-        <div class="absolute -top-12 -right-12 w-56 h-56 bg-gradient-to-br from-amber-400/25 via-red-500/20 to-primary/25 rounded-full blur-3xl pointer-events-none"></div>
-
-        <!-- Highlight Header Tag -->
-        <div class="flex items-center justify-between border-b border-outline-variant/30 dark:border-amber-400/20 pb-4">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-red-600/15 to-amber-500/15 dark:from-amber-400/20 dark:to-red-500/20 border border-secondary-container dark:border-amber-400/40 text-xs font-bold text-primary dark:text-amber-300">
-            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-            <span>AIR Eternal Dawn Broadcast • Saregama Bengali</span>
-          </div>
-          <span class="text-xs px-3 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-bold">Special Highlight</span>
-        </div>
-
-        <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center">
-          <!-- Album Artwork -->
-          <div class="w-44 h-44 sm:w-52 sm:h-52 rounded-2xl overflow-hidden bg-primary/20 shrink-0 border-2 border-secondary-container dark:border-amber-300 shadow-2xl relative group">
-            <img 
-              id="mahalaya-cover-img"
-              src="https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80"
-              alt="Mahalaya Mahishasuramardini - Saregama Bengali"
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-3">
-              <span class="text-[10px] text-amber-300 font-bold uppercase tracking-wider">Birendra Krishna Bhadra</span>
-              <span class="text-[11px] text-white font-display font-semibold">Mahishasuramardini</span>
+      <!-- Active Song Embedded Player Box (Shared across modes) -->
+      <div id="radio-active-player-box" class="glass-panel p-5 rounded-3xl border border-secondary-container/50 dark:border-amber-400/30 shadow-xl space-y-4 max-w-4xl mx-auto hidden reveal-on-scroll">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center font-bold shadow-md">
+              <span class="material-symbols-outlined text-[22px] animate-pulse">music_note</span>
             </div>
-            <button id="mahalaya-play-btn" class="absolute inset-0 m-auto w-14 h-14 rounded-full bg-primary/90 dark:bg-amber-400/90 text-white dark:text-black shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-white/80 dark:border-black/50 cursor-pointer backdrop-blur-sm" title="Play Mahalaya Broadcast" aria-label="Play Mahalaya">
-              <span class="material-symbols-outlined text-[32px]">play_arrow</span>
-            </button>
-          </div>
-
-          <!-- Player Details & Equalizer -->
-          <div class="flex-1 space-y-3 w-full text-center md:text-left">
             <div>
-              <h3 class="font-display text-2xl sm:text-3xl font-bold text-on-surface dark:text-white">Mahalaya (Mahishasuramardini)</h3>
-              <p class="text-sm font-semibold text-primary dark:text-amber-300 mt-0.5">Narrated by Birendra Krishna Bhadra • Saregama Bengali</p>
-              <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] mt-1.5 leading-relaxed">
-                The eternal 4:00 AM dawn invocation of Devi Durga featuring Sanskrit chants, stotras, devotional chords, and classical orchestration by Pankaj Mullick.
-              </p>
+              <h4 id="active-song-title" class="font-display text-lg font-bold text-on-surface dark:text-white">Song Title</h4>
+              <p id="active-song-artist" class="text-xs text-primary dark:text-amber-300 font-medium">Artist & Channel</p>
             </div>
-
-            <!-- Audio Frequency Visualizer -->
-            <div id="mahalaya-audio-visualizer" class="flex items-end justify-center md:justify-start gap-1.5 h-8 py-1">
-              <div class="visualizer-bar h-2" style="animation-delay: 0.1s;"></div>
-              <div class="visualizer-bar h-5" style="animation-delay: 0.25s;"></div>
-              <div class="visualizer-bar h-3" style="animation-delay: 0.4s;"></div>
-              <div class="visualizer-bar h-8" style="animation-delay: 0.15s;"></div>
-              <div class="visualizer-bar h-4" style="animation-delay: 0.5s;"></div>
-              <div class="visualizer-bar h-7" style="animation-delay: 0.3s;"></div>
-              <div class="visualizer-bar h-2" style="animation-delay: 0.45s;"></div>
-              <div class="visualizer-bar h-6" style="animation-delay: 0.2s;"></div>
-            </div>
-
-            <!-- Interactive Seek Progress Bar -->
-            <div class="space-y-1">
-              <div class="w-full bg-surface-container-high dark:bg-[#2c261b] rounded-full h-1.5 overflow-hidden cursor-pointer relative" id="mahalaya-progress-container">
-                <div id="mahalaya-progress-bar" class="bg-gradient-to-r from-primary to-secondary-container dark:from-amber-400 dark:to-red-500 h-full w-0 transition-all duration-200"></div>
-              </div>
-              <div class="flex justify-between text-[10px] text-on-surface-variant dark:text-[#ded5c7]/70 font-mono">
-                <span id="mahalaya-time-current">0:00</span>
-                <span id="mahalaya-time-duration">1:28:45</span>
-              </div>
-            </div>
-
-            <!-- Action Controls -->
-            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-1">
-              <a 
-                href="https://www.youtube.com/watch?v=YQyo8QeoYhc" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="px-4 py-2 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-500/20 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white border border-red-500/30 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-              >
-                <span class="material-symbols-outlined text-[16px]">smart_display</span> Saregama YouTube Stream
-              </a>
-              <a 
-                href="https://open.spotify.com/album/42v3gD94Q8JoxD57sL20Qx" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                class="px-4 py-2 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/30 text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
-              >
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-                Spotify Album
-              </a>
-            </div>
+          </div>
+          <!-- Active Song Visualizer -->
+          <div id="active-song-visualizer" class="flex items-end gap-1 h-6">
+            <div class="visualizer-bar h-2"></div>
+            <div class="visualizer-bar h-4"></div>
+            <div class="visualizer-bar h-6"></div>
+            <div class="visualizer-bar h-3"></div>
+            <div class="visualizer-bar h-5"></div>
           </div>
         </div>
 
-        <!-- Mahalaya YouTube Player Frame (Hidden or active) -->
-        <div id="mahalaya-player-container" class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md bg-black/80 aspect-video max-h-56 hidden">
-          <div id="yt-mahalaya-player-frame" class="w-full h-full"></div>
+        <!-- Video / Audio Player Frame -->
+        <div id="radio-yt-player-holder" class="rounded-2xl overflow-hidden bg-black/90 aspect-video max-h-72 flex items-center justify-center border border-outline-variant/30 dark:border-amber-400/20">
+          <div id="yt-radio-player-frame" class="w-full h-full"></div>
         </div>
       </div>
 
-      <!-- ==================== 2. CURATED TOP 5 PUJA ANTHEMS PLAYLIST ==================== -->
+      <!-- ==================== 1. PUJO HIP HOP MODE ==================== -->
       <div class="space-y-4 max-w-4xl mx-auto reveal-on-scroll">
         <div class="flex items-center justify-between border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
-          <div>
-            <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary dark:text-amber-300">queue_music</span> Top 5 Durga Puja Anthems
-            </h3>
-            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] mt-0.5">Click any song to stream with live audio, dynamic visualizers, and full API integration.</p>
-          </div>
-          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-secondary-container/40 dark:bg-amber-400/20 text-secondary dark:text-amber-300">5 Tracks</span>
-        </div>
-
-        <!-- Active Song Embedded Player Box -->
-        <div id="radio-active-player-box" class="glass-panel p-5 rounded-3xl border border-secondary-container/50 dark:border-amber-400/30 shadow-xl space-y-4 hidden">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center font-bold">
-                <span class="material-symbols-outlined text-[22px] animate-pulse">music_note</span>
-              </div>
-              <div>
-                <h4 id="active-song-title" class="font-display text-lg font-bold text-on-surface dark:text-white">Song Title</h4>
-                <p id="active-song-artist" class="text-xs text-primary dark:text-amber-300 font-medium">Artist & Label</p>
-              </div>
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-red-600/10 dark:bg-red-500/20 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">
+              🔥
             </div>
-            <!-- Active Song Visualizer -->
-            <div id="active-song-visualizer" class="flex items-end gap-1 h-6">
-              <div class="visualizer-bar h-2"></div>
-              <div class="visualizer-bar h-4"></div>
-              <div class="visualizer-bar h-6"></div>
-              <div class="visualizer-bar h-3"></div>
-              <div class="visualizer-bar h-5"></div>
+            <div>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Pujo Hip Hop & Festive Beats Mode</h3>
+              <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">High-octane pandal party anthems, celebratory dhak rhythms, and modern Bengali hip hop grooves.</p>
             </div>
           </div>
-
-          <!-- Video / Audio Player Frame -->
-          <div id="radio-yt-player-holder" class="rounded-2xl overflow-hidden bg-black/80 aspect-video max-h-64 flex items-center justify-center">
-            <div id="yt-radio-player-frame" class="w-full h-full"></div>
-          </div>
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-red-500/10 text-red-600 dark:bg-red-400/20 dark:text-red-300">Hip Hop Mode</span>
         </div>
-
-        <!-- 5 Songs List Grid -->
-        <div id="puja-radio-songs-list" class="space-y-3">
+        <div id="radio-songs-hiphop-list" class="space-y-3">
           <!-- Populated dynamically via JS -->
         </div>
       </div>
 
-      <!-- ==================== 3. SPOTIFY FESTIVAL PLAYLIST EMBED ==================== -->
-      <div class="glass-panel p-6 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 shadow-xl space-y-4 max-w-4xl mx-auto reveal-on-scroll">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 fill-[#1DB954]" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-            <h3 class="font-display text-lg font-bold text-on-surface dark:text-white">Spotify Sharodiya Top Hits</h3>
+      <!-- ==================== 2. PUJA PLEASANT MODE ==================== -->
+      <div class="space-y-4 max-w-4xl mx-auto reveal-on-scroll">
+        <div class="flex items-center justify-between border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-400/20 text-amber-600 dark:text-amber-300 flex items-center justify-center font-bold">
+              🌸
+            </div>
+            <div>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Puja Pleasant Mode</h3>
+              <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Soulful Agomoni melodies, nostalgic autumn melodies, and harmonious festival morning serenades.</p>
+            </div>
           </div>
-          <a href="https://open.spotify.com/playlist/37i9dQZF1DX5cO1Kx65w3I" target="_blank" rel="noopener noreferrer" class="text-xs text-[#1DB954] hover:underline font-semibold flex items-center gap-1">
-            Open Full Playlist <span class="material-symbols-outlined text-[14px]">open_in_new</span>
-          </a>
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:bg-amber-400/20 dark:text-amber-300">Pleasant Mode</span>
         </div>
-        <div class="rounded-2xl overflow-hidden border border-outline-variant/30 dark:border-amber-400/20 shadow-md">
-          <iframe style="border-radius:16px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DX5cO1Kx65w3I?utm_source=generator&theme=0" width="100%" height="200" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div id="radio-songs-pleasant-list" class="space-y-3">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- ==================== 3. MAHALAYA MODE ==================== -->
+      <div class="space-y-4 max-w-4xl mx-auto reveal-on-scroll">
+        <div class="flex items-center justify-between border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center font-bold">
+              🪔
+            </div>
+            <div>
+              <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Mahalaya Mode</h3>
+              <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">The eternal dawn Chandi Path, sacred Vedic stotras, and Birendra Krishna Bhadra's timeless invocation.</p>
+            </div>
+          </div>
+          <span class="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-secondary-container/40 dark:bg-amber-400/20 text-secondary dark:text-amber-300">Mahalaya Mode</span>
+        </div>
+        <div id="radio-songs-mahalaya-list" class="space-y-3">
+          <!-- Populated dynamically via JS -->
         </div>
       </div>
     </section>
@@ -571,18 +527,23 @@
           </span>
           <h2 class="font-display text-3xl md:text-4xl font-bold text-on-surface dark:text-white mt-1">Festival Day Plans</h2>
           <p class="text-sm text-on-surface-variant dark:text-[#ded5c7] mt-1 max-w-2xl">
-            Explore curated canonical routes for each sacred day (Shasthi to Dashami) with pandal hops, food spots, and rituals, or build and share your customized itinerary with friends.
+            Explore curated circuits for each sacred day with pandal hopping routes, or build and share your customized itinerary with friends and family.
           </p>
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0 flex-wrap sm:flex-nowrap">
+        <div class="flex items-center gap-2.5 shrink-0">
           <button id="open-create-plan-btn" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black text-sm font-bold shadow-lg hover:shadow-primary/30 dark:hover:shadow-amber-400/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
             <span class="material-symbols-outlined text-[20px]">add_circle</span> Make Your Own Plan
           </button>
-          <button id="open-timers-btn" class="px-3.5 py-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 bg-surface-container-low dark:bg-[#1f1a12] text-on-surface dark:text-amber-300 text-sm font-semibold shadow-sm hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer" title="Manage Ritual Timers">
-            <span class="material-symbols-outlined text-[20px]">timer</span> <span class="hidden sm:inline">Device Timers</span>
-          </button>
         </div>
+      </div>
+
+      <!-- Humorous Community Disclaimer -->
+      <div class="p-3.5 sm:p-4 rounded-2xl bg-secondary-container/20 dark:bg-amber-400/10 border border-secondary-container/40 dark:border-amber-400/25 text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-start gap-2.5 reveal-on-scroll">
+        <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] shrink-0 mt-0.5">lightbulb</span>
+        <p class="leading-relaxed">
+          <strong class="text-primary dark:text-amber-300 font-bold">Friendly Disclaimer:</strong> These curated itineraries are designed as flexible references, not strict marching orders! Create your own customized route and share it with friends—unless you want to meet every single user of this page at the exact same pandal gate at the exact same minute!
+        </p>
       </div>
 
       <!-- Plan Day Filter Buttons -->
@@ -628,13 +589,47 @@
     <!-- 7. SECTION: SAVED ITINERARY -->
     <!-- ======================================================== -->
     <section id="section-saved" class="app-section hidden space-y-8">
-      <div class="border-b border-outline-variant/30 dark:border-amber-400/20 pb-6 reveal-on-scroll">
-        <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Personal Planner</span>
-        <h2 class="font-display text-3xl md:text-4xl font-bold text-on-surface dark:text-white mt-1">My Puja Itinerary</h2>
-        <p class="text-sm text-on-surface-variant dark:text-[#ded5c7] mt-1">All your bookmarked pandals, transit routes, and culinary stops in one customized schedule.</p>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-outline-variant/30 dark:border-amber-400/20 pb-6 reveal-on-scroll">
+        <div>
+          <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">bookmark_heart</span> Personal Planner
+          </span>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-on-surface dark:text-white mt-1">My Puja Itinerary</h2>
+          <p class="text-sm text-on-surface-variant dark:text-[#ded5c7] mt-1">All your bookmarked pandals, iconic dining spots, and customized festival plans in one place.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="clear-all-bookmarks-btn" class="px-3.5 py-2 rounded-xl border border-red-500/30 text-red-600 dark:text-red-400 text-xs font-semibold hover:bg-red-500/10 transition-all flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">delete_sweep</span> Clear All
+          </button>
+        </div>
       </div>
 
-      <div id="saved-itinerary-container"></div>
+      <!-- Itinerary Category Tabs -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 reveal-on-scroll">
+        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-primary text-white dark:bg-amber-400 dark:text-black shadow-md transition-all cursor-pointer flex items-center gap-1.5" data-category="all">
+          <span>All Saved</span>
+          <span id="saved-badge-all" class="text-[10px] px-2 py-0.5 rounded-full bg-white/20 dark:bg-black/20 font-mono font-bold">0</span>
+        </button>
+        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="pandals">
+          <span class="material-symbols-outlined text-[16px]">explore</span>
+          <span>Pandals & Transit</span>
+          <span id="saved-badge-pandals" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
+        </button>
+        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="food-shopping">
+          <span class="material-symbols-outlined text-[16px]">restaurant</span>
+          <span>Food & Shopping</span>
+          <span id="saved-badge-food" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
+        </button>
+        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="plans">
+          <span class="material-symbols-outlined text-[16px]">event_note</span>
+          <span>Saved Plans</span>
+          <span id="saved-badge-plans" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
+        </button>
+      </div>
+
+      <!-- Divided Content Sections -->
+      <div id="saved-itinerary-container" class="space-y-8"></div>
     </section>
 
     <!-- ======================================================== -->
@@ -729,9 +724,12 @@
 
     <!-- ==================== FOOTER BRANDING ==================== -->
     <footer class="pt-10 pb-6 border-t border-outline-variant/30 dark:border-amber-400/20 text-center space-y-4">
-      <div class="flex items-center justify-center gap-3">
-        <img src="logo.jpg" alt="Akalbodhon Logo" class="w-8 h-8 rounded-full object-cover border-2 border-secondary-container dark:border-amber-400 shadow-sm" />
-        <span class="font-display font-bold text-lg text-primary dark:text-amber-300">Akalbodhon</span>
+      <div class="flex flex-col items-center justify-center gap-0.5">
+        <div class="flex items-center justify-center gap-3">
+          <img src="logo.jpg" alt="Akalbodhon Logo" class="w-8 h-8 rounded-full object-cover border-2 border-secondary-container dark:border-amber-400 shadow-sm" />
+          <span class="font-display font-bold text-lg text-primary dark:text-amber-300">Akalbodhon</span>
+        </div>
+        <span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant/70 dark:text-[#ded5c7]/60">V1.0</span>
       </div>
       <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-md mx-auto">
         Celebrating the eternal divine spirit of Durga Puja with sacred rituals, cultural legacy, and smart transit navigation.
@@ -758,31 +756,31 @@
       <span class="material-symbols-outlined text-[18px]">explore</span>
       <span class="text-[8.5px] font-semibold mt-0.5">Pandals</span>
     </a>
-    <a href="#plans" data-nav-target="plans" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
-      <span class="material-symbols-outlined text-[18px]">event_note</span>
-      <span class="text-[8.5px] font-semibold mt-0.5">Plans</span>
-    </a>
     <a href="#food-shopping" data-nav-target="food-shopping" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
       <span class="material-symbols-outlined text-[18px]">restaurant</span>
       <span class="text-[8.5px] font-semibold mt-0.5">Food</span>
     </a>
-    <a href="#saved" data-nav-target="saved" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
-      <span class="material-symbols-outlined text-[18px]">bookmark</span>
-      <span class="text-[8.5px] font-semibold mt-0.5">Saved</span>
-    </a>
-    <a href="#login" data-nav-target="login" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
-      <span class="material-symbols-outlined text-[18px]">account_circle</span>
-      <span class="text-[8.5px] font-semibold mt-0.5">Account</span>
+    <a href="#plans" data-nav-target="plans" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
+      <span class="material-symbols-outlined text-[18px]">event_note</span>
+      <span class="text-[8.5px] font-semibold mt-0.5">Plans</span>
     </a>
     <a href="#audio" data-nav-target="audio" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
       <span class="material-symbols-outlined text-[18px]">radio</span>
       <span class="text-[8.5px] font-semibold mt-0.5">Radio</span>
     </a>
+    <a href="#saved" data-nav-target="saved" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
+      <span class="material-symbols-outlined text-[18px]">bookmark</span>
+      <span class="text-[8.5px] font-semibold mt-0.5">Itinerary</span>
+    </a>
+    <a href="#login" data-nav-target="login" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
+      <span class="material-symbols-outlined text-[18px]">account_circle</span>
+      <span class="text-[8.5px] font-semibold mt-0.5">Account</span>
+    </a>
   </nav>
 
   <!-- ==================== 1. ACCOUNT AUTHENTICATION MODAL (LOGIN / SIGNUP) ==================== -->
   <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full max-h-[90vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
       <button id="close-auth-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
@@ -875,7 +873,7 @@
 
   <!-- ==================== 2. ACCOUNT PROFILE & PUJA AVATAR CUSTOMIZER MODAL ==================== -->
   <div id="profile-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-lg w-full max-h-[90vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
       <button id="close-profile-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
@@ -931,7 +929,7 @@
 
   <!-- ==================== 3. CUSTOM PUJA PLAN CREATOR MODAL ==================== -->
   <div id="create-plan-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
       <button id="close-create-plan-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
@@ -1075,64 +1073,7 @@
     </div>
   </div>
 
-  <!-- ==================== 5. DEVICE TIMERS & RITUAL ALARMS MODAL ==================== -->
-  <div id="timer-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-7 relative flex flex-col space-y-5 animate-scale-up">
-      <button id="close-timer-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
-        <span class="material-symbols-outlined text-[20px]">close</span>
-      </button>
 
-      <!-- Header -->
-      <div class="border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[24px]">timer</span>
-          <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">Device Ritual & Transit Timers</h3>
-        </div>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] mt-0.5">Set countdown alerts for Puspanjali, Sandhi Puja, Bhog, and departure to pandals.</p>
-      </div>
-
-      <!-- Quick Preset Buttons -->
-      <div class="space-y-2">
-        <label class="text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300">Quick Ritual Timers</label>
-        <div class="grid grid-cols-2 gap-2">
-          <button class="quick-timer-preset p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 text-left transition-all group cursor-pointer" data-mins="15" data-title="Puspanjali Preparation">
-            <div class="text-xs font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300">🌸 Puspanjali</div>
-            <div class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">15 min alarm</div>
-          </button>
-          <button class="quick-timer-preset p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 text-left transition-all group cursor-pointer" data-mins="30" data-title="Sandhi Puja (108 Diyas)">
-            <div class="text-xs font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300">🪔 Sandhi Puja</div>
-            <div class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">30 min alert</div>
-          </button>
-          <button class="quick-timer-preset p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 text-left transition-all group cursor-pointer" data-mins="20" data-title="Kumari Puja & Aarti">
-            <div class="text-xs font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300">👑 Kumari Puja</div>
-            <div class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">20 min alarm</div>
-          </button>
-          <button class="quick-timer-preset p-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 text-left transition-all group cursor-pointer" data-mins="45" data-title="Next Pandal Hop Departure">
-            <div class="text-xs font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300">🚶 Pandal Hop</div>
-            <div class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">45 min countdown</div>
-          </button>
-        </div>
-      </div>
-
-      <!-- Custom Timer Input -->
-      <form id="custom-timer-form" class="space-y-2 pt-1 border-t border-outline-variant/30 dark:border-amber-400/20" onsubmit="return false;">
-        <label class="text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300">Set Custom Timer</label>
-        <div class="flex gap-2">
-          <input type="text" id="custom-timer-title" placeholder="Timer label (e.g. Bhog queue)" required class="flex-1 px-3 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-          <input type="number" id="custom-timer-mins" placeholder="Mins" min="1" max="720" required class="w-20 px-3 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white text-center" />
-          <button type="submit" class="px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black font-bold text-xs shadow hover:scale-105 active:scale-95 transition-all cursor-pointer">Start</button>
-        </div>
-      </form>
-
-      <!-- Active Running Timers List -->
-      <div class="space-y-2 pt-1">
-        <label class="text-xs font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300">Running Timers</label>
-        <div id="active-timers-list" class="space-y-2 max-h-48 overflow-y-auto">
-          <!-- Injected via JavaScript -->
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ==================== 6. SHARED PLAN LOGIN GATE MODAL ==================== -->
   <div id="shared-plan-gate-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
@@ -1162,7 +1103,7 @@
 
   <!-- ==================== PANDAL DETAIL MODAL ==================== -->
   <div id="pandal-detail-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative space-y-5">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative space-y-5">
       <button id="close-pandal-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
@@ -1211,7 +1152,7 @@
 
   <!-- ==================== ABOUT THE PAGE & DEVELOPER MODAL ==================== -->
   <div id="about-page-modal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
       <!-- Cross Button on Top Right -->
       <button id="close-about-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer" title="Close About Dialog">
         <span class="material-symbols-outlined text-[20px]">close</span>
@@ -1232,9 +1173,6 @@
       <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-3 text-center">
         <span class="text-[10px] uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Created & Crafted By</span>
         <h4 class="font-display text-lg font-bold text-on-surface dark:text-white">the.transparent.coder</h4>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
-          Follow the admin's social media pages for related upcoming festival tech products, design drops, and creative web tools like Akalbodhon:
-        </p>
         
         <!-- Social Icons (LinkedIn & Instagram) -->
         <div class="flex items-center justify-center gap-4 pt-1">
@@ -1391,7 +1329,7 @@
 
   <!-- ==================== AKALBODHON SACRED STORY PRESENTATION MODAL ==================== -->
   <div id="akalbodhon-story-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
       <!-- Cross Button on Top Right -->
       <button id="close-akalbodhon-story-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer" title="Close Story">
         <span class="material-symbols-outlined text-[20px]">close</span>
@@ -1495,6 +1433,23 @@
   <div id="toast-notification" class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 glass-panel border border-secondary-container dark:border-amber-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm text-on-surface dark:text-white translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
     <span class="toast-icon material-symbols-outlined text-primary dark:text-amber-300 text-[22px]">info</span>
     <span class="toast-msg font-medium">Notification</span>
+  </div>
+
+  <!-- ==================== CELESTIAL THEME MORPHING OVERLAY ==================== -->
+  <div id="theme-transition-overlay" aria-hidden="true">
+    <div class="celestial-stage">
+      <div class="celestial-sun">
+        <svg class="w-20 h-20 text-amber-500 drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="5" fill="#f59e0b" />
+          <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </div>
+      <div class="celestial-moon">
+        <svg class="w-16 h-16 text-amber-300 drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#ffe088" stroke="#d4af37" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
   </div>
 
   <!-- Application Logic -->

@@ -2,17 +2,17 @@
 
 @layer base {
   :root {
-    --color-primary: #610000;
-    --color-primary-container: #8b0000;
-    --color-secondary: #735c00;
-    --color-secondary-container: #fed65b;
-    --color-tertiary: #b52619;
-    --color-surface: #fff8ef;
-    --color-surface-dim: #e1d9cb;
-    --color-on-surface: #1e1b13;
-    --color-on-surface-variant: #5a403c;
-    --color-outline: #8e706b;
-    --color-outline-variant: #e3beb8;
+    --color-primary: #801812;
+    --color-primary-container: #5c0f0a;
+    --color-secondary: #7e5c08;
+    --color-secondary-container: #deb038;
+    --color-tertiary: #9c2215;
+    --color-surface: #f7f2e8; /* Soothing, eye-friendly off-white warm parchment */
+    --color-surface-dim: #ede6d8;
+    --color-on-surface: #241e17;
+    --color-on-surface-variant: #594c40;
+    --color-outline: #9c8c7f;
+    --color-outline-variant: #ded3c4;
   }
 
   /* Vibrant, Luminous Dark Mode Palette - Maximum Contrast & Clarity */
@@ -43,11 +43,13 @@
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
 
-/* Atmospheric Background Texture */
+/* Atmospheric Background Texture with Rich Ambient Lighting */
 .kash-phool-bg {
-  background-image: radial-gradient(circle at 15% 15%, rgba(181, 38, 25, 0.04) 0%, transparent 40%),
-                    radial-gradient(circle at 85% 85%, rgba(254, 214, 91, 0.04) 0%, transparent 40%),
-                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%23b52619" stroke-width="0.75" fill="none" opacity="0.04" stroke-dasharray="3,3"/></svg>');
+  background-color: #f7f2e8;
+  background-image: radial-gradient(circle at 20% 15%, rgba(222, 176, 56, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 80% 80%, rgba(156, 34, 21, 0.10) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 40%, rgba(240, 205, 120, 0.12) 0%, transparent 60%),
+                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%239c2215" stroke-width="0.75" fill="none" opacity="0.04" stroke-dasharray="3,3"/></svg>');
   background-attachment: fixed;
 }
 
@@ -85,10 +87,10 @@
 
 /* Glassmorphism Divine Veil */
 .glass-panel {
-  background: rgba(255, 248, 239, 0.85);
+  background: rgba(247, 242, 232, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(227, 190, 184, 0.35);
+  border: 1px solid rgba(222, 211, 196, 0.6);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
@@ -101,13 +103,112 @@
 }
 
 .glass-panel:hover {
-  border-color: rgba(254, 214, 91, 0.6);
-  box-shadow: 0 12px 32px rgba(181, 38, 25, 0.12);
+  border-color: rgba(222, 176, 56, 0.6);
+  box-shadow: 0 12px 32px rgba(156, 34, 21, 0.12);
 }
 
 .dark .glass-panel:hover {
   border-color: rgba(254, 214, 91, 0.55);
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(254, 214, 91, 0.15);
+}
+
+/* ======================================================== */
+/* CELESTIAL THEME MORPHING OVERLAY (SUN <-> MOON)          */
+/* ======================================================== */
+#theme-transition-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.65) 100%);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.25s ease-out;
+}
+
+#theme-transition-overlay.active {
+  opacity: 1;
+}
+
+.celestial-stage {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celestial-sun,
+.celestial-moon {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+}
+
+/* Sun to Moon (Light -> Dark) */
+.morph-to-dark .celestial-sun {
+  animation: sunMorphOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.morph-to-dark .celestial-moon {
+  animation: moonMorphIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Moon to Sun (Dark -> Light) */
+.morph-to-light .celestial-moon {
+  animation: moonMorphOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.morph-to-light .celestial-sun {
+  animation: sunMorphIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes sunMorphOut {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 25px #f59e0b); }
+  50% { transform: scale(1.15) rotate(45deg); opacity: 0.8; filter: drop-shadow(0 0 35px #ea580c); }
+  100% { transform: scale(0.2) rotate(90deg); opacity: 0; }
+}
+
+@keyframes moonMorphIn {
+  0% { transform: scale(0.2) rotate(-60deg); opacity: 0; filter: drop-shadow(0 0 0px #ffe088); }
+  50% { transform: scale(1.1) rotate(10deg); opacity: 0.9; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 30px #ffe088); }
+}
+
+@keyframes moonMorphOut {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 25px #ffe088); }
+  50% { transform: scale(1.2) rotate(-25deg); opacity: 0.7; }
+  100% { transform: scale(0.2) rotate(-90deg); opacity: 0; }
+}
+
+@keyframes sunMorphIn {
+  0% { transform: scale(0.2) rotate(-90deg); opacity: 0; }
+  50% { transform: scale(1.15) rotate(15deg); opacity: 0.85; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 35px #f59e0b); }
+}
+
+/* Modal Body Scroll Locking & Reachable Scrollbars */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+.modal-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 34, 21, 0.45) transparent;
+  max-height: calc(88vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.dark .modal-scrollable {
+  scrollbar-color: rgba(254, 214, 91, 0.45) transparent;
 }
 
 /* Navigation Blur Header */
