@@ -1039,17 +1039,24 @@
     }
 
     init() {
-      if (!this.ctx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        this.ctx = new AudioContext();
-      }
-      if (this.ctx.state === 'suspended') {
-        this.ctx.resume();
+      try {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      } catch (e) {
+        console.warn('SacredSoundEngine init error:', e);
       }
     }
 
     playDhakBeat(type = 'dha') {
       this.init();
+      if (!this.ctx) return;
       const now = this.ctx.currentTime;
 
       const bufferSize = this.ctx.sampleRate * 0.15;
@@ -1096,6 +1103,7 @@
 
     playShankha() {
       this.init();
+      if (!this.ctx) return;
       const now = this.ctx.currentTime;
       const osc1 = this.ctx.createOscillator();
       const osc2 = this.ctx.createOscillator();
@@ -1135,6 +1143,7 @@
 
     playBell() {
       this.init();
+      if (!this.ctx) return;
       const now = this.ctx.currentTime;
       const freqs = [1046.5, 2093, 3135, 4186];
       const gains = [0.4, 0.25, 0.15, 0.08];
@@ -1159,6 +1168,7 @@
 
     playKanshi() {
       this.init();
+      if (!this.ctx) return;
       const now = this.ctx.currentTime;
       const osc = this.ctx.createOscillator();
       const gain = this.ctx.createGain();
@@ -1186,6 +1196,7 @@
       if (this.isDhakLooping) return;
       this.isDhakLooping = true;
       this.init();
+      if (!this.ctx) return;
 
       const pattern = [
         { type: 'dha', delay: 0 },
@@ -1427,6 +1438,7 @@
               src="${pandal.image}" 
               alt="${pandal.name}" 
               loading="lazy"
+              decoding="async"
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               onerror="this.src='https://images.unsplash.com/photo-1567157577867-05ccb1388e66?auto=format&fit=crop&w=800&q=80'"
             />
@@ -1594,6 +1606,7 @@
                   src="${food.image}" 
                   alt="${food.name}" 
                   loading="lazy"
+                  decoding="async"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onerror="this.src='https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80'"
                 />
@@ -1670,6 +1683,7 @@
                   src="${shop.image}" 
                   alt="${shop.name}" 
                   loading="lazy"
+                  decoding="async"
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80'"
                 />
@@ -2438,7 +2452,7 @@
             0${index + 1}
           </div>
           <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30">
-            <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+            <img src="${song.cover}" alt="${song.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
           </div>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 flex-wrap">
@@ -2567,14 +2581,15 @@
     const heroDhakBtn = document.getElementById('hero-dhak-btn');
     if (heroDhakBtn) {
       heroDhakBtn.addEventListener('click', () => {
+        const icon = heroDhakBtn.querySelector('.material-symbols-outlined');
         if (!soundEngine.isDhakLooping) {
           soundEngine.startDhakLoop();
-          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+          if (icon) icon.textContent = 'pause';
           heroDhakBtn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
           showToast('Ceremonial Dhak rhythmic loop active!', 'album');
         } else {
           soundEngine.stopDhakLoop();
-          heroDhakBtn.querySelector('.material-symbols-outlined').textContent = 'album';
+          if (icon) icon.textContent = 'album';
           heroDhakBtn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         }
       });
@@ -2595,9 +2610,10 @@
     if (mahalayaPlayBtn) {
       mahalayaPlayBtn.addEventListener('click', () => {
         isMahalayaPlaying = !isMahalayaPlaying;
+        const icon = mahalayaPlayBtn.querySelector('.material-symbols-outlined');
 
         if (isMahalayaPlaying) {
-          mahalayaPlayBtn.querySelector('.material-symbols-outlined').textContent = 'pause';
+          if (icon) icon.textContent = 'pause';
           if (mahalayaVisualizer) mahalayaVisualizer.classList.add('is-playing');
           if (mahalayaContainer) {
             mahalayaContainer.classList.remove('hidden');
@@ -2615,7 +2631,7 @@
           }
           showToast('Now Broadcasting: Mahalaya (Mahishasuramardini) — Saregama Bengali', 'graphic_eq');
         } else {
-          mahalayaPlayBtn.querySelector('.material-symbols-outlined').textContent = 'play_arrow';
+          if (icon) icon.textContent = 'play_arrow';
           if (mahalayaVisualizer) mahalayaVisualizer.classList.remove('is-playing');
           if (mahalayaContainer) {
             mahalayaContainer.innerHTML = '';
@@ -4362,11 +4378,20 @@
       });
     });
 
-    // Pandal Search
-    const handlePandalSearch = (e) => {
+    // Debounce helper to prevent excessive re-rendering during search input
+    function debounce(fn, delay = 150) {
+      let timer = null;
+      return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    // Pandal Search (Debounced 150ms)
+    const handlePandalSearch = debounce((e) => {
       const query = e.target.value;
       renderPandals(currentPandalFilter, currentSubZone, query);
-    };
+    }, 150);
     document.getElementById('pandal-search-input')?.addEventListener('input', handlePandalSearch);
 
     // Food & Shopping Filters
@@ -4385,12 +4410,13 @@
       });
     });
 
-    const handleFoodShopSearch = (e) => {
+    // Food & Shopping Search (Debounced 150ms)
+    const handleFoodShopSearch = debounce((e) => {
       const query = e.target.value;
       const activeFilterBtn = document.querySelector('.food-filter-btn.bg-primary, .food-filter-btn.dark\\:bg-amber-400');
       const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
       renderFoodAndShopping(filter, query);
-    };
+    }, 150);
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 
     // About the Page & Developer Modal Handlers
