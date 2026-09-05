@@ -113,85 +113,34 @@
 }
 
 /* ======================================================== */
-/* CELESTIAL THEME MORPHING OVERLAY (SUN <-> MOON)          */
+/* CLEAN & SMOOTH THEME TRANSITIONS                         */
 /* ======================================================== */
-#theme-transition-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.65) 100%);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  transition: opacity 0.25s ease-out;
+html,
+body,
+header,
+nav,
+.app-section,
+.glass-panel,
+footer {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-#theme-transition-overlay.active {
-  opacity: 1;
+#theme-toggle-btn {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
 }
 
-.celestial-stage {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#theme-toggle-btn:hover {
+  transform: scale(1.08);
 }
 
-.celestial-sun,
-.celestial-moon {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+#theme-toggle-btn:active {
+  transform: scale(0.92) rotate(15deg);
 }
 
-/* Sun to Moon (Light -> Dark) */
-.morph-to-dark .celestial-sun {
-  animation: sunMorphOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.morph-to-dark .celestial-moon {
-  animation: moonMorphIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* Moon to Sun (Dark -> Light) */
-.morph-to-light .celestial-moon {
-  animation: moonMorphOut 0.7s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-.morph-to-light .celestial-sun {
-  animation: sunMorphIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-@keyframes sunMorphOut {
-  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 25px #f59e0b); }
-  50% { transform: scale(1.15) rotate(45deg); opacity: 0.8; filter: drop-shadow(0 0 35px #ea580c); }
-  100% { transform: scale(0.2) rotate(90deg); opacity: 0; }
-}
-
-@keyframes moonMorphIn {
-  0% { transform: scale(0.2) rotate(-60deg); opacity: 0; filter: drop-shadow(0 0 0px #ffe088); }
-  50% { transform: scale(1.1) rotate(10deg); opacity: 0.9; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 30px #ffe088); }
-}
-
-@keyframes moonMorphOut {
-  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 25px #ffe088); }
-  50% { transform: scale(1.2) rotate(-25deg); opacity: 0.7; }
-  100% { transform: scale(0.2) rotate(-90deg); opacity: 0; }
-}
-
-@keyframes sunMorphIn {
-  0% { transform: scale(0.2) rotate(-90deg); opacity: 0; }
-  50% { transform: scale(1.15) rotate(15deg); opacity: 0.85; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 35px #f59e0b); }
+#theme-toggle-btn .material-symbols-outlined {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
 }
 
 /* Modal Body Scroll Locking & Reachable Scrollbars */

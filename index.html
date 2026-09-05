@@ -30,6 +30,9 @@
   <!-- Supabase JS Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Google Identity Services (GIS) API -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -314,20 +317,36 @@
         </div>
       </div>
 
-      <!-- Zone Filters -->
-      <div class="space-y-1.5 reveal-on-scroll">
-        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-          <button class="zone-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-primary text-on-primary shadow-md dark:bg-amber-400 dark:text-black" data-zone="all">Must Watch</button>
-          <button class="zone-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-zone="North">North Kolkata</button>
-          <button class="zone-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-zone="South">South Kolkata</button>
-          <button class="zone-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-zone="Central">Central Kolkata</button>
-          <button class="zone-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-zone="East">East & Salt Lake</button>
+      <!-- Filter By Options (Recommended Watch, Rajbari, Zones) -->
+      <div class="space-y-3 reveal-on-scroll">
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300/80 shrink-0 flex items-center gap-1 mr-1">
+            <span class="material-symbols-outlined text-[16px]">filter_list</span> Filter by:
+          </span>
+          <button id="filter-btn-recommended" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-primary text-on-primary shadow-md dark:bg-amber-400 dark:text-black flex items-center gap-1.5 cursor-pointer" data-filter="recommended">
+            <span class="material-symbols-outlined text-[15px]">recommend</span> Recommended Watch
+          </button>
+          <button id="filter-btn-rajbari" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e] flex items-center gap-1.5 cursor-pointer" data-filter="rajbari">
+            <span class="material-symbols-outlined text-[15px]">castle</span> Rajbari
+          </button>
+          <button id="filter-btn-zones" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e] flex items-center gap-1.5 cursor-pointer" data-filter="zones">
+            <span class="material-symbols-outlined text-[15px]">location_city</span> Zones
+          </button>
         </div>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] italic">For more, visit specific zones section.</p>
+
+        <!-- Zones Sub-Pill Selection (Shown when 'Zones' filter is active) -->
+        <div id="zone-subfilter-container" class="hidden flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pl-1 pt-1">
+          <span class="text-[11px] font-semibold text-on-surface-variant dark:text-[#ded5c7]/80 shrink-0">Zone:</span>
+          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-primary text-white dark:bg-amber-400 dark:text-black shrink-0 transition-all cursor-pointer" data-subzone="all">All Zones</button>
+          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="North">North Kolkata</button>
+          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="South">South Kolkata</button>
+          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="Central">Central Kolkata</button>
+          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="East">East & Salt Lake</button>
+        </div>
       </div>
 
-      <!-- Pandals Grid Container (Populated via JS with reveal-on-scroll) -->
-      <div id="pandals-grid-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <!-- Pandals Grid Container (Populated via JS with 2-column mobile layout) -->
+      <div id="pandals-grid-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"></div>
 
       <!-- Curated Trails Bento Section -->
       <div class="pt-8 border-t border-outline-variant/30 dark:border-amber-400/20 space-y-6">
@@ -504,7 +523,7 @@
         <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2 reveal-on-scroll">
           <span class="material-symbols-outlined text-primary dark:text-amber-300">restaurant_menu</span> Iconic Puja Food Destinations (12 Locations)
         </h3>
-        <div id="food-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="food-cards-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"></div>
       </div>
 
       <!-- Shopping Section -->
@@ -512,7 +531,7 @@
         <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2 reveal-on-scroll">
           <span class="material-symbols-outlined text-secondary dark:text-amber-300">shopping_bag</span> Traditional Shopping Districts (8 Bazaars)
         </h3>
-        <div id="shopping-cards-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        <div id="shopping-cards-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"></div>
       </div>
     </section>
 
@@ -558,8 +577,8 @@
         <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="custom">Custom / Shared Plans</button>
       </div>
 
-      <!-- Plans Container -->
-      <div id="plans-list-container" class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+      <!-- Plans Container (2 Columns on mobile) -->
+      <div id="plans-list-container" class="grid grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-6 pt-2">
         <!-- Rendered dynamically by JavaScript -->
       </div>
     </section>
@@ -943,10 +962,10 @@
       </div>
 
       <form id="create-plan-form" class="space-y-4" onsubmit="return false;">
-        <!-- Plan Title -->
+        <!-- Plan Title (Defaults to 'Plan', non-mandatory) -->
         <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Name / Title</label>
-          <input type="text" id="plan-title-input" placeholder="e.g. South Kolkata Ashtami Anjali & Night Hop" required class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Name / Title <span class="text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-normal">(Default: Plan)</span></label>
+          <input type="text" id="plan-title-input" value="Plan" placeholder="Plan" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
         </div>
 
         <!-- Festival Day Selection -->
@@ -969,11 +988,11 @@
           <input type="text" id="plan-route-input" placeholder="e.g. Shyambazar Metro -> Sovabazar Sutanuti -> College St Tram -> Sealdah" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
         </div>
 
-        <!-- Pandals Selection -->
+        <!-- Pandals Selection (At least 1 pandal mandatory) -->
         <div class="space-y-1.5">
           <label class="text-xs font-semibold text-on-surface dark:text-amber-200 flex items-center justify-between">
-            <span>Select Pandals to Visit</span>
-            <span class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Select from list or add custom below</span>
+            <span>Select Pandals to Visit <span class="text-red-500 font-bold">*</span></span>
+            <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(At least 1 pandal required)</span>
           </label>
           <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
             <!-- Injected dynamically -->
@@ -1404,22 +1423,7 @@
     <span class="toast-msg font-medium">Notification</span>
   </div>
 
-  <!-- ==================== CELESTIAL THEME MORPHING OVERLAY ==================== -->
-  <div id="theme-transition-overlay" aria-hidden="true">
-    <div class="celestial-stage">
-      <div class="celestial-sun">
-        <svg class="w-20 h-20 text-amber-500 drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="5" fill="#f59e0b" />
-          <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72 1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" />
-        </svg>
-      </div>
-      <div class="celestial-moon">
-        <svg class="w-16 h-16 text-amber-300 drop-shadow-2xl" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="#ffe088" stroke="#d4af37" stroke-width="1" />
-        </svg>
-      </div>
-    </div>
-  </div>
+
 
   <!-- Application Logic -->
   <script src="app.js"></script>
