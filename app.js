@@ -1389,12 +1389,8 @@
                 class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
                 title="Open in Google Maps"
               >
-                <!-- Google Maps Logo -->
-                <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
-                  <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
-                  <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
-                  <circle cx="16" cy="12" r="3" fill="#4285F4"/>
-                </svg>
+                <!-- Directions Pin Icon -->
+                <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
                 <span>Get Directions</span>
               </a>
               <button 
@@ -1562,12 +1558,8 @@
                     rel="noopener"
                     class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
                   >
-                    <!-- Google Maps Logo -->
-                    <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
-                      <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
-                      <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
-                      <circle cx="16" cy="12" r="3" fill="#4285F4"/>
-                    </svg>
+                    <!-- Directions Pin Icon -->
+                    <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span>Get Directions</span>
                   </a>
                   <button 
@@ -1645,12 +1637,8 @@
                     rel="noopener"
                     class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-2.5 px-3 rounded-xl font-label-sm text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow"
                   >
-                    <!-- Google Maps Logo -->
-                    <svg class="w-4 h-4 shrink-0 drop-shadow-sm" viewBox="0 0 32 32" fill="none">
-                      <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
-                      <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
-                      <circle cx="16" cy="12" r="3" fill="#4285F4"/>
-                    </svg>
+                    <!-- Directions Pin Icon -->
+                    <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span>Get Directions</span>
                   </a>
                   <button 
@@ -1974,12 +1962,8 @@
                   </div>
                   <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
                     <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
-                      <!-- Google Maps Logo -->
-                      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 32 32" fill="none">
-                        <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
-                        <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
-                        <circle cx="16" cy="12" r="3" fill="#4285F4"/>
-                      </svg>
+                      <!-- Directions Pin Icon -->
+                      <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
                       Directions
                     </a>
                     <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
@@ -2020,12 +2004,8 @@
                   </div>
                   <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
                     <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
-                      <!-- Google Maps Logo -->
-                      <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 32 32" fill="none">
-                        <path d="M16 2C10.48 2 6 6.48 6 12C6 19.5 16 30 16 30C16 30 26 19.5 26 12C26 6.48 21.52 2 16 2Z" fill="#EA4335"/>
-                        <path d="M16 7C13.24 7 11 9.24 11 12C11 14.76 13.24 17 16 17C18.76 17 21 14.76 21 12C21 9.24 18.76 7 16 7Z" fill="#FFFFFF"/>
-                        <circle cx="16" cy="12" r="3" fill="#4285F4"/>
-                      </svg>
+                      <!-- Directions Pin Icon -->
+                      <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
                       Directions
                     </a>
                     <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
