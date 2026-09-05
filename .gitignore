@@ -12,3 +12,5 @@ desktop.ini
 # Temporary / Scratch
 .gemini/
 *.log
+__pycache__/
+*.pyc
