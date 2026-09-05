@@ -2303,198 +2303,433 @@
     setTimeout(initScrollReveal, 60);
   }
 
-  // Curated Songs Grouped by 3 Vibe Modes
+  // Curated Spotify Durga Puja Playlists & Songs
+  const SPOTIFY_PLAYLISTS = {
+    sharodiya: {
+      id: '7EFTbXOZuUZEqdt5cMwaH5',
+      name: 'Sharodiya hits',
+      url: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
+      embedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
+      cover: 'https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2',
+      description: 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.'
+    },
+    mahalaya: {
+      id: '5dUPbjW2MgX96HUlQX81Xs',
+      name: 'Mahalaya',
+      url: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link',
+      embedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
+      description: 'The eternal dawn Mahishasuramardini, sacred Vedic stotras, and Birendra Krishna Bhadra invocation.'
+    }
+  };
+
   const PUJA_RADIO_SONGS = [
-    // --- 1. PUJO HIP HOP & FESTIVE BEATS MODE ---
     {
-      id: 'dugga-elo',
-      mode: 'hiphop',
+      id: '0qo204uS81FwkIQDYkQfCi',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Dugga Ma Asche',
+      artist: 'Infra',
+      duration: '3:33',
+      spotifyTrackId: '0qo204uS81FwkIQDYkQfCi',
+      spotifyUrl: 'https://open.spotify.com/track/0qo204uS81FwkIQDYkQfCi',
+      embedUrl: 'https://open.spotify.com/embed/track/0qo204uS81FwkIQDYkQfCi?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27308484e96386e9532e18109d7',
+      previewUrl: 'https://p.scdn.co/mp3-preview/8fd52ee34e2425deecd0981428ae7e3a6ccea88d'
+    },
+    {
+      id: '0Z9Ok50nu5nxyJPP9jZqPM',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Dugga Ma',
+      artist: 'Arijit Singh, Arindom, Priyo Chattopadhyay, Raja Chanda, Prasen',
+      duration: '4:30',
+      spotifyTrackId: '0Z9Ok50nu5nxyJPP9jZqPM',
+      spotifyUrl: 'https://open.spotify.com/track/0Z9Ok50nu5nxyJPP9jZqPM',
+      embedUrl: 'https://open.spotify.com/embed/track/0Z9Ok50nu5nxyJPP9jZqPM?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624',
+      previewUrl: 'https://p.scdn.co/mp3-preview/8ef10111bc0c21049896185ba4cde161e517a4d7'
+    },
+    {
+      id: '0nspNLUZLF1RwbpP7uIwox',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Dhak Baja Kashor Baja',
+      artist: 'Shreya Ghoshal, Jeet Gannguli',
+      duration: '4:25',
+      spotifyTrackId: '0nspNLUZLF1RwbpP7uIwox',
+      spotifyUrl: 'https://open.spotify.com/track/0nspNLUZLF1RwbpP7uIwox',
+      embedUrl: 'https://open.spotify.com/embed/track/0nspNLUZLF1RwbpP7uIwox?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27321792f8da1279de3b03b4b80',
+      previewUrl: 'https://p.scdn.co/mp3-preview/53a16647842901a73d4749fd91a9c4e2be0d01e7'
+    },
+    {
+      id: '14mxoVNHA77ja4bre40T1p',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
       title: 'Dugga Elo',
-      artist: 'Monali Thakur & Guddu',
-      uploader: 'SVF',
-      duration: '3:45',
-      ytId: '6M-9X9f6n5Y',
-      spotifyUrl: 'https://open.spotify.com/search/Dugga%20Elo%20Monali%20Thakur',
-      youtubeUrl: 'https://www.youtube.com/watch?v=6M-9X9f6n5Y',
-      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+      artist: 'Monali Thakur, Guddu',
+      duration: '2:26',
+      spotifyTrackId: '14mxoVNHA77ja4bre40T1p',
+      spotifyUrl: 'https://open.spotify.com/track/14mxoVNHA77ja4bre40T1p',
+      embedUrl: 'https://open.spotify.com/embed/track/14mxoVNHA77ja4bre40T1p?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273877df1f4d86607531a93ead2',
+      previewUrl: 'https://p.scdn.co/mp3-preview/a5c2b12ab188e0d41d97f65c0584bc2aa2e82f44'
     },
     {
-      id: 'bolo-dugga-maiki',
-      mode: 'hiphop',
-      title: 'Bolo Dugga Maiki',
-      artist: 'Arijit Singh & Nikhita Gandhi',
-      uploader: 'SVF Music',
-      duration: '4:12',
-      ytId: 'X3s3uG1y-bA',
-      spotifyUrl: 'https://open.spotify.com/search/Bolo%20Dugga%20Maiki%20Arijit%20Singh',
-      youtubeUrl: 'https://www.youtube.com/watch?v=X3s3uG1y-bA',
-      cover: 'logo.jpg'
+      id: '1xcq7GEsaUKGNiK7NQliB9',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Aamaar Dugga',
+      artist: 'Monali Thakur, Tyohaar, Anindya Chatterjee',
+      duration: '3:19',
+      spotifyTrackId: '1xcq7GEsaUKGNiK7NQliB9',
+      spotifyUrl: 'https://open.spotify.com/track/1xcq7GEsaUKGNiK7NQliB9',
+      embedUrl: 'https://open.spotify.com/embed/track/1xcq7GEsaUKGNiK7NQliB9?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a0ae69b032b80eb175748db2',
+      previewUrl: 'https://p.scdn.co/mp3-preview/f56927349a9b63b15389b10d33f7b89c445981de'
     },
     {
-      id: 'dhaker-taaley',
-      mode: 'hiphop',
-      title: 'Dhaker Taaley',
-      artist: 'Abhijeet Bhattacharya, Monali Thakur & Chorus',
-      uploader: 'SVF Music',
-      duration: '4:18',
-      ytId: 'o6A_qT3v2rI',
-      spotifyUrl: 'https://open.spotify.com/search/Dhaker%20Taaley%20Abhijeet',
-      youtubeUrl: 'https://www.youtube.com/watch?v=o6A_qT3v2rI',
-      cover: 'logo.jpg'
+      id: '0dJGrIiwlyshcRuvMddU66',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Hote Paare Na',
+      artist: 'Arindom, Prashmita Paul, Prasen',
+      duration: '5:13',
+      spotifyTrackId: '0dJGrIiwlyshcRuvMddU66',
+      spotifyUrl: 'https://open.spotify.com/track/0dJGrIiwlyshcRuvMddU66',
+      embedUrl: 'https://open.spotify.com/embed/track/0dJGrIiwlyshcRuvMddU66?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624',
+      previewUrl: 'https://p.scdn.co/mp3-preview/dd599f5f1683af89f06c8658496de5f10218be0b'
     },
     {
-      id: 'dhak-baja-kashor-baaja',
-      mode: 'hiphop',
-      title: 'Dhak Baja Kashor Baaja',
-      artist: 'Shreya Ghoshal & Jeet Gannguli',
-      uploader: 'SVF Music',
-      duration: '3:55',
-      ytId: 'GzQ3Z4W6i-s',
-      spotifyUrl: 'https://open.spotify.com/search/Dhak%20Baja%20Kashor%20Baaja%20Shreya%20Ghoshal',
-      youtubeUrl: 'https://www.youtube.com/watch?v=GzQ3Z4W6i-s',
-      cover: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80'
+      id: '6HNbprsATKyydJ7YdrLuPd',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Ebar Jeno Onno Rokom Pujo',
+      artist: 'Nakash Aziz, Antara Mitra, Indraadip Dasgupta, Prasen, Devin Star Tailes, Mimi, Nusrat Jahan',
+      duration: '3:32',
+      spotifyTrackId: '6HNbprsATKyydJ7YdrLuPd',
+      spotifyUrl: 'https://open.spotify.com/track/6HNbprsATKyydJ7YdrLuPd',
+      embedUrl: 'https://open.spotify.com/embed/track/6HNbprsATKyydJ7YdrLuPd?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273dff82889c347a6db8a7e4fe5',
+      previewUrl: 'https://p.scdn.co/mp3-preview/782e00ddf7a28921942ffe25e0ee6250c0acc32c'
     },
-
-    // --- 2. PUJA PLEASANT MODE ---
     {
-      id: 'elo-je-maa',
-      mode: 'pleasant',
+      id: '5gGAG8v5UAeUW7kxq9BK0y',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Gouri Elo Dekhe Jalo',
+      artist: 'Dohar',
+      duration: '5:39',
+      spotifyTrackId: '5gGAG8v5UAeUW7kxq9BK0y',
+      spotifyUrl: 'https://open.spotify.com/track/5gGAG8v5UAeUW7kxq9BK0y',
+      embedUrl: 'https://open.spotify.com/embed/track/5gGAG8v5UAeUW7kxq9BK0y?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273aff57a62be756269cad3f23b',
+      previewUrl: 'https://p.scdn.co/mp3-preview/5bc557143231a23bfdcf765a479107fae08439ec'
+    },
+    {
+      id: '21rIO2dhW37d8CVJBT0Ass',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
       title: 'Elo Je Maa',
-      artist: 'Abhijeet Bhattacharya & Shreya Ghoshal',
-      uploader: 'SVF Music',
-      duration: '4:22',
-      ytId: 'A3nFh_M5D8c',
-      spotifyUrl: 'https://open.spotify.com/search/Elo%20Je%20Maa%20Abhijeet',
-      youtubeUrl: 'https://www.youtube.com/watch?v=A3nFh_M5D8c',
-      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+      artist: 'Abhijeet',
+      duration: '5:07',
+      spotifyTrackId: '21rIO2dhW37d8CVJBT0Ass',
+      spotifyUrl: 'https://open.spotify.com/track/21rIO2dhW37d8CVJBT0Ass',
+      embedUrl: 'https://open.spotify.com/embed/track/21rIO2dhW37d8CVJBT0Ass?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273bccb335165d31c982c1d5919',
+      previewUrl: 'https://p.scdn.co/mp3-preview/569880aae61c48d38c39d9b492803c5dcebc0f4c'
     },
     {
-      id: 'joy-maa-durga',
-      mode: 'pleasant',
-      title: 'Joy Maa Durga',
-      artist: 'Pandit Ajoy Chakrabarty & Kaushiki Chakraborty',
-      uploader: 'Saregama Bengali',
-      duration: '5:10',
-      ytId: 'YQyo8QeoYhc',
-      spotifyUrl: 'https://open.spotify.com/search/Joy%20Maa%20Durga%20Ajoy%20Chakrabarty',
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
-      cover: 'logo.jpg'
+      id: '0lbpCmeKfDa8O8rwezno3i',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Dhaker Taley',
+      artist: 'Abhijeet, Parineet, Sudipto',
+      duration: '4:42',
+      spotifyTrackId: '0lbpCmeKfDa8O8rwezno3i',
+      spotifyUrl: 'https://open.spotify.com/track/0lbpCmeKfDa8O8rwezno3i',
+      embedUrl: 'https://open.spotify.com/embed/track/0lbpCmeKfDa8O8rwezno3i?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734c8f943b782b3cfc146125e4',
+      previewUrl: 'https://p.scdn.co/mp3-preview/778820c713b9aed596cdf8eb8ba5cdebb10d98e8'
     },
     {
-      id: 'bajlo-tomar-alor-benu',
-      mode: 'pleasant',
-      title: 'Bajlo Tomar Alor Benu',
-      artist: 'Suprava Sarkar',
-      uploader: 'Saregama Bengali',
-      duration: '3:30',
-      ytId: 'YQyo8QeoYhc',
-      spotifyUrl: 'https://open.spotify.com/search/Bajlo%20Tomar%20Alor%20Benu',
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
-      cover: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=400&q=80'
-    },
-
-    // --- 3. MAHALAYA MODE ---
-    {
-      id: 'mahalaya-full-chandi',
-      mode: 'mahalaya',
-      title: 'Mahishasuramardini (Full Dawn Narration)',
-      artist: 'Birendra Krishna Bhadra',
-      uploader: 'Saregama Bengali',
-      duration: '1:28:45',
-      ytId: 'YQyo8QeoYhc',
-      spotifyUrl: 'https://open.spotify.com/album/42v3gD94Q8JoxD57sL20Qx',
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
-      cover: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=400&q=80'
+      id: '5dOHCKsalASHbAn2mZCWgq',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Ailo Uma Barite',
+      artist: 'Antara Nandy, MONAMI GHOSH',
+      duration: '3:52',
+      spotifyTrackId: '5dOHCKsalASHbAn2mZCWgq',
+      spotifyUrl: 'https://open.spotify.com/track/5dOHCKsalASHbAn2mZCWgq',
+      embedUrl: 'https://open.spotify.com/embed/track/5dOHCKsalASHbAn2mZCWgq?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27312369566acbeabf040cd9ef0',
+      previewUrl: 'https://p.scdn.co/mp3-preview/ae38ceb580ae12f842613645f368351cf89003b3'
     },
     {
-      id: 'jaago-tumi-jaago',
-      mode: 'mahalaya',
-      title: 'Jaago Tumi Jaago',
-      artist: 'Dwijen Mukhopadhyay',
-      uploader: 'Saregama Bengali',
-      duration: '4:15',
-      ytId: 'YQyo8QeoYhc',
-      spotifyUrl: 'https://open.spotify.com/search/Jaago%20Tumi%20Jaago%20Dwijen%20Mukhopadhyay',
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
-      cover: 'logo.jpg'
+      id: '3tLUTDrVx8lnOEYuStzbT5',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Asatoma Sadgamaya',
+      artist: 'Arijit Singh, Indraadip Dasgupta, Srijato',
+      duration: '5:18',
+      spotifyTrackId: '3tLUTDrVx8lnOEYuStzbT5',
+      spotifyUrl: 'https://open.spotify.com/track/3tLUTDrVx8lnOEYuStzbT5',
+      embedUrl: 'https://open.spotify.com/embed/track/3tLUTDrVx8lnOEYuStzbT5?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27373d361bdee22b03b26953ef3',
+      previewUrl: 'https://p.scdn.co/mp3-preview/9bc5f3eeaad281043bb9d06caa93395abaec9acf'
     },
     {
-      id: 'rupang-dehi-jayang-dehi',
-      mode: 'mahalaya',
-      title: 'Rupang Dehi Jayang Dehi',
-      artist: 'Birendra Krishna Bhadra & Chorus',
-      uploader: 'Saregama Bengali',
-      duration: '4:50',
-      ytId: 'YQyo8QeoYhc',
-      spotifyUrl: 'https://open.spotify.com/search/Rupang%20Dehi%20Jayang%20Dehi%20Birendra%20Krishna%20Bhadra',
-      youtubeUrl: 'https://www.youtube.com/watch?v=YQyo8QeoYhc',
-      cover: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=400&q=80'
+      id: '6XbWY7TpYBcdBCBiTOh5EA',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Dakatiya Banshi (From "Bohurupi")',
+      artist: 'Shrestha D., Bonnie Chakraborty, Noni Chora Das Baul',
+      duration: '3:56',
+      spotifyTrackId: '6XbWY7TpYBcdBCBiTOh5EA',
+      spotifyUrl: 'https://open.spotify.com/track/6XbWY7TpYBcdBCBiTOh5EA',
+      embedUrl: 'https://open.spotify.com/embed/track/6XbWY7TpYBcdBCBiTOh5EA?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730f9df00be51e525670195af5',
+      previewUrl: 'https://p.scdn.co/mp3-preview/9f61865f4edfc11b1928f6bc8fc204ac0fabf9e4'
+    },
+    {
+      id: '4MQPlquCDaltOs006z65aG',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Jaago Uma',
+      artist: 'Rupankar Bagchi',
+      duration: '5:17',
+      spotifyTrackId: '4MQPlquCDaltOs006z65aG',
+      spotifyUrl: 'https://open.spotify.com/track/4MQPlquCDaltOs006z65aG',
+      embedUrl: 'https://open.spotify.com/embed/track/4MQPlquCDaltOs006z65aG?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273facb0bc10d8032ba2d4996ea',
+      previewUrl: 'https://p.scdn.co/mp3-preview/2cecdcae539cc1c78d44b4f455ca79f45a61f697'
+    },
+    {
+      id: '5fN2XXtz5pAHo0iRTMfQnj',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Aamaar Dugga',
+      artist: 'Monali Thakur',
+      duration: '3:19',
+      spotifyTrackId: '5fN2XXtz5pAHo0iRTMfQnj',
+      spotifyUrl: 'https://open.spotify.com/track/5fN2XXtz5pAHo0iRTMfQnj',
+      embedUrl: 'https://open.spotify.com/embed/track/5fN2XXtz5pAHo0iRTMfQnj?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273bc0278fe7524c43b2260fc38',
+      previewUrl: 'https://p.scdn.co/mp3-preview/f56927349a9b63b15389b10d33f7b89c445981de'
+    },
+    {
+      id: '7hQN6fL1OI0L6O2qkfTsBk',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Emon Madhur Sandhyay',
+      artist: 'Asha Bhosle, R. D. Burman',
+      duration: '5:43',
+      spotifyTrackId: '7hQN6fL1OI0L6O2qkfTsBk',
+      spotifyUrl: 'https://open.spotify.com/track/7hQN6fL1OI0L6O2qkfTsBk',
+      embedUrl: 'https://open.spotify.com/embed/track/7hQN6fL1OI0L6O2qkfTsBk?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27388eb8bd72f0b5f649c941797',
+      previewUrl: 'https://p.scdn.co/mp3-preview/ba4d409e897ec6b153900a83a97e022a48382498'
+    },
+    {
+      id: '17gIko1QQ6f19KFdLfy29u',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Aar Koto Raat Eka Thakbo',
+      artist: 'Bappi Lahiri, Asha Bhosle',
+      duration: '6:13',
+      spotifyTrackId: '17gIko1QQ6f19KFdLfy29u',
+      spotifyUrl: 'https://open.spotify.com/track/17gIko1QQ6f19KFdLfy29u',
+      embedUrl: 'https://open.spotify.com/embed/track/17gIko1QQ6f19KFdLfy29u?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327f30dba0f8f29ef9a080177',
+      previewUrl: 'https://p.scdn.co/mp3-preview/4df79a1b618d428b19dd1c4ee7b113d411ead14e'
+    },
+    {
+      id: '0BAwwUhO60U01O9c1OxHfe',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Tabo Achintya Rupa - Charita - Mahima',
+      artist: 'Manabendra Mukherjee',
+      duration: '3:58',
+      spotifyTrackId: '0BAwwUhO60U01O9c1OxHfe',
+      spotifyUrl: 'https://open.spotify.com/track/0BAwwUhO60U01O9c1OxHfe',
+      embedUrl: 'https://open.spotify.com/embed/track/0BAwwUhO60U01O9c1OxHfe?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
+      previewUrl: 'https://p.scdn.co/mp3-preview/c0ba2a13cc7ccbfc82cd78dc58d452b35292a96c'
+    },
+    {
+      id: '3w0q9HtvdnU19IdAbOl1XQ',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Ogo Amar Agamani - Alo',
+      artist: 'Sipra Basu',
+      duration: '3:19',
+      spotifyTrackId: '3w0q9HtvdnU19IdAbOl1XQ',
+      spotifyUrl: 'https://open.spotify.com/track/3w0q9HtvdnU19IdAbOl1XQ',
+      embedUrl: 'https://open.spotify.com/embed/track/3w0q9HtvdnU19IdAbOl1XQ?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
+      previewUrl: 'https://p.scdn.co/mp3-preview/edad0b59a894f0f7935c2f27ca24b72e4a5d5737'
+    },
+    {
+      id: '0hJmNTKYGevHLMIWvCUE8c',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Jago Durga Dashapraharanadharinee',
+      artist: 'Dwijen Mukherjee',
+      duration: '1:47',
+      spotifyTrackId: '0hJmNTKYGevHLMIWvCUE8c',
+      spotifyUrl: 'https://open.spotify.com/track/0hJmNTKYGevHLMIWvCUE8c',
+      embedUrl: 'https://open.spotify.com/embed/track/0hJmNTKYGevHLMIWvCUE8c?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
+      previewUrl: 'https://p.scdn.co/mp3-preview/00b5ca64826c9216d23915eea5329f647cec55b9'
+    },
+    {
+      id: '3FrWOsMayIJcPWduMVEVF6',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Bajlo Tomar Aalor Benu With Narration',
+      artist: 'Supriti Ghosh',
+      duration: '4:23',
+      spotifyTrackId: '3FrWOsMayIJcPWduMVEVF6',
+      spotifyUrl: 'https://open.spotify.com/track/3FrWOsMayIJcPWduMVEVF6',
+      embedUrl: 'https://open.spotify.com/embed/track/3FrWOsMayIJcPWduMVEVF6?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273759df1fcaea412cb5dbd5dca',
+      previewUrl: 'https://p.scdn.co/mp3-preview/8c2faf8f73a485cbf84377173ff60aa72fbc9ed6'
+    },
+    {
+      id: '2ArskmlOgluJZ86RD1z0qq',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Simhastha Sashisekhara',
+      artist: 'Pankaj Mullick',
+      duration: '0:54',
+      spotifyTrackId: '2ArskmlOgluJZ86RD1z0qq',
+      spotifyUrl: 'https://open.spotify.com/track/2ArskmlOgluJZ86RD1z0qq',
+      embedUrl: 'https://open.spotify.com/embed/track/2ArskmlOgluJZ86RD1z0qq?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/f7328414dcf5f6645f3cf8d37989a99e118f1244'
+    },
+    {
+      id: '0SEnZ1JaMXSQr32TOupRQF',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Ya Chandi',
+      artist: 'Pankaj Mullick',
+      duration: '1:36',
+      spotifyTrackId: '0SEnZ1JaMXSQr32TOupRQF',
+      spotifyUrl: 'https://open.spotify.com/track/0SEnZ1JaMXSQr32TOupRQF',
+      embedUrl: 'https://open.spotify.com/embed/track/0SEnZ1JaMXSQr32TOupRQF?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/f00696760a1073257de436860ca8cd00835cfd92'
+    },
+    {
+      id: '4mnYGUG890pny5QTjCaZWr',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Aham Rudrebhirvasubhischara',
+      artist: 'Pankaj Mullick',
+      duration: '3:59',
+      spotifyTrackId: '4mnYGUG890pny5QTjCaZWr',
+      spotifyUrl: 'https://open.spotify.com/track/4mnYGUG890pny5QTjCaZWr',
+      embedUrl: 'https://open.spotify.com/embed/track/4mnYGUG890pny5QTjCaZWr?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/007f9efb5571f2d5ab1579da9882ba17aecc0b3b'
+    },
+    {
+      id: '2iKRC4L9MihhRVlGBRb3H8',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Subhra Sankha - Rabe',
+      artist: 'Shyamal Mitra, Ashima Bhattacharya, Aarti Mukherji',
+      duration: '2:48',
+      spotifyTrackId: '2iKRC4L9MihhRVlGBRb3H8',
+      spotifyUrl: 'https://open.spotify.com/track/2iKRC4L9MihhRVlGBRb3H8',
+      embedUrl: 'https://open.spotify.com/embed/track/2iKRC4L9MihhRVlGBRb3H8?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/677e7912fbe8096c00ef835cb448a0b94e38c834'
+    },
+    {
+      id: '5CGYig9Hg49EL6g6NlxNhv',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Jaya Jaya Japyajaye',
+      artist: 'Pankaj Mullick',
+      duration: '2:31',
+      spotifyTrackId: '5CGYig9Hg49EL6g6NlxNhv',
+      spotifyUrl: 'https://open.spotify.com/track/5CGYig9Hg49EL6g6NlxNhv',
+      embedUrl: 'https://open.spotify.com/embed/track/5CGYig9Hg49EL6g6NlxNhv?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/c3e05e45960b4468b9ce81a85bf474c2d1ba50cd'
+    },
+    {
+      id: '742moqjpE88LUEAs1W9yVY',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Akhila - Bimane Taba Jaya - Gane',
+      artist: 'Krishna Dasgupta',
+      duration: '4:01',
+      spotifyTrackId: '742moqjpE88LUEAs1W9yVY',
+      spotifyUrl: 'https://open.spotify.com/track/742moqjpE88LUEAs1W9yVY',
+      embedUrl: 'https://open.spotify.com/embed/track/742moqjpE88LUEAs1W9yVY?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
+      previewUrl: 'https://p.scdn.co/mp3-preview/b9e854905062e00006b96db0e9056a4916bc7870'
     }
   ];
 
-  let ytMahalayaPlayer = null;
-  let ytRadioPlayer = null;
   let activeRadioSongId = null;
 
   function renderPujaRadioSongs() {
-    const hiphopContainer = document.getElementById('radio-songs-hiphop-list');
-    const pleasantContainer = document.getElementById('radio-songs-pleasant-list');
+    const sharodiyaContainer = document.getElementById('radio-songs-sharodiya-list') || document.getElementById('radio-songs-hiphop-list');
     const mahalayaContainer = document.getElementById('radio-songs-mahalaya-list');
     const legacyList = document.getElementById('puja-radio-songs-list');
 
     const renderSongItem = (song, index) => `
       <div 
-        class="glass-panel p-4 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-300 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group"
+        class="glass-panel p-3.5 sm:p-4 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#1DB954]/60 dark:hover:border-[#1ed760]/60 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group hover:shadow-lg"
         id="song-card-${song.id}"
       >
         <div class="flex items-center gap-3.5 w-full sm:w-auto min-w-0">
-          <div class="w-10 h-10 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-xs text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20">
-            0${index + 1}
+          <div class="w-9 h-9 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-xs text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20">
+            ${index < 9 ? '0' : ''}${index + 1}
           </div>
-          <div class="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30">
-            <img src="${song.cover}" alt="${song.title}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+          <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30 shadow-sm group-hover:shadow-md transition-shadow relative">
+            <img 
+              src="${song.cover}" 
+              alt="${song.title}" 
+              loading="lazy" 
+              decoding="async" 
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+              onerror="this.src='logo.jpg'"
+            />
           </div>
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-2 flex-wrap">
-              <h4 class="font-display font-bold text-base text-on-surface dark:text-white truncate">${song.title}</h4>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 shrink-0">${song.uploader}</span>
+              <h4 class="font-display font-bold text-sm sm:text-base text-on-surface dark:text-white truncate group-hover:text-[#1DB954] dark:group-hover:text-[#1ed760] transition-colors">${song.title}</h4>
+              <span class="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1DB954]/10 text-[#1DB954] dark:bg-[#1DB954]/20 dark:text-[#1ed760] shrink-0">Spotify</span>
             </div>
             <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] truncate mt-0.5">${song.artist}</p>
           </div>
         </div>
 
-        <div class="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
+        <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
           <span class="text-xs font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
           
-          <!-- Spotify Direct Play Link -->
+          <!-- Spotify Direct App Link -->
           <a 
             href="${song.spotifyUrl}" 
             target="_blank" 
             rel="noopener noreferrer" 
-            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-sm"
-            title="Stream on Spotify"
+            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-sm shrink-0"
+            title="Open on Spotify"
           >
             <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
           </a>
 
-          <!-- YouTube Direct Play Link -->
-          <a 
-            href="${song.youtubeUrl}" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="w-9 h-9 rounded-xl bg-red-600/10 hover:bg-red-600 text-red-600 hover:text-white dark:bg-red-500/20 dark:hover:bg-red-600 dark:text-red-400 dark:hover:text-white flex items-center justify-center transition-all shadow-sm"
-            title="Stream on YouTube"
-          >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-
-          <!-- Interactive Play In-App Button -->
+          <!-- Interactive Play In-Website Button -->
           <button 
-            class="play-radio-song-btn px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+            class="play-radio-song-btn px-3 sm:px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0"
             data-song-id="${song.id}"
-            data-yt-id="${song.ytId}"
-            data-title="${song.title}"
-            data-artist="${song.artist}"
           >
             <span class="material-symbols-outlined text-[16px]">play_arrow</span> Play
           </button>
@@ -2502,12 +2737,10 @@
       </div>
     `;
 
-    const hiphopSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'hiphop');
-    const pleasantSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'pleasant');
-    const mahalayaSongs = PUJA_RADIO_SONGS.filter(s => s.mode === 'mahalaya');
+    const sharodiyaSongs = PUJA_RADIO_SONGS.filter(s => s.playlist === 'sharodiya');
+    const mahalayaSongs = PUJA_RADIO_SONGS.filter(s => s.playlist === 'mahalaya');
 
-    if (hiphopContainer) hiphopContainer.innerHTML = hiphopSongs.map(renderSongItem).join('');
-    if (pleasantContainer) pleasantContainer.innerHTML = pleasantSongs.map(renderSongItem).join('');
+    if (sharodiyaContainer) sharodiyaContainer.innerHTML = sharodiyaSongs.map(renderSongItem).join('');
     if (mahalayaContainer) mahalayaContainer.innerHTML = mahalayaSongs.map(renderSongItem).join('');
     if (legacyList) legacyList.innerHTML = PUJA_RADIO_SONGS.map(renderSongItem).join('');
 
@@ -2515,42 +2748,93 @@
     document.querySelectorAll('.play-radio-song-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const songId = btn.dataset.songId;
-        const ytId = btn.dataset.ytId;
-        const title = btn.dataset.title;
-        const artist = btn.dataset.artist;
-        playRadioSong(songId, ytId, title, artist);
+        const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
+        if (song) playRadioSong(song);
+      });
+    });
+
+    // Attach play entire playlist handlers
+    document.querySelectorAll('.play-entire-playlist-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const playlistKey = btn.dataset.playlist;
+        playSpotifyPlaylist(playlistKey);
       });
     });
   }
 
-  function playRadioSong(songId, ytId, title, artist) {
-    activeRadioSongId = songId;
+  function playRadioSong(song) {
+    activeRadioSongId = song.id;
     const activeBox = document.getElementById('radio-active-player-box');
     const titleEl = document.getElementById('active-song-title');
     const artistEl = document.getElementById('active-song-artist');
+    const badgeEl = document.getElementById('active-song-playlist-badge');
     const visualizerEl = document.getElementById('active-song-visualizer');
     const playerHolder = document.getElementById('radio-yt-player-holder');
 
-    if (activeBox) activeBox.classList.remove('hidden');
-    if (titleEl) titleEl.textContent = title;
-    if (artistEl) artistEl.textContent = artist;
+    if (activeBox) {
+      activeBox.classList.remove('hidden');
+      activeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    if (titleEl) titleEl.textContent = song.title;
+    if (artistEl) artistEl.textContent = song.artist;
+    if (badgeEl) badgeEl.textContent = `• ${song.playlistName}`;
     if (visualizerEl) visualizerEl.classList.add('is-playing');
 
     if (playerHolder) {
       playerHolder.innerHTML = `
         <iframe 
+          style="border-radius: 16px;" 
+          src="${song.embedUrl}" 
           width="100%" 
-          height="100%" 
-          src="https://www.youtube.com/embed/${ytId}?autoplay=1&enablejsapi=1&playsinline=1&modestbranding=1&rel=0" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen
-          class="w-full h-full rounded-2xl"
+          height="152" 
+          frameBorder="0" 
+          allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy"
+          class="w-full rounded-2xl shadow-lg"
         ></iframe>
       `;
     }
 
-    showToast(`Playing: "${title}" (${artist})`, 'graphic_eq');
+    showToast(`Streaming on Spotify: "${song.title}" (${song.artist})`, 'graphic_eq');
+  }
+
+  function playSpotifyPlaylist(playlistKey) {
+    const pl = SPOTIFY_PLAYLISTS[playlistKey];
+    if (!pl) return;
+    const activeBox = document.getElementById('radio-active-player-box');
+    const titleEl = document.getElementById('active-song-title');
+    const artistEl = document.getElementById('active-song-artist');
+    const badgeEl = document.getElementById('active-song-playlist-badge');
+    const visualizerEl = document.getElementById('active-song-visualizer');
+    const playerHolder = document.getElementById('radio-yt-player-holder');
+
+    if (activeBox) {
+      activeBox.classList.remove('hidden');
+      activeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    if (titleEl) titleEl.textContent = pl.name;
+    if (artistEl) artistEl.textContent = `Official Spotify Durga Puja Playlist • ${pl.description}`;
+    if (badgeEl) badgeEl.textContent = `• Spotify Playlist`;
+    if (visualizerEl) visualizerEl.classList.add('is-playing');
+
+    if (playerHolder) {
+      playerHolder.innerHTML = `
+        <iframe 
+          style="border-radius: 16px;" 
+          src="${pl.embedUrl}" 
+          width="100%" 
+          height="352" 
+          frameBorder="0" 
+          allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy"
+          class="w-full rounded-2xl shadow-xl"
+        ></iframe>
+      `;
+    }
+
+    showToast(`Loaded Spotify Playlist: "${pl.name}"`, 'graphic_eq');
   }
 
   // --- 13. AUDIO & RADIO CONTROLLER ---
