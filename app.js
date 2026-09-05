@@ -100,17 +100,6 @@
       locationUrl: 'https://maps.google.com/?q=Pathuriaghata+Rajbari+Durga+Puja+Kolkata'
     },
     {
-      id: 'simla-byam-samity',
-      name: 'Simla Byam Samity',
-      zone: 'North',
-      theme: 'Patriotic Heritage & Majestic Traditional Pratima',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
-      transit: 'Girish Park Metro (3 min walk)',
-      transitType: 'metro',
-      highlights: 'Historic puja founded during the freedom movement with inspiring patriotic legacy and majestic classical idol.',
-      locationUrl: 'https://maps.google.com/?q=Simla+Byam+Samiti+Durga+Puja+Kolkata'
-    },
-    {
       id: 'hatibagan-sarbojanin',
       name: 'Hatibagan Sarbojanin',
       zone: 'North',
@@ -121,17 +110,7 @@
       highlights: 'Over a century of celebration with majestic thematic facades and authentic community culture.',
       locationUrl: 'https://maps.google.com/?q=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
     },
-    {
-      id: 'jatin-maitra-park',
-      name: 'Jatin Maitra Park',
-      zone: 'North',
-      theme: 'Earthy Folk Handicraft & Vibrant Bengali Adda',
-      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
-      transit: 'Sovabazar Sutanuti / Shyambazar Metro (6 min walk)',
-      transitType: 'metro',
-      highlights: 'Quaint North Kolkata park setting, intricate hand-painted murals, and family-friendly warmth.',
-      locationUrl: 'https://maps.google.com/?q=Jatin+Maitra+Park+Durga+Puja+Kolkata'
-    },
+
     {
       id: 'nalin-sarkar-street',
       name: 'Nalin Sarkar Street Sarbojanin',
@@ -345,17 +324,7 @@
       highlights: 'Sprawling park grounds dominated by towering architectural fort replicas and heritage lighting.',
       locationUrl: 'https://maps.google.com/?q=Mohammad+Ali+Park+Durga+Puja+Kolkata'
     },
-    {
-      id: 'sealdah-railway-athletic',
-      name: 'Sealdah Railway Athletic Club',
-      zone: 'Central',
-      theme: 'Grand Indian Temple Architecture & Locomotive Heritage',
-      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
-      transit: 'Sealdah Metro / Railway Station Complex (2 min walk)',
-      transitType: 'metro',
-      highlights: 'Towering temple gopuram replicas greeting thousands of festive commuters arriving in the city.',
-      locationUrl: 'https://maps.google.com/?q=Sealdah+Railway+Athletic+Club+Durga+Puja+Kolkata'
-    },
+
 
     // --- EAST & SALT LAKE ZONE ---
     {
