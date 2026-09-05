@@ -620,7 +620,7 @@
       desc: 'Legendary fragrant long-grain basmati biryani with melt-in-mouth mutton, giant spiced golden potato, and rich Chicken Chaap.',
       mustTry: 'Mutton Special Biryani, Chicken Chaap & Shahi Firni',
       timings: 'All-Night Puja Service',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Kolkata_mutton_biryani.jpg',
+      image: 'food/arsalan.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
       nearbyPandals: [
         { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
@@ -638,7 +638,7 @@
       desc: 'Historic 100-year-old culinary institution famous for pitch-black, deeply spiced, slow-braised Kosha Mangsho served with fluffy hot Luchis.',
       mustTry: 'Kosha Mangsho with Layered Luchi & Tamarind Chutney',
       timings: 'All-Day & Late Evening',
-      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
+      image: 'food/golbari.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
       nearbyPandals: [
         { name: 'Bagbazar Sarbojanin', url: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durga+Puja+Kolkata' },
@@ -656,7 +656,7 @@
       desc: 'Since 1920, the gold standard for traditional Kolkata snack cutlets with lacy egg webs and pungent Kasundi mustard.',
       mustTry: 'Diamond Fish Fry, Fish Kabiraji & Mutton Brain Cutlet',
       timings: 'Afternoon & Evening',
-      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Mitra Cafe.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mitra+Cafe+Shyambazar+Kolkata',
       nearbyPandals: [
         { name: 'Ahiritola Jubak Brinda', url: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata' },
@@ -692,7 +692,7 @@
       desc: 'Serving Kolkata since 1956 with retro dining charm, live organ melodies, and decadent vintage continental recipes.',
       mustTry: 'Deviled Crab, Chicken Tetrazzini & Baked Alaska',
       timings: 'Lunch to Late Night',
-      image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Mocambo.webp',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mocambo+Restaurant+Park+Street+Kolkata',
       nearbyPandals: [
         { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
@@ -710,7 +710,7 @@
       desc: 'Centuries-old recipes recreated in a restored colonial mansion with banana-leaf service and antique portraits.',
       mustTry: 'Daab Chingri, Kacha Lonka Mangsho & Chhanar Paturi',
       timings: 'Lunch & Dinner',
-      image: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=800&q=80',
+      image: 'food/6 Ballygunge Place.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=6+Ballygunge+Place+Kolkata',
       nearbyPandals: [
         { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
@@ -728,7 +728,7 @@
       desc: 'Named after the famous Manna Dey song, celebrated for authentic home-cooked delicacies and river fish specials.',
       mustTry: 'Ilish Barishali, Bhetki Paturi & Nolen Gurer Ice Cream',
       timings: 'All-Day Dining',
-      image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Bhojohori Manna.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bhojohori+Manna+Gariahat+Kolkata',
       nearbyPandals: [
         { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
@@ -764,30 +764,12 @@
       desc: 'The iconic midnight snacking joint famed for flaky parathas wrapped around succulent chicken and mutton kebabs with lime and green chillies.',
       mustTry: 'Double Egg Double Chicken Roll, Cheese Mutton Roll',
       timings: 'Open Late Night during Puja',
-      image: 'https://images.unsplash.com/photo-1626777552726-4a6b54c97e46?auto=format&fit=crop&w=800&q=80',
+      image: 'food/kusum rolls.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kusum+Rolls+Park+Street+Kolkata',
       nearbyPandals: [
         { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
         { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
         { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
-      ]
-    },
-    {
-      id: 'food-11',
-      name: 'Chittaranjan Sweets',
-      category: 'sweets',
-      categoryLabel: 'Centenary Sweet Confectioner',
-      location: 'Shyambazar (Sovabazar area)',
-      metro: 'Shyambazar Metro (2 min walk)',
-      desc: 'Over 115 years old, creator of spongy white syrupy Rosogollas and pure chhana sweetmeats made without additives.',
-      mustTry: 'Sponge Rosogolla, Madhuparka & Nolen Gur Sandesh',
-      timings: 'Morning to Night',
-      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Chittaranjan+Sweets+Shyambazar+Kolkata',
-      nearbyPandals: [
-        { name: 'Sovabazar Rajbari', url: 'https://www.google.com/maps/dir/?api=1&destination=Sovabazar+Rajbari+Kolkata' },
-        { name: 'Bagbazar Sarbojanin', url: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durga+Puja+Kolkata' },
-        { name: 'Hatibagan Sarbojanin', url: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Sarbojanin+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -800,7 +782,7 @@
       desc: 'Since 1885, pioneers of artisanal baked rosogolla, melt-in-mouth nolen gur delicacies, and festive dry-fruit sweets.',
       mustTry: 'Baked Rosogolla, Chocolate Sandesh & Jalbhara Talsash',
       timings: 'Morning to Night',
-      image: 'https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Balaram Mullick & Radharaman Mullick.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Balaram+Mullick+Radharaman+Mullick+Bhowanipore+Kolkata',
       nearbyPandals: [
         { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
@@ -810,7 +792,7 @@
     }
   ];
 
-  // 8 Famous Kolkata Shopping Districts
+  // Famous Kolkata Shopping Districts
   const SHOPPING_DATA = [
     {
       id: 'shop-1',
@@ -822,7 +804,7 @@
       desc: 'Kolkata\'s undisputed festive fashion hub: bustling street stalls packed with dokra jewelry, and flagship heritage saree showrooms.',
       bestTime: 'Post-afternoon (3:00 PM - 9:30 PM)',
       highlight: 'Dhakai Jamdani, Baluchari, Tussar Silks & terracotta necklaces.',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/3/3b/Gariahat_Road_and_Flyover_at_Rashbehari_Avenue_crossing%2C_in_Kolkata.jpg',
+      image: 'food/Gariahat Market & Triangular Park.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Gariahat+Market+Kolkata'
     },
     {
@@ -835,7 +817,7 @@
       desc: 'Historic North Kolkata shopping paradise known for authentic Shantipur & Phulia Taant sarees, festive kurtas, dhotis, and vintage charm.',
       bestTime: 'Morning or late evening (11 AM - 9 PM)',
       highlight: 'Unbeatable festive deals on Taant cotton sarees and kids\' festive wear.',
-      image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Hatibagan Market & Shyambazar.webp',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Market+Kolkata'
     },
     {
@@ -850,19 +832,6 @@
       highlight: 'Nahoum & Sons plum cakes, Kashmiri shawls, silver jewelry & brassware.',
       image: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/New_Market_-_Kolkata_December_2019.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=New+Market+Kolkata'
-    },
-    {
-      id: 'shop-4',
-      name: 'College Street Boi Para',
-      type: 'shopping',
-      typeLabel: 'World\'s Largest Secondhand Book Market',
-      location: 'College Street (Between Bowbazar & MG Road)',
-      metro: 'Central / MG Road Metro (4 min walk)',
-      desc: 'The intellectual heart of Bengal: 1.5 km of wooden book kiosks selling rare volumes and collecting prized Sharadiya festive annuals.',
-      bestTime: '2:00 PM - 8:00 PM',
-      highlight: 'Desh & Anandamela Sharadiya editions, Coffee House adda, vintage prints.',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/7/7b/College_Street_in_Kolkata.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=College+Street+Boi+Para+Kolkata'
     },
     {
       id: 'shop-5',
@@ -887,21 +856,8 @@
       desc: 'The 300-year-old potter\'s quarter where world-famous master idol makers mold raw clay into divine Goddess Durga pratimas.',
       bestTime: 'Early morning or late dusk (Golden hour photography)',
       highlight: 'Miniature terracotta clay idols, painted decorative masks, raw fiber straw crafts.',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fb/Kumartuli_potters_colony_in_Kolkata.jpg',
+      image: 'food/Kumartuli Artisan Colony.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Kolkata'
-    },
-    {
-      id: 'shop-7',
-      name: 'Swabhumi The Heritage Plaza',
-      type: 'shopping',
-      typeLabel: 'Ethnic Artisan Craft Village',
-      location: 'EM Bypass (Near Salt Lake Stadium)',
-      metro: 'Salt Lake Stadium Metro (5 min walk)',
-      desc: 'Sprawling cultural village blending traditional Indian architecture with artisanal workshops, live folk dance, and craft boutiques.',
-      bestTime: '4:00 PM - 9:00 PM',
-      highlight: 'Traditional brass jewelry, ethnic home decor, Kantha stitch sarees.',
-      image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Swabhumi+The+Heritage+Plaza+Kolkata'
     },
     {
       id: 'shop-8',
@@ -913,7 +869,7 @@
       desc: 'One of India\'s oldest and largest commercial markets: direct-from-weaver wholesale prices for Banarasi silk, dhotis, and Puja puja-samagri.',
       bestTime: '11:00 AM - 7:00 PM',
       highlight: 'Pure Banarasi silk sarees, puja brassware lamps, incense & festive gift hampers.',
-      image: 'https://images.unsplash.com/photo-1577975882846-431adc8c2009?auto=format&fit=crop&w=800&q=80',
+      image: 'food/Burrabazar Traditional Wholesale Market.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Burrabazar+Kolkata'
     }
   ];
@@ -927,7 +883,7 @@
       distance: '4.2 km',
       time: '3.5 hours',
       stops: ['Bagbazar Sarbojonin', 'Sovabazar Rajbari', 'Kumartuli Park', 'Ahiritola Sarbojonin', 'Tala Prattoy'],
-      foodTip: 'Pair with Golbari Kosha Mangsho & Chittaranjan Sweets Rosogolla.'
+      foodTip: 'Pair with Golbari Kosha Mangsho & Mitra Cafe Kabiraji.'
     },
     {
       id: 'south-grandeur',
@@ -2828,7 +2784,7 @@
       pandals: ['Kumartuli Park Sarbojanin', 'Ahiritola Sarbojanin Durgotsab', 'Sovabazar Rajbari', 'Beniatola Sarbojanin Durgotsav'],
       food_stops: [
         { name: 'Mitra Cafe (Shyambazar)', dish: 'Original Diamond Fish Fry & Hot Tea' },
-        { name: 'Chittaranjan Sweets', dish: 'Fresh Sponge Rosogollas' }
+        { name: 'Golbari (Shyambazar)', dish: 'Kosha Mangsho with Hot Luchis' }
       ],
       custom_notes: 'Arrive at Kumartuli pottery lanes early morning to witness the legendary master sculptors draw the third eye and lotus eyes (Chokkhu Daan) on the clay idols of Maa Durga, heralding the advent of Devi Paksha.'
     },
