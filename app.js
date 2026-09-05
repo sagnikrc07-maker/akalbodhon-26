@@ -144,6 +144,72 @@
       highlights: 'Raja Nabakrishna Deb historical Natmandir courtyard, canonical Vedic ceremonies, and solemn grace.',
       locationUrl: 'https://maps.google.com/?q=Sovabazar+Rajbari+Kolkata'
     },
+    {
+      id: 'darjipara-mitra-bari',
+      name: 'Darjipara Mitra Bari',
+      zone: 'North',
+      theme: 'Centenary Aristocratic Bonedi Bari Courtyard & Sabeki Ekchala Heritage',
+      image: 'pandals/Darjipara Mitra Bari.jpg',
+      transit: 'Sovabazar Sutanuti / Girish Park Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Historic 1807 Bonedi courtyard puja featuring an ornate wooden Thakurdalan, majestic Ekchala idol, and century-old aristocratic rituals.',
+      locationUrl: 'https://maps.google.com/?q=Darjipara+Mitra+Bari+Durga+Puja+Beadon+Street+Kolkata'
+    },
+    {
+      id: 'jorasanko-shib-krishna-daw-rajbari',
+      name: 'Jorasanko Shib Krishna Daw Rajbari',
+      zone: 'North',
+      theme: 'Royal 1840 Zamindari Palace Thakurdalan & Gold-Ornamented Goddess',
+      image: 'pandals/Jorasanko Shib Krishna Daw Rajbari.jpg',
+      transit: 'Girish Park Metro (4 min walk via Vivekananda Rd)',
+      transitType: 'metro',
+      highlights: 'Celebrated 1840 Bonedi Bari puja famed for its majestic arches, Goddess Durga adorned in pure gold and diamond jewellery, and royal courtyard heritage.',
+      locationUrl: 'https://maps.google.com/?q=Jorasanko+Shib+Krishna+Daw+Rajbari+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'sikdar-bagan',
+      name: 'Sikdar Bagan',
+      zone: 'North',
+      theme: 'Centenary Pure Sculptural Artistry & Intimate North Kolkata Heritage',
+      image: 'pandals/Sikdar Bagan.jpg',
+      transit: 'Shyambazar Metro (3 min walk)',
+      transitType: 'metro',
+      highlights: 'Centenary North Kolkata jewel established in 1913, renowned for pure artistic idols, compact exquisite themes, and intimate heritage warmth.',
+      locationUrl: 'https://maps.google.com/?q=Sikdar+Bagan+Sadharan+Durgotsav+Shyambazar+Kolkata'
+    },
+    {
+      id: 'hatibagan-nabin-pally',
+      name: 'Hatibagan Nabin Pally',
+      zone: 'North',
+      theme: 'Vibrant Community Craftsmanship & Dazzling Street Illumination',
+      image: 'pandals/Hatibagan Nabin Pally.jpg',
+      transit: 'Shyambazar Metro (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Lively North Kolkata landmark recognized for innovative thematic craftsmanship, colorful illumination, and vibrant neighborhood adda.',
+      locationUrl: 'https://maps.google.com/?q=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'gauri-bari-sarbojonin',
+      name: 'Gauri Bari Sarbojonin',
+      zone: 'North',
+      theme: 'Heritage Centenary Durgotsav & Grand Classical Architecture',
+      image: 'pandals/Gauri Bari Sarbojonin.jpg',
+      transit: 'Shobhabazar / Shyambazar Metro (Auto to Khanna / Gouribari)',
+      transitType: 'metro',
+      highlights: 'Legendary century-old heritage puja famed for artistic installations, classical traditional idol, and authentic North Kolkata spirit.',
+      locationUrl: 'https://maps.google.com/?q=Gouribari+Sarbojonin+Durgotsav+Kolkata'
+    },
+    {
+      id: 'ahiritola-jubak-brinda',
+      name: 'Ahiritola Jubak Brinda',
+      zone: 'North',
+      theme: 'Riverside Youth Innovation & Kinetic Nighttime Illumination',
+      image: 'pandals/Ahiritola Jubak Brinda.jpg',
+      transit: 'Sovabazar Sutanuti Metro / Ahiritola Ghat (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Vibrant youth-led riverside celebration known for creative modern concepts, lively cultural events, and energetic community participation.',
+      locationUrl: 'https://maps.google.com/?q=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata'
+    },
 
     // --- SOUTH KOLKATA ZONE ---
     {
@@ -269,6 +335,94 @@
       highlights: 'Decades of classical beauty with nature-inspired hand-painted murals and dazzling golden Goddess ornaments.',
       locationUrl: 'https://maps.google.com/?q=Mudiali+Club+Durga+Puja+Kolkata'
     },
+    {
+      id: 'bosepukur-talbagan',
+      name: 'Bosepukur Talbagan',
+      zone: 'South',
+      theme: 'Traditional Bengal Folk Art & Intricate Eco-Craft Architecture',
+      image: 'pandals/bosepukur talbagan.jpg',
+      transit: 'Ballygunge Station / Hemanta Mukherjee (Ruby) Metro (Auto to Bosepukur)',
+      transitType: 'bus',
+      highlights: 'Celebrated Kasba landmark famed for heritage environmental installations, rural Bengal crafts, and lively festive atmosphere.',
+      locationUrl: 'https://maps.google.com/?q=Bosepukur+Talbagan+Durga+Puja+Kasba+Kolkata'
+    },
+    {
+      id: 'shivmandir',
+      name: 'Shivmandir',
+      zone: 'South',
+      theme: 'Ethereal Spiritual Sanctuary & Contemporary Bengali Sculpture',
+      image: 'pandals/shiv mandir durga puja.jpg',
+      transit: 'Rabindra Sarobar Metro / Lake Kalibari (4 min walk)',
+      transitType: 'metro',
+      highlights: 'Nestled by Rabindra Sarobar Lake, renowned for serene spiritual themes, soul-stirring lighting, and creative idol artistry.',
+      locationUrl: 'https://maps.google.com/?q=Shiv+Mandir+Sarbojanin+Durga+Puja+Lake+Temple+Road+Kolkata'
+    },
+    {
+      id: 'bosepukur-sitalamandir',
+      name: 'Bosepukur Sitalamandir',
+      zone: 'South',
+      theme: 'Pioneering Thematic Installations & Indigenous Clay Art',
+      image: 'pandals/bosepukur sitalamandir.png',
+      transit: 'Ballygunge Station / Gariahat (Auto link to Bosepukur)',
+      transitType: 'bus',
+      highlights: 'Historic trail-blazer of Kolkata theme puja movement with iconic artistic materials, terracotta motifs, and classical deity.',
+      locationUrl: 'https://maps.google.com/?q=Bosepukur+Sitalamandir+Durga+Puja+Kasba+Kolkata'
+    },
+    {
+      id: 'deshapriya-park',
+      name: 'Deshapriya Park',
+      zone: 'South',
+      theme: 'Grand Festive Fairground & Towering Thematic Monument',
+      image: 'pandals/deshapriya park.jpg',
+      transit: 'Kalighat Metro Station (5 min walk)',
+      transitType: 'metro',
+      highlights: 'One of South Kolkatas most iconic expansive park pujas, known for record-breaking monumental concepts, vast food carnival, and vibrant energy.',
+      locationUrl: 'https://maps.google.com/?q=Deshapriya+Park+Durga+Puja+Rashbehari+Avenue+Kolkata'
+    },
+    {
+      id: 'chetla-agrani',
+      name: 'Chetla Agrani',
+      zone: 'South',
+      theme: 'Sublime Concept Art & Master Earthen Terracotta Craft',
+      image: 'pandals/chetla agrani.jpg',
+      transit: 'Kalighat / Netaji Bhavan Metro (7 min walk)',
+      transitType: 'metro',
+      highlights: 'Annual masterpiece conceptualized by renowned artists, featuring breathtaking organic architectural pavilions and soulful lighting.',
+      locationUrl: 'https://maps.google.com/?q=Chetla+Agrani+Club+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'haridevpur-41-pally',
+      name: 'Haridevpur 41 Pally',
+      zone: 'South',
+      theme: 'Experimental Avant-Garde Sculpture & Environmental Narrative',
+      image: 'pandals/haridevpur 41 pally.jpg',
+      transit: 'Mahanayak Uttam Kumar (Tollygunge) Metro (Auto to Haridevpur)',
+      transitType: 'metro',
+      highlights: 'Famed for deep philosophical storytelling, organic sustainable materials, and award-winning creative idol design.',
+      locationUrl: 'https://maps.google.com/?q=Haridevpur+41+Pally+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'kendua-shanti-shangha',
+      name: 'Kendua Shanti Shangha',
+      zone: 'South',
+      theme: 'Rural Bengal Artisan Heritage & Sustainable Eco-Craft Concept',
+      image: 'pandals/Kendua Shanti Shangha.jpg',
+      transit: 'Kavi Subhash / Shahid Khudiram Metro (Auto to Kendua / Garia)',
+      transitType: 'metro',
+      highlights: 'Prominent South suburban cultural hub recognized for exquisite rural artisan work, sustainable eco-friendly themes, and warm community bonding.',
+      locationUrl: 'https://maps.google.com/?q=Kendua+Shanti+Sangha+Durga+Puja+Garia+Kolkata'
+    },
+    {
+      id: 'naktala-udayan-sangha',
+      name: 'Naktala Udayan Sangha',
+      zone: 'South',
+      theme: 'Revolutionary Avant-Garde Spatial Design & Mammoth Concept Sculptures',
+      image: 'pandals/Naktala Udayan Sangha.jpg',
+      transit: 'Gitanjali (Naktala) Metro (3 min walk)',
+      transitType: 'metro',
+      highlights: 'South Kolkatas ultimate crowd magnet featuring revolutionary avant-garde conceptual art, mammoth sculptures, and award-winning idols.',
+      locationUrl: 'https://maps.google.com/?q=Naktala+Udayan+Sangha+Durga+Puja+Kolkata'
+    },
 
     // --- CENTRAL KOLKATA ZONE ---
     {
@@ -287,11 +441,33 @@
       name: 'Mohammad Ali Park',
       zone: 'Central',
       theme: 'Colossal Royal Fort & Historic Palace Monument Replica',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
+      image: 'pandals/mohdali.jpg',
       transit: 'MG Road Metro Station (2 min walk)',
       transitType: 'metro',
       highlights: 'Sprawling park grounds dominated by towering architectural fort replicas and heritage lighting.',
       locationUrl: 'https://maps.google.com/?q=Mohammad+Ali+Park+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'santosh-mitra-square',
+      name: 'Santosh Mitra Square',
+      zone: 'Central',
+      theme: 'Monumental Architectural Wonder & Dazzling Laser Spectacle',
+      image: 'pandals/santosh mitra.jpg',
+      transit: 'Central / Sealdah Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Legendary mega-scale architectural marvels (such as Ram Mandir replica and Sphere), grand lighting, and massive citywide crowds.',
+      locationUrl: 'https://maps.google.com/?q=Santosh+Mitra+Square+Durga+Puja+Lebutala+Kolkata'
+    },
+    {
+      id: 'badan-chand-roy-rajbari',
+      name: 'Badan Chand Roy Rajbari',
+      zone: 'Central',
+      theme: 'Historic 1857 Bonedi Bari Thakurdalan & Ancestral Vaishnava Rituals',
+      image: 'pandals/Badan Chand Roy Rajbari.jpg',
+      transit: 'MG Road / Central Metro (5 min walk, Colootola)',
+      transitType: 'metro',
+      highlights: 'Historical Bonedi Bari Durga Puja celebrated since 1857 at the ancestral Thakurdalan with traditional Ekchala Pratima and legacy Vaishnava customs.',
+      locationUrl: 'https://maps.google.com/?q=Badan+Chand+Roy+Rajbari+Durga+Puja+Colootola+Kolkata'
     },
 
 
@@ -346,7 +522,7 @@
       name: 'Dum Dum Park Tarun Dal',
       zone: 'East',
       theme: 'Surrealistic Spatial Architecture & Dynamic Kinetic Art',
-      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
+      image: 'pandals/Dum-Dum-Tarun-Dal-Durgotsav.jpg',
       transit: 'VIP Road / Dum Dum Park Tank 3',
       transitType: 'bus',
       highlights: 'Mind-bending geometric forms, kinetic wind sculptures, and immersive illuminated pathways.',
@@ -407,6 +583,17 @@
       transitType: 'metro',
       highlights: 'Salt Lakes largest crowd-puller featuring colossal architectural replicas and bustling festive melas.',
       locationUrl: 'https://maps.google.com/?q=Salt+Lake+FD+Block+Durga+Puja+Kolkata'
+    },
+    {
+      id: 'salt-lake-ib-block',
+      name: 'Salt Lake IB Block',
+      zone: 'East',
+      theme: 'Grand Thematic Architecture & Vibrant Salt Lake Community Fair',
+      image: 'pandals/ib block.png',
+      transit: 'Salt Lake Stadium / Karunamoyee Metro (5 min walk)',
+      transitType: 'metro',
+      highlights: 'Prominent Salt Lake township celebration known for beautiful conceptual pandals, grand community gatherings, and festive cultural functions.',
+      locationUrl: 'https://maps.google.com/?q=Salt+Lake+IB+Block+Durga+Puja+Kolkata'
     }
   ];
 
