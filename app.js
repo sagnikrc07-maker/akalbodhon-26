@@ -199,6 +199,17 @@
       highlights: 'Vibrant youth-led riverside celebration known for creative modern concepts, lively cultural events, and energetic community participation.',
       locationUrl: 'https://maps.google.com/?q=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata'
     },
+    {
+      id: 'tala-prattoy',
+      name: 'Tala Prattoy',
+      zone: 'North',
+      theme: 'Visionary Museum-Grade Conceptual Art & Avant-Garde Spatial Installation',
+      image: 'pandals/Tala Prattoy.jpg',
+      transit: 'Belgachia / Shyambazar Metro (5 min walk / auto to Tala Park)',
+      transitType: 'metro',
+      highlights: 'Internationally acclaimed conceptual benchmark created by maestro artists, featuring groundbreaking experimental architecture and thought-provoking sculptures.',
+      locationUrl: 'https://maps.google.com/?q=Tala+Prattoy+Durga+Puja+Kolkata'
+    },
 
     // --- SOUTH KOLKATA ZONE ---
     {
