@@ -129,8 +129,7 @@
     <div class="flex items-center gap-2 md:gap-3">
       <!-- Dark/Light Mode Switcher (Shifted before links button) -->
       <button id="theme-toggle-btn" class="w-9 h-9 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:bg-surface-container-low dark:hover:bg-amber-400/10 transition-all cursor-pointer" title="Toggle Night/Day View">
-        <span class="material-symbols-outlined text-[20px] dark:hidden">dark_mode</span>
-        <span class="material-symbols-outlined text-[20px] hidden dark:inline">light_mode</span>
+        <span class="material-symbols-outlined text-[20px]">dark_mode</span>
       </button>
 
       <!-- Akalbodhon & Developer Button -->
@@ -265,7 +264,7 @@
           <iframe 
             id="mahalaya-youtube-iframe"
             class="w-full h-full"
-            src="https://www.youtube-nocookie.com/embed/YQyo8QeoYhc?start=558&rel=0&enablejsapi=1" 
+            src="https://www.youtube-nocookie.com/embed/YQyo8QeoYhc?start=0&rel=0&enablejsapi=1" 
             title="Mahalaya (Mahishasuramardini) Narrated by Birendra Krishna Bhadra"
             frameborder="0" 
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -348,16 +347,6 @@
       <!-- Pandals Grid Container (Populated via JS with 2-column mobile layout) -->
       <div id="pandals-grid-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"></div>
 
-      <!-- Curated Trails Bento Section -->
-      <div class="pt-8 border-t border-outline-variant/30 dark:border-amber-400/20 space-y-6">
-        <div class="reveal-on-scroll">
-          <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Recommended Routes</span>
-          <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white mt-1">Curated Walking Trails</h3>
-          <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Optimized walking and transit circuits connecting multiple iconic pandals with culinary pit-stops.</p>
-        </div>
-
-        <div id="trails-container" class="grid grid-cols-1 lg:grid-cols-3 gap-6"></div>
-      </div>
     </section>
 
     <!-- ======================================================== -->
@@ -791,10 +780,6 @@
       <span class="material-symbols-outlined text-[18px]">bookmark</span>
       <span class="text-[8.5px] font-semibold mt-0.5">Itinerary</span>
     </a>
-    <a href="#login" data-nav-target="login" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-[#ded5c7] py-1 px-1 rounded-xl transition-all">
-      <span class="material-symbols-outlined text-[18px]">account_circle</span>
-      <span class="text-[8.5px] font-semibold mt-0.5">Account</span>
-    </a>
   </nav>
 
   <!-- ==================== 1. ACCOUNT AUTHENTICATION MODAL (LOGIN / SIGNUP) ==================== -->
@@ -1003,7 +988,7 @@
         <!-- Food & Dining Stops -->
         <div class="space-y-1">
           <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Where to Eat / Food Pit-Stops</label>
-          <input type="text" id="plan-food-input" placeholder="e.g. Golbari Kosha Mangsho, Mitra Cafe Kabiraji, Paramount Sherbet" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          <input type="text" id="plan-food-input" placeholder="e.g. Golbari Kosha Mangsho, Mitra Cafe Kabiraji, Arsalan Biryani" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
         </div>
 
         <!-- Rituals & Auspicious Timings -->
@@ -1155,6 +1140,14 @@
         </div>
       </div>
 
+      <!-- Puja Pandals Nearby (Shown only for restaurants/food items) -->
+      <div id="modal-nearby-pandals-section" class="hidden space-y-2 pt-1">
+        <strong class="text-on-surface dark:text-amber-300 block text-xs uppercase tracking-wider font-bold flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[15px]">explore</span> Puja Pandals Nearby:
+        </strong>
+        <div id="modal-nearby-pandals-list" class="flex flex-wrap gap-1.5"></div>
+      </div>
+
       <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
         <a id="modal-pandal-nav-btn" href="#" target="_blank" class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-white dark:text-black py-3 rounded-xl font-bold text-center text-sm shadow-md transition-all flex items-center justify-center gap-2">
           <!-- Directions Pin Icon -->
@@ -1258,7 +1251,62 @@
             </div>
           </div>
         </div>
-        <!-- Section 3: Continuous Updates & Maintenance Notice -->
+        <!-- Section 3: Share the Website -->
+        <div class="space-y-3">
+          <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">share</span> Share Akalbodhon
+          </h4>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <!-- WhatsApp -->
+            <a id="about-share-wa" href="#" target="_blank" rel="noopener noreferrer" onclick="this.href='https://api.whatsapp.com/send?text='+encodeURIComponent('🌺 Celebrate Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans: '+window.location.href)" class="flex flex-col items-center gap-1 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-[#25D366] dark:hover:border-[#25D366] transition-all group cursor-pointer">
+              <svg class="w-5 h-5 fill-[#25D366]" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.971.53 1.95.811 3.013.811 3.181 0 5.768-2.587 5.768-5.766 0-3.18-2.587-5.767-5.768-5.767zm7.545 5.766c0 4.167-3.39 7.556-7.556 7.556-1.309 0-2.54-.343-3.612-.942l-4.408 1.157 1.178-4.301c-.689-1.12-1.072-2.428-1.072-3.813 0-4.166 3.39-7.556 7.556-7.556 4.166 0 7.556 3.39 7.556 7.556zm-4.717 2.928c-.147.414-.735.795-1.17.854-.393.053-.906.084-2.61-.62-2.18-.899-3.585-3.117-3.694-3.262-.109-.146-.887-1.18-.887-2.25 0-1.07.56-1.597.759-1.815.199-.218.435-.272.58-.272.146 0 .29.002.417.008.134.006.314-.051.491.374.181.436.617 1.506.671 1.616.054.109.091.236.018.382-.072.146-.109.236-.217.363-.109.127-.229.284-.327.382-.109.109-.223.228-.096.446.127.218.563.929 1.209 1.504.832.741 1.534.97 1.752 1.079.218.109.345.091.472-.055.127-.145.544-.636.69-.854.145-.218.29-.182.49-.109.199.073 1.27.599 1.487.708.218.109.363.164.417.255.055.091.055.527-.092.941z"/></svg>
+              <span class="text-[10px] font-semibold text-on-surface dark:text-white">WhatsApp</span>
+            </a>
+            <!-- Instagram: copy link -->
+            <button id="about-share-ig" type="button" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{ const t=document.getElementById('about-share-ig'); t.classList.add('border-[#E1306C]'); setTimeout(()=>t.classList.remove('border-[#E1306C]'),2000); })" class="flex flex-col items-center gap-1 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-[#E1306C] transition-all group cursor-pointer">
+              <svg class="w-5 h-5 fill-[#E1306C]" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <span class="text-[10px] font-semibold text-on-surface dark:text-white">Instagram</span>
+            </button>
+            <!-- Snapchat -->
+            <a id="about-share-snap" href="#" target="_blank" rel="noopener noreferrer" onclick="this.href='https://snapchat.com/scan?attachmentUrl='+encodeURIComponent(window.location.href)" class="flex flex-col items-center gap-1 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-[#FFFC00] transition-all group cursor-pointer">
+              <svg class="w-5 h-5 fill-[#FFFC00]" viewBox="0 0 24 24"><path d="M12.004 0C5.372 0 0 5.372 0 12.004c0 6.633 5.372 12.004 12.004 12.004 6.632 0 12.004-5.371 12.004-12.004C24.008 5.372 18.636 0 12.004 0zm0 3.666c2.585 0 4.382 1.833 4.382 4.417 0 .61-.061 1.587-.183 2.076.61.122 1.282.427 1.282 1.099 0 .488-.428.855-.855.977-.061.366-.122.793-.122 1.282 0 1.282.855 1.77 1.465 1.892.122.061.183.183.183.305 0 .366-.488.671-1.343.855-.61.122-1.404.183-2.076.549-.366.183-.671.549-1.099.793-.427.244-.977.366-1.648.366-.671 0-1.221-.122-1.648-.366-.427-.244-.733-.61-1.099-.793-.672-.366-1.465-.427-2.076-.549-.855-.184-1.343-.489-1.343-.855 0-.122.061-.244.183-.305.61-.122 1.465-.61 1.465-1.892 0-.489-.061-.916-.122-1.282-.427-.122-.855-.489-.855-.977 0-.672.672-.977 1.282-1.099-.122-.489-.183-1.466-.183-2.076 0-2.584 1.797-4.417 4.382-4.417z"/></svg>
+              <span class="text-[10px] font-semibold text-on-surface dark:text-white">Snapchat</span>
+            </a>
+            <!-- Copy Link -->
+            <button id="about-copy-link-btn" type="button" onclick="navigator.clipboard.writeText(window.location.href).then(()=>{ const b=document.getElementById('about-copy-link-btn'); const s=b.querySelector('span:last-child'); s.textContent='Copied!'; setTimeout(()=>s.textContent='Copy Link',2000); })" class="flex flex-col items-center gap-1 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-primary dark:hover:border-amber-400 transition-all group cursor-pointer">
+              <span class="material-symbols-outlined text-[20px] text-primary dark:text-amber-300">link</span>
+              <span class="text-[10px] font-semibold text-on-surface dark:text-white">Copy Link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section 4: Feedback / Bug Report -->
+        <div class="space-y-3">
+          <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">feedback</span> Suggestions & Feedback
+          </h4>
+          <div id="feedback-form-area" class="space-y-2">
+            <textarea 
+              id="feedback-textarea"
+              maxlength="300"
+              rows="3"
+              placeholder="Share a suggestion, report a bug, or leave a message... (max 50 words)"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50 resize-none"
+            ></textarea>
+            <div class="flex items-center justify-between gap-2">
+              <span id="feedback-word-count" class="text-[10px] text-on-surface-variant/60 dark:text-[#ded5c7]/50">0 / 50 words</span>
+              <button id="submit-feedback-btn" type="button" class="px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold hover:scale-105 active:scale-95 transition-all shadow-sm cursor-pointer flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[15px]">send</span> Submit
+              </button>
+            </div>
+          </div>
+          <div id="feedback-thanks" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+            <span>Thank you for your feedback! We read every message. 🙏</span>
+          </div>
+        </div>
+
+        <!-- Section 5: Continuous Updates & Maintenance Notice -->
         <div class="p-4 rounded-2xl bg-gradient-to-r from-primary/10 via-secondary-container/20 to-primary/10 dark:from-amber-400/15 dark:via-red-500/15 dark:to-amber-400/15 border border-primary/30 dark:border-amber-400/30 text-xs space-y-1.5">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px]">build_circle</span>
