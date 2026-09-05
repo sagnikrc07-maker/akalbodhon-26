@@ -423,6 +423,17 @@
       highlights: 'South Kolkatas ultimate crowd magnet featuring revolutionary avant-garde conceptual art, mammoth sculptures, and award-winning idols.',
       locationUrl: 'https://maps.google.com/?q=Naktala+Udayan+Sangha+Durga+Puja+Kolkata'
     },
+    {
+      id: 'maddox-square',
+      name: 'Maddox Square',
+      zone: 'South',
+      theme: 'Traditional Sabeki Ekchala Idol & Legendary Open-Air Cultural Adda',
+      image: 'pandals/Maddox Square.jpg',
+      transit: 'Netaji Bhavan / Jatin Das Park Metro (8 min walk via Ritchie Rd)',
+      transitType: 'metro',
+      highlights: 'The ultimate open-air festive adda hub of Kolkata, featuring a grand open courtyard pandal and breathtaking golden Sabeki Ekchala idol.',
+      locationUrl: 'https://maps.google.com/?q=Maddox+Square+Durga+Puja+Ballygunge+Kolkata'
+    },
 
     // --- CENTRAL KOLKATA ZONE ---
     {
