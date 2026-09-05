@@ -737,24 +737,6 @@
       ]
     },
     {
-      id: 'food-9',
-      name: 'Campari',
-      category: 'bengali',
-      categoryLabel: 'Iconic South Kolkata Fry Joint',
-      location: 'Gariahat (Near Singhi Park / Dover Lane)',
-      metro: 'Kalighat Metro auto-link / Gariahat Crossing',
-      desc: 'Legendary standing snack counter serving crisp breadcrumbed diamond fish fries and royal mutton rolls to puja hoppers.',
-      mustTry: 'Bhetki Fish Roll, Chicken Cutlet & Mutton Roll',
-      timings: 'Afternoon & Evening',
-      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Campari+Gariahat+Kolkata',
-      nearbyPandals: [
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' },
-        { name: 'Naktala Udayan Sangha', url: 'https://www.google.com/maps/dir/?api=1&destination=Naktala+Udayan+Sangha+Durga+Puja+Kolkata' }
-      ]
-    },
-    {
       id: 'food-10',
       name: 'Kusum Rolls',
       category: 'food',
@@ -832,19 +814,6 @@
       highlight: 'Nahoum & Sons plum cakes, Kashmiri shawls, silver jewelry & brassware.',
       image: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/New_Market_-_Kolkata_December_2019.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=New+Market+Kolkata'
-    },
-    {
-      id: 'shop-5',
-      name: 'Dakshinapan Shopping Complex',
-      type: 'shopping',
-      typeLabel: 'Handloom & Handicrafts State Emporiums',
-      location: 'Dhakuria (Near Gariahat Flyover end)',
-      metro: 'Dhakuria Railway Station / Rabindra Sarobar Metro',
-      desc: 'Open-air cultural shopping arcade featuring government state emporiums (Tantuja, Manjusha, Biswa Bangla, Cauvery, Mrignayani).',
-      bestTime: '11:00 AM - 7:30 PM',
-      highlight: 'Certified handloom sarees, dokra artifacts, sandalwood crafts & Madhubani art.',
-      image: 'https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dakshinapan+Shopping+Complex+Kolkata'
     },
     {
       id: 'shop-6',
@@ -3136,7 +3105,7 @@
       route_summary: 'Nearest Local Neighborhood Pandal -> Badamtala Ashar Sangha -> Ballygunge Cultural -> Singhi Park -> Ekdalia Evergreen -> Maddox Square',
       pandals: ["Respective Nearest Locality Pandal (Morning Pushpanjali)", 'Badamtala Ashar Sangha', 'Ballygunge Cultural Association', 'Singhi Park Sarbojanin', 'Ekdalia Evergreen Club', 'Tridhara Sammilani'],
       food_stops: [
-        { name: 'Campari (Gariahat)', dish: 'Bhetki Fish Roll & Cutlet' },
+        { name: '6 Ballygunge Place', dish: 'Daab Chingri & Kosha Mangsho' },
         { name: 'Bhojohori Manna', dish: 'Traditional Bhog-style Chholar Daal & Luchi' }
       ],
       custom_notes: 'Start the sacred morning with Pushpanjali and flower offerings at your own respective nearest pandal in your locality. In the afternoon and evening, head out for the legendary South Kolkata pandal hopping circuit.'
