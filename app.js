@@ -168,17 +168,7 @@
       highlights: 'South Kolkata theme-puja benchmark with award-winning creative soundscapes and innovative idol craft.',
       locationUrl: 'https://maps.google.com/?q=Badamtala+Ashar+Sangha+Kalighat+Kolkata'
     },
-    {
-      id: 'jodhpur-park',
-      name: 'Jodhpur Park Sarbojanin',
-      zone: 'South',
-      theme: 'Monumental Eco-Craft Architecture & Laser Illumination',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/fd/Suruchi_Sangha_Durga_Puja_2019.jpg',
-      transit: 'Rabindra Sarobar Metro / Dhakuria Station (8 min walk)',
-      transitType: 'metro',
-      highlights: 'Sprawling park installation featuring experimental sustainable materials and musical lighting.',
-      locationUrl: 'https://maps.google.com/?q=Jodhpur+Park+Durga+Puja+Kolkata'
-    },
+
     {
       id: 'hindustan-club',
       name: 'Hindustan Club Sarbojanin',
@@ -201,28 +191,7 @@
       highlights: 'Beloved South Kolkata legacy puja known for aristocratic restraint, classical morning chants, and warm adda.',
       locationUrl: 'https://maps.google.com/?q=Ballygunge+Cultural+Association+Durga+Puja+Kolkata'
     },
-    {
-      id: 'bhowanipore-75-palli',
-      name: 'Bhowanipore 75 Palli',
-      zone: 'South',
-      theme: 'Rural Bengal Folk Art & Monumental Wooden Loom Tribute',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
-      transit: 'Netaji Bhavan Metro (4 min walk)',
-      transitType: 'metro',
-      highlights: 'Promoting indigenous handloom weavers, terracotta artisans, and authentic rural Bengali craft.',
-      locationUrl: 'https://maps.google.com/?q=Bhowanipore+75+Palli+Durga+Puja+Kolkata'
-    },
-    {
-      id: '64-palli-durga-puja',
-      name: '64 Palli Durga Puja',
-      zone: 'South',
-      theme: 'Intricate Handcrafted Cane, Bamboo & Brass Devotion',
-      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
-      transit: 'Kalighat / Netaji Bhavan Metro (5 min walk)',
-      transitType: 'metro',
-      highlights: 'Vibrant neighborhood solidarity, master-crafted cane structures, and heartwarming community cultural events.',
-      locationUrl: 'https://maps.google.com/?q=64+Palli+Durga+Puja+Kolkata'
-    },
+
     {
       id: 'barisha-club',
       name: 'Barisha Club',
@@ -338,17 +307,7 @@
       highlights: 'Diamond and pure gold ornamented Goddess idol, breathtaking architectural replica with dynamic laser light show.',
       locationUrl: 'https://maps.google.com/?q=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
     },
-    {
-      id: 'lake-town-adibasi-brinda',
-      name: 'Lake Town Adibasi Brinda',
-      zone: 'East',
-      theme: 'Indigenous Tribal Heritage, Bamboo & Terracotta Art',
-      image: 'https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80',
-      transit: 'VIP Road Lake Town Footbridge (4 min walk)',
-      transitType: 'bus',
-      highlights: 'Authentic celebration of tribal folk folklore using forest wood, clay flutes, and earthen hues.',
-      locationUrl: 'https://maps.google.com/?q=Lake+Town+Adibasi+Brinda+Durga+Puja+Kolkata'
-    },
+
     {
       id: 'dum-dum-park-yubak-brinda',
       name: 'Dum Dum Park Yubak Brinda',
@@ -437,50 +396,7 @@
       highlights: 'Extensive fairground with festive food stalls, royal palace replicas, and traditional community adda.',
       locationUrl: 'https://maps.google.com/?q=Salt+Lake+BJ+Block+Durga+Puja+Kolkata'
     },
-    {
-      id: 'salt-lake-ag-block',
-      name: 'Salt Lake AG Block',
-      zone: 'East',
-      theme: 'Classical Heritage Indian Temple & Peaceful Garden Setting',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Vibrant_decorations_at_a_Durga_Puja_pandal_in_Kolkata.jpg',
-      transit: 'Central Park Metro / Karunamoyee Metro (5 min walk)',
-      transitType: 'metro',
-      highlights: 'Intricate temple craftsmanship surrounded by manicured greenery and serene devotional music.',
-      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AG+Block+Durga+Puja+Kolkata'
-    },
-    {
-      id: 'salt-lake-laboni-estate',
-      name: 'Salt Lake Labony Estate',
-      zone: 'East',
-      theme: 'Pristine Community Spirit & Traditional Daaker Saaj Idol',
-      image: 'https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=800&q=80',
-      transit: 'City Centre Metro / Central Park Metro (4 min walk)',
-      transitType: 'metro',
-      highlights: 'One of the oldest community pujas in Salt Lake, famed for warm neighborhood bhog and artistic stages.',
-      locationUrl: 'https://maps.google.com/?q=Salt+Lake+Labony+Estate+Durga+Puja+Kolkata'
-    },
-    {
-      id: 'salt-lake-aj-block',
-      name: 'Salt Lake AJ Block',
-      zone: 'East',
-      theme: 'Creative Folk Traditions & Sustainable Handicraft Heritage',
-      image: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80',
-      transit: 'Karunamoyee / Central Park Metro (7 min walk)',
-      transitType: 'metro',
-      highlights: 'Rich artistic interpretation of Bengal rural heritage using natural fibers, clay, and terracotta.',
-      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AJ+Block+Durga+Puja+Kolkata'
-    },
-    {
-      id: 'salt-lake-ah-block',
-      name: 'Salt Lake AH Block',
-      zone: 'East',
-      theme: 'Intricate Architectural Harmony & Community Cultural Evenings',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Colorful_Durga_Puja_pandal_decorations_from_Kolkata.jpg',
-      transit: 'Karunamoyee Metro (6 min walk)',
-      transitType: 'metro',
-      highlights: 'Splendid classical pandal with joyous cultural competitions, musical evenings, and traditional idol.',
-      locationUrl: 'https://maps.google.com/?q=Salt+Lake+AH+Block+Durga+Puja+Kolkata'
-    },
+
     {
       id: 'salt-lake-fd-block',
       name: 'Salt Lake FD Block',
