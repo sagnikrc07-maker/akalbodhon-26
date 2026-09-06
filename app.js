@@ -1437,32 +1437,36 @@
               </div>
             </div>
 
-            <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-1.5 sm:gap-2 items-center">
+            <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
               <a 
                 href="${pandal.locationUrl}" 
                 target="_blank" 
                 rel="noopener"
-                class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                 title="Get Exact Directions in Google Maps"
               >
                 <!-- Directions Pin Icon -->
                 <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                 <span class="truncate">Directions</span>
               </a>
-              <button 
-                class="pandal-bookmark-btn w-7 h-7 sm:w-10 sm:h-10 border rounded-lg sm:rounded-xl flex items-center justify-center transition-all cursor-pointer shrink-0 ${bookmarkBtnClass}"
-                data-id="${pandal.id}"
-                title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
-              >
-                <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
-              </button>
-              <button 
-                class="pandal-info-btn w-7 h-7 sm:w-10 sm:h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors shrink-0"
-                data-id="${pandal.id}"
-                title="View Full Details"
-              >
-                <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
-              </button>
+              <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                <button 
+                  class="pandal-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${bookmarkBtnClass}"
+                  data-id="${pandal.id}"
+                  title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
+                >
+                  <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
+                  <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
+                </button>
+                <button 
+                  class="pandal-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
+                  data-id="${pandal.id}"
+                  title="View Full Details"
+                >
+                  <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
+                  <span class="text-[10px] font-bold sm:hidden">Info</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -1497,10 +1501,18 @@
           icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
         }
 
+        const label = btn.querySelector('.save-btn-text');
+        if (label) {
+          label.textContent = isSaved ? 'Saved' : 'Save';
+        }
+        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
         if (isSaved) {
-          btn.className = 'pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md';
+          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
         } else {
-          btn.className = 'pandal-bookmark-btn w-10 h-10 border rounded-xl flex items-center justify-center transition-all cursor-pointer text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30';
+          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
         }
 
         showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
@@ -1607,31 +1619,36 @@
                   </div>
                 </div>
 
-                <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-1.5 sm:gap-2 items-center">
+                <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                   <a 
                     href="${food.locationUrl}" 
                     target="_blank" 
                     rel="noopener"
-                    class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    title="Get Exact Directions in Google Maps"
                   >
                     <!-- Directions Pin Icon -->
                     <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span class="truncate">Directions</span>
                   </a>
-                  <button 
-                    class="food-bookmark-btn w-7 h-7 sm:w-10 sm:h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-primary rounded-lg sm:rounded-xl flex items-center justify-center transition-colors shrink-0 ${isSaved ? 'text-primary dark:text-amber-300 bg-primary/10 dark:bg-amber-400/20' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300'}"
-                    data-id="${food.id}"
-                    title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
-                  >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[20px]">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
-                  </button>
-                  <button 
-                    class="food-info-btn w-7 h-7 sm:w-10 sm:h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors shrink-0"
-                    data-id="${food.id}"
-                    title="View Full Details"
-                  >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
-                  </button>
+                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                    <button 
+                      class="food-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${isSaved ? 'bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30'}"
+                      data-id="${food.id}"
+                      title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
+                      <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
+                    </button>
+                    <button 
+                      class="food-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
+                      data-id="${food.id}"
+                      title="View Full Details"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
+                      <span class="text-[10px] font-bold sm:hidden">Info</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1687,31 +1704,36 @@
                   </div>
                 </div>
 
-                <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-1.5 sm:gap-2 items-center">
+                <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                   <a 
                     href="${shop.locationUrl}" 
                     target="_blank" 
                     rel="noopener"
-                    class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    title="Get Exact Directions in Google Maps"
                   >
                     <!-- Directions Pin Icon -->
                     <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span class="truncate">Directions</span>
                   </a>
-                  <button 
-                    class="shop-bookmark-btn w-7 h-7 sm:w-10 sm:h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-primary rounded-lg sm:rounded-xl flex items-center justify-center transition-colors shrink-0 ${isSaved ? 'text-primary dark:text-amber-300 bg-primary/10 dark:bg-amber-400/20' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300'}"
-                    data-id="${shop.id}"
-                    title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
-                  >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[20px]">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
-                  </button>
-                  <button 
-                    class="shop-info-btn w-7 h-7 sm:w-10 sm:h-10 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors shrink-0"
-                    data-id="${shop.id}"
-                    title="View Full Details"
-                  >
-                    <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
-                  </button>
+                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                    <button 
+                      class="shop-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${isSaved ? 'bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30'}"
+                      data-id="${shop.id}"
+                      title="${isSaved ? 'Remove from saved' : 'Save to Itinerary'}"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
+                      <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
+                    </button>
+                    <button 
+                      class="shop-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
+                      data-id="${shop.id}"
+                      title="View Full Details"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">info</span>
+                      <span class="text-[10px] font-bold sm:hidden">Info</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1743,10 +1765,25 @@
           image: food.image
         });
 
-        btn.querySelector('.material-symbols-outlined').textContent = isSaved ? 'bookmark' : 'bookmark_border';
-        btn.classList.toggle('text-primary', isSaved);
-        btn.classList.toggle('dark:text-amber-300', isSaved);
-        btn.classList.toggle('bg-primary/10', isSaved);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+        }
+
+        const label = btn.querySelector('.save-btn-text');
+        if (label) {
+          label.textContent = isSaved ? 'Saved' : 'Save';
+        }
+        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+        if (isSaved) {
+          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+        } else {
+          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+        }
 
         showToast(isSaved ? `Added "${food.name}" to Itinerary!` : `Removed "${food.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
         renderSavedItinerary();
@@ -1771,10 +1808,25 @@
           image: shop.image
         });
 
-        btn.querySelector('.material-symbols-outlined').textContent = isSaved ? 'bookmark' : 'bookmark_border';
-        btn.classList.toggle('text-primary', isSaved);
-        btn.classList.toggle('dark:text-amber-300', isSaved);
-        btn.classList.toggle('bg-primary/10', isSaved);
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (icon) {
+          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+        }
+
+        const label = btn.querySelector('.save-btn-text');
+        if (label) {
+          label.textContent = isSaved ? 'Saved' : 'Save';
+        }
+        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+        if (isSaved) {
+          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+        } else {
+          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+        }
 
         showToast(isSaved ? `Added "${shop.name}" to Itinerary!` : `Removed "${shop.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
         renderSavedItinerary();
@@ -2277,14 +2329,18 @@
     const targetPlan = queryPlan || hashPlan;
     const targetPandal = queryPandal || hashPandal;
 
-    // Direct open for shared puja plans
-    if (targetPlan) {
+    const validSections = ['home', 'pandals', 'plans', 'audio', 'food-shopping', 'rituals', 'saved', 'login'];
+    const isExplicitSectionNav = validSections.includes(rawHash);
+
+    // If user explicitly navigated to a section other than plans, prioritize user navigation and clear lingering deep link query params!
+    if (isExplicitSectionNav && rawHash !== 'plans') {
+      if (queryPlan || queryPandal) {
+        window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
+      }
+    } else if (targetPlan) {
       handleSharedPlanDeepLink(targetPlan);
       return;
-    }
-
-    // Direct open for shared pandals
-    if (targetPandal) {
+    } else if (targetPandal) {
       handleSharedPandalDeepLink(targetPandal);
       return;
     }
@@ -4406,6 +4462,11 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('plan') || urlParams.has('pdata')) {
+      const cleanUrl = window.location.pathname + (window.location.hash || '#plans');
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
   };
 
   function initViewPlanModal() {
@@ -4589,52 +4650,42 @@
   }
 
   function shareToSnapchat(message, shareUrl) {
-    const encodedUrl = encodeURIComponent(shareUrl);
-    const encodedMsg = encodeURIComponent(message);
+    const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    try {
+      navigator.clipboard.writeText(fullText);
+    } catch (e) {}
+    showToast('📋 Festive link copied! Opening Snapchat Chat...', 'send');
+
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
       const start = Date.now();
-      window.location.href = `snapchat://creativekit/camera?attachmentUrl=${encodedUrl}`;
+      window.location.href = 'snapchat://chat';
       setTimeout(() => {
-        if (Date.now() - start < 1200) {
-          window.open(`https://www.snapchat.com/share?link=${encodedUrl}&text=${encodedMsg}`, '_blank');
+        if (Date.now() - start < 1500) {
+          window.open('https://web.snapchat.com/', '_blank');
         }
-      }, 400);
+      }, 500);
     } else {
-      window.open(`https://www.snapchat.com/share?link=${encodedUrl}&text=${encodedMsg}`, '_blank');
+      window.open('https://web.snapchat.com/', '_blank');
     }
   }
 
-  async function shareToInstagram(message, shareUrl) {
+  function shareToInstagram(message, shareUrl) {
     const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
     try {
-      await navigator.clipboard.writeText(fullText);
-    } catch (e) {
-      // Ignore clipboard error
-    }
-    showToast('📋 Festive message & link copied! Opening Instagram...', 'content_copy');
+      navigator.clipboard.writeText(fullText);
+    } catch (e) {}
+    showToast('📋 Festive link copied! Opening Instagram Messages...', 'send');
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: 'Akalbodhon — Kolkata Durga Puja 2026',
-            text: fullText,
-            url: shareUrl
-          });
-          return;
-        } catch (err) {
-          if (err.name === 'AbortError') return;
-        }
-      }
       const start = Date.now();
-      window.location.href = 'instagram://direct';
+      window.location.href = 'instagram://direct-inbox';
       setTimeout(() => {
-        if (Date.now() - start < 1200) {
+        if (Date.now() - start < 1500) {
           window.open('https://www.instagram.com/direct/inbox/', '_blank');
         }
-      }, 400);
+      }, 500);
     } else {
       window.open('https://www.instagram.com/direct/inbox/', '_blank');
     }
@@ -4680,8 +4731,30 @@
 
       heading = 'Share Puja Plan';
       subTitle = `${plan.title} (${plan.day_tag || 'Festive Days'})`;
-      shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
       label = 'Direct Plan Link';
+
+      const isCustom = customPlans.some(p => p.id === plan.id) || (typeof plan.id === 'string' && (plan.id.startsWith('custom-') || plan.id.startsWith('plan_')));
+      if (isCustom) {
+        try {
+          const compactData = {
+            id: plan.id,
+            title: plan.title,
+            day_tag: plan.day_tag,
+            date_str: plan.date_str,
+            creator_name: plan.creator_name,
+            route_summary: plan.route_summary,
+            pandals: plan.pandals,
+            food_stops: plan.food_stops,
+            rituals: plan.rituals
+          };
+          const pdataStr = btoa(unescape(encodeURIComponent(JSON.stringify(compactData))));
+          shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}&pdata=${encodeURIComponent(pdataStr)}`;
+        } catch (e) {
+          shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
+        }
+      } else {
+        shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
+      }
 
       const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
       const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
@@ -4814,8 +4887,12 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         const card = document.querySelector(`[data-id="${pandal.id}"]`) || document.getElementById(`pandal-card-${pandal.id}`);
         if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 300);
+      const cleanUrl = window.location.pathname + '#pandals';
+      window.history.replaceState({}, document.title, cleanUrl);
     } else {
       showToast('Pandal not found, explore all pandals below.', 'explore');
+      const cleanUrl = window.location.pathname + '#pandals';
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   }
 
@@ -4824,6 +4901,38 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const cleanId = decodeURIComponent(planId).trim();
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     let plan = allPlans.find(p => p.id === cleanId || p.id === planId);
+
+    // Check for serialized custom plan data in URL (?pdata=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const pdataParam = urlParams.get('pdata');
+    if (!plan && pdataParam) {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(pdataParam)))));
+        if (decoded && decoded.id) {
+          plan = {
+            id: decoded.id,
+            title: decoded.title,
+            day_tag: decoded.day_tag,
+            day_key: (decoded.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+            date_str: decoded.date_str || decoded.day_tag,
+            creator_name: decoded.creator_name || 'Devotee',
+            creator_avatar: '🌺',
+            creator_id: decoded.creator_id || 'shared',
+            route_summary: decoded.route_summary || '',
+            pandals: decoded.pandals || [],
+            food_stops: decoded.food_stops || [],
+            rituals: decoded.rituals || [],
+            members: []
+          };
+          if (!customPlans.some(p => p.id === plan.id)) {
+            customPlans.unshift(plan);
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          }
+        }
+      } catch (err) {
+        console.warn('Error parsing shared custom plan pdata:', err);
+      }
+    }
 
     // If not found in memory, try fetching from Supabase
     if (!plan && supabaseClient) {
@@ -4916,9 +5025,15 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
         }
       }
+
+      // Clean up the URL search params so the receiver is not trapped when navigating around
+      const cleanUrl = window.location.pathname + '#plans';
+      window.history.replaceState({}, document.title, cleanUrl);
     } else {
       renderFestivalPlans('all');
       showToast('Puja plan link could not be found or has expired.', 'warning');
+      const cleanUrl = window.location.pathname + '#plans';
+      window.history.replaceState({}, document.title, cleanUrl);
     }
   }
 
@@ -5543,9 +5658,18 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     // Detail Modal Close
+    const cleanPandalUrlParams = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('pandal')) {
+        const cleanUrl = window.location.pathname + (window.location.hash || '#pandals');
+        window.history.replaceState({}, document.title, cleanUrl);
+      }
+    };
+
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
       document.body.classList.remove('modal-open');
       document.getElementById('pandal-detail-modal')?.classList.add('hidden');
+      cleanPandalUrlParams();
     });
 
     const pandalModal = document.getElementById('pandal-detail-modal');
@@ -5554,6 +5678,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         if (e.target === pandalModal) {
           document.body.classList.remove('modal-open');
           pandalModal.classList.add('hidden');
+          cleanPandalUrlParams();
         }
       });
     }
