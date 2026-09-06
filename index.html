@@ -433,15 +433,16 @@
       <!-- ======================================================== -->
       <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6 max-w-6xl mx-auto">
 
-        <!-- ==================== 1. SHARODIYA HITS BANNER & TRACKLIST ==================== -->
-        <div class="flex flex-col space-y-3 sm:space-y-4">
-          <!-- Sharodiya hits Banner Card -->
+        <!-- ==================== 1. SHARODIYA HITS BANNER ==================== -->
+        <div class="flex flex-col">
+          <!-- Sharodiya hits Banner Card (Clickable to open playlist modal) -->
           <div 
             id="banner-card-sharodiya"
-            class="glass-panel p-3 sm:p-5 rounded-2.5xl sm:rounded-3xl border border-outline-variant/40 dark:border-amber-400/25 relative overflow-hidden group shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
+            onclick="window.openPlaylistDetailModal('sharodiya')"
+            class="glass-panel p-3 sm:p-5 rounded-2.5xl sm:rounded-3xl border border-outline-variant/40 dark:border-amber-400/25 relative overflow-hidden group shadow-md hover:shadow-xl hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex flex-col justify-between cursor-pointer"
           >
             <!-- Background Image with Gradient Overlay -->
-            <div class="relative h-28 sm:h-36 -mx-3 -mt-3 sm:-mx-5 sm:-mt-5 mb-2.5 sm:mb-3 overflow-hidden rounded-t-2.5xl sm:rounded-t-3xl cursor-pointer play-entire-playlist-btn" data-playlist="sharodiya">
+            <div class="relative h-28 sm:h-36 -mx-3 -mt-3 sm:-mx-5 sm:-mt-5 mb-2.5 sm:mb-3 overflow-hidden rounded-t-2.5xl sm:rounded-t-3xl">
               <img 
                 src="https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2" 
                 alt="Sharodiya hits Cover" 
@@ -451,10 +452,10 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
               
-              <!-- Play overlay badge -->
+              <!-- Hover play overlay badge -->
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-[2px]">
                 <span class="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                  <span class="material-symbols-outlined text-[26px] sm:text-[30px] ml-0.5">play_arrow</span>
+                  <span class="material-symbols-outlined text-[26px] sm:text-[30px] ml-0.5">queue_music</span>
                 </span>
               </div>
 
@@ -465,27 +466,28 @@
             </div>
 
             <!-- Banner Meta & Title -->
-            <div class="space-y-1.5">
+            <div class="space-y-1 sm:space-y-1.5 flex-1">
               <div class="flex items-center justify-between gap-1 flex-wrap">
-                <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">Sharodiya hits</h3>
+                <h3 class="font-display text-sm sm:text-xl font-bold text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">Sharodiya hits</h3>
               </div>
-              <p class="text-[11px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] line-clamp-2 leading-tight">Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.</p>
+              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] line-clamp-2 leading-tight">Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.</p>
             </div>
 
-            <!-- Clickable Spotify and YouTube Links on Sharodiya hits Banner -->
-            <div class="pt-3 border-t border-outline-variant/20 dark:border-amber-400/15 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5 mt-2">
-              <div class="flex items-center gap-1.5">
+            <!-- Spotify and YouTube Links (Comfortably inside the box for all screen sizes) -->
+            <div class="pt-2.5 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/15 mt-2.5 space-y-2">
+              <div class="grid grid-cols-2 gap-1.5 sm:gap-2 w-full">
                 <!-- Spotify Link -->
                 <a 
                   id="spotify-sharodiya-link"
                   href="https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="flex-1 sm:flex-initial px-2.5 py-1.5 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  onclick="event.stopPropagation()"
+                  class="w-full py-1.5 sm:py-2 px-1 rounded-xl bg-[#1DB954]/15 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/25 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/35 text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
                   title="Open Sharodiya hits on Spotify"
                 >
                   <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-                  <span>Spotify</span>
+                  <span class="truncate">Spotify</span>
                 </a>
 
                 <!-- YouTube Link -->
@@ -494,41 +496,38 @@
                   href="https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="flex-1 sm:flex-initial px-2.5 py-1.5 rounded-xl bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white border border-[#FF0000]/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  onclick="event.stopPropagation()"
+                  class="w-full py-1.5 sm:py-2 px-1 rounded-xl bg-[#FF0000]/15 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/25 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white border border-[#FF0000]/35 text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
                   title="Open Sharodiya hits Playlist on YouTube"
                 >
                   <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                  <span>YouTube</span>
+                  <span class="truncate">YouTube</span>
                 </a>
               </div>
 
-              <!-- Play on Website Button -->
+              <!-- View Playlist & Songs Action Button -->
               <button 
-                class="play-entire-playlist-btn px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black text-[11px] font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
-                data-playlist="sharodiya"
-                title="Stream Sharodiya hits on Website"
+                type="button"
+                onclick="window.openPlaylistDetailModal('sharodiya')"
+                class="w-full py-2 px-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
               >
-                <span class="material-symbols-outlined text-[15px]">play_circle</span>
-                <span>Play</span>
+                <span class="material-symbols-outlined text-[15px] sm:text-[17px]">queue_music</span>
+                <span class="truncate">View Songs (17)</span>
               </button>
             </div>
           </div>
-
-          <!-- Sharodiya hits Song Tracklist Container -->
-          <div id="radio-songs-sharodiya-list" class="space-y-2 sm:space-y-3">
-            <!-- Populated dynamically via JS -->
-          </div>
         </div>
 
-        <!-- ==================== 2. MAHALAYA BANNER & TRACKLIST ==================== -->
-        <div class="flex flex-col space-y-3 sm:space-y-4">
-          <!-- Mahalaya Banner Card -->
+        <!-- ==================== 2. MAHALAYA BANNER ==================== -->
+        <div class="flex flex-col">
+          <!-- Mahalaya Banner Card (Clickable to open playlist modal) -->
           <div 
             id="banner-card-mahalaya"
-            class="glass-panel p-3 sm:p-5 rounded-2.5xl sm:rounded-3xl border border-outline-variant/40 dark:border-amber-400/25 relative overflow-hidden group shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
+            onclick="window.openPlaylistDetailModal('mahalaya')"
+            class="glass-panel p-3 sm:p-5 rounded-2.5xl sm:rounded-3xl border border-outline-variant/40 dark:border-amber-400/25 relative overflow-hidden group shadow-md hover:shadow-xl hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex flex-col justify-between cursor-pointer"
           >
             <!-- Background Image with Gradient Overlay -->
-            <div class="relative h-28 sm:h-36 -mx-3 -mt-3 sm:-mx-5 sm:-mt-5 mb-2.5 sm:mb-3 overflow-hidden rounded-t-2.5xl sm:rounded-t-3xl cursor-pointer play-entire-playlist-btn" data-playlist="mahalaya">
+            <div class="relative h-28 sm:h-36 -mx-3 -mt-3 sm:-mx-5 sm:-mt-5 mb-2.5 sm:mb-3 overflow-hidden rounded-t-2.5xl sm:rounded-t-3xl">
               <img 
                 src="https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4" 
                 alt="Mahalaya Cover" 
@@ -538,10 +537,10 @@
               />
               <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"></div>
               
-              <!-- Play overlay badge -->
+              <!-- Hover play overlay badge -->
               <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30 backdrop-blur-[2px]">
                 <span class="w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                  <span class="material-symbols-outlined text-[26px] sm:text-[30px] ml-0.5">play_arrow</span>
+                  <span class="material-symbols-outlined text-[26px] sm:text-[30px] ml-0.5">queue_music</span>
                 </span>
               </div>
 
@@ -552,27 +551,28 @@
             </div>
 
             <!-- Banner Meta & Title -->
-            <div class="space-y-1.5">
+            <div class="space-y-1 sm:space-y-1.5 flex-1">
               <div class="flex items-center justify-between gap-1 flex-wrap">
-                <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">Mahalaya</h3>
+                <h3 class="font-display text-sm sm:text-xl font-bold text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors">Mahalaya</h3>
               </div>
-              <p class="text-[11px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] line-clamp-2 leading-tight">The eternal dawn Mahishasuramardini, Vedic stotras, and Chandi Path chants.</p>
+              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] line-clamp-2 leading-tight">The eternal dawn Mahishasuramardini, Vedic stotras, and Chandi Path chants.</p>
             </div>
 
-            <!-- Clickable Spotify and YouTube Links on Mahalaya Banner -->
-            <div class="pt-3 border-t border-outline-variant/20 dark:border-amber-400/15 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5 mt-2">
-              <div class="flex items-center gap-1.5">
+            <!-- Spotify and YouTube Links (Comfortably inside the box for all screen sizes) -->
+            <div class="pt-2.5 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/15 mt-2.5 space-y-2">
+              <div class="grid grid-cols-2 gap-1.5 sm:gap-2 w-full">
                 <!-- Spotify Link -->
                 <a 
                   id="spotify-mahalaya-link"
                   href="https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="flex-1 sm:flex-initial px-2.5 py-1.5 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  onclick="event.stopPropagation()"
+                  class="w-full py-1.5 sm:py-2 px-1 rounded-xl bg-[#1DB954]/15 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/25 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/35 text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
                   title="Open Mahalaya on Spotify"
                 >
                   <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-                  <span>Spotify</span>
+                  <span class="truncate">Spotify</span>
                 </a>
 
                 <!-- YouTube Link -->
@@ -581,29 +581,25 @@
                   href="https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  class="flex-1 sm:flex-initial px-2.5 py-1.5 rounded-xl bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white border border-[#FF0000]/30 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  onclick="event.stopPropagation()"
+                  class="w-full py-1.5 sm:py-2 px-1 rounded-xl bg-[#FF0000]/15 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/25 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white border border-[#FF0000]/35 text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
                   title="Open Mahalaya Playlist on YouTube"
                 >
                   <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                  <span>YouTube</span>
+                  <span class="truncate">YouTube</span>
                 </a>
               </div>
 
-              <!-- Play on Website Button -->
+              <!-- View Playlist & Songs Action Button -->
               <button 
-                class="play-entire-playlist-btn px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black text-[11px] font-bold flex items-center justify-center gap-1 transition-all shadow-sm cursor-pointer"
-                data-playlist="mahalaya"
-                title="Stream Mahalaya on Website"
+                type="button"
+                onclick="window.openPlaylistDetailModal('mahalaya')"
+                class="w-full py-2 px-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
               >
-                <span class="material-symbols-outlined text-[15px]">play_circle</span>
-                <span>Play</span>
+                <span class="material-symbols-outlined text-[15px] sm:text-[17px]">queue_music</span>
+                <span class="truncate">View Songs (10)</span>
               </button>
             </div>
-          </div>
-
-          <!-- Mahalaya Song Tracklist Container -->
-          <div id="radio-songs-mahalaya-list" class="space-y-2 sm:space-y-3">
-            <!-- Populated dynamically via JS -->
           </div>
         </div>
 
@@ -692,16 +688,33 @@
         </p>
       </div>
 
-      <!-- Plan Day Filter Buttons -->
-      <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar reveal-on-scroll">
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-primary text-white dark:bg-amber-400 dark:text-black shadow-md transition-all cursor-pointer" data-day="all">All Plans</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="mahalaya">Mahalaya</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="shasthi">Maha Shasthi</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="saptami">Maha Saptami</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="ashtami">Maha Ashtami</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="navami">Maha Navami</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="dashami">Bijoya Dashami</button>
-        <button class="plan-filter-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer" data-day="custom">Custom / Shared Plans</button>
+      <!-- Plan Filter Dropdown Menu (Clean, responsive across all devices) -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 shadow-sm reveal-on-scroll">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-primary dark:text-amber-300 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+          </span>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant dark:text-amber-300/80 block">Browse Festival Days</span>
+            <label for="plan-filter-dropdown" class="font-display text-sm sm:text-base font-bold text-on-surface dark:text-white cursor-pointer">Filter Puja Plans</label>
+          </div>
+        </div>
+
+        <div class="relative w-full sm:w-72">
+          <select id="plan-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+            <option value="all" selected>🌟 All Plans (Full Festival)</option>
+            <option value="mahalaya">🌅 Mahalaya (Dawn Chokshudaan)</option>
+            <option value="shasthi">🥁 Maha Shasthi (Bodhon & Amontron)</option>
+            <option value="saptami">🌿 Maha Saptami (Nabapatrika Pravesh)</option>
+            <option value="ashtami">🔥 Maha Ashtami (Sandhi Puja & Pushpanjali)</option>
+            <option value="navami">✨ Maha Navami (Dhunuchi Naach & Homa)</option>
+            <option value="dashami">🪷 Bijoya Dashami (Sindoor Khela & Visarjan)</option>
+            <option value="custom">📝 Custom / Shared Plans</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+          </div>
+        </div>
       </div>
 
       <!-- Plans Container (2 Columns on mobile) -->
@@ -1260,13 +1273,12 @@
               Festive Day
             </span>
           </div>
-          <div class="flex items-center justify-center gap-3 text-xs text-on-surface-variant dark:text-[#ded5c7]">
+          <div class="flex flex-col items-center justify-center gap-1.5 text-xs text-on-surface-variant dark:text-[#ded5c7]">
             <span id="vp-date" class="font-semibold flex items-center gap-1">
               <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span>
               Date
             </span>
-            <span>•</span>
-            <div id="vp-host-badge" class="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30">
+            <div id="vp-host-badge" class="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30">
               <span id="vp-host-avatar" class="text-xs sm:text-sm">🌺</span>
               <span class="creator-badge text-[9px] px-1.5 py-0.2 rounded uppercase font-bold tracking-wider">HOST</span>
             </div>
@@ -1728,6 +1740,90 @@
         <button id="dismiss-akalbodhon-story-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
           Close & Return to Festival
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PLAYLIST DETAIL & TRACKLIST OVERLAY MODAL ==================== -->
+  <div id="playlist-detail-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[90vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right -->
+      <button id="close-playlist-modal-btn" onclick="window.closePlaylistDetailModal()" class="absolute top-3.5 right-3.5 z-30 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer shadow-md hover:scale-105" title="Close Playlist">
+        <span class="material-symbols-outlined text-[20px]">close</span>
+      </button>
+
+      <!-- Scrollable Inner Content Area -->
+      <div class="modal-scrollable overflow-y-auto p-4 sm:p-6 space-y-4 flex-1">
+        <!-- Playlist Banner Header -->
+        <div class="p-3.5 sm:p-5 rounded-2.5xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 space-y-3.5">
+          <div class="flex items-center gap-3 sm:gap-4">
+            <div class="w-16 h-16 sm:w-22 sm:h-22 rounded-2xl overflow-hidden shadow-lg border border-outline-variant/30 dark:border-amber-400/30 shrink-0 relative">
+              <img id="pl-modal-cover" src="logo.jpg" alt="Playlist Cover" class="w-full h-full object-cover" />
+            </div>
+            <div class="min-w-0 flex-1 space-y-1">
+              <span id="pl-modal-count" class="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/15 text-primary dark:bg-amber-400/20 dark:text-amber-300 inline-block border border-primary/20 dark:border-amber-400/30">
+                Tracks
+              </span>
+              <h3 id="pl-modal-title" class="font-display text-lg sm:text-2xl font-bold text-on-surface dark:text-white truncate">
+                Playlist Name
+              </h3>
+              <p id="pl-modal-desc" class="text-[11px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] line-clamp-2 leading-relaxed">
+                Playlist description
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Action Buttons: Spotify, YouTube & Stream Full Playlist on Website -->
+          <div class="pt-3 border-t border-outline-variant/20 dark:border-amber-400/15 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+            <div class="grid grid-cols-2 gap-2 flex-1">
+              <a 
+                id="pl-modal-spotify-btn" 
+                href="#" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="py-2 px-2.5 rounded-xl bg-[#1DB954]/15 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/25 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black border border-[#1DB954]/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                title="Open Playlist on Spotify"
+              >
+                <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+                <span class="truncate">Spotify</span>
+              </a>
+              <a 
+                id="pl-modal-youtube-btn" 
+                href="#" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                class="py-2 px-2.5 rounded-xl bg-[#FF0000]/15 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/25 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white border border-[#FF0000]/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                title="Open Playlist on YouTube"
+              >
+                <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                <span class="truncate">YouTube</span>
+              </a>
+            </div>
+            <button 
+              id="pl-modal-play-all-btn" 
+              type="button"
+              class="py-2 px-3.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer shrink-0"
+              title="Stream Full Playlist on Website"
+            >
+              <span class="material-symbols-outlined text-[16px]">play_arrow</span>
+              <span>Play All</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Section Title: Songs in Playlist -->
+        <div class="flex items-center justify-between px-1 pt-1">
+          <span class="text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">library_music</span>
+            <span>Songs & Audio Tracks</span>
+          </span>
+          <span class="text-[11px] text-on-surface-variant dark:text-[#ded5c7]">Tap play to stream</span>
+        </div>
+
+        <!-- Tracklist Items Container -->
+        <div id="playlist-modal-tracklist" class="space-y-2">
+          <!-- Dynamically populated via JS -->
+        </div>
       </div>
     </div>
   </div>

@@ -2993,9 +2993,143 @@
     });
   }
 
+  // ========================================================
+  // PLAYLIST DETAIL & SONGS MODAL ENGINE
+  // ========================================================
+  window.openPlaylistDetailModal = function(playlistKey) {
+    const modal = document.getElementById('playlist-detail-modal');
+    if (!modal) return;
+
+    const pl = PUJA_RADIO_PLAYLISTS[playlistKey] || {
+      name: playlistKey === 'mahalaya' ? 'Mahalaya' : 'Sharodiya hits',
+      title: playlistKey === 'mahalaya' ? 'Mahalaya' : 'Sharodiya hits',
+      description: playlistKey === 'mahalaya' 
+        ? 'The eternal dawn Mahishasuramardini, Vedic stotras, and Chandi Path chants.' 
+        : 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.',
+      cover: playlistKey === 'mahalaya' 
+        ? 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4' 
+        : 'https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2',
+      spotifyUrl: playlistKey === 'mahalaya'
+        ? 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link'
+        : 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
+      youtubeUrl: playlistKey === 'mahalaya'
+        ? 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC'
+        : 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC'
+    };
+
+    const songs = PUJA_RADIO_SONGS.filter(s => s.playlist === playlistKey);
+
+    const coverEl = document.getElementById('pl-modal-cover');
+    const titleEl = document.getElementById('pl-modal-title');
+    const descEl = document.getElementById('pl-modal-desc');
+    const countEl = document.getElementById('pl-modal-count');
+    const spotifyLink = document.getElementById('pl-modal-spotify-btn');
+    const youtubeLink = document.getElementById('pl-modal-youtube-btn');
+    const playAllBtn = document.getElementById('pl-modal-play-all-btn');
+
+    if (coverEl) coverEl.src = pl.cover;
+    if (titleEl) titleEl.textContent = pl.name || pl.title;
+    if (descEl) descEl.textContent = pl.description || '';
+    if (countEl) countEl.textContent = `${songs.length} Tracks`;
+    if (spotifyLink) spotifyLink.href = pl.spotifyUrl;
+    if (youtubeLink) youtubeLink.href = pl.youtubeUrl;
+
+    if (playAllBtn) {
+      playAllBtn.onclick = () => {
+        playRadioPlaylist(playlistKey);
+        closePlaylistDetailModal();
+        showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, 'music');
+      };
+    }
+
+    const tracklistEl = document.getElementById('playlist-modal-tracklist');
+    if (tracklistEl) {
+      tracklistEl.innerHTML = songs.map((song, idx) => `
+        <div class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md">
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">#${idx + 1}</span>
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
+              <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='logo.jpg'" loading="lazy" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">
+                ${song.title}
+              </h4>
+              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] truncate">${song.artist}</p>
+              <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1.5 shrink-0">
+            <!-- Spotify Track Link -->
+            <a 
+              href="${song.spotifyUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-xs"
+              title="Open Track on Spotify"
+            >
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            </a>
+
+            <!-- YouTube Track Link -->
+            <a 
+              href="${song.youtubeUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all shadow-xs"
+              title="Watch on YouTube"
+            >
+              <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+
+            <!-- Stream on Website Player -->
+            <button 
+              onclick="window.playSongFromPlaylistModal('${song.id}')" 
+              class="px-2.5 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+              title="Play on Website"
+            >
+              <span class="material-symbols-outlined text-[15px]">play_arrow</span>
+              <span>Play</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.classList.add('modal-open');
+  };
+
+  window.closePlaylistDetailModal = function() {
+    const modal = document.getElementById('playlist-detail-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+    document.body.classList.remove('modal-open');
+  };
+
+  window.playSongFromPlaylistModal = function(songId) {
+    const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
+    if (song) {
+      playRadioSong(song);
+      showToast(`🎶 Playing "${song.title}"`, 'music');
+    }
+  };
+
   // --- 13. AUDIO & RADIO CONTROLLER ---
   function initAudioHub() {
     renderPujaRadioSongs();
+
+    // Close playlist detail modal on backdrop click
+    const plModal = document.getElementById('playlist-detail-modal');
+    if (plModal) {
+      plModal.addEventListener('click', (e) => {
+        if (e.target === plModal) window.closePlaylistDetailModal();
+      });
+    }
 
     // Toggle stream engine (Spotify vs YouTube) in active player
     const spotifyToggleBtn = document.getElementById('radio-toggle-spotify-btn');
@@ -3946,6 +4080,10 @@
 
   function renderFestivalPlans(dayFilter = 'all') {
     activePlanFilter = dayFilter;
+    const planDropdown = document.getElementById('plan-filter-dropdown');
+    if (planDropdown && planDropdown.value !== dayFilter) {
+      planDropdown.value = dayFilter;
+    }
     const container = document.getElementById('plans-list-container');
     if (!container) return;
 
@@ -3996,19 +4134,19 @@
               </span>
             </div>
 
-            <!-- Subheader: Proper Date (no truncation) & Creator (Icon + HOST only) -->
-            <div class="flex items-center justify-between gap-1.5 pt-0.5">
+            <!-- Subheader: Date & Creator (Stacked one under the other, not side by side) -->
+            <div class="flex flex-col items-start gap-1.5 pt-0.5 w-full">
               ${plan.date_str ? `
-                <div class="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-on-surface-variant dark:text-[#ded5c7]">
+                <div class="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-on-surface-variant dark:text-[#ded5c7] leading-snug w-full">
                   <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">calendar_month</span>
-                  <span class="truncate">${plan.date_str}</span>
+                  <span class="break-words font-medium">${plan.date_str}</span>
                 </div>
-              ` : '<div></div>'}
+              ` : ''}
 
-              <!-- Creator: Just the Icon and "HOST" -->
-              <div class="flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-0.5 rounded-lg sm:rounded-xl bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30 shrink-0" title="Plan Host">
-                <span class="text-xs sm:text-base">${plan.creator_avatar || '🌺'}</span>
-                <span class="creator-badge text-[8px] sm:text-[9px] px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded uppercase font-bold tracking-wider">Host</span>
+              <!-- Creator: Just the Icon and "HOST" on its own line under the date -->
+              <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30" title="Plan Host">
+                <span class="text-xs sm:text-sm">${plan.creator_avatar || '🌺'}</span>
+                <span class="creator-badge text-[8px] sm:text-[9px] px-1 py-0.5 rounded uppercase font-bold tracking-wider">Host</span>
               </div>
             </div>
 
@@ -5183,20 +5321,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       showToast('🌺 Welcome to Akalbodhon! Enjoy your festival tour.', 'celebration');
     });
 
-    // Plan Day Filter Buttons
-    document.querySelectorAll('.plan-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.plan-filter-btn').forEach(b => {
-          b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
-          b.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
-        });
-        btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-md');
-        btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
-
-        const day = btn.dataset.day || 'all';
+    // Plan Filter Dropdown Menu Handler
+    const planDropdown = document.getElementById('plan-filter-dropdown');
+    if (planDropdown) {
+      planDropdown.addEventListener('change', (e) => {
+        const day = e.target.value || 'all';
         renderFestivalPlans(day);
       });
-    });
+    }
 
     // Pandal Filter Dropdown Menu Handler
     const pandalDropdown = document.getElementById('pandal-filter-dropdown');
