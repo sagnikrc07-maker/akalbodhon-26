@@ -2230,24 +2230,46 @@
     }
 
     modal.querySelector('#modal-pandal-nav-btn').href = item.locationUrl;
+    window.currentDetailModalItem = item;
+    window.currentDetailModalType = type;
     modal.classList.remove('hidden');
     modal.classList.add('flex');
   }
 
   // --- 12. ROUTING & TAB NAVIGATION ---
   function handleRouting() {
-    const rawHash = window.location.hash.slice(1) || 'home';
-    
-    // Check if deep linking to a specific shared plan (#plan=...)
+    // 1. Check URL query parameters (?plan=..., ?pandal=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const queryPlan = urlParams.get('plan');
+    const queryPandal = urlParams.get('pandal');
+
+    // 2. Check URL hash (#plan=..., #pandal=..., #plans, etc.)
+    const rawHash = window.location.hash.slice(1) || '';
+    let hashPlan = null;
+    let hashPandal = null;
     if (rawHash.startsWith('plan=')) {
-      const planId = rawHash.split('=')[1];
-      if (planId) {
-        handleSharedPlanDeepLink(planId);
-        return;
-      }
+      hashPlan = rawHash.slice(5);
+    } else if (rawHash.startsWith('pandal=')) {
+      hashPandal = rawHash.slice(7);
     }
 
-    if (rawHash === 'login' || rawHash === 'account') {
+    const targetPlan = queryPlan || hashPlan;
+    const targetPandal = queryPandal || hashPandal;
+
+    // Direct open for shared puja plans
+    if (targetPlan) {
+      handleSharedPlanDeepLink(targetPlan);
+      return;
+    }
+
+    // Direct open for shared pandals
+    if (targetPandal) {
+      handleSharedPandalDeepLink(targetPandal);
+      return;
+    }
+
+    const effectiveHash = rawHash || 'home';
+    if (effectiveHash === 'login' || effectiveHash === 'account') {
       if (currentUser) {
         openProfileModal();
       }
@@ -3965,7 +3987,7 @@
       const foodCount = (plan.food_stops || []).length;
 
       return `
-        <div class="glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
+        <div id="plan-card-${plan.id}" data-plan-id="${plan.id}" class="glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
           <div class="space-y-2 sm:space-y-3">
             <!-- Header: Puja Day Centered in Middle -->
             <div class="flex items-center justify-center w-full">
@@ -4366,72 +4388,284 @@
     }
   }
 
-  // Social Sharing Modal & Direct Links
-  window.openSharePlanModal = function (planId) {
-    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
-    const plan = allPlans.find(p => p.id === planId);
-    if (!plan) return;
+  // ========================================================
+  // 17. MULTI-CHANNEL SOCIAL SHARE & SMART DEEP LINKING
+  // ========================================================
 
+  function shareToWhatsApp(message, shareUrl) {
+    const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    const encoded = encodeURIComponent(fullText);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      const start = Date.now();
+      window.location.href = `whatsapp://send?text=${encoded}`;
+      setTimeout(() => {
+        if (Date.now() - start < 1200) {
+          window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+        }
+      }, 400);
+    } else {
+      window.open(`https://api.whatsapp.com/send?text=${encoded}`, '_blank');
+    }
+  }
+
+  function shareToSnapchat(message, shareUrl) {
+    const encodedUrl = encodeURIComponent(shareUrl);
+    const encodedMsg = encodeURIComponent(message);
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      const start = Date.now();
+      window.location.href = `snapchat://creativekit/camera?attachmentUrl=${encodedUrl}`;
+      setTimeout(() => {
+        if (Date.now() - start < 1200) {
+          window.open(`https://www.snapchat.com/share?link=${encodedUrl}&text=${encodedMsg}`, '_blank');
+        }
+      }, 400);
+    } else {
+      window.open(`https://www.snapchat.com/share?link=${encodedUrl}&text=${encodedMsg}`, '_blank');
+    }
+  }
+
+  async function shareToInstagram(message, shareUrl) {
+    const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    try {
+      await navigator.clipboard.writeText(fullText);
+    } catch (e) {
+      // Ignore clipboard error
+    }
+    showToast('📋 Festive message & link copied! Opening Instagram...', 'content_copy');
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Akalbodhon — Kolkata Durga Puja 2026',
+            text: fullText,
+            url: shareUrl
+          });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+      const start = Date.now();
+      window.location.href = 'instagram://direct';
+      setTimeout(() => {
+        if (Date.now() - start < 1200) {
+          window.open('https://www.instagram.com/direct/inbox/', '_blank');
+        }
+      }, 400);
+    } else {
+      window.open('https://www.instagram.com/direct/inbox/', '_blank');
+    }
+  }
+
+  async function shareViaNativeSheet(title, message, shareUrl) {
+    const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: title || 'Akalbodhon — Kolkata Durga Puja 2026',
+          text: fullText,
+          url: shareUrl
+        });
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+            showToast('Share link copied to clipboard!', 'link');
+          });
+        }
+      }
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        showToast('Direct link copied to clipboard!', 'link');
+      });
+    }
+  }
+
+  window.openShareModal = function ({ type = 'website', id = null, item = null } = {}) {
     const modal = document.getElementById('share-plan-modal');
     if (!modal) return;
 
-    document.getElementById('share-modal-plan-title').textContent = `${plan.title} (${plan.day_tag})`;
+    let heading = 'Share Akalbodhon';
+    let subTitle = 'Kolkata Durga Puja 2026';
+    let shareUrl = `${window.location.origin}${window.location.pathname}`;
+    let message = '';
+    let label = 'Direct Website Link';
 
-    const shareUrl = `${window.location.origin}${window.location.pathname}#plan=${encodeURIComponent(plan.id)}`;
-    const shareText = `🌺 Durga Puja Plan: ${plan.title} (${plan.day_tag}) by ${plan.creator_name}. Join our pandal hopping crew on Akalbodhon: ${shareUrl}`;
+    if (type === 'plan') {
+      let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+      const plan = item || allPlans.find(p => p.id === id);
+      if (!plan) return;
 
-    document.getElementById('share-link-input').value = shareUrl;
+      heading = 'Share Puja Plan';
+      subTitle = `${plan.title} (${plan.day_tag || 'Festive Days'})`;
+      shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
+      label = 'Direct Plan Link';
 
-    // WhatsApp
-    document.getElementById('share-wa-btn').href = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+      const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
+      const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
 
-    // Gmail
-    document.getElementById('share-gmail-btn').href = `mailto:?subject=${encodeURIComponent(`Durga Puja Plan: ${plan.title}`)}&body=${encodeURIComponent(shareText)}`;
+      message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
+✨ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
+🪔 View the full itinerary, map directions & food pit-stops on Akalbodhon:`;
 
-    // Instagram (Copy caption + link)
-    document.getElementById('share-ig-btn').onclick = () => {
-      navigator.clipboard.writeText(shareText).then(() => {
-        showToast('Plan link & festive caption copied for Instagram!', 'content_copy');
-      });
-    };
+    } else if (type === 'pandal') {
+      const pandal = item || PANDALS_DATA.find(p => p.id === id);
+      if (!pandal) return;
 
-    // Snapchat
-    document.getElementById('share-snap-btn').href = `https://snapchat.com/scan?attachmentUrl=${encodeURIComponent(shareUrl)}`;
+      heading = 'Share Puja Pandal';
+      subTitle = `${pandal.name} (${pandal.zone || 'Kolkata'})`;
+      shareUrl = `${window.location.origin}${window.location.pathname}?pandal=${encodeURIComponent(pandal.id)}`;
+      label = 'Direct Pandal Link';
 
-    // Discord
-    document.getElementById('share-dc-btn').href = `https://discord.com/channels/@me`;
-    document.getElementById('share-dc-btn').onclick = () => {
-      navigator.clipboard.writeText(shareText).then(() => {
-        showToast('Discord markdown plan link copied!', 'content_copy');
-      });
-    };
+      message = `🌸 *Durga Puja 2026: ${pandal.name}* (${pandal.zone || 'Kolkata'})
+✨ Theme: ${pandal.theme || 'Heritage Pandal Art & Illumination'}
+🚇 Nearest Transit: ${pandal.transit || pandal.metro || 'Kolkata Metro'}
+📍 Explore pandal route, timings & nearby bhog spots on Akalbodhon:`;
+
+    } else {
+      // Website
+      heading = 'Share Akalbodhon Website';
+      subTitle = 'Kolkata\'s Grand Durga Puja 2026 Guide';
+      shareUrl = `${window.location.origin}${window.location.pathname}`;
+      label = 'Direct Website Link';
+
+      message = `🌸 *Akalbodhon — Kolkata Durga Puja 2026!*
+Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio hits & Mahalaya streaming, rituals countdown, and collaborative puja plans!
+✨ Check out the festive guide here:`;
+    }
+
+    // Set UI elements
+    const headingEl = document.getElementById('share-modal-heading');
+    if (headingEl) headingEl.textContent = heading;
+
+    const titleEl = document.getElementById('share-modal-plan-title');
+    if (titleEl) titleEl.textContent = subTitle;
+
+    const labelEl = document.getElementById('share-link-label');
+    if (labelEl) labelEl.textContent = label;
+
+    const inputEl = document.getElementById('share-link-input');
+    if (inputEl) inputEl.value = shareUrl;
+
+    // WhatsApp Button
+    const waBtn = document.getElementById('share-wa-btn');
+    if (waBtn) {
+      waBtn.onclick = () => shareToWhatsApp(message, shareUrl);
+    }
+
+    // Snapchat Button
+    const snapBtn = document.getElementById('share-snap-btn');
+    if (snapBtn) {
+      snapBtn.onclick = () => shareToSnapchat(message, shareUrl);
+    }
+
+    // Instagram Button
+    const igBtn = document.getElementById('share-ig-btn');
+    if (igBtn) {
+      igBtn.onclick = () => shareToInstagram(message, shareUrl);
+    }
+
+    // Native Share Button
+    const nativeBtn = document.getElementById('share-native-btn');
+    if (nativeBtn) {
+      nativeBtn.onclick = () => shareViaNativeSheet(subTitle, message, shareUrl);
+    }
+
+    // Gmail Button
+    const gmailBtn = document.getElementById('share-gmail-btn');
+    if (gmailBtn) {
+      gmailBtn.onclick = () => {
+        const subject = encodeURIComponent(`Durga Puja 2026: ${subTitle}`);
+        const body = encodeURIComponent(`${message}\n\n${shareUrl}`);
+        window.open(`mailto:?subject=${subject}&body=${body}`, '_blank');
+      };
+    }
 
     // Copy Link Buttons
-    document.getElementById('share-copy-btn').onclick = () => {
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        showToast('Share link copied to clipboard!', 'link');
-      });
-    };
+    const copyBtn = document.getElementById('share-copy-btn');
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showToast('Share link copied to clipboard!', 'link');
+        });
+      };
+    }
 
-    document.getElementById('copy-link-inline-btn').onclick = () => {
-      navigator.clipboard.writeText(shareUrl).then(() => {
-        showToast('Direct plan URL copied!', 'link');
-      });
-    };
+    const inlineCopyBtn = document.getElementById('copy-link-inline-btn');
+    if (inlineCopyBtn) {
+      inlineCopyBtn.onclick = () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          inlineCopyBtn.textContent = 'Copied!';
+          setTimeout(() => inlineCopyBtn.textContent = 'Copy', 2000);
+          showToast('Direct URL copied!', 'link');
+        });
+      };
+    }
 
+    document.body.classList.add('modal-open');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
   };
 
-  // Deep Link Plan Handler (Protected Shared Plan Flow)
+  // Aliases for convenient caller usage
+  window.openSharePlanModal = function (planId) {
+    window.openShareModal({ type: 'plan', id: planId });
+  };
+
+  window.openShareWebsiteModal = function () {
+    window.openShareModal({ type: 'website' });
+  };
+
+  window.openSharePandalModal = function (pandalId) {
+    window.openShareModal({ type: 'pandal', id: pandalId });
+  };
+
+  // Pandal Deep Link Handler
+  function handleSharedPandalDeepLink(pandalId) {
+    const cleanId = decodeURIComponent(pandalId).trim().toLowerCase();
+    const pandal = PANDALS_DATA.find(p => p.id === cleanId || p.id === pandalId || (p.name && p.name.toLowerCase().includes(cleanId)));
+
+    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+    const pandalsSec = document.getElementById('section-pandals');
+    if (pandalsSec) {
+      pandalsSec.classList.remove('hidden');
+      pandalsSec.classList.add('tab-content');
+    }
+    document.querySelectorAll('[data-nav-target]').forEach(link => {
+      if (link.dataset.navTarget === 'pandals') {
+        link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.remove('text-on-surface-variant', 'font-normal');
+      } else {
+        link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.add('text-on-surface-variant', 'font-normal');
+      }
+    });
+
+    if (pandal) {
+      openDetailModal(pandal, 'pandal');
+      showToast(`✨ Opened shared pandal: "${pandal.name}"`, 'explore');
+      setTimeout(() => {
+        const card = document.querySelector(`[data-id="${pandal.id}"]`) || document.getElementById(`pandal-card-${pandal.id}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    } else {
+      showToast('Pandal not found, explore all pandals below.', 'explore');
+    }
+  }
+
+  // Deep Link Plan Handler (Receiver directly opens the shared plan)
   async function handleSharedPlanDeepLink(planId) {
+    const cleanId = decodeURIComponent(planId).trim();
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
-    let plan = allPlans.find(p => p.id === planId);
+    let plan = allPlans.find(p => p.id === cleanId || p.id === planId);
 
     // If not found in memory, try fetching from Supabase
     if (!plan && supabaseClient) {
       try {
-        const { data } = await supabaseClient.from('puja_plans').select('*, plan_members(*)').eq('id', planId).single();
+        const { data } = await supabaseClient.from('puja_plans').select('*, plan_members(*)').eq('id', cleanId).single();
         if (data) {
           plan = {
             id: data.id,
@@ -4455,73 +4689,73 @@
       }
     }
 
-    if (!currentUser) {
-      // Allow unsigned users to VIEW the shared plan, just prompt to create own plan
-      pendingPlanJoinId = planId;
-      // Navigate to plans section and show the plan
-      window.location.hash = 'plans';
-      handleRouting();
-      if (plan) {
-        // Temporarily add to customPlans view so it renders
-        const exists = [...MASTER_PUJA_PLANS, ...customPlans].find(p => p.id === plan.id);
-        if (!exists) customPlans.unshift(plan);
-        renderFestivalPlans('all');
-        showToast(`Viewing "${plan.title}" by ${plan.creator_name}. Sign in to join!`, 'group');
-      }
-      // Show a soft banner (not blocking gate) prompting sign-in to create own plans
-      setTimeout(() => {
-        const existingBanner = document.getElementById('shared-plan-soft-banner');
-        if (!existingBanner) {
-          const banner = document.createElement('div');
-          banner.id = 'shared-plan-soft-banner';
-          banner.className = 'fixed top-20 left-1/2 -translate-x-1/2 z-50 max-w-sm w-full mx-4 p-4 rounded-2xl bg-surface dark:bg-[#1a160f] border-2 border-primary dark:border-amber-400 shadow-2xl flex items-start gap-3 animate-scale-up';
-          banner.innerHTML = `
-            <span class="text-2xl shrink-0">🌺</span>
-            <div class="flex-1 min-w-0">
-              <p class="text-xs font-bold text-on-surface dark:text-white">Shared Plan by ${plan ? plan.creator_name : 'a friend'}</p>
-              <p class="text-[11px] text-on-surface-variant dark:text-[#ded5c7] mt-0.5">You're viewing "${plan ? plan.title : 'Festival Plan'}". Sign in to build your own!</p>
-              <div class="flex gap-2 mt-2">
-                <button onclick="openAuthModal('signup'); document.getElementById('shared-plan-soft-banner')?.remove()" class="px-3 py-1.5 rounded-lg bg-primary dark:bg-amber-400 text-white dark:text-black text-[10px] font-bold cursor-pointer">Sign In / Join</button>
-                <button onclick="document.getElementById('shared-plan-soft-banner')?.remove()" class="px-3 py-1.5 rounded-lg border border-outline-variant/50 text-on-surface-variant dark:text-[#ded5c7] text-[10px] font-bold cursor-pointer">Dismiss</button>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(banner);
-          setTimeout(() => banner.remove(), 10000);
-        }
-      }, 500);
-      return;
+    // Switch view to plans section
+    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+    const plansSec = document.getElementById('section-plans');
+    if (plansSec) {
+      plansSec.classList.remove('hidden');
+      plansSec.classList.add('tab-content');
     }
+    document.querySelectorAll('[data-nav-target]').forEach(link => {
+      if (link.dataset.navTarget === 'plans') {
+        link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.remove('text-on-surface-variant', 'font-normal');
+      } else {
+        link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.add('text-on-surface-variant', 'font-normal');
+      }
+    });
 
-    // User is logged in: automatically join as a plan member
-    if (plan && currentUser) {
-      plan.members = plan.members || [];
-      const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id);
-      if (!isAlreadyMember) {
-        const newMember = {
-          plan_id: plan.id,
-          user_id: currentUser.id,
-          user_name: currentUser.username || 'Devotee',
-          user_avatar: currentUser.avatar || '🪔',
-          role: plan.creator_id === currentUser.id ? 'creator' : 'member'
-        };
-        plan.members.push(newMember);
+    if (plan) {
+      const exists = customPlans.some(p => p.id === plan.id);
+      if (!exists && !plan.is_template) customPlans.unshift(plan);
 
-        // Sync to Supabase
-        if (supabaseClient) {
-          try {
-            await supabaseClient.from('plan_members').upsert(newMember);
-          } catch (e) {
-            console.warn('Plan member sync notice:', e);
-          }
-        }
-        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      // Render plans
+      renderFestivalPlans('all');
+
+      // Receiver directly opens the specific shared puja plan!
+      if (typeof window.openViewPlanModal === 'function') {
+        window.openViewPlanModal(plan.id);
       }
 
-      // Switch to plans view
-      window.location.hash = 'plans';
+      // Scroll to card and highlight
+      setTimeout(() => {
+        const card = document.getElementById(`plan-card-${plan.id}`) || document.querySelector(`[data-plan-id="${plan.id}"]`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('ring-4', 'ring-amber-400', 'shadow-2xl');
+          setTimeout(() => card.classList.remove('ring-4', 'ring-amber-400', 'shadow-2xl'), 3500);
+        }
+      }, 350);
+
+      showToast(`🌺 Opened shared plan: "${plan.title}"`, 'event_available');
+
+      // If user is logged in, join collaboratively
+      if (currentUser) {
+        plan.members = plan.members || [];
+        const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id);
+        if (!isAlreadyMember) {
+          const newMember = {
+            plan_id: plan.id,
+            user_id: currentUser.id,
+            user_name: currentUser.username || 'Devotee',
+            user_avatar: currentUser.avatar || '🪔',
+            role: plan.creator_id === currentUser.id ? 'creator' : 'member'
+          };
+          plan.members.push(newMember);
+          if (supabaseClient) {
+            try {
+              await supabaseClient.from('plan_members').upsert(newMember);
+            } catch (e) {
+              console.warn('Member sync notice:', e);
+            }
+          }
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+        }
+      }
+    } else {
       renderFestivalPlans('all');
-      showToast(`🎉 Connected to "${plan.title}"! Your avatar is now visible to members.`, 'group');
+      showToast('Puja plan link could not be found or has expired.', 'warning');
     }
   }
 
@@ -4932,18 +5166,21 @@
       });
     }
 
-    // Shared Plan Gate Handlers
+    // Welcome & Shared Plan Gate Handlers
     document.getElementById('gate-login-btn')?.addEventListener('click', () => {
+      localStorage.setItem('akalbodhon_welcomed', 'true');
+      document.body.classList.remove('modal-open');
       document.getElementById('shared-plan-gate-modal')?.classList.add('hidden');
       document.getElementById('shared-plan-gate-modal')?.classList.remove('flex');
       openAuthModal('signup');
     });
 
     document.getElementById('gate-dismiss-btn')?.addEventListener('click', () => {
+      localStorage.setItem('akalbodhon_welcomed', 'true');
+      document.body.classList.remove('modal-open');
       document.getElementById('shared-plan-gate-modal')?.classList.add('hidden');
       document.getElementById('shared-plan-gate-modal')?.classList.remove('flex');
-      window.location.hash = 'home';
-      handleRouting();
+      showToast('🌺 Welcome to Akalbodhon! Enjoy your festival tour.', 'celebration');
     });
 
     // Plan Day Filter Buttons
@@ -5107,12 +5344,51 @@
       });
     }
 
+    // Top Navigation Website Share
+    document.getElementById('top-share-website-btn')?.addEventListener('click', () => {
+      window.openShareWebsiteModal();
+    });
+
+    // Pandal Detail Modal Share
+    document.getElementById('modal-pandal-share-btn')?.addEventListener('click', () => {
+      if (window.currentDetailModalItem && window.currentDetailModalItem.id) {
+        window.openSharePandalModal(window.currentDetailModalItem.id);
+      }
+    });
+
+    // About Modal Section 3 Social Share Buttons
+    document.getElementById('about-share-wa')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      shareToWhatsApp('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
+    });
+
+    document.getElementById('about-share-ig')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      shareToInstagram('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
+    });
+
+    document.getElementById('about-share-snap')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      shareToSnapchat('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
+    });
+
     // Share Modal Close
     document.getElementById('close-share-modal-btn')?.addEventListener('click', () => {
       document.body.classList.remove('modal-open');
       document.getElementById('share-plan-modal')?.classList.add('hidden');
       document.getElementById('share-plan-modal')?.classList.remove('flex');
     });
+
+    const shareModal = document.getElementById('share-plan-modal');
+    if (shareModal) {
+      shareModal.addEventListener('click', (e) => {
+        if (e.target === shareModal) {
+          document.body.classList.remove('modal-open');
+          shareModal.classList.add('hidden');
+          shareModal.classList.remove('flex');
+        }
+      });
+    }
 
     // Detail Modal Close
     document.getElementById('close-pandal-modal-btn')?.addEventListener('click', () => {
@@ -5129,6 +5405,39 @@
         }
       });
     }
+
+    // First-Time Visitor Welcome Modal (Only shown if no deep link and not already welcomed)
+    const checkUrlParams = new URLSearchParams(window.location.search);
+    const hasInitialDeepLink = checkUrlParams.get('plan') || checkUrlParams.get('pandal') || window.location.hash.startsWith('#plan=') || window.location.hash.startsWith('#pandal=');
+
+    if (!localStorage.getItem('akalbodhon_welcomed') && !hasInitialDeepLink && !currentUser) {
+      const gateModal = document.getElementById('shared-plan-gate-modal');
+      const gateTitle = document.getElementById('gate-modal-title');
+      const gateEyebrow = document.getElementById('gate-modal-eyebrow');
+      const gateDesc = document.getElementById('gate-modal-desc');
+      const gateDismiss = document.getElementById('gate-dismiss-btn');
+
+      if (gateModal) {
+        if (gateEyebrow) gateEyebrow.textContent = 'Welcome to Kolkata Durga Puja 2026';
+        if (gateTitle) gateTitle.textContent = 'Welcome to Akalbodhon';
+        if (gateDesc) gateDesc.textContent = 'Explore Kolkata\'s most immersive Durga Puja guide. Discover 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio, and collaborative festival plans.';
+        if (gateDismiss) gateDismiss.textContent = 'Explore Akalbodon';
+
+        document.body.classList.add('modal-open');
+        gateModal.classList.remove('hidden');
+        gateModal.classList.add('flex');
+      }
+    }
+
+    // Global helper aliases
+    window.openPandalDetail = function (pandalId) {
+      handleSharedPandalDeepLink(pandalId);
+    };
+    window.viewFestivalPlan = function (planId) {
+      if (typeof window.openViewPlanModal === 'function') {
+        window.openViewPlanModal(planId);
+      }
+    };
 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();

@@ -1,0 +1,18 @@
+{
+  "name": "Akalbodhon - Kolkata Durga Puja 2026",
+  "short_name": "Akalbodhon",
+  "description": "The ultimate Kolkata Durga Puja 2026 companion. Pandal routes, Bonedi Bari heritage, live radio, rituals countdown, and collaborative puja plans.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0c0a07",
+  "theme_color": "#d97706",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "logo.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
