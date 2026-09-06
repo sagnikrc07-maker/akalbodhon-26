@@ -2294,25 +2294,32 @@
     setTimeout(initScrollReveal, 60);
   }
 
-  // Curated Spotify Durga Puja Playlists & Songs
-  const SPOTIFY_PLAYLISTS = {
+  // Curated Spotify & YouTube Durga Puja Playlists & Songs
+  const PUJA_RADIO_PLAYLISTS = {
     sharodiya: {
       id: '7EFTbXOZuUZEqdt5cMwaH5',
       name: 'Sharodiya hits',
-      url: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
-      embedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
+      songCount: 17,
+      spotifyUrl: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
+      spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
+      youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?list=PLNW14fSkx0r8&autoplay=1&enablejsapi=1',
       cover: 'https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2',
       description: 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.'
     },
     mahalaya: {
       id: '5dUPbjW2MgX96HUlQX81Xs',
       name: 'Mahalaya',
-      url: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link',
-      embedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
+      songCount: 10,
+      spotifyUrl: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link',
+      spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
+      youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?list=PLJVPabLHUolo&autoplay=1&enablejsapi=1',
       cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
       description: 'The eternal dawn Mahishasuramardini, sacred Vedic stotras, and Birendra Krishna Bhadra invocation.'
     }
   };
+  const SPOTIFY_PLAYLISTS = PUJA_RADIO_PLAYLISTS;
 
   const PUJA_RADIO_SONGS = [
     {
@@ -2668,7 +2675,191 @@
     }
   ];
 
+  // Initialize YouTube playback endpoints for tracks
+  PUJA_RADIO_SONGS.forEach(song => {
+    if (song.id === '0qo204uS81FwkIQDYkQfCi') {
+      song.youtubeUrl = 'https://www.youtube.com/watch?v=sf6usUybi3k';
+      song.youtubeEmbedUrl = 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?autoplay=1&enablejsapi=1';
+    } else if (song.id === '0SEnZ1JaMXSQr32TOupRQF') {
+      song.youtubeUrl = 'https://www.youtube.com/watch?v=8FytVk54-dw';
+      song.youtubeEmbedUrl = 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?autoplay=1&enablejsapi=1';
+    } else {
+      const q = encodeURIComponent(`${song.title} ${song.artist}`);
+      song.youtubeUrl = `https://www.youtube.com/results?search_query=${q}`;
+      song.youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed?listType=search&list=${q}&autoplay=1&enablejsapi=1`;
+    }
+  });
+
   let activeRadioSongId = null;
+  let activeRadioItem = null; // { type: 'song', song } or { type: 'playlist', playlist, key }
+  let activeRadioEngine = 'spotify'; // 'spotify' or 'youtube'
+
+  function updateActiveRadioPlayer() {
+    if (!activeRadioItem) return;
+    const activeBox = document.getElementById('radio-active-player-box');
+    const titleEl = document.getElementById('active-song-title');
+    const artistEl = document.getElementById('active-song-artist');
+    const badgeEl = document.getElementById('active-song-playlist-badge');
+    const sourceBadgeEl = document.getElementById('active-song-source-badge');
+    const sourceIconEl = document.getElementById('active-player-source-icon');
+    const visualizerEl = document.getElementById('active-song-visualizer');
+    const playerHolder = document.getElementById('radio-yt-player-holder');
+    const extLinksEl = document.getElementById('active-song-external-links');
+    const spotifyBtn = document.getElementById('radio-toggle-spotify-btn');
+    const youtubeBtn = document.getElementById('radio-toggle-youtube-btn');
+
+    if (!activeBox || !playerHolder) return;
+
+    activeBox.classList.remove('hidden');
+    activeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (visualizerEl) visualizerEl.classList.add('is-playing');
+
+    // Update stream engine switcher UI
+    if (activeRadioEngine === 'spotify') {
+      if (spotifyBtn) {
+        spotifyBtn.className = "px-2.5 py-1 rounded-lg bg-[#1DB954]/25 text-[#1DB954] dark:text-[#1ed760] font-bold text-[11px] flex items-center gap-1 border border-[#1DB954]/40 cursor-pointer shadow-xs transition-all";
+      }
+      if (youtubeBtn) {
+        youtubeBtn.className = "px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] text-on-surface-variant dark:text-[#ded5c7] hover:text-[#FF0000] font-semibold text-[11px] flex items-center gap-1 border border-outline-variant/30 dark:border-amber-400/20 cursor-pointer transition-all";
+      }
+      if (sourceBadgeEl) {
+        sourceBadgeEl.textContent = 'Spotify Stream';
+        sourceBadgeEl.className = 'text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#1DB954]/20 text-[#1DB954] dark:text-[#1ed760]';
+      }
+      if (sourceIconEl) {
+        sourceIconEl.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#1DB954] text-white flex items-center justify-center font-bold shadow-md shrink-0';
+        sourceIconEl.innerHTML = `<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>`;
+      }
+    } else {
+      if (youtubeBtn) {
+        youtubeBtn.className = "px-2.5 py-1 rounded-lg bg-[#FF0000]/20 text-[#FF0000] dark:text-[#ff4e4e] font-bold text-[11px] flex items-center gap-1 border border-[#FF0000]/40 cursor-pointer shadow-xs transition-all";
+      }
+      if (spotifyBtn) {
+        spotifyBtn.className = "px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] text-on-surface-variant dark:text-[#ded5c7] hover:text-[#1DB954] font-semibold text-[11px] flex items-center gap-1 border border-outline-variant/30 dark:border-amber-400/20 cursor-pointer transition-all";
+      }
+      if (sourceBadgeEl) {
+        sourceBadgeEl.textContent = 'YouTube Video';
+        sourceBadgeEl.className = 'text-[9px] sm:text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-[#FF0000]/20 text-[#FF0000] dark:text-[#ff4e4e]';
+      }
+      if (sourceIconEl) {
+        sourceIconEl.className = 'w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-[#FF0000] text-white flex items-center justify-center font-bold shadow-md shrink-0';
+        sourceIconEl.innerHTML = `<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`;
+      }
+    }
+
+    if (activeRadioItem.type === 'song') {
+      const song = activeRadioItem.song;
+      if (titleEl) titleEl.textContent = song.title;
+      if (artistEl) artistEl.textContent = song.artist;
+      if (badgeEl) badgeEl.textContent = `• ${song.playlistName}`;
+
+      if (extLinksEl) {
+        extLinksEl.innerHTML = `
+          <a href="${song.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer" title="Open Song on Spotify">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+          </a>
+          <a href="${song.youtubeUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer" title="Watch on YouTube">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        `;
+      }
+
+      if (activeRadioEngine === 'spotify') {
+        playerHolder.innerHTML = `
+          <iframe 
+            style="border-radius: 16px;" 
+            src="${song.embedUrl}" 
+            width="100%" 
+            height="152" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy"
+            class="w-full rounded-2xl shadow-lg"
+          ></iframe>
+        `;
+      } else {
+        playerHolder.innerHTML = `
+          <iframe 
+            width="100%" 
+            height="220" 
+            src="${song.youtubeEmbedUrl}" 
+            title="${song.title}"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen 
+            class="w-full rounded-2xl shadow-lg"
+          ></iframe>
+        `;
+      }
+    } else if (activeRadioItem.type === 'playlist') {
+      const pl = activeRadioItem.playlist;
+      if (titleEl) titleEl.textContent = pl.name;
+      if (artistEl) artistEl.textContent = pl.description;
+      if (badgeEl) badgeEl.textContent = `• Official Playlist`;
+
+      if (extLinksEl) {
+        extLinksEl.innerHTML = `
+          <a href="${pl.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer" title="Open Playlist on Spotify">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+          </a>
+          <a href="${pl.youtubeUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer" title="Open Playlist on YouTube">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+        `;
+      }
+
+      if (activeRadioEngine === 'spotify') {
+        playerHolder.innerHTML = `
+          <iframe 
+            style="border-radius: 16px;" 
+            src="${pl.spotifyEmbedUrl}" 
+            width="100%" 
+            height="352" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy"
+            class="w-full rounded-2xl shadow-xl"
+          ></iframe>
+        `;
+      } else {
+        playerHolder.innerHTML = `
+          <iframe 
+            width="100%" 
+            height="260" 
+            src="${pl.youtubeEmbedUrl}" 
+            title="${pl.name}"
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen 
+            class="w-full rounded-2xl shadow-xl"
+          ></iframe>
+        `;
+      }
+    }
+  }
+
+  function playRadioSong(song, engine) {
+    activeRadioSongId = song.id;
+    activeRadioItem = { type: 'song', song };
+    if (engine) activeRadioEngine = engine;
+    updateActiveRadioPlayer();
+    showToast(`Streaming "${song.title}" on ${activeRadioEngine === 'youtube' ? 'YouTube' : 'Spotify'}`, 'graphic_eq');
+  }
+
+  function playRadioPlaylist(playlistKey, engine) {
+    const pl = PUJA_RADIO_PLAYLISTS[playlistKey];
+    if (!pl) return;
+    activeRadioItem = { type: 'playlist', playlist: pl, key: playlistKey };
+    if (engine) activeRadioEngine = engine;
+    updateActiveRadioPlayer();
+    showToast(`Streaming "${pl.name}" on ${activeRadioEngine === 'youtube' ? 'YouTube' : 'Spotify'}`, 'graphic_eq');
+  }
+
+  function playSpotifyPlaylist(playlistKey) {
+    playRadioPlaylist(playlistKey, 'spotify');
+  }
 
   function renderPujaRadioSongs() {
     const sharodiyaContainer = document.getElementById('radio-songs-sharodiya-list') || document.getElementById('radio-songs-hiphop-list');
@@ -2677,14 +2868,11 @@
 
     const renderSongItem = (song, index) => `
       <div 
-        class="glass-panel p-3.5 sm:p-4 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#1DB954]/60 dark:hover:border-[#1ed760]/60 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 group hover:shadow-lg"
+        class="glass-panel p-2 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#1DB954]/50 dark:hover:border-amber-400/50 transition-all flex flex-col justify-between gap-2 group hover:shadow-md"
         id="song-card-${song.id}"
       >
-        <div class="flex items-center gap-3.5 w-full sm:w-auto min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-surface-container-high dark:bg-[#2c261b] font-mono font-bold text-xs text-primary dark:text-amber-300 flex items-center justify-center shrink-0 border border-outline-variant/20 dark:border-amber-400/20">
-            ${index < 9 ? '0' : ''}${index + 1}
-          </div>
-          <div class="w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-outline-variant/30 dark:border-amber-400/30 shadow-sm group-hover:shadow-md transition-shadow relative">
+        <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+          <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
             <img 
               src="${song.cover}" 
               alt="${song.title}" 
@@ -2693,36 +2881,50 @@
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
               onerror="this.src='logo.jpg'"
             />
+            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <span class="material-symbols-outlined text-white text-[16px]">play_arrow</span>
+            </div>
           </div>
           <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-2 flex-wrap">
-              <h4 class="font-display font-bold text-sm sm:text-base text-on-surface dark:text-white truncate group-hover:text-[#1DB954] dark:group-hover:text-[#1ed760] transition-colors">${song.title}</h4>
-              <span class="text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#1DB954]/10 text-[#1DB954] dark:bg-[#1DB954]/20 dark:text-[#1ed760] shrink-0">Spotify</span>
+            <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">${song.title}</h4>
+            <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] truncate">${song.artist}</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
+              <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full ${song.playlist === 'sharodiya' ? 'bg-[#1DB954]/15 text-[#1DB954] dark:text-[#1ed760]' : 'bg-amber-400/15 text-primary dark:text-amber-300'}">#${index + 1}</span>
             </div>
-            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] truncate mt-0.5">${song.artist}</p>
           </div>
         </div>
 
-        <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/20 dark:border-amber-400/15">
-          <span class="text-xs font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
-          
-          <!-- Spotify Direct App Link -->
-          <a 
-            href="${song.spotifyUrl}" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            class="w-9 h-9 rounded-xl bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-sm shrink-0"
-            title="Open on Spotify"
-          >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-          </a>
+        <!-- Action Links: Spotify, YouTube, Play on Website -->
+        <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-outline-variant/20 dark:border-amber-400/15">
+          <div class="flex items-center gap-1">
+            <a 
+              href="${song.spotifyUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer"
+              title="Open Track on Spotify"
+            >
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
+            </a>
+            <a 
+              href="${song.youtubeUrl}" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer"
+              title="Watch on YouTube"
+            >
+              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+            </a>
+          </div>
 
-          <!-- Interactive Play In-Website Button -->
           <button 
-            class="play-radio-song-btn px-3 sm:px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer shrink-0"
+            class="play-radio-song-btn px-2 sm:px-2.5 py-1 rounded-lg bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-[10px] sm:text-[11px] flex items-center gap-1 transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
             data-song-id="${song.id}"
+            title="Stream Track on Website"
           >
-            <span class="material-symbols-outlined text-[16px]">play_arrow</span> Play
+            <span class="material-symbols-outlined text-[13px]">play_arrow</span>
+            <span>Play</span>
           </button>
         </div>
       </div>
@@ -2746,91 +2948,47 @@
 
     // Attach play entire playlist handlers
     document.querySelectorAll('.play-entire-playlist-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const playlistKey = btn.dataset.playlist;
-        playSpotifyPlaylist(playlistKey);
+        if (playlistKey) playRadioPlaylist(playlistKey);
       });
     });
-  }
-
-  function playRadioSong(song) {
-    activeRadioSongId = song.id;
-    const activeBox = document.getElementById('radio-active-player-box');
-    const titleEl = document.getElementById('active-song-title');
-    const artistEl = document.getElementById('active-song-artist');
-    const badgeEl = document.getElementById('active-song-playlist-badge');
-    const visualizerEl = document.getElementById('active-song-visualizer');
-    const playerHolder = document.getElementById('radio-yt-player-holder');
-
-    if (activeBox) {
-      activeBox.classList.remove('hidden');
-      activeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    if (titleEl) titleEl.textContent = song.title;
-    if (artistEl) artistEl.textContent = song.artist;
-    if (badgeEl) badgeEl.textContent = `• ${song.playlistName}`;
-    if (visualizerEl) visualizerEl.classList.add('is-playing');
-
-    if (playerHolder) {
-      playerHolder.innerHTML = `
-        <iframe 
-          style="border-radius: 16px;" 
-          src="${song.embedUrl}" 
-          width="100%" 
-          height="152" 
-          frameBorder="0" 
-          allowfullscreen="" 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy"
-          class="w-full rounded-2xl shadow-lg"
-        ></iframe>
-      `;
-    }
-
-    showToast(`Streaming on Spotify: "${song.title}" (${song.artist})`, 'graphic_eq');
-  }
-
-  function playSpotifyPlaylist(playlistKey) {
-    const pl = SPOTIFY_PLAYLISTS[playlistKey];
-    if (!pl) return;
-    const activeBox = document.getElementById('radio-active-player-box');
-    const titleEl = document.getElementById('active-song-title');
-    const artistEl = document.getElementById('active-song-artist');
-    const badgeEl = document.getElementById('active-song-playlist-badge');
-    const visualizerEl = document.getElementById('active-song-visualizer');
-    const playerHolder = document.getElementById('radio-yt-player-holder');
-
-    if (activeBox) {
-      activeBox.classList.remove('hidden');
-      activeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-    if (titleEl) titleEl.textContent = pl.name;
-    if (artistEl) artistEl.textContent = `Official Spotify Durga Puja Playlist • ${pl.description}`;
-    if (badgeEl) badgeEl.textContent = `• Spotify Playlist`;
-    if (visualizerEl) visualizerEl.classList.add('is-playing');
-
-    if (playerHolder) {
-      playerHolder.innerHTML = `
-        <iframe 
-          style="border-radius: 16px;" 
-          src="${pl.embedUrl}" 
-          width="100%" 
-          height="352" 
-          frameBorder="0" 
-          allowfullscreen="" 
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-          loading="lazy"
-          class="w-full rounded-2xl shadow-xl"
-        ></iframe>
-      `;
-    }
-
-    showToast(`Loaded Spotify Playlist: "${pl.name}"`, 'graphic_eq');
   }
 
   // --- 13. AUDIO & RADIO CONTROLLER ---
   function initAudioHub() {
     renderPujaRadioSongs();
+
+    // Toggle stream engine (Spotify vs YouTube) in active player
+    const spotifyToggleBtn = document.getElementById('radio-toggle-spotify-btn');
+    const youtubeToggleBtn = document.getElementById('radio-toggle-youtube-btn');
+    const closePlayerBtn = document.getElementById('close-radio-player-btn');
+
+    if (spotifyToggleBtn) {
+      spotifyToggleBtn.addEventListener('click', () => {
+        activeRadioEngine = 'spotify';
+        updateActiveRadioPlayer();
+      });
+    }
+
+    if (youtubeToggleBtn) {
+      youtubeToggleBtn.addEventListener('click', () => {
+        activeRadioEngine = 'youtube';
+        updateActiveRadioPlayer();
+      });
+    }
+
+    if (closePlayerBtn) {
+      closePlayerBtn.addEventListener('click', () => {
+        const activeBox = document.getElementById('radio-active-player-box');
+        const playerHolder = document.getElementById('radio-yt-player-holder');
+        const visualizerEl = document.getElementById('active-song-visualizer');
+        if (activeBox) activeBox.classList.add('hidden');
+        if (playerHolder) playerHolder.innerHTML = '';
+        if (visualizerEl) visualizerEl.classList.remove('is-playing');
+      });
+    }
 
     // --- YOUTUBE ANTHEM PLAYER ENGINE ("Dugga Elo" by Monali Thakur) ---
     // --- MAHALAYA BROADCAST (BIRENDRA KRISHNA BHADRA) ENGINE ---
