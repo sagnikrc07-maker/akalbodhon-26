@@ -1366,9 +1366,10 @@
       list = list.filter(p => RECOMMENDED_PANDAL_IDS.includes(p.id));
     } else if (filterType === 'rajbari') {
       list = list.filter(p => 
-        RAJBARI_PANDAL_IDS.includes(p.id) || 
-        p.name.toLowerCase().includes('rajbari') || 
-        p.name.toLowerCase().includes('bari')
+        p.id !== 'barisha-club' && (
+          RAJBARI_PANDAL_IDS.includes(p.id) || 
+          /\b(rajbari|bari)\b/i.test(p.name)
+        )
       );
     } else if (filterType === 'zones') {
       if (subZone && subZone !== 'all') {
