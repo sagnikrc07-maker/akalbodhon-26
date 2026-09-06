@@ -1433,7 +1433,7 @@
                 href="${pandal.locationUrl}" 
                 target="_blank" 
                 rel="noopener"
-                class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                 title="Get Exact Directions in Google Maps"
               >
                 <!-- Directions Pin Icon -->
@@ -1603,7 +1603,7 @@
                     href="${food.locationUrl}" 
                     target="_blank" 
                     rel="noopener"
-                    class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                   >
                     <!-- Directions Pin Icon -->
                     <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
@@ -1683,7 +1683,7 @@
                     href="${shop.locationUrl}" 
                     target="_blank" 
                     rel="noopener"
-                    class="flex-1 bg-primary dark:bg-amber-400 hover:bg-primary-container text-on-primary dark:text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
+                    class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                   >
                     <!-- Directions Pin Icon -->
                     <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
@@ -2007,12 +2007,12 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
-                    <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
+                    <a href="${b.link || '#'}" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold py-1.5 px-3 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow hover:scale-[1.02] active:scale-95 transition-all cursor-pointer" title="Get Directions in Google Maps">
                       <!-- Directions Pin Icon -->
                       <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
-                      Directions
+                      <span>Directions</span>
                     </a>
-                    <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
+                    <button class="remove-single-bookmark p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer" data-id="${b.id}" title="Remove">
                       <span class="material-symbols-outlined text-[18px]">delete</span>
                     </button>
                   </div>
@@ -2049,12 +2049,12 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
-                    <a href="${b.link || '#'}" target="_blank" class="text-primary dark:text-amber-300 text-xs font-bold hover:underline flex items-center gap-1">
+                    <a href="${b.link || '#'}" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold py-1.5 px-3 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow hover:scale-[1.02] active:scale-95 transition-all cursor-pointer" title="Get Directions in Google Maps">
                       <!-- Directions Pin Icon -->
                       <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
-                      Directions
+                      <span>Directions</span>
                     </a>
-                    <button class="remove-single-bookmark text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 transition-colors cursor-pointer" data-id="${b.id}" title="Remove">
+                    <button class="remove-single-bookmark p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer" data-id="${b.id}" title="Remove">
                       <span class="material-symbols-outlined text-[18px]">delete</span>
                     </button>
                   </div>
@@ -3915,8 +3915,9 @@
                 </div>
               ` : ''}
             </div>
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:scale-105 transition-all shrink-0" title="Open in Google Maps">
-              <span class="material-symbols-outlined text-[16px] block">near_me</span>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="py-1 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-bold shadow-sm hover:scale-105 transition-all flex items-center gap-1 shrink-0 cursor-pointer" title="Get Directions in Google Maps">
+              <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
+              <span>Directions</span>
             </a>
           </div>
         `;
