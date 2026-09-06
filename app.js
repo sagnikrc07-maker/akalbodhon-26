@@ -1253,7 +1253,15 @@
     const iconEl = toast.querySelector('.toast-icon');
     const msgEl = toast.querySelector('.toast-msg');
 
-    if (iconEl) iconEl.textContent = icon;
+    if (iconEl) {
+      if (!icon || icon === 'music') {
+        iconEl.textContent = '';
+        iconEl.style.display = 'none';
+      } else {
+        iconEl.style.display = '';
+        iconEl.textContent = icon;
+      }
+    }
     if (msgEl) msgEl.textContent = message;
 
     toast.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
@@ -2010,13 +2018,18 @@
               </h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${pandalBookmarks.map((b, idx) => `
-                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-4 reveal-on-scroll">
+              ${pandalBookmarks.map((b, idx) => {
+                const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/bagbazar.jpg';
+                return `
+                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
                   <div>
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-bold">${b.zone || 'Kolkata'} Zone</span>
+                    <!-- Pandal Picture Thumbnail -->
+                    <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
+                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/bagbazar.jpg'" />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                      <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.zone || 'Kolkata'} Zone</span>
                     </div>
-                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
+                    <h4 class="font-headline-md text-base sm:text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
                     <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
                       <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">near_me</span> ${b.location}
                     </p>
@@ -2032,7 +2045,8 @@
                     </button>
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -2052,13 +2066,18 @@
               </h3>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${foodBookmarks.map((b, idx) => `
-                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-4 reveal-on-scroll">
+              ${foodBookmarks.map((b, idx) => {
+                const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/food-1.jpg';
+                return `
+                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
                   <div>
-                    <div class="flex items-center justify-between gap-2 mb-2">
-                      <span class="px-2.5 py-0.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-300 text-[11px] font-bold">${b.category}</span>
+                    <!-- Food/Shopping Picture Thumbnail -->
+                    <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
+                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/food-1.jpg'" />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                      <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.category || 'Food & Shopping'}</span>
                     </div>
-                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
+                    <h4 class="font-headline-md text-base sm:text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
                     <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
                       <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">pin_drop</span> ${b.location}
                     </p>
@@ -2074,7 +2093,8 @@
                     </button>
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -3038,7 +3058,7 @@
       playAllBtn.onclick = () => {
         playRadioPlaylist(playlistKey);
         closePlaylistDetailModal();
-        showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, 'music');
+        showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, '');
       };
     }
 
@@ -3052,10 +3072,10 @@
               <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='logo.jpg'" loading="lazy" />
             </div>
             <div class="min-w-0 flex-1">
-              <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">
+              <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white break-words leading-snug group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">
                 ${song.title}
               </h4>
-              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] truncate">${song.artist}</p>
+              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] break-words leading-tight mt-0.5">${song.artist}</p>
               <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
             </div>
           </div>
@@ -3115,7 +3135,7 @@
     const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
     if (song) {
       playRadioSong(song);
-      showToast(`🎶 Playing "${song.title}"`, 'music');
+      showToast(`🎶 Playing "${song.title}"`, '');
     }
   };
 
@@ -3282,7 +3302,7 @@
         document.documentElement.classList.toggle('dark', isDark);
         document.documentElement.classList.toggle('light', !isDark);
         localStorage.setItem(Storage.KEY_THEME, isDark ? 'dark' : 'light');
-        showToast(isDark ? 'Pandal Night View activated' : 'Off-White Day View activated', isDark ? 'dark_mode' : 'light_mode');
+        showToast(isDark ? 'Pandal Night View activated' : 'Day View activated', isDark ? 'dark_mode' : 'light_mode');
       });
     }
   }
@@ -4042,9 +4062,19 @@
       if (local) {
         customPlans = JSON.parse(local);
       }
+      // Purge test plans 'x' and 'bnfhm'
+      customPlans = (customPlans || []).filter(p => {
+        const t = (p.title || '').trim().toLowerCase();
+        return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+      });
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
 
       // Supabase remote sync
       if (supabaseClient) {
+        try {
+          supabaseClient.from('puja_plans').delete().in('title', ['x', 'bnfhm', 'X', 'Bnfhm']).then(() => {});
+        } catch (e) {}
+
         const { data, error } = await supabaseClient
           .from('puja_plans')
           .select('*, plan_members(*)')
@@ -4052,22 +4082,27 @@
 
         if (!error && data) {
           // Merge remote custom plans
-          const remotePlans = data.map(p => ({
-            id: p.id,
-            title: p.title,
-            day_tag: p.day_tag,
-            day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
-            date_str: p.date_str,
-            creator_name: p.creator_name,
-            creator_avatar: p.creator_avatar || '🌺',
-            creator_id: p.creator_id,
-            route_summary: p.route_summary,
-            pandals: typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []),
-            food_stops: typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []),
-            rituals: typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []),
-            members: p.plan_members || [],
-            custom_notes: p.custom_notes
-          }));
+          const remotePlans = data
+            .filter(p => {
+              const t = (p.title || '').trim().toLowerCase();
+              return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+            })
+            .map(p => ({
+              id: p.id,
+              title: p.title,
+              day_tag: p.day_tag,
+              day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+              date_str: p.date_str,
+              creator_name: p.creator_name,
+              creator_avatar: p.creator_avatar || '🌺',
+              creator_id: p.creator_id,
+              route_summary: p.route_summary,
+              pandals: typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []),
+              food_stops: typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []),
+              rituals: typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []),
+              members: p.plan_members || [],
+              custom_notes: p.custom_notes
+            }));
 
           customPlans = remotePlans;
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
@@ -4176,11 +4211,16 @@
           </div>
 
           <!-- Action: View Plan Button (Opens Overlaying Menu) -->
-          <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20">
-            <button onclick="window.openViewPlanModal('${plan.id}')" class="w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
+            <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
               <span>View Plan</span>
             </button>
+            ${isCustom ? `
+              <button onclick="event.stopPropagation(); window.deleteCustomPlan('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" title="Delete Plan">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            ` : ''}
           </div>
         </div>
       `;
@@ -4338,11 +4378,11 @@
       };
     }
 
-    // Delete button (only if user's own custom plan)
+    // Delete button (for custom created plans)
     const deleteBtn = document.getElementById('vp-delete-btn');
-    const isMyPlan = currentUser && plan.creator_id === currentUser.id;
+    const isDeletable = !plan.is_template || (currentUser && plan.creator_id === currentUser.id);
     if (deleteBtn) {
-      if (isMyPlan) {
+      if (isDeletable) {
         deleteBtn.classList.remove('hidden');
         deleteBtn.onclick = () => {
           window.closeViewPlanModal();
@@ -4892,6 +4932,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     renderFestivalPlans(activePlanFilter);
+    renderSavedItinerary(activeSavedTab);
     showToast('Plan deleted from your collection.', 'delete');
   };
 
@@ -5351,27 +5392,21 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }, 150);
     document.getElementById('pandal-search-input')?.addEventListener('input', handlePandalSearch);
 
-    // Food & Shopping Filters
-    document.querySelectorAll('.food-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.food-filter-btn').forEach(b => {
-          b.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'dark:bg-amber-400', 'dark:text-black');
-          b.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
-        });
-        btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'dark:bg-amber-400', 'dark:text-black');
-        btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
-
-        const filter = btn.dataset.filter || 'all';
+    // Food & Shopping Dropdown Filter
+    const foodFilterDropdown = document.getElementById('food-filter-dropdown');
+    if (foodFilterDropdown) {
+      foodFilterDropdown.addEventListener('change', (e) => {
+        const filter = e.target.value || 'all';
         const searchInput = document.getElementById('food-shop-search-input');
         renderFoodAndShopping(filter, searchInput ? searchInput.value : '');
       });
-    });
+    }
 
     // Food & Shopping Search (Debounced 150ms)
     const handleFoodShopSearch = debounce((e) => {
       const query = e.target.value;
-      const activeFilterBtn = document.querySelector('.food-filter-btn.bg-primary, .food-filter-btn.dark\\:bg-amber-400');
-      const filter = activeFilterBtn ? activeFilterBtn.dataset.filter : 'all';
+      const foodDropdown = document.getElementById('food-filter-dropdown');
+      const filter = foodDropdown ? foodDropdown.value : 'all';
       renderFoodAndShopping(filter, query);
     }, 150);
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);

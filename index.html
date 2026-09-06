@@ -139,10 +139,6 @@
         <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">info</span>
       </button>
 
-      <!-- Share Website Button -->
-      <button id="top-share-website-btn" class="w-9 h-9 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center justify-center text-primary dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 transition-all shadow-sm group cursor-pointer" title="Share Akalbodhon" aria-label="Share Akalbodhon">
-        <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">share</span>
-      </button>
 
       <!-- Account Button (Dynamic Avatar & Name / Sign In) -->
       <button id="account-btn" class="h-9 px-2.5 sm:px-3 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center gap-2 text-on-surface-variant dark:text-amber-300 hover:bg-surface-container-low dark:hover:bg-amber-400/10 transition-all shadow-sm group cursor-pointer" title="Account & Avatar" aria-label="Account">
@@ -337,7 +333,7 @@
 
         <div class="relative w-full sm:w-72">
           <select id="pandal-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-            <option value="recommended" selected>⭐ Recommended Watch (14 Icons)</option>
+            <option value="recommended" selected>⭐ Recommended Watch</option>
             <option value="rajbari">🏰 Heritage Rajbari & Bonedi Bari</option>
             <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
             <optgroup label="📍 Filter by Zones">
@@ -630,15 +626,32 @@
         </div>
       </div>
 
-      <!-- Category Filter Pills -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2 reveal-on-scroll">
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-primary text-on-primary shadow-md dark:bg-amber-400 dark:text-black" data-filter="all">All Spots</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="food">Food & Dining</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="shopping">Shopping & Markets</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="biryani">Biryani & Mughlai</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="bengali">Heritage Bengali</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="sweets">Sweets & Mishti</button>
-        <button class="food-filter-btn px-5 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e]" data-filter="sarees">Traditional Sarees & Apparel</button>
+      <!-- Food & Shopping Category Dropdown Filter -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-surface-container-low/70 dark:bg-[#1a160f]/80 border border-outline-variant/40 dark:border-amber-400/25 shadow-sm backdrop-blur-md reveal-on-scroll">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[18px]">restaurant</span>
+          </span>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant dark:text-amber-300/80 block">Browse Categories</span>
+            <label for="food-filter-dropdown" class="font-display text-sm sm:text-base font-bold text-on-surface dark:text-white cursor-pointer">Filter Food & Shopping</label>
+          </div>
+        </div>
+
+        <div class="relative w-full sm:w-72">
+          <select id="food-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+            <option value="all" selected>🍽️ All Spots (Food & Shopping)</option>
+            <option value="food">🍲 Food & Dining</option>
+            <option value="shopping">🛍️ Shopping & Markets</option>
+            <option value="biryani">🍗 Biryani & Mughlai</option>
+            <option value="bengali">🐟 Heritage Bengali</option>
+            <option value="sweets">🍬 Sweets & Mishti</option>
+            <option value="sarees">🥻 Traditional Sarees & Apparel</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+          </div>
+        </div>
       </div>
 
       <!-- Food & Dining Section -->
@@ -1048,9 +1061,6 @@
         <span>Continue with Google</span>
       </button>
 
-      <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 pt-1">
-        By signing in, you can save custom pandal routes, set ritual device alarms, and share plans across friends.
-      </p>
     </div>
   </div>
 
@@ -1384,57 +1394,61 @@
 
   <!-- ==================== PANDAL DETAIL MODAL ==================== -->
   <div id="pandal-detail-modal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative space-y-5">
-      <button id="close-pandal-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-xl w-full max-h-[88vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Fixed Close Cross Button (Pinned on top right, stays still when scrolling) -->
+      <button id="close-pandal-modal-btn" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105" title="Close">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <div class="h-56 rounded-2xl overflow-hidden bg-surface-container dark:bg-[#252016]">
-        <img id="modal-pandal-img" src="" alt="Pandal" class="w-full h-full object-cover" />
-      </div>
-
-      <div>
-        <div class="flex items-center gap-2 mb-1">
-          <span id="modal-pandal-zone" class="px-3 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-xs font-semibold"></span>
-          <span id="modal-pandal-crowd" class="px-3 py-0.5 rounded-full bg-secondary-container/40 dark:bg-amber-400/30 text-secondary dark:text-amber-200 text-xs font-semibold"></span>
+      <!-- Scrollable Inner Content -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-5 flex-1">
+        <div class="h-56 rounded-2xl overflow-hidden bg-surface-container dark:bg-[#252016]">
+          <img id="modal-pandal-img" src="" alt="Pandal" class="w-full h-full object-cover" />
         </div>
-        <h3 id="modal-pandal-title" class="font-display text-2xl font-bold text-on-surface dark:text-white"></h3>
-        <p id="modal-pandal-theme" class="text-sm text-on-surface-variant dark:text-[#ded5c7] mt-1 italic"></p>
-      </div>
 
-      <div class="space-y-3 text-sm">
-        <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
-          <strong class="text-on-surface dark:text-amber-300 block mb-1">🚇 Nearest Transit:</strong>
-          <span id="modal-pandal-transit" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span id="modal-pandal-zone" class="px-3 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-xs font-semibold"></span>
+            <span id="modal-pandal-crowd" class="px-3 py-0.5 rounded-full bg-secondary-container/40 dark:bg-amber-400/30 text-secondary dark:text-amber-200 text-xs font-semibold"></span>
+          </div>
+          <h3 id="modal-pandal-title" class="font-display text-2xl font-bold text-on-surface dark:text-white"></h3>
+          <p id="modal-pandal-theme" class="text-sm text-on-surface-variant dark:text-[#ded5c7] mt-1 italic"></p>
         </div>
-        <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
-          <strong class="text-on-surface dark:text-amber-300 block mb-1">✨ Special Highlights:</strong>
-          <span id="modal-pandal-highlights" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
-        </div>
-        <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
-          <strong class="text-on-surface dark:text-amber-300 block mb-1">🏛️ Established:</strong>
-          <span id="modal-pandal-est" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
-        </div>
-      </div>
 
-      <!-- Puja Pandals Nearby (Shown only for restaurants/food items) -->
-      <div id="modal-nearby-pandals-section" class="hidden space-y-2 pt-1">
-        <strong class="text-on-surface dark:text-amber-300 block text-xs uppercase tracking-wider font-bold flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[15px]">explore</span> Puja Pandals Nearby:
-        </strong>
-        <div id="modal-nearby-pandals-list" class="flex flex-wrap gap-1.5"></div>
-      </div>
+        <div class="space-y-3 text-sm">
+          <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
+            <strong class="text-on-surface dark:text-amber-300 block mb-1">🚇 Nearest Transit:</strong>
+            <span id="modal-pandal-transit" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
+          </div>
+          <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
+            <strong class="text-on-surface dark:text-amber-300 block mb-1">✨ Special Highlights:</strong>
+            <span id="modal-pandal-highlights" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
+          </div>
+          <div class="bg-surface-container-low dark:bg-[#252016] p-3.5 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
+            <strong class="text-on-surface dark:text-amber-300 block mb-1">🏛️ Established:</strong>
+            <span id="modal-pandal-est" class="text-on-surface-variant dark:text-[#ded5c7]"></span>
+          </div>
+        </div>
 
-      <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
-        <a id="modal-pandal-nav-btn" href="#" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3 rounded-xl font-bold text-center text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <!-- Directions Pin Icon -->
-          <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
-          <span>Open in Google Maps</span>
-        </a>
-        <button id="modal-pandal-share-btn" type="button" class="py-3 px-4 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 font-bold text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="Share Pandal">
-          <span class="material-symbols-outlined text-[18px]">share</span>
-          <span>Share</span>
-        </button>
+        <!-- Puja Pandals Nearby (Shown only for restaurants/food items) -->
+        <div id="modal-nearby-pandals-section" class="hidden space-y-2 pt-1">
+          <strong class="text-on-surface dark:text-amber-300 block text-xs uppercase tracking-wider font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[15px]">explore</span> Puja Pandals Nearby:
+          </strong>
+          <div id="modal-nearby-pandals-list" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
+          <a id="modal-pandal-nav-btn" href="#" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3 rounded-xl font-bold text-center text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <!-- Directions Pin Icon -->
+            <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
+            <span>Open in Google Maps</span>
+          </a>
+          <button id="modal-pandal-share-btn" type="button" class="py-3 px-4 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 font-bold text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="Share Pandal">
+            <span class="material-symbols-outlined text-[18px]">share</span>
+            <span>Share</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
