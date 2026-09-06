@@ -812,7 +812,7 @@
       desc: 'Built in 1874 with red brick Gothic architecture, housing over 2,000 stalls offering shoes, jewelry, brassware, and festive gifts.',
       bestTime: '11:00 AM - 8:30 PM (Closed Sundays normally, Open during Puja)',
       highlight: 'Nahoum & Sons plum cakes, Kashmiri shawls, silver jewelry & brassware.',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/f/f2/New_Market_-_Kolkata_December_2019.jpg',
+      image: 'food/New Market (Sir Stuart Hogg Market).jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=New+Market+Kolkata'
     },
     {
