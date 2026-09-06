@@ -2675,18 +2675,33 @@
     }
   ];
 
-  // Initialize YouTube playback endpoints for tracks
+  // Verified YouTube track IDs for individual tracks
+  const YOUTUBE_TRACK_IDS = {
+    '0qo204uS81FwkIQDYkQfCi': 'sf6usUybi3k', // Dugga Ma Asche
+    '0Z9Ok50nu5nxyJPP9jZqPM': 'sPuZ0Q3KDWo', // Dugga Ma (Arijit Singh)
+    '14mxoVNHA77ja4bre40T1p': 'xlElO06nQy8', // Dugga Elo (Monali Thakur)
+    '0lbpCmeKfDa8O8rwezno3i': 'Xy5S9j4lTaE', // Dhaker Taley (Abhijeet)
+    '5dOHCKsalASHbAn2mZCWgq': '4zyCkmAS1Oo', // Ailo Uma Barite
+    '6XbWY7TpYBcdBCBiTOh5EA': '2YBTzGq9Q30', // Dakatiya Banshi
+    '0BAwwUhO60U01O9c1OxHfe': 'pKFYVocKB08', // Tabo Achintya Rupa
+    '3w0q9HtvdnU19IdAbOl1XQ': 'u-J39i_n6pU', // Ogo Amar Agamani
+    '0hJmNTKYGevHLMIWvCUE8c': 'IfSJy3_Lkuo', // Jago Durga Dashapraharanadharinee
+    '3FrWOsMayIJcPWduMVEVF6': 'yzEbF55ywtM', // Bajlo Tomar Aalor Benu
+    '0SEnZ1JaMXSQr32TOupRQF': '8FytVk54-dw'  // Ya Chandi
+  };
+
+  // Initialize YouTube playback endpoints for all tracks
   PUJA_RADIO_SONGS.forEach(song => {
-    if (song.id === '0qo204uS81FwkIQDYkQfCi') {
-      song.youtubeUrl = 'https://www.youtube.com/watch?v=sf6usUybi3k';
-      song.youtubeEmbedUrl = 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?autoplay=1&enablejsapi=1';
-    } else if (song.id === '0SEnZ1JaMXSQr32TOupRQF') {
-      song.youtubeUrl = 'https://www.youtube.com/watch?v=8FytVk54-dw';
-      song.youtubeEmbedUrl = 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?autoplay=1&enablejsapi=1';
+    const ytId = YOUTUBE_TRACK_IDS[song.id];
+    if (ytId) {
+      song.youtubeId = ytId;
+      song.youtubeUrl = `https://www.youtube.com/watch?v=${ytId}`;
+      song.youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&enablejsapi=1`;
     } else {
-      const q = encodeURIComponent(`${song.title} ${song.artist}`);
+      const q = encodeURIComponent(`${song.title} ${song.artist} Durga Puja`);
       song.youtubeUrl = `https://www.youtube.com/results?search_query=${q}`;
-      song.youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed?listType=search&list=${q}&autoplay=1&enablejsapi=1`;
+      const parentPl = PUJA_RADIO_PLAYLISTS[song.playlist];
+      song.youtubeEmbedUrl = parentPl ? parentPl.youtubeEmbedUrl : `https://www.youtube-nocookie.com/embed/sf6usUybi3k?list=PLNW14fSkx0r8&autoplay=1&enablejsapi=1`;
     }
   });
 
