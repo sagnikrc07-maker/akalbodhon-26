@@ -644,27 +644,55 @@
         </div>
       </div>
 
-      <!-- Itinerary Category Tabs -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1 reveal-on-scroll">
-        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-primary text-white dark:bg-amber-400 dark:text-black shadow-md transition-all cursor-pointer flex items-center gap-1.5" data-category="all">
-          <span>All Saved</span>
-          <span id="saved-badge-all" class="text-[10px] px-2 py-0.5 rounded-full bg-white/20 dark:bg-black/20 font-mono font-bold">0</span>
-        </button>
-        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="pandals">
-          <span class="material-symbols-outlined text-[16px]">explore</span>
-          <span>Pandals & Transit</span>
-          <span id="saved-badge-pandals" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
-        </button>
-        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="food-shopping">
-          <span class="material-symbols-outlined text-[16px]">restaurant</span>
-          <span>Food & Shopping</span>
-          <span id="saved-badge-food" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
-        </button>
-        <button class="saved-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="plans">
-          <span class="material-symbols-outlined text-[16px]">event_note</span>
-          <span>Saved Plans</span>
-          <span id="saved-badge-plans" class="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold">0</span>
-        </button>
+      <!-- Filter Itinerary Categories Bar: Dropdown for Mobile + Non-Wrapping Segmented Tabs for Desktop -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 shadow-sm reveal-on-scroll">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-primary dark:text-amber-300 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">tune</span>
+          </span>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant dark:text-amber-300/80 block">Saved Collection</span>
+            <label for="saved-filter-dropdown" class="font-display text-sm sm:text-base font-bold text-on-surface dark:text-white cursor-pointer">Filter Itinerary</label>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <!-- Mobile Dropdown Selector (Clean, 1-line, no wrapping) -->
+          <div class="block sm:hidden w-full">
+            <select 
+              id="saved-filter-dropdown"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 text-xs font-semibold text-on-surface dark:text-[#f3ede2] focus:outline-none focus:border-primary dark:focus:border-amber-300 cursor-pointer"
+            >
+              <option value="all">✨ All Saved</option>
+              <option value="pandals">🏛️ Pandals & Transit</option>
+              <option value="food-shopping">🍽️ Food & Shopping</option>
+              <option value="plans">📋 Custom Plans</option>
+            </select>
+          </div>
+
+          <!-- Tablet & Desktop Segmented Tabs (Single-line, non-wrapping with shrink-0) -->
+          <div class="hidden sm:flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <button class="saved-tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-md transition-all cursor-pointer flex items-center gap-1.5" data-category="all">
+              <span class="whitespace-nowrap">All Saved</span>
+              <span id="saved-badge-all" class="text-[10px] px-1.5 py-0.5 rounded-full bg-white/20 dark:bg-black/20 font-mono font-bold leading-none">0</span>
+            </button>
+            <button class="saved-tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="pandals">
+              <span class="material-symbols-outlined text-[15px] text-primary dark:text-amber-300 shrink-0">explore</span>
+              <span class="whitespace-nowrap">Pandals & Transit</span>
+              <span id="saved-badge-pandals" class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold leading-none">0</span>
+            </button>
+            <button class="saved-tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="food-shopping">
+              <span class="material-symbols-outlined text-[15px] text-primary dark:text-amber-300 shrink-0">restaurant</span>
+              <span class="whitespace-nowrap">Food & Shopping</span>
+              <span id="saved-badge-food" class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold leading-none">0</span>
+            </button>
+            <button class="saved-tab-btn shrink-0 whitespace-nowrap px-3.5 py-2 rounded-xl text-xs font-bold bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] hover:bg-surface-container-highest dark:hover:bg-[#322c20] transition-all cursor-pointer flex items-center gap-1.5" data-category="plans">
+              <span class="material-symbols-outlined text-[15px] text-primary dark:text-amber-300 shrink-0">event_note</span>
+              <span class="whitespace-nowrap">Custom Plans</span>
+              <span id="saved-badge-plans" class="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 font-mono font-bold leading-none">0</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Divided Content Sections -->

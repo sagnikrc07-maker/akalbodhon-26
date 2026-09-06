@@ -1943,16 +1943,31 @@
     const foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
     const myPlans = customPlans || [];
 
-    // Update Tab Badges
+    // Update Tab Badges & Dropdown Options
     const badgeAll = document.getElementById('saved-badge-all');
     const badgePandals = document.getElementById('saved-badge-pandals');
     const badgeFood = document.getElementById('saved-badge-food');
     const badgePlans = document.getElementById('saved-badge-plans');
 
-    if (badgeAll) badgeAll.textContent = bookmarks.length + myPlans.length;
+    const totalCount = bookmarks.length + myPlans.length;
+    if (badgeAll) badgeAll.textContent = totalCount;
     if (badgePandals) badgePandals.textContent = pandalBookmarks.length;
     if (badgeFood) badgeFood.textContent = foodBookmarks.length;
     if (badgePlans) badgePlans.textContent = myPlans.length;
+
+    // Synchronize Mobile Dropdown Options & Selected Value
+    const savedDropdown = document.getElementById('saved-filter-dropdown');
+    if (savedDropdown) {
+      savedDropdown.value = activeSavedTab;
+      const optAll = savedDropdown.querySelector('option[value="all"]');
+      const optPandals = savedDropdown.querySelector('option[value="pandals"]');
+      const optFood = savedDropdown.querySelector('option[value="food-shopping"]');
+      const optPlans = savedDropdown.querySelector('option[value="plans"]');
+      if (optAll) optAll.textContent = `✨ All Saved (${totalCount})`;
+      if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${pandalBookmarks.length})`;
+      if (optFood) optFood.textContent = `🍽️ Food & Shopping (${foodBookmarks.length})`;
+      if (optPlans) optPlans.textContent = `📋 Custom Plans (${myPlans.length})`;
+    }
 
     // Update active tab styling
     document.querySelectorAll('.saved-tab-btn').forEach(btn => {
@@ -2105,13 +2120,20 @@
 
     container.innerHTML = html;
 
-    // Attach Category Tab click listeners
+    // Attach Category Tab click listeners & Dropdown change listener
     document.querySelectorAll('.saved-tab-btn').forEach(btn => {
       btn.onclick = () => {
         const cat = btn.dataset.category;
         renderSavedItinerary(cat);
       };
     });
+
+    const savedDropdownSelect = document.getElementById('saved-filter-dropdown');
+    if (savedDropdownSelect) {
+      savedDropdownSelect.onchange = (e) => {
+        renderSavedItinerary(e.target.value);
+      };
+    }
 
     document.getElementById('clear-all-bookmarks-btn')?.addEventListener('click', () => {
       if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
