@@ -2945,27 +2945,44 @@
     const VISITOR_KEY = 'akalbodhon_visitor_logged';
 
     let currentCount = parseInt(localStorage.getItem(STORAGE_KEY), 10);
-    if (!currentCount || isNaN(currentCount) || currentCount < 1) {
-      currentCount = 1284;
+    // Reset if missing, invalid, below minimum, or >= 200 (clearing previous 4,000+ counts from user storage)
+    if (!currentCount || isNaN(currentCount) || currentCount < 30 || currentCount >= 200) {
+      currentCount = Math.floor(Math.random() * 25) + 68; // realistic initial range ~68-92
+      localStorage.setItem(STORAGE_KEY, currentCount.toString());
     }
 
     if (!sessionStorage.getItem(VISITOR_KEY)) {
-      currentCount += 1;
+      if (currentCount < 185) {
+        currentCount += 1;
+      }
       sessionStorage.setItem(VISITOR_KEY, 'true');
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
     }
 
+    // Always enforce strict upper ceiling strictly below 200
+    currentCount = Math.min(195, Math.max(35, currentCount));
     counterEl.textContent = currentCount.toLocaleString();
 
     setInterval(() => {
-      currentCount += Math.floor(Math.random() * 2) + 1;
+      let delta;
+      if (currentCount >= 188) {
+        // Dip down when approaching 200 to strictly keep it under 200
+        delta = -Math.floor(Math.random() * 3 + 1);
+      } else if (currentCount <= 55) {
+        delta = Math.floor(Math.random() * 3 + 1);
+      } else {
+        // Natural live concurrent users fluctuation (+1 or -1)
+        delta = Math.random() > 0.45 ? 1 : -1;
+      }
+      // Strict guarantee: always stays between 35 and 195 (strictly under 200)
+      currentCount = Math.max(35, Math.min(195, currentCount + delta));
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
       if (counterEl) {
         counterEl.textContent = currentCount.toLocaleString();
         counterEl.classList.add('scale-110', 'text-secondary-container');
         setTimeout(() => counterEl.classList.remove('scale-110', 'text-secondary-container'), 600);
       }
-    }, 28000);
+    }, 24000);
   }
 
   // ========================================================
