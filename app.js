@@ -3766,22 +3766,12 @@
       const isMyPlan = currentUser && plan.creator_id === currentUser.id;
       const members = plan.members || [];
       const hasMembers = members.length > 0;
-
-      // Extract pandal names
-      const pandalBadges = (plan.pandals || []).map(p => {
-        const pName = typeof p === 'string' ? p : p.name;
-        return `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] text-xs font-semibold text-on-surface dark:text-amber-200 border border-outline-variant/20 dark:border-amber-400/20">🏛️ ${pName}</span>`;
-      }).join(' ');
-
-      // Extract food stops
-      const foodBadges = (plan.food_stops || []).map(f => {
-        const fName = typeof f === 'string' ? f : `${f.name}${f.dish ? ` (${f.dish})` : ''}`;
-        return `<div class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-start gap-1.5"><span class="text-primary dark:text-amber-300 font-bold">•</span> <span>${fName}</span></div>`;
-      }).join('');
+      const pandalCount = (plan.pandals || []).length;
+      const foodCount = (plan.food_stops || []).length;
 
       return `
-        <div class="glass-panel p-2.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-2.5 sm:space-y-5 relative overflow-hidden group">
-          <div class="space-y-2.5 sm:space-y-4">
+        <div class="glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
+          <div class="space-y-2 sm:space-y-3">
             <!-- Header: Puja Day Centered in Middle -->
             <div class="flex items-center justify-center w-full">
               <span class="px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[10px] sm:text-xs font-bold text-center border border-primary/20 dark:border-amber-400/30 shadow-sm">
@@ -3794,7 +3784,7 @@
               ${plan.date_str ? `
                 <div class="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-on-surface-variant dark:text-[#ded5c7]">
                   <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">calendar_month</span>
-                  <span>${plan.date_str}</span>
+                  <span class="truncate">${plan.date_str}</span>
                 </div>
               ` : '<div></div>'}
 
@@ -3805,68 +3795,37 @@
               </div>
             </div>
 
-            <!-- Title & Route -->
+            <!-- Title -->
             <div>
-              <h3 class="font-display text-xs sm:text-2xl font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors line-clamp-2 sm:line-clamp-none">
+              <h3 class="font-display text-xs sm:text-lg font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors line-clamp-2">
                 ${plan.title}
               </h3>
-              ${plan.route_summary ? `
-                <div class="mt-1.5 sm:mt-2 text-[9px] sm:text-xs font-medium text-primary dark:text-amber-300 flex items-center gap-1 sm:gap-1.5 bg-primary/5 dark:bg-amber-400/10 p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl border border-primary/20 dark:border-amber-400/20">
-                  <span class="material-symbols-outlined text-[13px] sm:text-[16px] shrink-0">near_me</span>
-                  <span class="truncate"><strong>Route:</strong> ${plan.route_summary}</span>
-                </div>
+            </div>
+
+            <!-- Compact Preview Badges -->
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-0.5 text-[9px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7]">
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
+                🏛️ ${pandalCount} Pandals
+              </span>
+              ${foodCount > 0 ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
+                  🍽️ ${foodCount} Food Stops
+                </span>
+              ` : ''}
+              ${hasMembers ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 dark:bg-amber-400/10 text-primary dark:text-amber-300 border border-primary/20 dark:border-amber-400/20 font-medium">
+                  👥 ${members.length} Hopping
+                </span>
               ` : ''}
             </div>
-
-            <!-- Pandals to Visit -->
-            <div class="space-y-1 sm:space-y-1.5">
-              <span class="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🏛️ Pandals to Visit</span>
-              <div class="flex flex-wrap gap-1 sm:gap-1.5">
-                ${pandalBadges || '<span class="text-[10px] sm:text-xs text-on-surface-variant">No specific pandals listed</span>'}
-              </div>
-            </div>
-
-            <!-- Food Pit-Stops -->
-            ${foodBadges ? `
-              <div class="space-y-1 sm:space-y-1.5">
-                <span class="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300 block">🍽️ Food Pit-Stops</span>
-                <div class="space-y-0.5 sm:space-y-1 p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl bg-surface-container-low dark:bg-[#252016]/50 border border-outline-variant/20 dark:border-amber-400/10">
-                  ${foodBadges}
-                </div>
-              </div>
-            ` : ''}
-
-            <!-- Joined Members Stack Display -->
-            ${hasMembers ? `
-              <div class="pt-1.5 sm:pt-2 border-t border-outline-variant/20 dark:border-amber-400/15 flex items-center justify-between">
-                <div class="flex items-center gap-1.5 sm:gap-2">
-                  <span class="text-[9px] sm:text-[11px] font-bold text-on-surface-variant dark:text-[#ded5c7]">Friends:</span>
-                  <div class="avatar-stack">
-                    ${members.map(m => `
-                      <div class="w-5 h-5 sm:w-7 sm:h-7 rounded-full bg-surface-container border sm:border-2 border-primary dark:border-amber-400 flex items-center justify-center text-[10px] sm:text-sm shadow-md" title="${m.user_name || 'Member'} (${m.role || 'Member'})">
-                        ${m.user_avatar || '🪔'}
-                      </div>
-                    `).join('')}
-                  </div>
-                </div>
-                <span class="text-[9px] sm:text-[11px] text-primary dark:text-amber-300 font-semibold">${members.length} Hopping</span>
-              </div>
-            ` : ''}
           </div>
 
-          <!-- Card Actions (Share, Set Alarm, Delete) -->
-          <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-1.5 sm:gap-2">
-            <button onclick="window.openSharePlanModal('${plan.id}')" class="flex-1 py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container text-white dark:text-black text-[10px] sm:text-xs font-bold shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1 sm:gap-1.5 cursor-pointer">
-              <span class="material-symbols-outlined text-[13px] sm:text-[16px]">share</span> <span class="truncate">Share</span>
+          <!-- Action: View Plan Button (Opens Overlaying Menu) -->
+          <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20">
+            <button onclick="window.openViewPlanModal('${plan.id}')" class="w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
+              <span>View Plan</span>
             </button>
-            <button onclick="window.savePlanToItinerary('${plan.id}')" class="p-1.5 sm:px-3 sm:py-2.5 rounded-lg sm:rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-on-surface dark:text-[#ded5c7] hover:border-primary dark:hover:border-amber-400 text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Save Route to Itinerary">
-              <span class="material-symbols-outlined text-[14px] sm:text-[16px]">bookmark_add</span>
-            </button>
-            ${isMyPlan ? `
-              <button onclick="window.deleteCustomPlan('${plan.id}')" class="p-1.5 sm:px-3 sm:py-2.5 rounded-lg sm:rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Delete Plan">
-                <span class="material-symbols-outlined text-[14px] sm:text-[16px]">delete</span>
-              </button>
-            ` : ''}
           </div>
         </div>
       `;
@@ -3878,6 +3837,198 @@
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+  }
+
+  // ========================================================
+  // VIEW FULL PUJA PLAN OVERLAY MODAL ENGINE
+  // ========================================================
+  window.openViewPlanModal = function (planId) {
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    const plan = allPlans.find(p => p.id === planId);
+    if (!plan) return;
+
+    const modal = document.getElementById('view-plan-modal');
+    if (!modal) return;
+
+    // Day badge
+    const dayBadge = document.getElementById('vp-day-badge');
+    if (dayBadge) dayBadge.textContent = plan.day_tag || 'Festive Day';
+
+    // Date
+    const dateEl = document.getElementById('vp-date');
+    if (dateEl) {
+      dateEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span> <span>${plan.date_str || plan.day_tag || 'Festive Day'}</span>`;
+    }
+
+    // Host
+    const hostAvatar = document.getElementById('vp-host-avatar');
+    if (hostAvatar) hostAvatar.textContent = plan.creator_avatar || '🌺';
+
+    // Title
+    const titleEl = document.getElementById('vp-title');
+    if (titleEl) titleEl.textContent = plan.title;
+
+    // Custom notes
+    const notesEl = document.getElementById('vp-notes');
+    if (notesEl) {
+      if (plan.custom_notes) {
+        notesEl.textContent = `"${plan.custom_notes}"`;
+        notesEl.classList.remove('hidden');
+      } else {
+        notesEl.classList.add('hidden');
+      }
+    }
+
+    // Route summary
+    const routeSec = document.getElementById('vp-route-section');
+    const routeText = document.getElementById('vp-route-text');
+    if (routeSec && routeText) {
+      if (plan.route_summary) {
+        routeText.textContent = plan.route_summary;
+        routeSec.classList.remove('hidden');
+      } else {
+        routeSec.classList.add('hidden');
+      }
+    }
+
+    // Pandals list
+    const pandalsList = document.getElementById('vp-pandals-list');
+    const pandalsCount = document.getElementById('vp-pandals-count');
+    const pandals = plan.pandals || [];
+    if (pandalsCount) pandalsCount.textContent = `${pandals.length} Pandals`;
+
+    if (pandalsList) {
+      pandalsList.innerHTML = pandals.map(p => {
+        const pName = typeof p === 'string' ? p : p.name;
+        const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
+        const metro = matched ? (matched.metro_station || matched.transit_info || matched.location) : null;
+        const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pName + ' Durga Puja Kolkata')}`;
+
+        return `
+          <div class="p-2.5 sm:p-3 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm hover:border-primary/40 dark:hover:border-amber-400/40 transition-all">
+            <div class="min-w-0 flex-1">
+              <span class="font-bold text-xs text-on-surface dark:text-white block truncate">🏛️ ${pName}</span>
+              ${metro ? `
+                <div class="mt-1 flex items-center gap-1 text-[10px] text-on-surface-variant dark:text-[#ded5c7]">
+                  <span class="material-symbols-outlined text-[12px] text-primary dark:text-amber-300 shrink-0">directions_transit</span>
+                  <span class="truncate">${metro}</span>
+                </div>
+              ` : ''}
+            </div>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="p-1.5 rounded-lg bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:scale-105 transition-all shrink-0" title="Open in Google Maps">
+              <span class="material-symbols-outlined text-[16px] block">near_me</span>
+            </a>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Food stops list
+    const foodSec = document.getElementById('vp-food-section');
+    const foodList = document.getElementById('vp-food-list');
+    const foodStops = plan.food_stops || [];
+    if (foodSec && foodList) {
+      if (foodStops.length > 0) {
+        foodSec.classList.remove('hidden');
+        foodList.innerHTML = foodStops.map(f => {
+          const fName = typeof f === 'string' ? f : f.name;
+          const dish = typeof f === 'object' && f.dish ? f.dish : null;
+          return `
+            <div class="flex items-start gap-2 text-xs py-1 px-1 rounded-lg">
+              <span class="text-primary dark:text-amber-300 font-bold text-sm leading-none mt-0.5">•</span>
+              <div class="flex-1 min-w-0">
+                <span class="font-semibold text-on-surface dark:text-white">${fName}</span>
+                ${dish ? `<span class="text-on-surface-variant dark:text-[#ded5c7] block text-[11px] mt-0.5">${dish}</span>` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        foodSec.classList.add('hidden');
+      }
+    }
+
+    // Friends hopping together
+    const membersSec = document.getElementById('vp-members-section');
+    const membersList = document.getElementById('vp-members-list');
+    const members = plan.members || [];
+    if (membersSec && membersList) {
+      if (members.length > 0) {
+        membersSec.classList.remove('hidden');
+        membersList.innerHTML = members.map(m => `
+          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container dark:bg-[#2c261b] border border-outline-variant/30 dark:border-amber-400/20 text-xs shadow-sm">
+            <span>${m.user_avatar || '🪔'}</span>
+            <span class="font-medium text-on-surface dark:text-white text-[11px]">${m.user_name || 'Member'}</span>
+          </div>
+        `).join('');
+      } else {
+        membersSec.classList.add('hidden');
+      }
+    }
+
+    // Share button
+    const shareBtn = document.getElementById('vp-share-btn');
+    if (shareBtn) {
+      shareBtn.onclick = () => {
+        window.openSharePlanModal(plan.id);
+      };
+    }
+
+    // Save button
+    const saveBtn = document.getElementById('vp-save-btn');
+    if (saveBtn) {
+      saveBtn.onclick = () => {
+        window.savePlanToItinerary(plan.id);
+      };
+    }
+
+    // Delete button (only if user's own custom plan)
+    const deleteBtn = document.getElementById('vp-delete-btn');
+    const isMyPlan = currentUser && plan.creator_id === currentUser.id;
+    if (deleteBtn) {
+      if (isMyPlan) {
+        deleteBtn.classList.remove('hidden');
+        deleteBtn.onclick = () => {
+          window.closeViewPlanModal();
+          window.deleteCustomPlan(plan.id);
+        };
+      } else {
+        deleteBtn.classList.add('hidden');
+      }
+    }
+
+    document.body.classList.add('modal-open');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  };
+
+  window.closeViewPlanModal = function () {
+    const modal = document.getElementById('view-plan-modal');
+    if (modal) {
+      document.body.classList.remove('modal-open');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  };
+
+  function initViewPlanModal() {
+    const modal = document.getElementById('view-plan-modal');
+    const closeBtn = document.getElementById('close-view-plan-modal-btn');
+    if (closeBtn) {
+      closeBtn.onclick = window.closeViewPlanModal;
+    }
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          window.closeViewPlanModal();
+        }
+      });
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+        window.closeViewPlanModal();
+      }
+    });
   }
 
   // Create Custom Plan Modal
@@ -4462,6 +4613,7 @@
 
     try {
       initPlanCreatorModal();
+      initViewPlanModal();
       initDeviceTimers();
       initPageAuthSection();
     } catch (e) { console.warn('initModals error:', e); }
