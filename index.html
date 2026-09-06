@@ -317,31 +317,33 @@
         </div>
       </div>
 
-      <!-- Filter By Options (Recommended Watch, Rajbari, Zones) -->
-      <div class="space-y-3 reveal-on-scroll">
-        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-          <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300/80 shrink-0 flex items-center gap-1 mr-1">
-            <span class="material-symbols-outlined text-[16px]">filter_list</span> Filter by:
+      <!-- Filter By Dropdown Menu -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 shadow-sm reveal-on-scroll">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-primary dark:text-amber-300 shrink-0">
+            <span class="material-symbols-outlined text-[18px]">tune</span>
           </span>
-          <button id="filter-btn-recommended" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-primary text-on-primary shadow-md dark:bg-amber-400 dark:text-black flex items-center gap-1.5 cursor-pointer" data-filter="recommended">
-            <span class="material-symbols-outlined text-[15px]">recommend</span> Recommended Watch
-          </button>
-          <button id="filter-btn-rajbari" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e] flex items-center gap-1.5 cursor-pointer" data-filter="rajbari">
-            <span class="material-symbols-outlined text-[15px]">castle</span> Rajbari
-          </button>
-          <button id="filter-btn-zones" class="pandal-filter-btn px-4 py-2 rounded-full font-semibold text-xs transition-all shrink-0 bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border dark:border-amber-400/20 hover:bg-surface-container dark:hover:bg-[#322c1e] flex items-center gap-1.5 cursor-pointer" data-filter="zones">
-            <span class="material-symbols-outlined text-[15px]">location_city</span> Zones
-          </button>
+          <div>
+            <span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant dark:text-amber-300/80 block">Browse Categories</span>
+            <label for="pandal-filter-dropdown" class="font-display text-sm sm:text-base font-bold text-on-surface dark:text-white cursor-pointer">Filter Pandals</label>
+          </div>
         </div>
 
-        <!-- Zones Sub-Pill Selection (Shown when 'Zones' filter is active) -->
-        <div id="zone-subfilter-container" class="hidden flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pl-1 pt-1">
-          <span class="text-[11px] font-semibold text-on-surface-variant dark:text-[#ded5c7]/80 shrink-0">Zone:</span>
-          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-primary text-white dark:bg-amber-400 dark:text-black shrink-0 transition-all cursor-pointer" data-subzone="all">All Zones</button>
-          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="North">North Kolkata</button>
-          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="South">South Kolkata</button>
-          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="Central">Central Kolkata</button>
-          <button class="zone-pill-btn px-3 py-1 rounded-lg text-xs font-semibold bg-surface-container dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] hover:bg-surface-container-high dark:hover:bg-[#322c1e] shrink-0 transition-all cursor-pointer" data-subzone="East">East & Salt Lake</button>
+        <div class="relative w-full sm:w-72">
+          <select id="pandal-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+            <option value="recommended" selected>⭐ Recommended Watch (14 Icons)</option>
+            <option value="rajbari">🏰 Heritage Rajbari & Bonedi Bari</option>
+            <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
+            <optgroup label="📍 Filter by Zones">
+              <option value="zone-North">North Kolkata</option>
+              <option value="zone-South">South Kolkata</option>
+              <option value="zone-Central">Central Kolkata</option>
+              <option value="zone-East">East & Salt Lake</option>
+            </optgroup>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+          </div>
         </div>
       </div>
 

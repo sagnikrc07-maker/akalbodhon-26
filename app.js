@@ -17,7 +17,7 @@
       zone: 'North',
       theme: 'Pioneering Environment & Crystal Glasswork Masterpiece',
       image: 'pandals/maniktala chaltabagan lohapatty.jpg',
-      transit: 'Girish Park / Sovabazar Sutanuti Metro (5 min walk)',
+      transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
       transitType: 'metro',
       highlights: 'World-renowned crystal, brass, and glass art installations with glowing night illumination.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata'
@@ -28,7 +28,7 @@
       zone: 'North',
       theme: 'Fine Earthen Terracotta & Sustainable Bengal Clay Heritage',
       image: 'pandals/chorebagan.png',
-      transit: 'Girish Park Metro / Rammohan Roy Sarani (4 min walk)',
+      transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Rammohan Roy Sarani Bus',
       transitType: 'metro',
       highlights: 'Poetic cultural narratives crafted through organic terracotta and rustic traditional craftsmanship.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Chorbagan+Sarbojanin+Durga+Puja+Kolkata'
@@ -39,7 +39,7 @@
       zone: 'North',
       theme: 'Social Empathy Installation & Intricate Wooden Sculpture',
       image: 'pandals/kashibose.jpg',
-      transit: 'Girish Park Metro / Manicktala Crossing (6 min walk)',
+      transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Bus Stop',
       transitType: 'metro',
       highlights: 'Award-winning conceptual pandal blending touching social messages with Vedic sculpting.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kashi+Bose+Lane+Durga+Puja+Samity+Kolkata'
@@ -50,7 +50,7 @@
       zone: 'North',
       theme: 'Ganga Riverside Heritage & Glorious Thematic Architecture',
       image: 'pandals/Ahiritola Sarbojanin Durgotsab.jpg',
-      transit: 'Sovabazar Sutanuti Metro / Ahiritola Launch Ghat (5 min walk)',
+      transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Ahiritola Ferry Ghat',
       transitType: 'metro',
       highlights: 'Historic North Kolkata century-old puja renowned for monumental riverfront gates and exquisite clay idol.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Sarbojanin+Durgotsab+Kolkata'
@@ -61,7 +61,7 @@
       zone: 'North',
       theme: 'Indo-Saracenic Heritage Architecture & Dokra Metal Craft',
       image: 'pandals/Beniatola Sarbojanin Durgotsav.jpg',
-      transit: 'Sovabazar Sutanuti Metro (4 min walk)',
+      transit: '🚇 Sovabazar Sutanuti Metro (4 min walk) • 🚌 BK Paul Avenue Bus',
       transitType: 'metro',
       highlights: 'Rare brass Dokra relief sculptures and classical heritage ambience in North Kolkata.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Beniatola+Sarbojanin+Durgotsav+Kolkata'
@@ -72,7 +72,7 @@
       zone: 'North',
       theme: 'Ingenious Thematic Illusion & Kinetic Light Spectacle',
       image: 'pandals/Jagat Mukherjee Park.jpg',
-      transit: 'Shyambazar / Sovabazar Metro (6 min walk)',
+      transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • 🚌 JM Avenue Bus',
       transitType: 'metro',
       highlights: 'Famed for out-of-the-box conceptual themes including underwater submarines and optical glass tunnels.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Jagat+Mukherjee+Park+Durga+Puja+Kolkata'
@@ -83,7 +83,7 @@
       zone: 'North',
       theme: 'Epic Royal Palace Replica & Sculptors Sacred Guild Heritage',
       image: 'pandals/Kumartuli Park Sarbojanin.jpg',
-      transit: 'Sovabazar Sutanuti Metro (5 min walk through Kumartuli)',
+      transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
       transitType: 'metro',
       highlights: 'Nestled in the legendary idol-makers quarter, showcasing world-class clay mastery and grand palace domes.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata'
@@ -94,7 +94,7 @@
       zone: 'North',
       theme: 'Aristocratic 18th-Century Zamindari Bonedi Courtyard Heritage',
       image: 'pandals/Pathuriaghata Rajbari Durga Puja.jpg',
-      transit: 'Girish Park / Sovabazar Metro (6 min walk)',
+      transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Nimtala Ghat Street Bus',
       transitType: 'metro',
       highlights: 'Ghosh family heritage Thakurdalan, traditional Ekchala idol with real silver ornaments and family rituals.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Pathuriaghata+Rajbari+Durga+Puja+Kolkata'
@@ -105,7 +105,7 @@
       zone: 'North',
       theme: 'Architectural Splendor & Traditional Folk Artistry',
       image: 'pandals/hatibagan.png',
-      transit: 'Shyambazar Metro (4 min walk)',
+      transit: '🚇 Shyambazar Metro (4 min walk) • 🚌 Hatibagan 5-Point Bus',
       transitType: 'metro',
       highlights: 'Over a century of celebration with majestic thematic facades and authentic community culture.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
@@ -117,7 +117,7 @@
       zone: 'North',
       theme: 'Raw Organic Material Artistry & Creative Clay Sculpture',
       image: 'pandals/Nalin Sarkar Street Sarbojanin.jpg',
-      transit: 'Shyambazar Metro (3 min walk)',
+      transit: '🚇 Shyambazar Metro (3 min walk) • 🚌 Bidhan Sarani Bus',
       transitType: 'metro',
       highlights: 'Masterful transformations of bamboo, pottery, and jute into breathtaking spatial sculptures.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Nalin+Sarkar+Street+Durga+Puja+Kolkata'
@@ -128,7 +128,7 @@
       zone: 'North',
       theme: 'Centenary Traditional Sabeki Idol & Iconic Dhunuchi Naach',
       image: 'pandals/baghbazar.jpg',
-      transit: 'Shyambazar Metro (7 min walk) / Bagbazar Ghat',
+      transit: '🚇 Shyambazar Metro (6 min walk) • ⛴️ Bagbazar Launch Ghat',
       transitType: 'metro',
       highlights: 'Pure Bengali tradition with iconic snow-white Daaker Saaj idol, classic Sindoor Khela, and carnival adda.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata'
@@ -139,7 +139,7 @@
       zone: 'North',
       theme: 'Aristocratic 1757 Bonedi Bari Open Courtyard Heritage',
       image: 'pandals/sova bazar rajbari.png',
-      transit: 'Sovabazar Sutanuti Metro (2 min walk)',
+      transit: '🚇 Sovabazar Sutanuti Metro (2 min walk) • 🚌 Rabindra Sarani Bus',
       transitType: 'metro',
       highlights: 'Raja Nabakrishna Deb historical Natmandir courtyard, canonical Vedic ceremonies, and solemn grace.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sovabazar+Rajbari+Kolkata'
@@ -150,7 +150,7 @@
       zone: 'North',
       theme: 'Centenary Aristocratic Bonedi Bari Courtyard & Sabeki Ekchala Heritage',
       image: 'pandals/Darjipara-Mitra-Barir-Durga-Puja.webp',
-      transit: 'Sovabazar Sutanuti / Girish Park Metro (5 min walk)',
+      transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Beadon Street Bus',
       transitType: 'metro',
       highlights: 'Historic 1807 Bonedi courtyard puja featuring an ornate wooden Thakurdalan, majestic Ekchala idol, and century-old aristocratic rituals.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Darjipara+Mitra+Bari+Durga+Puja+Beadon+Street+Kolkata'
@@ -161,7 +161,7 @@
       zone: 'North',
       theme: 'Royal 1840 Zamindari Palace Thakurdalan & Gold-Ornamented Goddess',
       image: 'pandals/jorasanko shib krishna daw Rajbari.jpeg',
-      transit: 'Girish Park Metro (4 min walk via Vivekananda Rd)',
+      transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Vivekananda Road Bus',
       transitType: 'metro',
       highlights: 'Celebrated 1840 Bonedi Bari puja famed for its majestic arches, Goddess Durga adorned in pure gold and diamond jewellery, and royal courtyard heritage.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Jorasanko+Shib+Krishna+Daw+Rajbari+Durga+Puja+Kolkata'
@@ -172,7 +172,7 @@
       zone: 'North',
       theme: 'Centenary Pure Sculptural Artistry & Intimate North Kolkata Heritage',
       image: 'pandals/sikdar bagan.png',
-      transit: 'Shyambazar Metro (3 min walk)',
+      transit: '🚇 Shyambazar Metro (3 min walk) • 🚌 Hatibagan Crossing Bus',
       transitType: 'metro',
       highlights: 'Centenary North Kolkata jewel established in 1913, renowned for pure artistic idols, compact exquisite themes, and intimate heritage warmth.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sikdar+Bagan+Sadharan+Durgotsav+Shyambazar+Kolkata'
@@ -183,7 +183,7 @@
       zone: 'North',
       theme: 'Vibrant Community Craftsmanship & Dazzling Street Illumination',
       image: 'pandals/hatibagan nabin pally.webp',
-      transit: 'Shyambazar Metro (4 min walk)',
+      transit: '🚇 Shyambazar Metro (4 min walk) • 🚌 Shyambazar 5-Point Bus',
       transitType: 'metro',
       highlights: 'Lively North Kolkata landmark recognized for innovative thematic craftsmanship, colorful illumination, and vibrant neighborhood adda.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata'
@@ -194,7 +194,7 @@
       zone: 'North',
       theme: 'Riverside Youth Innovation & Kinetic Nighttime Illumination',
       image: 'pandals/Ahiritola Jubak Brinda.jpg',
-      transit: 'Sovabazar Sutanuti Metro / Ahiritola Ghat (4 min walk)',
+      transit: '🚇 Sovabazar Sutanuti Metro (4 min walk) • ⛴️ Ahiritola Ferry Ghat',
       transitType: 'metro',
       highlights: 'Vibrant youth-led riverside celebration known for creative modern concepts, lively cultural events, and energetic community participation.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata'
@@ -205,7 +205,7 @@
       zone: 'North',
       theme: 'Visionary Museum-Grade Conceptual Art & Avant-Garde Spatial Installation',
       image: 'pandals/Tala Prattoy.jpg',
-      transit: 'Belgachia / Shyambazar Metro (5 min walk / auto to Tala Park)',
+      transit: '🚇 Belgachia Metro (5 min walk) • 🚆 Kolkata Chitpur Station',
       transitType: 'metro',
       highlights: 'Internationally acclaimed conceptual benchmark created by maestro artists, featuring groundbreaking experimental architecture and thought-provoking sculptures.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Tala+Prattoy+Durga+Puja+Kolkata'
@@ -218,7 +218,7 @@
       zone: 'South',
       theme: 'Classical Indian Temple Monument & Majestic Traditional Idol',
       image: 'pandals/Singhi Park Sarbojanin.jpg',
-      transit: 'Gariahat Phari / Dover Lane (Kalighat Metro auto-link)',
+      transit: '🚇 Kalighat Metro (Auto-link) • 🚌 Gariahat Phari Bus Stop',
       transitType: 'metro',
       highlights: 'Grand temple replicas paired with legendary lighting by Chandannagar electrical artists.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Singhi+Park+Durga+Puja+Kolkata'
@@ -229,7 +229,7 @@
       zone: 'South',
       theme: 'Pioneering Creative Thematic Installation & Environmental Art',
       image: 'pandals/Badamtala Ashar Sangha.jpg',
-      transit: 'Kalighat Metro Station (3 min walk via Nepal Bhattacharjee St)',
+      transit: '🚇 Kalighat Metro (3 min walk) • 🚌 Rashbehari Crossing Bus',
       transitType: 'metro',
       highlights: 'South Kolkata theme-puja benchmark with award-winning creative soundscapes and innovative idol craft.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Badamtala+Ashar+Sangha+Kalighat+Kolkata'
@@ -241,7 +241,7 @@
       zone: 'South',
       theme: 'Regal Aesthetic Marvel & Royal Courtyard Ambience',
       image: 'pandals/Hindustan Club Sarbojanin.png',
-      transit: 'Sarat Bose Road / Kalighat Metro (6 min walk)',
+      transit: '🚇 Kalighat Metro (6 min walk) • 🚌 Sarat Bose Road Bus',
       transitType: 'metro',
       highlights: 'Lavish architectural designs with brilliant brass embellishments and peaceful devotion.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hindustan+Club+Durga+Puja+Sarat+Bose+Road+Kolkata'
@@ -252,7 +252,7 @@
       zone: 'South',
       theme: 'Heritage Terracotta Courtyard & Soulful Classical Music',
       image: 'pandals/ballygunge cultural association.png',
-      transit: 'Lake Temple Road / Kalighat Metro (8 min walk)',
+      transit: '🚇 Kalighat Metro (7 min walk) • 🚌 Lake Temple Road Bus',
       transitType: 'metro',
       highlights: 'Beloved South Kolkata legacy puja known for aristocratic restraint, classical morning chants, and warm adda.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata'
@@ -264,7 +264,7 @@
       zone: 'South',
       theme: 'Profound Philosophical Installation & Motherhood Homage',
       image: 'pandals/Barisha Club.jpg',
-      transit: 'Sakherbazar / Behala Chowrasta Metro (5 min walk)',
+      transit: '🚇 Behala Chowrasta Metro (5 min walk) • 🚌 DH Road Barisha Bus',
       transitType: 'metro',
       highlights: 'Celebrated across India for deeply moving emotional sculptures honoring maternal resilience and humanity.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Barisha+Club+Durga+Puja+Sakherbazar+Kolkata'
@@ -275,7 +275,7 @@
       zone: 'South',
       theme: 'Contemporary Avant-Garde Space & Harmonic Acoustic Architecture',
       image: 'pandals/behala nutan dal.png',
-      transit: 'Taratala / Behala Chowrasta Metro (6 min walk)',
+      transit: '🚇 Taratala Metro (6 min walk) • 🚌 Taratala Crossing Bus',
       transitType: 'metro',
       highlights: 'Architectural marvel combining textured metallic acoustics, ambient chimes, and thought-provoking modern art.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Behala+Nutan+Dal+Durga+Puja+Kolkata'
@@ -286,7 +286,7 @@
       zone: 'South',
       theme: 'Grand Rural Bengal Indigenous Artifacts & Tribal Motifs',
       image: 'pandals/Rajdanga Naba Uday Sangha.jpg',
-      transit: 'Hemanta Mukherjee (Ruby) Metro / Kasba Crossing (6 min walk)',
+      transit: '🚇 Ruby Crossing Metro (6 min walk) • 🚌 Kasba Connector Bus',
       transitType: 'metro',
       highlights: 'Spectacular large-scale installations utilizing earthen clay, bell metal, and handmade rural artifacts.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Rajdanga+Naba+Uday+Sangha+Kasba+Kolkata'
@@ -297,7 +297,7 @@
       zone: 'South',
       theme: 'Grand South Indian Temple Architecture & German Chandeliers',
       image: 'pandals/Ekdalia Evergreen Club.jpg',
-      transit: 'Gariahat Junction / Ballygunge Phari (7 min walk)',
+      transit: '🚇 Kalighat Metro (Auto) • 🚌 Gariahat Crossing Bus Stop',
       transitType: 'metro',
       highlights: 'Glorious illuminated chandeliers, authentic South Indian temple art style with traditional idol.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ekdalia+Evergreen+Club+Gariahat+Kolkata'
@@ -308,7 +308,7 @@
       zone: 'South',
       theme: 'Pan-Indian State Craftsmanship & Living Cultural Heritage',
       image: 'pandals/Suruchi_Sangha_Durga_Puja_2019.jpg',
-      transit: 'Majerhat Station / Taratala Metro (8 min walk)',
+      transit: '🚇 Taratala Metro (6 min walk) • 🚆 Majerhat Local Train',
       transitType: 'metro',
       highlights: 'Different Indian state craftsmanship themes annually, sustainable eco-friendly materials and soulful folk music.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Suruchi+Sangha+New+Alipore+Kolkata'
@@ -319,7 +319,7 @@
       zone: 'South',
       theme: 'Tribal Folklore & Contemporary Bengal Installation Art',
       image: 'pandals/Tridhara Sammilani.jpg',
-      transit: 'Jatin Das Park / Kalighat Metro (6 min walk)',
+      transit: '🚇 Kalighat Metro (5 min walk) • 🚌 Rashbehari Crossing Bus',
       transitType: 'metro',
       highlights: 'Iconic street installation featuring indigenous art traditions, mesmerizing soundscapes, and expressive idols.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata'
@@ -330,7 +330,7 @@
       zone: 'South',
       theme: 'Traditional Environmental Artistry & Exquisite Golden Idol',
       image: 'pandals/mudiali.png',
-      transit: 'Rabindra Sarobar / Kalighat Metro (5 min walk)',
+      transit: '🚇 Rabindra Sarobar Metro (4 min walk) • 🚌 Southern Avenue Bus',
       transitType: 'metro',
       highlights: 'Decades of classical beauty with nature-inspired hand-painted murals and dazzling golden Goddess ornaments.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mudiali+Club+Durga+Puja+Kolkata'
@@ -341,7 +341,7 @@
       zone: 'South',
       theme: 'Traditional Bengal Folk Art & Intricate Eco-Craft Architecture',
       image: 'pandals/bosepukur talbagan.jpg',
-      transit: 'Ballygunge Station / Hemanta Mukherjee (Ruby) Metro (Auto to Bosepukur)',
+      transit: '🚆 Ballygunge Local Train • 🚌 Kasba Bosepukur Bus Stop',
       transitType: 'bus',
       highlights: 'Celebrated Kasba landmark famed for heritage environmental installations, rural Bengal crafts, and lively festive atmosphere.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bosepukur+Talbagan+Durga+Puja+Kasba+Kolkata'
@@ -352,7 +352,7 @@
       zone: 'South',
       theme: 'Ethereal Spiritual Sanctuary & Contemporary Bengali Sculpture',
       image: 'pandals/shiv mandir durga puja.jpg',
-      transit: 'Rabindra Sarobar Metro / Lake Kalibari (4 min walk)',
+      transit: '🚇 Rabindra Sarobar Metro (4 min walk) • 🚌 Lake Kalibari Bus',
       transitType: 'metro',
       highlights: 'Nestled by Rabindra Sarobar Lake, renowned for serene spiritual themes, soul-stirring lighting, and creative idol artistry.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Shiv+Mandir+Sarbojanin+Durga+Puja+Lake+Temple+Road+Kolkata'
@@ -363,7 +363,7 @@
       zone: 'South',
       theme: 'Pioneering Thematic Installations & Indigenous Clay Art',
       image: 'pandals/bosepukur sitalamandir.png',
-      transit: 'Ballygunge Station / Gariahat (Auto link to Bosepukur)',
+      transit: '🚆 Ballygunge Local Train • 🚌 Bosepukur Connector Bus',
       transitType: 'bus',
       highlights: 'Historic trail-blazer of Kolkata theme puja movement with iconic artistic materials, terracotta motifs, and classical deity.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bosepukur+Sitalamandir+Durga+Puja+Kasba+Kolkata'
@@ -374,7 +374,7 @@
       zone: 'South',
       theme: 'Grand Festive Fairground & Towering Thematic Monument',
       image: 'pandals/deshapriya park.jpg',
-      transit: 'Kalighat Metro Station (5 min walk)',
+      transit: '🚇 Kalighat Metro (5 min walk) • 🚌 Deshapriya Park Bus Stop',
       transitType: 'metro',
       highlights: 'One of South Kolkatas most iconic expansive park pujas, known for record-breaking monumental concepts, vast food carnival, and vibrant energy.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Rashbehari+Avenue+Kolkata'
@@ -385,7 +385,7 @@
       zone: 'South',
       theme: 'Sublime Concept Art & Master Earthen Terracotta Craft',
       image: 'pandals/chetla agrani.jpg',
-      transit: 'Kalighat / Netaji Bhavan Metro (7 min walk)',
+      transit: '🚇 Kalighat Metro (6 min walk) • 🚌 Chetla Central Road Bus',
       transitType: 'metro',
       highlights: 'Annual masterpiece conceptualized by renowned artists, featuring breathtaking organic architectural pavilions and soulful lighting.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Chetla+Agrani+Club+Durga+Puja+Kolkata'
@@ -396,7 +396,7 @@
       zone: 'South',
       theme: 'Experimental Avant-Garde Sculpture & Environmental Narrative',
       image: 'pandals/haridevpur 41 pally.jpg',
-      transit: 'Mahanayak Uttam Kumar (Tollygunge) Metro (Auto to Haridevpur)',
+      transit: '🚇 Tollygunge Metro (Auto) • 🚌 Haridevpur Bus Stand',
       transitType: 'metro',
       highlights: 'Famed for deep philosophical storytelling, organic sustainable materials, and award-winning creative idol design.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Haridevpur+41+Pally+Durga+Puja+Kolkata'
@@ -407,7 +407,7 @@
       zone: 'South',
       theme: 'Rural Bengal Artisan Heritage & Sustainable Eco-Craft Concept',
       image: 'pandals/kendua shanti shangha.png',
-      transit: 'Kavi Subhash / Shahid Khudiram Metro (Auto to Kendua / Garia)',
+      transit: '🚇 Kavi Subhash Metro (Auto) • 🚆 Garia Local Train',
       transitType: 'metro',
       highlights: 'Prominent South suburban cultural hub recognized for exquisite rural artisan work, sustainable eco-friendly themes, and warm community bonding.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kendua+Shanti+Sangha+Durga+Puja+Garia+Kolkata'
@@ -418,7 +418,7 @@
       zone: 'South',
       theme: 'Revolutionary Avant-Garde Spatial Design & Mammoth Concept Sculptures',
       image: 'pandals/Naktala Udayan Sangha.jpg',
-      transit: 'Gitanjali (Naktala) Metro (3 min walk)',
+      transit: '🚇 Gitanjali Metro (3 min walk) • 🚌 NSC Bose Road Bus',
       transitType: 'metro',
       highlights: 'South Kolkatas ultimate crowd magnet featuring revolutionary avant-garde conceptual art, mammoth sculptures, and award-winning idols.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Naktala+Udayan+Sangha+Durga+Puja+Kolkata'
@@ -429,7 +429,7 @@
       zone: 'South',
       theme: 'Traditional Sabeki Ekchala Idol & Legendary Open-Air Cultural Adda',
       image: 'pandals/Maddox Square.jpg',
-      transit: 'Netaji Bhavan / Jatin Das Park Metro (8 min walk via Ritchie Rd)',
+      transit: '🚇 Netaji Bhavan Metro (6 min walk) • 🚌 Lansdowne Ritchie Rd Bus',
       transitType: 'metro',
       highlights: 'The ultimate open-air festive adda hub of Kolkata, featuring a grand open courtyard pandal and breathtaking golden Sabeki Ekchala idol.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Ballygunge+Kolkata'
@@ -442,7 +442,7 @@
       zone: 'Central',
       theme: 'Spectacular Water Reflection & Historic Illumination',
       image: 'pandals/College Square.jpg',
-      transit: 'Central / Mahatma Gandhi Road Metro (5 min walk)',
+      transit: '🚇 Central Metro (4 min walk) • 🚌 College Street Bus Stop',
       transitType: 'metro',
       highlights: 'Huge illuminated lake reflecting thousands of synchronized bulbs, traditional idol by Sanatan Rudra Pal.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=College+Square+Durga+Puja+Kolkata'
@@ -453,7 +453,7 @@
       zone: 'Central',
       theme: 'Colossal Royal Fort & Historic Palace Monument Replica',
       image: 'pandals/mohammad ali park.jpg',
-      transit: 'MG Road Metro Station (2 min walk)',
+      transit: '🚇 MG Road Metro (2 min walk) • 🚌 Central Avenue Bus',
       transitType: 'metro',
       highlights: 'Sprawling park grounds dominated by towering architectural fort replicas and heritage lighting.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata'
@@ -464,7 +464,7 @@
       zone: 'Central',
       theme: 'Monumental Architectural Wonder & Dazzling Laser Spectacle',
       image: 'pandals/santosh mitra.jpg',
-      transit: 'Central / Sealdah Metro (5 min walk)',
+      transit: '🚇 Central Metro (5 min walk) • 🚆 Sealdah Local Train',
       transitType: 'metro',
       highlights: 'Legendary mega-scale architectural marvels (such as Ram Mandir replica and Sphere), grand lighting, and massive citywide crowds.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Santosh+Mitra+Square+Durga+Puja+Lebutala+Kolkata'
@@ -475,7 +475,7 @@
       zone: 'Central',
       theme: 'Historic 1857 Bonedi Bari Thakurdalan & Ancestral Vaishnava Rituals',
       image: 'pandals/Badan Chand Roy Rajbari.jpg',
-      transit: 'MG Road / Central Metro (5 min walk, Colootola)',
+      transit: '🚇 MG Road Metro (4 min walk) • 🚌 Colootola Bus Stop',
       transitType: 'metro',
       highlights: 'Historical Bonedi Bari Durga Puja celebrated since 1857 at the ancestral Thakurdalan with traditional Ekchala Pratima and legacy Vaishnava customs.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Badan+Chand+Roy+Rajbari+Durga+Puja+Colootola+Kolkata'
@@ -489,7 +489,7 @@
       zone: 'East',
       theme: 'Monumental World Wonder Architecture & Pure Gold Ornaments',
       image: 'pandals/Sreebhumi Sporting Club.jpg',
-      transit: 'VIP Road Lake Town (Bus / Taxi link to Ultadanga / Dum Dum Metro)',
+      transit: '🚌 VIP Road Lake Town Bus • 🚇 Ultadanga / Dum Dum Metro',
       transitType: 'bus',
       highlights: 'Diamond and pure gold ornamented Goddess idol, breathtaking architectural replica with dynamic laser light show.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
@@ -501,7 +501,7 @@
       zone: 'East',
       theme: 'Bold Modern Conceptual Installation & Eco-Friendly Design',
       image: 'pandals/Dum Dum Park Yubak Brinda.webp',
-      transit: 'VIP Road / Jessore Road Crossing (Dum Dum Metro auto-link)',
+      transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Bidhan Nagar Road Train',
       transitType: 'bus',
       highlights: 'Striking artistic experiments with innovative materials, modern aesthetics, and ambient lights.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Yubak+Brinda+Durga+Puja+Kolkata'
@@ -512,7 +512,7 @@
       zone: 'East',
       theme: 'Time-Honored Cultural Heritage & Architectural Grandeur',
       image: 'pandals/Dum Dum Park Sarbojanin.avif',
-      transit: 'Dum Dum Park Tank 2 / VIP Road link',
+      transit: '🚌 VIP Road Dum Dum Park Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Pioneer of the famous Dum Dum Park puja hub, delivering timeless thematic beauty year after year.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Sarbojanin+Durga+Puja+Kolkata'
@@ -523,7 +523,7 @@
       zone: 'East',
       theme: 'Social Empathy & Exquisite Textured Sculpture',
       image: 'pandals/Dum Dum Park Bharat Chakra.jpg',
-      transit: 'VIP Road / Dum Dum Park (7 min walk from Footbridge)',
+      transit: '🚌 VIP Road Footbridge Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Profound societal messages translated through master clay and wood sculptures with moving soundtracks.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Bharat+Chakra+Kolkata'
@@ -534,7 +534,7 @@
       zone: 'East',
       theme: 'Surrealistic Spatial Architecture & Dynamic Kinetic Art',
       image: 'pandals/dum dum park tarun dal.png',
-      transit: 'VIP Road / Dum Dum Park Tank 3',
+      transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Dum Dum Cantt Train',
       transitType: 'bus',
       highlights: 'Mind-bending geometric forms, kinetic wind sculptures, and immersive illuminated pathways.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Tarun+Dal+Durga+Puja+Kolkata'
@@ -545,7 +545,7 @@
       zone: 'East',
       theme: 'Nationally Acclaimed Thematic Installation & Master Clay Idol',
       image: 'pandals/Dum Dum Park Tarun Sangha.jpg',
-      transit: 'VIP Road / Dum Dum Park (5 min walk)',
+      transit: '🚌 VIP Road Crossing Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Multiple Asian Paints Sharod Samman winner celebrating intricate craft, poignant themes, and divine artistry.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Tarun+Sangha+Kolkata'
@@ -556,7 +556,7 @@
       zone: 'East',
       theme: 'Monumental Heritage Temple Replica & Chandannagar Lights',
       image: 'pandals/Dakshindari Youth Club.png',
-      transit: 'VIP Road / Ultadanga (Bidhan Nagar Road Station 8 min walk)',
+      transit: '🚌 VIP Road Ultadanga Bus • 🚆 Bidhan Nagar Road Train',
       transitType: 'bus',
       highlights: 'Giant temple architectural setups along the VIP Road corridor with spectacular night illuminations.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dakshindari+Youth+Club+Durga+Puja+Kolkata'
@@ -567,7 +567,7 @@
       zone: 'East',
       theme: 'Avant-Garde Installation Art & Thought-Provoking Themes',
       image: 'pandals/arjunpur amra sabai club.jpg',
-      transit: 'VIP Road / Baguiati Crossing (Dum Dum Metro link)',
+      transit: '🚌 Baguiati VIP Road Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Renowned for courageous modern concepts, environmental messages, and masterly artistic idols.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Arjunpur+Amra+Sabai+Club+Durga+Puja+Kolkata'
@@ -578,7 +578,7 @@
       zone: 'East',
       theme: 'Regal Palace Architecture & Massive Cultural Fairground',
       image: 'pandals/BJ Block Durga Puja.jpg',
-      transit: 'Karunamoyee Metro Station (6 min walk)',
+      transit: '🚇 Karunamoyee Metro (6 min walk) • 🚌 Salt Lake Tank 9 Bus',
       transitType: 'metro',
       highlights: 'Extensive fairground with festive food stalls, royal palace replicas, and traditional community adda.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+BJ+Block+Durga+Puja+Kolkata'
@@ -590,7 +590,7 @@
       zone: 'East',
       theme: 'Monumental Conceptual Architecture & Festive Mega Fairground',
       image: 'pandals/fd clock.png',
-      transit: 'Karunamoyee / Central Park Metro (6 min walk)',
+      transit: '🚇 Karunamoyee Metro (6 min walk) • 🚌 Salt Lake FD Block Bus',
       transitType: 'metro',
       highlights: 'Salt Lakes largest crowd-puller featuring colossal architectural replicas and bustling festive melas.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+FD+Block+Durga+Puja+Kolkata'
@@ -601,7 +601,7 @@
       zone: 'East',
       theme: 'Grand Thematic Architecture & Vibrant Salt Lake Community Fair',
       image: 'pandals/ib block.png',
-      transit: 'Salt Lake Stadium / Karunamoyee Metro (5 min walk)',
+      transit: '🚇 Salt Lake Stadium Metro (5 min walk) • 🚌 EM Bypass Bus',
       transitType: 'metro',
       highlights: 'Prominent Salt Lake township celebration known for beautiful conceptual pandals, grand community gatherings, and festive cultural functions.',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+IB+Block+Durga+Puja+Kolkata'
@@ -3782,22 +3782,26 @@
       return `
         <div class="glass-panel p-2.5 sm:p-7 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-2.5 sm:space-y-5 relative overflow-hidden group">
           <div class="space-y-2.5 sm:space-y-4">
-            <!-- Header Day Tag & Creator Badge -->
-            <div class="flex items-center justify-between flex-wrap gap-1.5 sm:gap-2">
-              <div class="flex items-center gap-1.5 sm:gap-2">
-                <span class="px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[10px] sm:text-xs font-bold">
-                  ${plan.day_tag || 'Festive Day'}
-                </span>
-                ${plan.date_str ? `<span class="text-[9px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/70 font-medium truncate max-w-[70px] sm:max-w-none">${plan.date_str}</span>` : ''}
-              </div>
+            <!-- Header: Puja Day Centered in Middle -->
+            <div class="flex items-center justify-center w-full">
+              <span class="px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[10px] sm:text-xs font-bold text-center border border-primary/20 dark:border-amber-400/30 shadow-sm">
+                ${plan.day_tag || 'Festive Day'}
+              </span>
+            </div>
 
-              <!-- Creator & Member Avatars Row -->
-              <div class="flex items-center gap-1.5">
-                <div class="flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30">
-                  <span class="text-xs sm:text-base">${plan.creator_avatar || '🌺'}</span>
-                  <span class="text-[10px] sm:text-xs font-bold text-on-surface dark:text-white truncate max-w-[55px] sm:max-w-[90px]">${plan.creator_name || 'Creator'}</span>
-                  <span class="creator-badge text-[8px] sm:text-[9px] px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded uppercase tracking-wider">Host</span>
+            <!-- Subheader: Proper Date (no truncation) & Creator (Icon + HOST only) -->
+            <div class="flex items-center justify-between gap-1.5 pt-0.5">
+              ${plan.date_str ? `
+                <div class="flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-on-surface-variant dark:text-[#ded5c7]">
+                  <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">calendar_month</span>
+                  <span>${plan.date_str}</span>
                 </div>
+              ` : '<div></div>'}
+
+              <!-- Creator: Just the Icon and "HOST" -->
+              <div class="flex items-center gap-1 px-1.5 py-0.5 sm:px-2.5 sm:py-0.5 rounded-lg sm:rounded-xl bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30 shrink-0" title="Plan Host">
+                <span class="text-xs sm:text-base">${plan.creator_avatar || '🌺'}</span>
+                <span class="creator-badge text-[8px] sm:text-[9px] px-1 py-0.2 sm:px-1.5 sm:py-0.5 rounded uppercase font-bold tracking-wider">Host</span>
               </div>
             </div>
 
@@ -4609,44 +4613,26 @@
       });
     });
 
-    // Pandal Primary Filters (Recommended Watch, Rajbari, Zones)
-    document.querySelectorAll('.pandal-filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.pandal-filter-btn').forEach(b => {
-          b.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'dark:bg-amber-400', 'dark:text-black');
-          b.classList.add('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
-        });
-        btn.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'dark:bg-amber-400', 'dark:text-black');
-        btn.classList.remove('bg-surface-container-high', 'text-on-surface', 'dark:bg-[#252016]', 'dark:text-[#f3ede2]');
+    // Pandal Filter Dropdown Menu Handler
+    const pandalDropdown = document.getElementById('pandal-filter-dropdown');
+    if (pandalDropdown) {
+      pandalDropdown.addEventListener('change', (e) => {
+        const val = e.target.value;
+        const searchInput = document.getElementById('pandal-search-input');
+        const q = searchInput ? searchInput.value : '';
 
-        const filter = btn.dataset.filter || 'recommended';
-        const subfilterContainer = document.getElementById('zone-subfilter-container');
-        if (filter === 'zones') {
-          subfilterContainer?.classList.remove('hidden');
-        } else {
-          subfilterContainer?.classList.add('hidden');
+        if (val === 'recommended') {
+          renderPandals('recommended', 'all', q);
+        } else if (val === 'rajbari') {
+          renderPandals('rajbari', 'all', q);
+        } else if (val === 'all') {
+          renderPandals('all', 'all', q);
+        } else if (val.startsWith('zone-')) {
+          const subzone = val.replace('zone-', '');
+          renderPandals('zones', subzone, q);
         }
-
-        const searchInput = document.getElementById('pandal-search-input');
-        renderPandals(filter, currentSubZone, searchInput ? searchInput.value : '');
       });
-    });
-
-    // Pandal Zone Sub-Pill Filters
-    document.querySelectorAll('.zone-pill-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.zone-pill-btn').forEach(b => {
-          b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-          b.classList.add('bg-surface-container', 'dark:bg-[#252016]', 'text-on-surface', 'dark:text-[#ded5c7]');
-        });
-        btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        btn.classList.remove('bg-surface-container', 'dark:bg-[#252016]', 'text-on-surface', 'dark:text-[#ded5c7]');
-
-        currentSubZone = btn.dataset.subzone || 'all';
-        const searchInput = document.getElementById('pandal-search-input');
-        renderPandals('zones', currentSubZone, searchInput ? searchInput.value : '');
-      });
-    });
+    }
 
     // Debounce helper to prevent excessive re-rendering during search input
     function debounce(fn, delay = 150) {
