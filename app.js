@@ -2425,7 +2425,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dugga Ma Asche',
-      artist: 'Infra',
       duration: '3:33',
       spotifyTrackId: '0qo204uS81FwkIQDYkQfCi',
       spotifyUrl: 'https://open.spotify.com/track/0qo204uS81FwkIQDYkQfCi',
@@ -2438,7 +2437,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dugga Ma',
-      artist: 'Arijit Singh, Arindom, Priyo Chattopadhyay, Raja Chanda, Prasen',
       duration: '4:30',
       spotifyTrackId: '0Z9Ok50nu5nxyJPP9jZqPM',
       spotifyUrl: 'https://open.spotify.com/track/0Z9Ok50nu5nxyJPP9jZqPM',
@@ -2451,7 +2449,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dhak Baja Kashor Baja',
-      artist: 'Shreya Ghoshal, Jeet Gannguli',
       duration: '4:25',
       spotifyTrackId: '0nspNLUZLF1RwbpP7uIwox',
       spotifyUrl: 'https://open.spotify.com/track/0nspNLUZLF1RwbpP7uIwox',
@@ -2464,7 +2461,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dugga Elo',
-      artist: 'Monali Thakur, Guddu',
       duration: '2:26',
       spotifyTrackId: '14mxoVNHA77ja4bre40T1p',
       spotifyUrl: 'https://open.spotify.com/track/14mxoVNHA77ja4bre40T1p',
@@ -2477,7 +2473,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Aamaar Dugga',
-      artist: 'Monali Thakur, Tyohaar, Anindya Chatterjee',
       duration: '3:19',
       spotifyTrackId: '1xcq7GEsaUKGNiK7NQliB9',
       spotifyUrl: 'https://open.spotify.com/track/1xcq7GEsaUKGNiK7NQliB9',
@@ -2490,7 +2485,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Hote Paare Na',
-      artist: 'Arindom, Prashmita Paul, Prasen',
       duration: '5:13',
       spotifyTrackId: '0dJGrIiwlyshcRuvMddU66',
       spotifyUrl: 'https://open.spotify.com/track/0dJGrIiwlyshcRuvMddU66',
@@ -2503,7 +2497,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Ebar Jeno Onno Rokom Pujo',
-      artist: 'Nakash Aziz, Antara Mitra, Indraadip Dasgupta, Prasen, Devin Star Tailes, Mimi, Nusrat Jahan',
       duration: '3:32',
       spotifyTrackId: '6HNbprsATKyydJ7YdrLuPd',
       spotifyUrl: 'https://open.spotify.com/track/6HNbprsATKyydJ7YdrLuPd',
@@ -2516,7 +2509,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Gouri Elo Dekhe Jalo',
-      artist: 'Dohar',
       duration: '5:39',
       spotifyTrackId: '5gGAG8v5UAeUW7kxq9BK0y',
       spotifyUrl: 'https://open.spotify.com/track/5gGAG8v5UAeUW7kxq9BK0y',
@@ -2529,7 +2521,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Elo Je Maa',
-      artist: 'Abhijeet',
       duration: '5:07',
       spotifyTrackId: '21rIO2dhW37d8CVJBT0Ass',
       spotifyUrl: 'https://open.spotify.com/track/21rIO2dhW37d8CVJBT0Ass',
@@ -2542,7 +2533,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dhaker Taley',
-      artist: 'Abhijeet, Parineet, Sudipto',
       duration: '4:42',
       spotifyTrackId: '0lbpCmeKfDa8O8rwezno3i',
       spotifyUrl: 'https://open.spotify.com/track/0lbpCmeKfDa8O8rwezno3i',
@@ -2555,7 +2545,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Ailo Uma Barite',
-      artist: 'Antara Nandy, MONAMI GHOSH',
       duration: '3:52',
       spotifyTrackId: '5dOHCKsalASHbAn2mZCWgq',
       spotifyUrl: 'https://open.spotify.com/track/5dOHCKsalASHbAn2mZCWgq',
@@ -2568,7 +2557,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Asatoma Sadgamaya',
-      artist: 'Arijit Singh, Indraadip Dasgupta, Srijato',
       duration: '5:18',
       spotifyTrackId: '3tLUTDrVx8lnOEYuStzbT5',
       spotifyUrl: 'https://open.spotify.com/track/3tLUTDrVx8lnOEYuStzbT5',
@@ -2581,7 +2569,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Dakatiya Banshi (From "Bohurupi")',
-      artist: 'Shrestha D., Bonnie Chakraborty, Noni Chora Das Baul',
       duration: '3:56',
       spotifyTrackId: '6XbWY7TpYBcdBCBiTOh5EA',
       spotifyUrl: 'https://open.spotify.com/track/6XbWY7TpYBcdBCBiTOh5EA',
@@ -2594,7 +2581,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Jaago Uma',
-      artist: 'Rupankar Bagchi',
       duration: '5:17',
       spotifyTrackId: '4MQPlquCDaltOs006z65aG',
       spotifyUrl: 'https://open.spotify.com/track/4MQPlquCDaltOs006z65aG',
@@ -2607,7 +2593,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Aamaar Dugga',
-      artist: 'Monali Thakur',
       duration: '3:19',
       spotifyTrackId: '5fN2XXtz5pAHo0iRTMfQnj',
       spotifyUrl: 'https://open.spotify.com/track/5fN2XXtz5pAHo0iRTMfQnj',
@@ -2620,7 +2605,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Emon Madhur Sandhyay',
-      artist: 'Asha Bhosle, R. D. Burman',
       duration: '5:43',
       spotifyTrackId: '7hQN6fL1OI0L6O2qkfTsBk',
       spotifyUrl: 'https://open.spotify.com/track/7hQN6fL1OI0L6O2qkfTsBk',
@@ -2633,7 +2617,6 @@
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
       title: 'Aar Koto Raat Eka Thakbo',
-      artist: 'Bappi Lahiri, Asha Bhosle',
       duration: '6:13',
       spotifyTrackId: '17gIko1QQ6f19KFdLfy29u',
       spotifyUrl: 'https://open.spotify.com/track/17gIko1QQ6f19KFdLfy29u',
@@ -2646,7 +2629,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Tabo Achintya Rupa - Charita - Mahima',
-      artist: 'Manabendra Mukherjee',
       duration: '3:58',
       spotifyTrackId: '0BAwwUhO60U01O9c1OxHfe',
       spotifyUrl: 'https://open.spotify.com/track/0BAwwUhO60U01O9c1OxHfe',
@@ -2659,7 +2641,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Ogo Amar Agamani - Alo',
-      artist: 'Sipra Basu',
       duration: '3:19',
       spotifyTrackId: '3w0q9HtvdnU19IdAbOl1XQ',
       spotifyUrl: 'https://open.spotify.com/track/3w0q9HtvdnU19IdAbOl1XQ',
@@ -2672,7 +2653,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Jago Durga Dashapraharanadharinee',
-      artist: 'Dwijen Mukherjee',
       duration: '1:47',
       spotifyTrackId: '0hJmNTKYGevHLMIWvCUE8c',
       spotifyUrl: 'https://open.spotify.com/track/0hJmNTKYGevHLMIWvCUE8c',
@@ -2685,7 +2665,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Bajlo Tomar Aalor Benu With Narration',
-      artist: 'Supriti Ghosh',
       duration: '4:23',
       spotifyTrackId: '3FrWOsMayIJcPWduMVEVF6',
       spotifyUrl: 'https://open.spotify.com/track/3FrWOsMayIJcPWduMVEVF6',
@@ -2698,7 +2677,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Simhastha Sashisekhara',
-      artist: 'Pankaj Mullick',
       duration: '0:54',
       spotifyTrackId: '2ArskmlOgluJZ86RD1z0qq',
       spotifyUrl: 'https://open.spotify.com/track/2ArskmlOgluJZ86RD1z0qq',
@@ -2711,7 +2689,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Ya Chandi',
-      artist: 'Pankaj Mullick',
       duration: '1:36',
       spotifyTrackId: '0SEnZ1JaMXSQr32TOupRQF',
       spotifyUrl: 'https://open.spotify.com/track/0SEnZ1JaMXSQr32TOupRQF',
@@ -2724,7 +2701,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Aham Rudrebhirvasubhischara',
-      artist: 'Pankaj Mullick',
       duration: '3:59',
       spotifyTrackId: '4mnYGUG890pny5QTjCaZWr',
       spotifyUrl: 'https://open.spotify.com/track/4mnYGUG890pny5QTjCaZWr',
@@ -2737,7 +2713,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Subhra Sankha - Rabe',
-      artist: 'Shyamal Mitra, Ashima Bhattacharya, Aarti Mukherji',
       duration: '2:48',
       spotifyTrackId: '2iKRC4L9MihhRVlGBRb3H8',
       spotifyUrl: 'https://open.spotify.com/track/2iKRC4L9MihhRVlGBRb3H8',
@@ -2750,7 +2725,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Jaya Jaya Japyajaye',
-      artist: 'Pankaj Mullick',
       duration: '2:31',
       spotifyTrackId: '5CGYig9Hg49EL6g6NlxNhv',
       spotifyUrl: 'https://open.spotify.com/track/5CGYig9Hg49EL6g6NlxNhv',
@@ -2763,7 +2737,6 @@
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
       title: 'Akhila - Bimane Taba Jaya - Gane',
-      artist: 'Krishna Dasgupta',
       duration: '4:01',
       spotifyTrackId: '742moqjpE88LUEAs1W9yVY',
       spotifyUrl: 'https://open.spotify.com/track/742moqjpE88LUEAs1W9yVY',
@@ -2796,7 +2769,7 @@
       song.youtubeUrl = `https://www.youtube.com/watch?v=${ytId}`;
       song.youtubeEmbedUrl = `https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&enablejsapi=1`;
     } else {
-      const q = encodeURIComponent(`${song.title} ${song.artist} Durga Puja`);
+      const q = encodeURIComponent(`${song.title} Durga Puja`);
       song.youtubeUrl = `https://www.youtube.com/results?search_query=${q}`;
       const parentPl = PUJA_RADIO_PLAYLISTS[song.playlist];
       song.youtubeEmbedUrl = parentPl ? parentPl.youtubeEmbedUrl : `https://www.youtube-nocookie.com/embed/sf6usUybi3k?list=PLNW14fSkx0r8&autoplay=1&enablejsapi=1`;
@@ -2863,7 +2836,10 @@
     if (activeRadioItem.type === 'song') {
       const song = activeRadioItem.song;
       if (titleEl) titleEl.textContent = song.title;
-      if (artistEl) artistEl.textContent = song.artist;
+      if (artistEl) {
+        artistEl.textContent = '';
+        artistEl.classList.add('hidden');
+      }
       if (badgeEl) badgeEl.textContent = `• ${song.playlistName}`;
 
       if (extLinksEl) {
@@ -2908,7 +2884,10 @@
     } else if (activeRadioItem.type === 'playlist') {
       const pl = activeRadioItem.playlist;
       if (titleEl) titleEl.textContent = pl.name;
-      if (artistEl) artistEl.textContent = pl.description;
+      if (artistEl) {
+        artistEl.textContent = pl.description;
+        artistEl.classList.remove('hidden');
+      }
       if (badgeEl) badgeEl.textContent = `• Official Playlist`;
 
       if (extLinksEl) {
@@ -3000,8 +2979,7 @@
           </div>
           <div class="min-w-0 flex-1">
             <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">${song.title}</h4>
-            <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] truncate">${song.artist}</p>
-            <div class="flex items-center gap-1.5 mt-0.5">
+            <div class="flex items-center gap-1.5 mt-1">
               <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
               <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full ${song.playlist === 'sharodiya' ? 'bg-[#1DB954]/15 text-[#1DB954] dark:text-[#1ed760]' : 'bg-amber-400/15 text-primary dark:text-amber-300'}">#${index + 1}</span>
             </div>
@@ -3131,8 +3109,7 @@
               <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white break-words leading-snug group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">
                 ${song.title}
               </h4>
-              <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] break-words leading-tight mt-0.5">${song.artist}</p>
-              <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
+              <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60 mt-0.5 block">${song.duration}</span>
             </div>
           </div>
 
