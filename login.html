@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In & Register | Akalbodhon - Kolkata Durga Puja 2026</title>
-  <meta name="description" content="Sign in or create your account on Akalbodhon with Google OAuth or Twilio Phone OTP to build custom Puja plans, pick sacred avatars, and share itineraries." />
+  <meta name="description" content="Sign in or create your Akalbodhon devotee account with User ID and Password to save your Puja itineraries, pandals, and sacred plans." />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -84,7 +84,7 @@
           Devotee Sign In
         </h1>
         <p id="auth-subheading" class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-xs mx-auto">
-          Access custom Puja itineraries, pick sacred festival avatars, and invite friends.
+          Access your personal Puja itineraries, pandals, and saved details.
         </p>
       </div>
 
@@ -103,19 +103,18 @@
       <!-- ---------------- LOGGED-IN PROFILE VIEW ---------------- -->
       <div id="logged-in-view" class="hidden space-y-5 text-center">
         <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-amber-400 shadow-md flex items-center justify-center bg-primary text-3xl text-white">
-          <img id="logged-avatar-img" src="" alt="Avatar" class="w-full h-full object-cover hidden" />
           <span id="logged-avatar-emoji">🪔</span>
         </div>
         <div>
-          <h3 id="logged-name" class="font-display text-xl font-bold text-on-surface dark:text-white">Devotee Name</h3>
-          <p id="logged-identifier" class="text-xs text-on-surface-variant dark:text-[#ded5c7]">devotee@example.com</p>
+          <h3 id="logged-name" class="font-display text-xl font-bold text-on-surface dark:text-white">Devotee</h3>
+          <p id="logged-identifier" class="text-xs text-on-surface-variant dark:text-[#ded5c7] font-mono">user_id</p>
           <span class="inline-block mt-2 px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
-            Authenticated • Supabase & Twilio Synced
+            Authenticated • Supabase Synced
           </span>
         </div>
         <div class="pt-4 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
-          <a href="index.html#plans" class="flex-1 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
-            <span class="material-symbols-outlined text-[16px]">calendar_month</span> Go to Itinerary
+          <a href="index.html#saved" class="flex-1 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">bookmark</span> Saved Itinerary
           </a>
           <button id="signout-btn" class="flex-1 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 font-bold text-xs hover:bg-red-500/10 transition-all flex items-center justify-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">logout</span> Sign Out
@@ -126,120 +125,65 @@
       <!-- ---------------- AUTH CONTAINER ---------------- -->
       <div id="auth-flow-container" class="space-y-5">
         
-        <!-- Google Sign In Button -->
-        <button id="google-btn" type="button" class="w-full py-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-white font-semibold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3 cursor-pointer">
-          <svg class="w-5 h-5" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span>Continue with Google</span>
-        </button>
-
-        <!-- Divider -->
-        <div class="flex items-center gap-3">
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">OR</span>
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-        </div>
-
-        <!-- Auth Method Selector (Phone SMS OTP / Email & Password) -->
+        <!-- Auth Mode Switcher (Sign In vs Create Account) -->
         <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-          <button id="subtab-phone" class="flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">
-            📱 Phone OTP (Twilio)
+          <button id="tab-login" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">
+            Sign In
           </button>
-          <button id="subtab-email" class="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">
-            ✉️ Email & Password
+          <button id="tab-signup" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">
+            Create Account
           </button>
         </div>
 
-        <!-- 1. PHONE OTP METHOD -->
-        <div id="phone-method-section" class="space-y-4">
-          
-          <!-- Phone Step 1: Input & Send -->
-          <div id="phone-input-step" class="space-y-3">
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">
-                Mobile Number (Twilio SMS OTP)
-              </label>
-              <div class="flex gap-2">
-                <select id="country-code-select" class="py-2.5 px-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs font-medium text-on-surface dark:text-white focus:outline-none">
-                  <option value="+91" selected>India (+91)</option>
-                  <option value="+1">USA / Canada (+1)</option>
-                  <option value="+44">UK (+44)</option>
-                  <option value="+61">Australia (+61)</option>
-                  <option value="+971">UAE (+971)</option>
-                  <option value="+65">Singapore (+65)</option>
-                  <option value="+49">Germany (+49)</option>
-                </select>
-                <input type="tel" id="phone-number-input" placeholder="9876543210" maxlength="15" class="flex-1 py-2.5 px-3.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-              </div>
-            </div>
-
-            <button id="send-otp-btn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">sms</span>
-              <span id="send-otp-text">Send Sacred OTP</span>
-            </button>
-          </div>
-
-          <!-- Phone Step 2: 6-Digit OTP Verification -->
-          <div id="phone-verify-step" class="hidden space-y-4">
-            <div class="space-y-2 text-center">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">
-                Enter 6-Digit SMS Verification Code
-              </label>
-              <div class="flex justify-center gap-2 sm:gap-2.5">
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="0" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="1" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="2" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="3" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="4" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-                <input type="text" maxlength="1" inputmode="numeric" data-otp-box="5" class="otp-box w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-              </div>
-            </div>
-
-            <button id="verify-otp-btn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">verified_user</span>
-              <span id="verify-otp-text">Verify & Sign In</span>
-            </button>
-
-            <div class="flex items-center justify-between text-xs pt-2 border-t border-outline-variant/20 dark:border-amber-400/20">
-              <button id="change-phone-btn" type="button" class="text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300">
-                ← Change Number
-              </button>
-              <button id="resend-otp-btn" type="button" disabled class="font-semibold text-neutral-400 cursor-not-allowed">
-                <span id="resend-timer-text">Resend in 30s</span>
-              </button>
+        <!-- Unified Form -->
+        <form id="auth-form" class="space-y-4" onsubmit="return false;">
+          <!-- Name Field (Visible during Create Account) -->
+          <div id="name-field" class="space-y-1 hidden">
+            <label for="name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Name</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
+              <input type="text" id="name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
             </div>
           </div>
-        </div>
 
-        <!-- 2. EMAIL & PASSWORD METHOD -->
-        <form id="email-method-section" class="hidden space-y-4" onsubmit="return false;">
-          <div class="space-y-1">
-            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
-            <input type="email" id="email-input" placeholder="devotee@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-          </div>
-
+          <!-- User ID Input with Dynamic Counter (_/_) -->
           <div class="space-y-1">
             <div class="flex justify-between items-center">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200">Password</label>
-              <button type="button" id="toggle-pwd-btn" class="text-[11px] text-primary dark:text-amber-300 hover:underline">Show</button>
+              <label for="userid-input" class="text-xs font-semibold text-on-surface dark:text-amber-200">User ID</label>
+              <span id="userid-counter" class="text-[11px] font-mono font-bold text-primary dark:text-amber-300">(0/10)</span>
             </div>
-            <input type="password" id="password-input" placeholder="Min 5 characters" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">badge</span>
+              <input type="text" id="userid-input" maxlength="10" autocomplete="username" placeholder="Enter User ID" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+            </div>
           </div>
 
-          <button id="email-submit-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <!-- Password Input with Dynamic Counter (_/_) -->
+          <div class="space-y-1">
+            <div class="flex justify-between items-center">
+              <label for="password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200">Password</label>
+              <div class="flex items-center gap-2">
+                <span id="password-counter" class="text-[11px] font-mono font-bold text-primary dark:text-amber-300">(0/5)</span>
+                <button type="button" id="toggle-pwd-btn" class="text-[11px] text-primary dark:text-amber-300 hover:underline cursor-pointer">Show</button>
+              </div>
+            </div>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
+              <input type="password" id="password-input" autocomplete="current-password" placeholder="Enter password" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <button id="submit-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">login</span>
-            <span>Sign In with Email</span>
+            <span id="submit-label">Sign In</span>
           </button>
         </form>
 
       </div>
 
       <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">
-        Signing in is optional. You can explore all pandals, routes, and festival radio freely!
+        Your saved pandals, sacred food stops, and itineraries sync across all devices with your devotee account.
       </p>
     </div>
   </main>
@@ -278,40 +222,27 @@
     const successMsg = document.getElementById('success-msg');
     const authFlowContainer = document.getElementById('auth-flow-container');
     const loggedInView = document.getElementById('logged-in-view');
-    const loggedAvatarImg = document.getElementById('logged-avatar-img');
     const loggedAvatarEmoji = document.getElementById('logged-avatar-emoji');
     const loggedName = document.getElementById('logged-name');
     const loggedIdentifier = document.getElementById('logged-identifier');
     const signoutBtn = document.getElementById('signout-btn');
 
-    // Phone / Email Subtabs
-    const subtabPhone = document.getElementById('subtab-phone');
-    const subtabEmail = document.getElementById('subtab-email');
-    const phoneSection = document.getElementById('phone-method-section');
-    const emailSection = document.getElementById('email-method-section');
-
-    // Phone OTP Elements
-    const phoneInputStep = document.getElementById('phone-input-step');
-    const phoneVerifyStep = document.getElementById('phone-verify-step');
-    const countryCodeSelect = document.getElementById('country-code-select');
-    const phoneNumberInput = document.getElementById('phone-number-input');
-    const sendOtpBtn = document.getElementById('send-otp-btn');
-    const sendOtpText = document.getElementById('send-otp-text');
-    const verifyOtpBtn = document.getElementById('verify-otp-btn');
-    const verifyOtpText = document.getElementById('verify-otp-text');
-    const changePhoneBtn = document.getElementById('change-phone-btn');
-    const resendOtpBtn = document.getElementById('resend-otp-btn');
-    const resendTimerText = document.getElementById('resend-timer-text');
-    const otpBoxes = document.querySelectorAll('.otp-box');
-
-    // Email Elements
-    const emailInput = document.getElementById('email-input');
+    const authHeading = document.getElementById('auth-heading');
+    const authSubheading = document.getElementById('auth-subheading');
+    const tabLogin = document.getElementById('tab-login');
+    const tabSignup = document.getElementById('tab-signup');
+    const nameField = document.getElementById('name-field');
+    const nameInput = document.getElementById('name-input');
+    const useridInput = document.getElementById('userid-input');
+    const useridCounter = document.getElementById('userid-counter');
     const pwdInput = document.getElementById('password-input');
+    const pwdCounter = document.getElementById('password-counter');
     const togglePwdBtn = document.getElementById('toggle-pwd-btn');
-    const emailSubmitBtn = document.getElementById('email-submit-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const submitLabel = document.getElementById('submit-label');
+    const authForm = document.getElementById('auth-form');
 
-    let resendCountdown = 30;
-    let resendInterval = null;
+    let currentMode = 'login';
 
     function showAlert(msg, isError = true) {
       if (isError) {
@@ -330,44 +261,92 @@
       successAlert.classList.add('hidden');
     }
 
-    // Switch Tabs
-    subtabPhone.onclick = () => {
-      subtabPhone.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-      subtabEmail.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
-      phoneSection.classList.remove('hidden');
-      emailSection.classList.add('hidden');
-      clearAlerts();
-    };
+    // Dynamic Counter Functionality
+    function updateDynamicCounter(inputEl, counterEl, limit, mode = 'length') {
+      if (!counterEl || !inputEl) return;
+      const val = inputEl.value || '';
+      if (mode === 'length') {
+        const len = Math.min(val.length, limit);
+        counterEl.textContent = `(${len}/${limit})`;
+      } else if (mode === 'alphanumeric') {
+        const matches = val.match(/[a-zA-Z0-9]/g) || [];
+        const count = matches.length;
+        counterEl.textContent = `(${count}/${limit})`;
+        if (count >= limit) {
+          counterEl.classList.add('text-emerald-500', 'dark:text-emerald-400');
+          counterEl.classList.remove('text-primary', 'dark:text-amber-300');
+        } else {
+          counterEl.classList.remove('text-emerald-500', 'dark:text-emerald-400');
+          counterEl.classList.add('text-primary', 'dark:text-amber-300');
+        }
+      }
+    }
 
-    subtabEmail.onclick = () => {
-      subtabEmail.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-      subtabPhone.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
-      emailSection.classList.remove('hidden');
-      phoneSection.classList.add('hidden');
-      clearAlerts();
-    };
+    useridInput.addEventListener('input', () => {
+      updateDynamicCounter(useridInput, useridCounter, 10, 'length');
+    });
 
-    // Toggle Password
-    togglePwdBtn.onclick = () => {
+    pwdInput.addEventListener('input', () => {
+      updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
+    });
+
+    // Toggle Password Visibility
+    togglePwdBtn.addEventListener('click', () => {
       const isPwd = pwdInput.type === 'password';
       pwdInput.type = isPwd ? 'text' : 'password';
       togglePwdBtn.textContent = isPwd ? 'Hide' : 'Show';
-    };
+    });
 
-    // 1. Check Existing Session on Mount
-    async function checkCurrentSession() {
-      if (supabaseClient) {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session?.user) {
-          showLoggedInState(session.user);
-          return;
-        }
+    // Switch Auth Mode
+    function setAuthMode(mode) {
+      currentMode = mode;
+      clearAlerts();
+      if (mode === 'signup') {
+        tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
+        tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
+        nameField.classList.remove('hidden');
+        authHeading.textContent = 'Create Devotee Account';
+        authSubheading.textContent = 'Join the Akalbodhon festival community to design and save custom Puja itineraries.';
+        submitLabel.textContent = 'Create Account';
+      } else {
+        tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
+        tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
+        nameField.classList.add('hidden');
+        authHeading.textContent = 'Devotee Sign In';
+        authSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
+        submitLabel.textContent = 'Sign In';
       }
+    }
+
+    tabLogin.addEventListener('click', () => setAuthMode('login'));
+    tabSignup.addEventListener('click', () => setAuthMode('signup'));
+
+    // SHA-256 password hashing
+    async function hashPassword(str) {
+      if (!str) return '';
+      try {
+        const enc = new TextEncoder().encode(str + '_akalbodhon_salt_2026');
+        const buf = await crypto.subtle.digest('SHA-256', enc);
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          hash = ((hash << 5) - hash) + str.charCodeAt(i);
+          hash |= 0;
+        }
+        return 'fb_' + Math.abs(hash);
+      }
+    }
+
+    // Check Existing Session
+    function checkCurrentSession() {
       const local = localStorage.getItem('akalbodhon_user_profile');
       if (local) {
         try {
           const user = JSON.parse(local);
-          showLoggedInState(user);
+          if (user && (user.id || user.user_id)) {
+            showLoggedInState(user);
+          }
         } catch (e) {}
       }
     }
@@ -375,256 +354,193 @@
     function showLoggedInState(user) {
       authFlowContainer.classList.add('hidden');
       loggedInView.classList.remove('hidden');
-      loggedName.textContent = user.user_metadata?.full_name || user.username || 'Sacred Devotee';
-      loggedIdentifier.textContent = user.email || user.phone || user.identifier || 'Devotee';
-      
-      const avatarUrl = user.user_metadata?.avatar_url || user.custom_avatar_url;
-      if (avatarUrl) {
-        loggedAvatarImg.src = avatarUrl;
-        loggedAvatarImg.classList.remove('hidden');
-        loggedAvatarEmoji.classList.add('hidden');
-      } else {
-        loggedAvatarImg.classList.add('hidden');
-        loggedAvatarEmoji.classList.remove('hidden');
-        loggedAvatarEmoji.textContent = user.avatar || '🪔';
-      }
+      loggedName.textContent = user.username || user.full_name || 'Devotee';
+      loggedIdentifier.textContent = user.user_id || user.identifier || user.id || 'User ID';
+      loggedAvatarEmoji.textContent = user.avatar || '🪔';
     }
 
     // Sign Out
     signoutBtn.onclick = async () => {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut().catch(() => {});
-      }
       localStorage.removeItem('akalbodhon_user_profile');
+      localStorage.setItem('akalbodhon_bookmarks', JSON.stringify([]));
+      localStorage.removeItem('akalbodhon_custom_plans');
       loggedInView.classList.add('hidden');
       authFlowContainer.classList.remove('hidden');
       showAlert('Signed out successfully.', false);
     };
 
-    // 2. Google OAuth
-    document.getElementById('google-btn').onclick = async () => {
+    // Form Submit Handler
+    async function handleAuth() {
       clearAlerts();
-      if (!supabaseClient) {
-        showAlert('Supabase client not initialized.');
+      const rawUserId = useridInput.value.trim();
+      const rawPassword = pwdInput.value;
+      const rawName = nameInput.value.trim();
+
+      if (!rawUserId) {
+        showAlert('Please enter your User ID.');
         return;
       }
-      try {
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin + window.location.pathname
-          }
-        });
-        if (error) throw error;
-      } catch (err) {
-        showAlert(err.message || 'Google sign in failed.');
+      if (rawUserId.length > 10) {
+        showAlert('Please enter a valid User ID.');
+        return;
       }
-    };
 
-    // 3. Twilio Phone OTP - Send Code
-    function getFullPhone() {
-      const code = countryCodeSelect.value.replace(/\D/g, '');
-      const number = phoneNumberInput.value.replace(/\D/g, '');
-      return `+${code}${number}`;
+      const alphanumericMatches = rawPassword.match(/[a-zA-Z0-9]/g) || [];
+      if (alphanumericMatches.length < 5) {
+        showAlert('Please enter a valid password.');
+        return;
+      }
+
+      const userIdNormalized = rawUserId.toLowerCase();
+      const originalLabel = submitLabel.textContent;
+      submitBtn.disabled = true;
+      submitLabel.textContent = currentMode === 'signup' ? 'Creating Account...' : 'Signing In...';
+
+      try {
+        const passwordHash = await hashPassword(rawPassword);
+
+        if (currentMode === 'signup') {
+          // --- CREATE ACCOUNT ---
+          const displayName = rawName || rawUserId;
+
+          if (supabaseClient) {
+            const { data: existing } = await supabaseClient
+              .from('profiles')
+              .select('id, user_id, identifier')
+              .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`);
+
+            if (existing && existing.length > 0) {
+              showAlert('This User ID is already taken. Please choose another.');
+              return;
+            }
+          }
+
+          let initialSaved = [];
+          try {
+            const b = localStorage.getItem('akalbodhon_bookmarks');
+            if (b) initialSaved = JSON.parse(b);
+          } catch (e) {}
+
+          let initialPlans = [];
+          try {
+            const p = localStorage.getItem('akalbodhon_custom_plans');
+            if (p) initialPlans = JSON.parse(p);
+          } catch (e) {}
+
+          const newProfile = {
+            id: userIdNormalized,
+            user_id: rawUserId,
+            identifier: rawUserId,
+            identifier_type: 'userid',
+            username: displayName,
+            avatar: '🪔',
+            avatar_type: 'puja',
+            password_hash: passwordHash,
+            saved_items: initialSaved,
+            custom_plans: initialPlans,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
+
+          if (supabaseClient) {
+            const { error: insertErr } = await supabaseClient
+              .from('profiles')
+              .insert(newProfile);
+
+            if (insertErr) {
+              showAlert(`Unable to create account: ${insertErr.message || 'Please try again.'}`);
+              return;
+            }
+          }
+
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(newProfile));
+          showAlert(`Welcome ${displayName}! Your account has been created. Redirecting...`, false);
+          setTimeout(() => { window.location.href = 'index.html#saved'; }, 900);
+
+        } else {
+          // --- SIGN IN ---
+          let foundProfile = null;
+
+          if (supabaseClient) {
+            const { data, error: fetchErr } = await supabaseClient
+              .from('profiles')
+              .select('*')
+              .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`)
+              .limit(1);
+
+            if (!fetchErr && data && data.length > 0) {
+              foundProfile = data[0];
+            }
+          }
+
+          if (!foundProfile) {
+            const cached = localStorage.getItem('akalbodhon_user_profile');
+            if (cached) {
+              try {
+                const p = JSON.parse(cached);
+                if (p.id?.toLowerCase() === userIdNormalized || p.user_id === rawUserId) {
+                  foundProfile = p;
+                }
+              } catch (e) {}
+            }
+          }
+
+          if (!foundProfile) {
+            showAlert('No devotee account found with this User ID. Please create an account.');
+            return;
+          }
+
+          if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
+            showAlert('Incorrect password. Please try again.');
+            return;
+          }
+
+          // Fetch & restore saved details stored in Supabase under that userid
+          const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
+          localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
+
+          if (Array.isArray(foundProfile.custom_plans)) {
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(foundProfile.custom_plans));
+          }
+
+          const authenticatedUser = {
+            id: foundProfile.id,
+            user_id: foundProfile.user_id || foundProfile.id,
+            identifier: foundProfile.identifier || foundProfile.id,
+            identifier_type: 'userid',
+            username: foundProfile.username || 'Devotee',
+            avatar: foundProfile.avatar || '🪔',
+            custom_avatar_url: foundProfile.custom_avatar_url || null,
+            saved_items: restoredSavedItems,
+            custom_plans: foundProfile.custom_plans || [],
+            created_at: foundProfile.created_at
+          };
+
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(authenticatedUser));
+          showAlert(`Welcome back, ${authenticatedUser.username}! Your saved details are loaded. Redirecting...`, false);
+          setTimeout(() => { window.location.href = 'index.html#saved'; }, 900);
+        }
+
+      } catch (err) {
+        console.error('Auth error:', err);
+        showAlert('An unexpected error occurred. Please try again.');
+      } finally {
+        submitBtn.disabled = false;
+        submitLabel.textContent = originalLabel;
+      }
     }
 
-    sendOtpBtn.onclick = async () => {
-      clearAlerts();
-      const phone = getFullPhone();
-      const rawNumber = phoneNumberInput.value.replace(/\D/g, '');
-
-      if (rawNumber.length < 10) {
-        showAlert('Please enter a valid 10-digit mobile number.');
-        return;
-      }
-
-      sendOtpBtn.disabled = true;
-      sendOtpText.textContent = 'Sending SMS via Twilio...';
-
-      try {
-        if (!supabaseClient) throw new Error('Supabase client unavailable.');
-        const { error } = await supabaseClient.auth.signInWithOtp({
-          phone: phone
-        });
-        if (error) throw error;
-
-        showAlert(`Sacred OTP sent to ${phone}`, false);
-        phoneInputStep.classList.add('hidden');
-        phoneVerifyStep.classList.remove('hidden');
-        startResendTimer();
-        otpBoxes[0].focus();
-      } catch (err) {
-        showAlert(err.message || 'Failed to send OTP. Please check Twilio configuration.');
-      } finally {
-        sendOtpBtn.disabled = false;
-        sendOtpText.textContent = 'Send Sacred OTP';
-      }
-    };
-
-    // OTP Inputs Auto-Chaining
-    otpBoxes.forEach((box, index) => {
-      box.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/\D/g, '');
-        if (val.length > 1) {
-          const chars = val.slice(0, 6).split('');
-          chars.forEach((c, i) => {
-            if (index + i < 6) otpBoxes[index + i].value = c;
-          });
-          const target = Math.min(index + chars.length, 5);
-          otpBoxes[target].focus();
-          return;
-        }
-        box.value = val;
-        if (val && index < 5) otpBoxes[index + 1].focus();
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && index > 0) {
-          otpBoxes[index - 1].focus();
-        }
-      });
+    submitBtn.addEventListener('click', handleAuth);
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleAuth();
     });
 
-    // Change Phone
-    changePhoneBtn.onclick = () => {
-      phoneVerifyStep.classList.add('hidden');
-      phoneInputStep.classList.remove('hidden');
-      clearAlerts();
-      if (resendInterval) clearInterval(resendInterval);
-    };
+    // Initialize counters
+    updateDynamicCounter(useridInput, useridCounter, 10, 'length');
+    updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
 
-    // Resend Timer
-    function startResendTimer() {
-      if (resendInterval) clearInterval(resendInterval);
-      resendCountdown = 30;
-      resendOtpBtn.disabled = true;
-      resendOtpBtn.className = "font-semibold text-neutral-400 cursor-not-allowed";
-
-      resendInterval = setInterval(() => {
-        if (resendCountdown > 1) {
-          resendCountdown--;
-          resendTimerText.textContent = `Resend in ${resendCountdown}s`;
-        } else {
-          clearInterval(resendInterval);
-          resendOtpBtn.disabled = false;
-          resendOtpBtn.className = "font-semibold text-primary dark:text-amber-300 hover:underline cursor-pointer";
-          resendTimerText.textContent = 'Resend OTP';
-        }
-      }, 1000);
-    }
-
-    resendOtpBtn.onclick = () => {
-      if (resendOtpBtn.disabled) return;
-      sendOtpBtn.click();
-    };
-
-    // Verify OTP
-    verifyOtpBtn.onclick = async () => {
-      clearAlerts();
-      let otpCode = '';
-      otpBoxes.forEach(b => { otpCode += b.value; });
-
-      if (otpCode.length !== 6) {
-        showAlert('Please enter the full 6-digit OTP code.');
-        return;
-      }
-
-      const phone = getFullPhone();
-      verifyOtpBtn.disabled = true;
-      verifyOtpText.textContent = 'Verifying...';
-
-      try {
-        const { data, error } = await supabaseClient.auth.verifyOtp({
-          phone: phone,
-          token: otpCode,
-          type: 'sms'
-        });
-
-        if (error) throw error;
-
-        showAlert('Phone verified successfully! Redirecting...', false);
-        const user = data.user;
-        const localUser = {
-          id: user.id,
-          identifier: phone,
-          identifier_type: 'phone',
-          username: user.user_metadata?.full_name || 'Devotee ' + phone.slice(-4),
-          avatar: '🪔',
-          created_at: new Date().toISOString()
-        };
-        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(localUser));
-
-        setTimeout(() => {
-          window.location.href = 'index.html#plans';
-        }, 1000);
-      } catch (err) {
-        showAlert(err.message || 'Invalid or expired OTP code.');
-      } finally {
-        verifyOtpBtn.disabled = false;
-        verifyOtpText.textContent = 'Verify & Sign In';
-      }
-    };
-
-    // 4. Email Sign In
-    emailSubmitBtn.onclick = async () => {
-      clearAlerts();
-      const email = emailInput.value.trim();
-      const pwd = pwdInput.value;
-
-      if (!email || !email.includes('@')) {
-        showAlert('Please enter a valid email address.');
-        return;
-      }
-      if (!pwd || pwd.length < 5) {
-        showAlert('Password must be at least 5 characters.');
-        return;
-      }
-
-      emailSubmitBtn.disabled = true;
-      try {
-        let authUser = null;
-        if (supabaseClient) {
-          // Attempt sign in, if fails attempt sign up
-          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: pwd });
-          if (error && error.message.includes('Invalid login credentials')) {
-            const { data: signUpData, error: signUpErr } = await supabaseClient.auth.signUp({ email, password: pwd });
-            if (signUpErr) throw signUpErr;
-            authUser = signUpData.user;
-          } else if (error) {
-            throw error;
-          } else {
-            authUser = data.user;
-          }
-        }
-
-        const localUser = {
-          id: authUser?.id || ('user_' + btoa(email).slice(0, 12)),
-          identifier: email,
-          identifier_type: 'email',
-          username: email.split('@')[0],
-          avatar: '🪔',
-          created_at: new Date().toISOString()
-        };
-        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(localUser));
-        showAlert(`Welcome ${localUser.username}! Redirecting...`, false);
-        setTimeout(() => { window.location.href = 'index.html#plans'; }, 1000);
-      } catch (err) {
-        showAlert(err.message || 'Authentication failed.');
-      } finally {
-        emailSubmitBtn.disabled = false;
-      }
-    };
-
-    // Listen for Auth State changes (OAuth redirects)
-    if (supabaseClient) {
-      supabaseClient.auth.onAuthStateChange(async (event, session) => {
-        if (session?.user) {
-          showLoggedInState(session.user);
-        }
-      });
-    }
-
-    // Init
+    // Run check on mount
     checkCurrentSession();
   </script>
 </body>

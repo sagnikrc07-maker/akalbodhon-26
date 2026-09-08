@@ -1210,42 +1210,7 @@
     KEY_THEME: 'akalbodhon_theme',
 
     getDefaultBookmarks() {
-      return [
-        {
-          id: 'maniktala-chaltabagan',
-          name: 'Maniktala Chaltabagan Lohapatty',
-          category: 'Pandal',
-          zone: 'North',
-          location: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata',
-          image: 'pandals/maniktala chaltabagan lohapatty.jpg'
-        },
-        {
-          id: 'kumartuli-park',
-          name: 'Kumartuli Park Sarbojanin',
-          category: 'Pandal',
-          zone: 'North',
-          location: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata',
-          image: 'pandals/Kumartuli Park Sarbojanin.jpg'
-        },
-        {
-          id: 'food-1',
-          name: 'Arsalan Restaurant',
-          category: 'Food',
-          location: 'Park Circus 7-Point / Ruby',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
-          image: 'food/arsalan.avif'
-        },
-        {
-          id: 'food-2',
-          name: 'Golbari',
-          category: 'Food',
-          location: 'Shyambazar 5-Point Crossing',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
-          image: 'food/golbari.jpg'
-        }
-      ];
+      return [];
     },
 
     getBookmarks() {
@@ -1254,12 +1219,12 @@
         const saved = localStorage.getItem(this.KEY_BOOKMARKS);
         if (saved !== null) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed)) {
             list = parsed;
           }
         }
         if (!list) {
-          list = this.getDefaultBookmarks();
+          list = [];
           localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
         }
 
@@ -1332,8 +1297,16 @@
 
         return list;
       } catch (e) {
-        return this.getDefaultBookmarks();
+        return [];
       }
+    },
+
+    setBookmarks(items) {
+      const list = Array.isArray(items) ? items : [];
+      localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
+      if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+      if (typeof renderSavedSection === 'function') renderSavedSection();
+      return list;
     },
 
     toggleBookmark(item) {
@@ -1350,6 +1323,12 @@
       }
 
       localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
+
+      // Sync with Supabase under user account
+      if (typeof syncUserSavedItemsToSupabase === 'function') {
+        syncUserSavedItemsToSupabase(list);
+      }
+
       return isSaved;
     },
 
@@ -3933,7 +3912,20 @@
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-    document.getElementById('auth-identifier-input')?.focus();
+
+    const idInput = document.getElementById('auth-userid-input');
+    const idCounter = document.getElementById('auth-userid-counter');
+    const pwdInput = document.getElementById('auth-password-input');
+    const pwdCounter = document.getElementById('auth-password-counter');
+
+    if (idInput && idCounter) updateDynamicCounter(idInput, idCounter, 10, 'length');
+    if (pwdInput && pwdCounter) updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
+
+    if (mode === 'signup') {
+      document.getElementById('auth-name-input')?.focus();
+    } else {
+      idInput?.focus();
+    }
   }
 
   function closeAuthModal() {
@@ -3948,26 +3940,30 @@
   function setAuthMode(mode = 'login') {
     const loginTab = document.getElementById('auth-tab-login');
     const signupTab = document.getElementById('auth-tab-signup');
-    const usernameField = document.getElementById('auth-username-field');
+    const nameField = document.getElementById('auth-name-field');
     const submitLabel = document.getElementById('auth-submit-label');
     const titleEl = document.getElementById('auth-modal-title');
+    const errorAlert = document.getElementById('auth-error-alert');
+    const successAlert = document.getElementById('auth-success-alert');
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (successAlert) successAlert.classList.add('hidden');
 
     if (mode === 'signup') {
       loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       loginTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
       signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      usernameField?.classList.remove('hidden');
+      nameField?.classList.remove('hidden');
       if (submitLabel) submitLabel.textContent = 'Create Account';
-      if (titleEl) titleEl.textContent = 'Join Akalbodhon Community';
+      if (titleEl) titleEl.textContent = 'Create Devotee Account';
     } else {
       signupTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       signupTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
       loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      usernameField?.classList.add('hidden');
+      nameField?.classList.add('hidden');
       if (submitLabel) submitLabel.textContent = 'Sign In';
-      if (titleEl) titleEl.textContent = 'Welcome to Akalbodhon';
+      if (titleEl) titleEl.textContent = 'Devotee Sign In';
     }
   }
 
@@ -4113,446 +4109,260 @@
     showToast(`Profile & Avatar updated for ${currentUser.username}!`, 'check_circle');
   }
 
-  // --- Phone OTP (Twilio) State & Handlers for Auth Modal ---
-  let modalResendInterval = null;
-  let modalResendCountdown = 30;
-
-  function switchModalAuthSubtab(tab) {
-    const phoneBtn = document.getElementById('modal-subtab-phone');
-    const emailBtn = document.getElementById('modal-subtab-email');
-    const phoneMethod = document.getElementById('modal-phone-method');
-    const emailMethod = document.getElementById('modal-email-method');
-    const errorAlert = document.getElementById('auth-error-alert');
-    const successAlert = document.getElementById('auth-success-alert');
-    if (errorAlert) errorAlert.classList.add('hidden');
-    if (successAlert) successAlert.classList.add('hidden');
-
-    if (tab === 'phone') {
-      phoneBtn?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      phoneBtn?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      emailBtn?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      emailBtn?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      phoneMethod?.classList.remove('hidden');
-      emailMethod?.classList.add('hidden');
-    } else {
-      emailBtn?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      emailBtn?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      phoneBtn?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      phoneBtn?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      emailMethod?.classList.remove('hidden');
-      phoneMethod?.classList.add('hidden');
-    }
-  }
-
-  function getModalFullPhone() {
-    const countryEl = document.getElementById('modal-country-code-select');
-    const phoneEl = document.getElementById('modal-phone-number-input');
-    const code = countryEl ? countryEl.value.replace(/\D/g, '') : '91';
-    const number = phoneEl ? phoneEl.value.replace(/\D/g, '') : '';
-    return `+${code}${number}`;
-  }
-
-  async function handleModalSendOtp() {
-    const phoneEl = document.getElementById('modal-phone-number-input');
-    const sendBtn = document.getElementById('modal-send-otp-btn');
-    const sendText = document.getElementById('modal-send-otp-text');
-    const sendStep = document.getElementById('modal-phone-send-step');
-    const verifyStep = document.getElementById('modal-phone-verify-step');
-    const errorAlert = document.getElementById('auth-error-alert');
-    const successAlert = document.getElementById('auth-success-alert');
-    const successMsg = document.getElementById('auth-success-msg');
-    if (errorAlert) errorAlert.classList.add('hidden');
-    if (successAlert) successAlert.classList.add('hidden');
-
-    const rawNumber = phoneEl ? phoneEl.value.replace(/\D/g, '') : '';
-    if (rawNumber.length < 10) {
-      showAuthError('Please enter a valid 10-digit mobile number.');
-      return;
-    }
-
-    const fullPhone = getModalFullPhone();
-    if (sendBtn) sendBtn.disabled = true;
-    if (sendText) sendText.textContent = 'Sending SMS via Twilio...';
-
-    try {
-      if (supabaseClient) {
-        const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullPhone });
-        if (error) throw error;
-      }
-
-      if (successAlert && successMsg) {
-        successMsg.textContent = `Sacred OTP sent to ${fullPhone}`;
-        successAlert.classList.remove('hidden');
-      }
-
-      sendStep?.classList.add('hidden');
-      verifyStep?.classList.remove('hidden');
-      startModalResendTimer();
-      const firstOtpBox = document.querySelector('.modal-otp-digit');
-      if (firstOtpBox) firstOtpBox.focus();
-    } catch (err) {
-      showAuthError(err.message || 'Failed to send OTP. Please check Twilio configuration.');
-    } finally {
-      if (sendBtn) sendBtn.disabled = false;
-      if (sendText) sendText.textContent = 'Send Sacred OTP';
-    }
-  }
-
-  function startModalResendTimer() {
-    if (modalResendInterval) clearInterval(modalResendInterval);
-    modalResendCountdown = 30;
-    const resendBtn = document.getElementById('modal-resend-otp-btn');
-    const timerText = document.getElementById('modal-resend-timer-text');
-    if (resendBtn) {
-      resendBtn.disabled = true;
-      resendBtn.className = "font-semibold text-neutral-400 cursor-not-allowed";
-    }
-
-    modalResendInterval = setInterval(() => {
-      if (modalResendCountdown > 1) {
-        modalResendCountdown--;
-        if (timerText) timerText.textContent = `Resend in ${modalResendCountdown}s`;
+  // --- Dynamic Input Counters & Validation ---
+  function updateDynamicCounter(inputEl, counterEl, limit, mode = 'length') {
+    if (!counterEl || !inputEl) return;
+    const val = inputEl.value || '';
+    if (mode === 'length') {
+      const len = Math.min(val.length, limit);
+      counterEl.textContent = `(${len}/${limit})`;
+    } else if (mode === 'alphanumeric') {
+      const matches = val.match(/[a-zA-Z0-9]/g) || [];
+      const count = matches.length;
+      counterEl.textContent = `(${count}/${limit})`;
+      if (count >= limit) {
+        counterEl.classList.add('text-emerald-500', 'dark:text-emerald-400');
+        counterEl.classList.remove('text-primary', 'dark:text-amber-300');
       } else {
-        clearInterval(modalResendInterval);
-        if (resendBtn) {
-          resendBtn.disabled = false;
-          resendBtn.className = "font-semibold text-primary dark:text-amber-300 hover:underline cursor-pointer";
-        }
-        if (timerText) timerText.textContent = 'Resend OTP';
+        counterEl.classList.remove('text-emerald-500', 'dark:text-emerald-400');
+        counterEl.classList.add('text-primary', 'dark:text-amber-300');
       }
-    }, 1000);
+    }
   }
 
-  async function handleModalVerifyOtp() {
-    const errorAlert = document.getElementById('auth-error-alert');
+  async function hashPassword(str) {
+    if (!str) return '';
+    try {
+      const enc = new TextEncoder().encode(str + '_akalbodhon_salt_2026');
+      const buf = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch (e) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return 'fb_' + Math.abs(hash);
+    }
+  }
+
+  // Sync saved items under active devotee's account to Supabase
+  async function syncUserSavedItemsToSupabase(list) {
+    if (!currentUser || !currentUser.id || !supabaseClient) return;
+    try {
+      const savedItems = Array.isArray(list) ? list : Storage.getBookmarks();
+      currentUser.saved_items = savedItems;
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+      
+      const targetId = (currentUser.id || '').toLowerCase();
+      const targetUid = currentUser.user_id || currentUser.id;
+
+      await supabaseClient
+        .from('profiles')
+        .update({
+          saved_items: savedItems,
+          updated_at: new Date().toISOString()
+        })
+        .or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+    } catch (err) {
+      console.warn('Supabase bookmark sync error:', err);
+    }
+  }
+
+  // Core User ID & Password Authentication Handler (Sign In / Account Creation)
+  async function handleAuthSubmit(isPage = false) {
+    const errorAlert = document.getElementById(isPage ? 'page-error-alert' : 'auth-error-alert');
+    const successAlert = document.getElementById(isPage ? 'page-success-alert' : 'auth-success-alert');
     if (errorAlert) errorAlert.classList.add('hidden');
+    if (successAlert) successAlert.classList.add('hidden');
 
-    const otpBoxes = document.querySelectorAll('.modal-otp-digit');
-    let code = '';
-    otpBoxes.forEach(b => { code += b.value; });
+    const idInput = document.getElementById(isPage ? 'page-userid-input' : 'auth-userid-input');
+    const pwdInput = document.getElementById(isPage ? 'page-password-input' : 'auth-password-input');
+    const nameInput = document.getElementById(isPage ? 'page-name-input' : 'auth-name-input');
+    const submitBtn = document.getElementById(isPage ? 'page-submit-btn' : 'auth-submit-btn');
+    const submitLabel = document.getElementById(isPage ? 'page-submit-label' : 'auth-submit-label');
 
-    if (code.length !== 6) {
-      showAuthError('Please enter the complete 6-digit OTP code.');
+    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary');
+
+    const rawUserId = idInput ? idInput.value.trim() : '';
+    const rawPassword = pwdInput ? pwdInput.value : '';
+    const rawName = nameInput ? nameInput.value.trim() : '';
+
+    if (!rawUserId) {
+      showAuthError('Please enter your User ID.', isPage);
+      return;
+    }
+    if (rawUserId.length > 10) {
+      showAuthError('Please enter a valid User ID.', isPage);
       return;
     }
 
-    const fullPhone = getModalFullPhone();
-    const verifyBtn = document.getElementById('modal-verify-otp-btn');
-    const verifyText = document.getElementById('modal-verify-otp-text');
+    const alphanumericMatches = rawPassword.match(/[a-zA-Z0-9]/g) || [];
+    if (alphanumericMatches.length < 5) {
+      showAuthError('Please enter a valid password.', isPage);
+      return;
+    }
 
-    if (verifyBtn) verifyBtn.disabled = true;
-    if (verifyText) verifyText.textContent = 'Verifying...';
+    const userIdNormalized = rawUserId.toLowerCase();
+    const originalLabel = submitLabel ? submitLabel.textContent : (isSignUp ? 'Create Account' : 'Sign In');
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitLabel) submitLabel.textContent = isSignUp ? 'Creating Account...' : 'Signing In...';
 
     try {
-      let authUser = null;
-      if (supabaseClient) {
-        const { data, error } = await supabaseClient.auth.verifyOtp({
-          phone: fullPhone,
-          token: code,
-          type: 'sms'
-        });
-        if (error) throw error;
-        authUser = data.user;
-      }
+      const passwordHash = await hashPassword(rawPassword);
 
-      const userObj = {
-        id: authUser?.id || ('user_' + btoa(fullPhone).replace(/=/g, '').slice(0, 16).toLowerCase()),
-        identifier: fullPhone,
-        identifier_type: 'phone',
-        username: authUser?.user_metadata?.full_name || 'Devotee ' + fullPhone.slice(-4),
-        avatar: '🪔',
-        custom_avatar_url: null,
-        created_at: new Date().toISOString()
-      };
+      if (isSignUp) {
+        // --- CREATE ACCOUNT ---
+        const displayName = rawName || rawUserId;
 
-      if (supabaseClient) {
-        await supabaseClient.from('profiles').upsert({
-          id: userObj.id,
-          identifier: userObj.identifier,
-          identifier_type: 'phone',
-          phone: userObj.identifier,
-          full_name: userObj.username,
-          username: userObj.username,
-          avatar: userObj.avatar,
+        if (supabaseClient) {
+          const { data: existing } = await supabaseClient
+            .from('profiles')
+            .select('id, user_id, identifier')
+            .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`);
+
+          if (existing && existing.length > 0) {
+            showAuthError('This User ID is already taken. Please choose another.', isPage);
+            return;
+          }
+        }
+
+        const initialSaved = Storage.getBookmarks() || [];
+        const newProfile = {
+          id: userIdNormalized,
+          user_id: rawUserId,
+          identifier: rawUserId,
+          identifier_type: 'userid',
+          username: displayName,
+          avatar: '🪔',
+          avatar_type: 'puja',
+          password_hash: passwordHash,
+          saved_items: initialSaved,
+          custom_plans: customPlans || [],
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
-        }).catch(() => {});
+        };
+
+        if (supabaseClient) {
+          const { error: insertErr } = await supabaseClient
+            .from('profiles')
+            .insert(newProfile);
+
+          if (insertErr) {
+            console.warn('Supabase profile insert error:', insertErr);
+            showAuthError(`Unable to create account: ${insertErr.message || 'Please try again.'}`, isPage);
+            return;
+          }
+        }
+
+        saveUserSession(newProfile);
+        closeAuthModal();
+        showToast(`Welcome ${displayName}! Your account has been created.`, 'celebration');
+
+      } else {
+        // --- SIGN IN ---
+        let foundProfile = null;
+
+        if (supabaseClient) {
+          const { data, error: fetchErr } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`)
+            .limit(1);
+
+          if (fetchErr) {
+            console.warn('Supabase profile query error:', fetchErr);
+          }
+
+          if (data && data.length > 0) {
+            foundProfile = data[0];
+          }
+        }
+
+        if (!foundProfile) {
+          const cached = localStorage.getItem('akalbodhon_user_profile');
+          if (cached) {
+            try {
+              const p = JSON.parse(cached);
+              if (p.id?.toLowerCase() === userIdNormalized || p.user_id === rawUserId) {
+                foundProfile = p;
+              }
+            } catch (e) {}
+          }
+        }
+
+        if (!foundProfile) {
+          showAuthError('No devotee account found with this User ID. Please check or create an account.', isPage);
+          return;
+        }
+
+        // Verify password
+        if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
+          showAuthError('Incorrect password. Please try again.', isPage);
+          return;
+        }
+
+        // Restore saved details from Supabase under that userid!
+        const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
+        Storage.setBookmarks(restoredSavedItems);
+
+        if (Array.isArray(foundProfile.custom_plans)) {
+          customPlans = foundProfile.custom_plans;
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+        }
+
+        const authenticatedUser = {
+          id: foundProfile.id,
+          user_id: foundProfile.user_id || foundProfile.id,
+          identifier: foundProfile.identifier || foundProfile.id,
+          identifier_type: 'userid',
+          username: foundProfile.username || 'Devotee',
+          avatar: foundProfile.avatar || '🪔',
+          custom_avatar_url: foundProfile.custom_avatar_url || null,
+          saved_items: restoredSavedItems,
+          custom_plans: customPlans,
+          created_at: foundProfile.created_at
+        };
+
+        saveUserSession(authenticatedUser);
+        closeAuthModal();
+        showToast(`Welcome back, ${authenticatedUser.username}! Your saved details are loaded.`, 'celebration');
       }
 
-      saveUserSession(userObj);
-      closeAuthModal();
-      showToast(`Welcome ${userObj.username}! Signed in via Twilio OTP.`, 'celebration');
+      if (typeof renderSavedSection === 'function') renderSavedSection();
+      if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+      if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+      if (isPage) {
+        window.location.hash = 'saved';
+      }
 
       if (pendingPlanJoinId) {
         const targetPlanId = pendingPlanJoinId;
         pendingPlanJoinId = null;
         handleSharedPlanDeepLink(targetPlanId);
       }
+
     } catch (err) {
-      showAuthError(err.message || 'Invalid or expired OTP code.');
+      console.error('Auth handler error:', err);
+      showAuthError('An unexpected error occurred. Please try again.', isPage);
     } finally {
-      if (verifyBtn) verifyBtn.disabled = false;
-      if (verifyText) verifyText.textContent = 'Verify & Sign In';
-    }
-  }
-
-  // Core Authentication Handler
-  async function handleAuthSubmit(isPage = false) {
-    const idInput = document.getElementById(isPage ? 'page-identifier-input' : 'auth-identifier-input');
-    const pwdInput = document.getElementById(isPage ? 'page-password-input' : 'auth-password-input');
-    const usernameInput = document.getElementById(isPage ? 'page-username-input' : 'auth-username-input');
-    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary');
-
-    const identifier = idInput ? idInput.value.trim() : '';
-    const password = pwdInput ? pwdInput.value : '';
-    const username = usernameInput ? usernameInput.value.trim() : '';
-
-    if (!identifier) {
-      showAuthError('Please enter your Email Address or Mobile Number.', isPage);
-      return;
-    }
-
-    // Strict Password Validation
-    if (!validatePassword(password)) {
-      showAuthError('Password must contain at least 5 alphanumeric characters (with both letters and numbers).', isPage);
-      return;
-    }
-
-    const isEmail = identifier.includes('@');
-    const userId = 'user_' + btoa(identifier).replace(/=/g, '').slice(0, 16).toLowerCase();
-    const displayName = username || (isEmail ? identifier.split('@')[0] : 'Devotee ' + identifier.slice(-4));
-
-    // Sign up / In logic with Supabase or graceful offline fallback
-    let userObj = {
-      id: userId,
-      identifier: identifier,
-      identifier_type: isEmail ? 'email' : 'phone',
-      username: displayName,
-      avatar: '🪔',
-      custom_avatar_url: null,
-      created_at: new Date().toISOString()
-    };
-
-    if (supabaseClient) {
-      try {
-        if (isSignUp) {
-          if (isEmail) {
-            const { data, error } = await supabaseClient.auth.signUp({ email: identifier, password: password });
-            if (error && !error.message.includes('already registered')) {
-              console.warn('Supabase auth notice:', error.message);
-            }
-            if (data?.user?.id) userObj.id = data.user.id;
-          }
-          await supabaseClient.from('profiles').upsert({
-            id: userObj.id,
-            identifier: userObj.identifier,
-            identifier_type: userObj.identifier_type,
-            username: userObj.username,
-            avatar: userObj.avatar,
-            created_at: new Date().toISOString()
-          });
-        } else {
-          if (isEmail) {
-            const { data } = await supabaseClient.auth.signInWithPassword({ email: identifier, password: password });
-            if (data?.user?.id) userObj.id = data.user.id;
-          }
-          // Fetch existing profile if available
-          const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userObj.id).single();
-          if (profile) {
-            userObj.username = profile.username || userObj.username;
-            userObj.avatar = profile.avatar || userObj.avatar;
-            userObj.custom_avatar_url = profile.custom_avatar_url;
-          }
-        }
-      } catch (err) {
-        console.warn('Auth fallback mode active:', err);
-      }
-    }
-
-    saveUserSession(userObj);
-    closeAuthModal();
-    showToast(`Welcome ${userObj.username}! Signed in successfully.`, 'celebration');
-
-    if (isPage) {
-      window.location.hash = 'plans';
-    }
-
-    // If waiting to join a shared plan, complete join
-    if (pendingPlanJoinId) {
-      const targetPlanId = pendingPlanJoinId;
-      pendingPlanJoinId = null;
-      handleSharedPlanDeepLink(targetPlanId);
-    }
-  }
-
-  // Google Authentication Process with Real Google Accounts
-  async function handleGoogleLogin() {
-    // 1. Try Supabase Google OAuth
-    if (supabaseClient) {
-      try {
-        const { error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: window.location.origin + window.location.pathname
-          }
-        });
-        if (!error) return;
-        console.warn('Supabase Google OAuth notice:', error.message);
-      } catch (err) {
-        console.warn('Supabase Google OAuth attempt notice:', err);
-      }
-    }
-
-    // 2. Try Google Identity Services (GIS) Token Client
-    if (window.google?.accounts?.oauth2) {
-      try {
-        const tokenClient = google.accounts.oauth2.initTokenClient({
-          client_id: '1084278456123-akalbodhon.apps.googleusercontent.com',
-          scope: 'profile email openid',
-          callback: async (tokenResponse) => {
-            if (tokenResponse?.access_token) {
-              try {
-                const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                  headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
-                });
-                const info = await res.json();
-                if (info && info.email) {
-                  const googleUser = {
-                    id: 'user_g_' + (info.sub || btoa(info.email).replace(/=/g, '').slice(0, 12)),
-                    identifier: info.email,
-                    identifier_type: 'google',
-                    username: info.name || info.email.split('@')[0],
-                    avatar: '🌺',
-                    custom_avatar_url: info.picture || null,
-                    created_at: new Date().toISOString()
-                  };
-                  saveUserSession(googleUser);
-                  if (supabaseClient) {
-                    supabaseClient.from('profiles').upsert(googleUser).catch(() => {});
-                  }
-                  closeAuthModal();
-                  showToast(`Welcome ${googleUser.username}! Authenticated with Google.`, 'celebration');
-                  renderFestivalPlans(activePlanFilter);
-                  return;
-                }
-              } catch (fetchErr) {
-                console.warn('Google userinfo fetch error:', fetchErr);
-              }
-            }
-          }
-        });
-        tokenClient.requestAccessToken({ prompt: 'select_account' });
-        return;
-      } catch (e) {
-        console.warn('GIS Token client notice:', e);
-      }
-    }
-
-    // 3. Fallback: Prompt user to connect their genuine Google Account
-    promptGoogleAccountSignIn();
-  }
-
-  function promptGoogleAccountSignIn() {
-    let modal = document.getElementById('google-account-modal');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'google-account-modal';
-      modal.className = 'fixed inset-0 z-[60] bg-black/80 backdrop-blur-md flex items-center justify-center p-4 animate-scale-up';
-      modal.innerHTML = `
-        <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 space-y-5 relative">
-          <button id="close-google-modal-btn" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">close</span>
-          </button>
-          
-          <div class="text-center space-y-2">
-            <div class="w-12 h-12 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-center mx-auto shadow-md">
-              <svg class="w-6 h-6" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-              </svg>
-            </div>
-            <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">Sign in with Google Account</h3>
-            <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Connect your Google Account to manage Puja plans, save bookmarks, and invite friends.</p>
-          </div>
-
-          <form id="google-direct-form" class="space-y-4" onsubmit="return false;">
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Google Email Address</label>
-              <input type="email" id="google-email-input" placeholder="e.g. devotee@gmail.com" required class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-            </div>
-
-            <div class="space-y-1">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Account Full Name</label>
-              <input type="text" id="google-name-input" placeholder="e.g. Sagnik Roy" required class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-            </div>
-
-            <div class="pt-2">
-              <button type="submit" id="google-connect-submit-btn" class="w-full py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                <span>Sign in with Google</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      `;
-      document.body.appendChild(modal);
-
-      document.getElementById('close-google-modal-btn').onclick = () => {
-        modal.classList.add('hidden');
-      };
-
-      document.getElementById('google-direct-form').onsubmit = async (e) => {
-        if (e) e.preventDefault();
-        const email = document.getElementById('google-email-input').value.trim();
-        const name = document.getElementById('google-name-input').value.trim();
-        if (!email || !email.includes('@')) {
-          showToast('Please enter a valid Google email address.', 'error');
-          return;
-        }
-
-        const cleanName = name || email.split('@')[0];
-        const googleUser = {
-          id: 'user_g_' + btoa(email).replace(/=/g, '').slice(0, 16).toLowerCase(),
-          identifier: email,
-          identifier_type: 'google',
-          username: cleanName,
-          avatar: '🌺',
-          custom_avatar_url: `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(cleanName)}&backgroundColor=83000a,deb038`,
-          created_at: new Date().toISOString()
-        };
-
-        if (supabaseClient) {
-          try {
-            await supabaseClient.from('profiles').upsert(googleUser);
-          } catch (err) {
-            console.warn('Supabase profile upsert warning:', err);
-          }
-        }
-
-        saveUserSession(googleUser);
-        modal.classList.add('hidden');
-        closeAuthModal();
-        showToast(`Welcome ${googleUser.username}! Successfully signed in with Google.`, 'celebration');
-        renderFestivalPlans(activePlanFilter);
-
-        if (pendingPlanJoinId) {
-          const id = pendingPlanJoinId;
-          pendingPlanJoinId = null;
-          handleSharedPlanDeepLink(id);
-        }
-      };
-    } else {
-      modal.classList.remove('hidden');
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitLabel) submitLabel.textContent = originalLabel;
     }
   }
 
   function handleLogout() {
-    if (supabaseClient) {
-      supabaseClient.auth.signOut().catch(() => {});
-    }
-    saveUserSession(null);
+    currentUser = null;
+    localStorage.removeItem('akalbodhon_user_profile');
+    Storage.setBookmarks([]);
+    customPlans = [];
+    localStorage.removeItem('akalbodhon_custom_plans');
+    updateAccountUI();
     closeProfileModal();
-    renderFestivalPlans(activePlanFilter);
+    if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+    if (typeof renderSavedSection === 'function') renderSavedSection();
+    if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
     showToast('Signed out of Akalbodhon.', 'logout');
   }
 
@@ -5078,6 +4888,15 @@
         customPlans.unshift(newPlan);
         localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
 
+        if (currentUser && supabaseClient) {
+          const targetId = (currentUser.id || '').toLowerCase();
+          const targetUid = currentUser.user_id || currentUser.id;
+          supabaseClient.from('profiles').update({
+            custom_plans: customPlans,
+            updated_at: new Date().toISOString()
+          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+        }
+
         modal.classList.add('hidden');
         modal.classList.remove('flex');
         form.reset();
@@ -5508,6 +5327,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     if (supabaseClient) {
       supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
+      if (currentUser) {
+        const targetId = (currentUser.id || '').toLowerCase();
+        const targetUid = currentUser.user_id || currentUser.id;
+        supabaseClient.from('profiles').update({
+          custom_plans: customPlans,
+          updated_at: new Date().toISOString()
+        }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+      }
     }
 
     renderFestivalPlans(activePlanFilter);
@@ -5714,279 +5541,79 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   };
 
   // Initialize Page Section Login
-  let pageResendInterval = null;
-  let pageResendCountdown = 30;
-
   function initPageAuthSection() {
     const pageTabLogin = document.getElementById('page-tab-login');
     const pageTabSignup = document.getElementById('page-tab-signup');
-    const pageUsernameField = document.getElementById('page-username-field');
+    const pageNameField = document.getElementById('page-name-field');
     const pageHeading = document.getElementById('page-auth-heading');
     const pageSubheading = document.getElementById('page-auth-subheading');
     const pageSubmitLabel = document.getElementById('page-submit-label');
     const pageErrorAlert = document.getElementById('page-error-alert');
     const pageSuccessAlert = document.getElementById('page-success-alert');
+    const pageUseridInput = document.getElementById('page-userid-input');
+    const pageUseridCounter = document.getElementById('page-userid-counter');
     const pagePwdInput = document.getElementById('page-password-input');
+    const pagePwdCounter = document.getElementById('page-password-counter');
     const pageTogglePwd = document.getElementById('page-toggle-pwd-btn');
     const pageSubmitBtn = document.getElementById('page-submit-btn');
-    const pageGoogleBtn = document.getElementById('page-google-btn');
     const pageForm = document.getElementById('page-login-form');
-
-    // Method subtabs (Phone OTP vs Email)
-    const pageSubtabPhone = document.getElementById('page-subtab-phone');
-    const pageSubtabEmail = document.getElementById('page-subtab-email');
-    const pagePhoneMethod = document.getElementById('page-phone-method');
-    const pageEmailMethod = document.getElementById('page-email-method');
-
-    // Phone OTP Elements
-    const pagePhoneSendStep = document.getElementById('page-phone-send-step');
-    const pagePhoneVerifyStep = document.getElementById('page-phone-verify-step');
-    const pageCountryCodeSelect = document.getElementById('page-country-code-select');
-    const pagePhoneNumberInput = document.getElementById('page-phone-number-input');
-    const pageSendOtpBtn = document.getElementById('page-send-otp-btn');
-    const pageSendOtpText = document.getElementById('page-send-otp-text');
-    const pageVerifyOtpBtn = document.getElementById('page-verify-otp-btn');
-    const pageVerifyOtpText = document.getElementById('page-verify-otp-text');
-    const pageChangePhoneBtn = document.getElementById('page-change-phone-btn');
-    const pageResendOtpBtn = document.getElementById('page-resend-otp-btn');
-    const pageResendTimerText = document.getElementById('page-resend-timer-text');
-    const pageOtpBoxes = document.querySelectorAll('.page-otp-digit');
 
     function clearPageAlerts() {
       pageErrorAlert?.classList.add('hidden');
       pageSuccessAlert?.classList.add('hidden');
     }
 
-    function switchPageMethod(tab) {
+    function setPageAuthMode(mode) {
       clearPageAlerts();
-      if (tab === 'phone') {
-        pageSubtabPhone?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageSubtabPhone?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageSubtabEmail?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageSubtabEmail?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pagePhoneMethod?.classList.remove('hidden');
-        pageEmailMethod?.classList.add('hidden');
-      } else {
-        pageSubtabEmail?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageSubtabEmail?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageSubtabPhone?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageSubtabPhone?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageEmailMethod?.classList.remove('hidden');
-        pagePhoneMethod?.classList.add('hidden');
-      }
-    }
-
-    pageSubtabPhone?.addEventListener('click', () => switchPageMethod('phone'));
-    pageSubtabEmail?.addEventListener('click', () => switchPageMethod('email'));
-
-    function getPageFullPhone() {
-      const code = pageCountryCodeSelect ? pageCountryCodeSelect.value.replace(/\D/g, '') : '91';
-      const number = pagePhoneNumberInput ? pagePhoneNumberInput.value.replace(/\D/g, '') : '';
-      return `+${code}${number}`;
-    }
-
-    function startPageResendTimer() {
-      if (pageResendInterval) clearInterval(pageResendInterval);
-      pageResendCountdown = 30;
-      if (pageResendOtpBtn) {
-        pageResendOtpBtn.disabled = true;
-        pageResendOtpBtn.className = "font-semibold text-neutral-400 cursor-not-allowed";
-      }
-
-      pageResendInterval = setInterval(() => {
-        if (pageResendCountdown > 1) {
-          pageResendCountdown--;
-          if (pageResendTimerText) pageResendTimerText.textContent = `Resend in ${pageResendCountdown}s`;
-        } else {
-          clearInterval(pageResendInterval);
-          if (pageResendOtpBtn) {
-            pageResendOtpBtn.disabled = false;
-            pageResendOtpBtn.className = "font-semibold text-primary dark:text-amber-300 hover:underline cursor-pointer";
-          }
-          if (pageResendTimerText) pageResendTimerText.textContent = 'Resend OTP';
-        }
-      }, 1000);
-    }
-
-    async function handlePageSendOtp() {
-      clearPageAlerts();
-      const rawNumber = pagePhoneNumberInput ? pagePhoneNumberInput.value.replace(/\D/g, '') : '';
-      if (rawNumber.length < 10) {
-        showAuthError('Please enter a valid 10-digit mobile number.', true);
-        return;
-      }
-
-      const fullPhone = getPageFullPhone();
-      if (pageSendOtpBtn) pageSendOtpBtn.disabled = true;
-      if (pageSendOtpText) pageSendOtpText.textContent = 'Sending SMS via Twilio...';
-
-      try {
-        if (supabaseClient) {
-          const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullPhone });
-          if (error) throw error;
-        }
-
-        const successMsg = document.getElementById('page-success-msg');
-        if (pageSuccessAlert && successMsg) {
-          successMsg.textContent = `Sacred OTP sent to ${fullPhone}`;
-          pageSuccessAlert.classList.remove('hidden');
-        }
-
-        pagePhoneSendStep?.classList.add('hidden');
-        pagePhoneVerifyStep?.classList.remove('hidden');
-        startPageResendTimer();
-        const firstOtpBox = document.querySelector('.page-otp-digit');
-        if (firstOtpBox) firstOtpBox.focus();
-      } catch (err) {
-        showAuthError(err.message || 'Failed to send OTP. Please check Twilio configuration.', true);
-      } finally {
-        if (pageSendOtpBtn) pageSendOtpBtn.disabled = false;
-        if (pageSendOtpText) pageSendOtpText.textContent = 'Send Sacred OTP';
-      }
-    }
-
-    async function handlePageVerifyOtp() {
-      clearPageAlerts();
-      let code = '';
-      pageOtpBoxes.forEach(b => { code += b.value; });
-
-      if (code.length !== 6) {
-        showAuthError('Please enter the complete 6-digit OTP code.', true);
-        return;
-      }
-
-      const fullPhone = getPageFullPhone();
-      if (pageVerifyOtpBtn) pageVerifyOtpBtn.disabled = true;
-      if (pageVerifyOtpText) pageVerifyOtpText.textContent = 'Verifying...';
-
-      try {
-        let authUser = null;
-        if (supabaseClient) {
-          const { data, error } = await supabaseClient.auth.verifyOtp({
-            phone: fullPhone,
-            token: code,
-            type: 'sms'
-          });
-          if (error) throw error;
-          authUser = data.user;
-        }
-
-        const userObj = {
-          id: authUser?.id || ('user_' + btoa(fullPhone).replace(/=/g, '').slice(0, 16).toLowerCase()),
-          identifier: fullPhone,
-          identifier_type: 'phone',
-          username: authUser?.user_metadata?.full_name || 'Devotee ' + fullPhone.slice(-4),
-          avatar: '🪔',
-          custom_avatar_url: null,
-          created_at: new Date().toISOString()
-        };
-
-        if (supabaseClient) {
-          await supabaseClient.from('profiles').upsert({
-            id: userObj.id,
-            identifier: userObj.identifier,
-            identifier_type: 'phone',
-            phone: userObj.identifier,
-            full_name: userObj.username,
-            username: userObj.username,
-            avatar: userObj.avatar,
-            updated_at: new Date().toISOString()
-          }).catch(() => {});
-        }
-
-        saveUserSession(userObj);
-        showToast(`Welcome ${userObj.username}! Signed in via Twilio OTP.`, 'celebration');
-
-        window.location.hash = 'plans';
-
-        if (pendingPlanJoinId) {
-          const targetPlanId = pendingPlanJoinId;
-          pendingPlanJoinId = null;
-          handleSharedPlanDeepLink(targetPlanId);
-        }
-      } catch (err) {
-        showAuthError(err.message || 'Invalid or expired OTP code.', true);
-      } finally {
-        if (pageVerifyOtpBtn) pageVerifyOtpBtn.disabled = false;
-        if (pageVerifyOtpText) pageVerifyOtpText.textContent = 'Verify & Sign In';
-      }
-    }
-
-    pageSendOtpBtn?.addEventListener('click', handlePageSendOtp);
-    pageVerifyOtpBtn?.addEventListener('click', handlePageVerifyOtp);
-    pageChangePhoneBtn?.addEventListener('click', () => {
-      pagePhoneVerifyStep?.classList.add('hidden');
-      pagePhoneSendStep?.classList.remove('hidden');
-      if (pageResendInterval) clearInterval(pageResendInterval);
-    });
-    pageResendOtpBtn?.addEventListener('click', () => {
-      if (pageResendOtpBtn && !pageResendOtpBtn.disabled) handlePageSendOtp();
-    });
-
-    // Auto-advancing 6-digit OTP input boxes on page
-    pageOtpBoxes.forEach((box, index) => {
-      box.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/\D/g, '');
-        if (val.length > 1) {
-          const chars = val.slice(0, 6).split('');
-          chars.forEach((c, i) => {
-            if (index + i < 6) pageOtpBoxes[index + i].value = c;
-          });
-          const target = Math.min(index + chars.length, 5);
-          pageOtpBoxes[target]?.focus();
-          return;
-        }
-        box.value = val;
-        if (val && index < 5) pageOtpBoxes[index + 1]?.focus();
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && index > 0) {
-          pageOtpBoxes[index - 1]?.focus();
-        }
-        if (e.key === 'Enter') {
-          handlePageVerifyOtp();
-        }
-      });
-    });
-
-    function setPageAuthMode(isSignUp) {
-      clearPageAlerts();
-      if (isSignUp) {
+      if (mode === 'signup') {
         pageTabLogin?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         pageTabLogin?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
         pageTabSignup?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         pageTabSignup?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageUsernameField?.classList.remove('hidden');
+        pageNameField?.classList.remove('hidden');
         if (pageHeading) pageHeading.textContent = 'Create Devotee Account';
-        if (pageSubheading) pageSubheading.textContent = 'Join the Akalbodhon festival community to create and share your Puja plans.';
+        if (pageSubheading) pageSubheading.textContent = 'Join the Akalbodhon festival community to design and save custom Puja itineraries.';
         if (pageSubmitLabel) pageSubmitLabel.textContent = 'Create Account';
       } else {
         pageTabSignup?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         pageTabSignup?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
         pageTabLogin?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         pageTabLogin?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageUsernameField?.classList.add('hidden');
+        pageNameField?.classList.add('hidden');
         if (pageHeading) pageHeading.textContent = 'Devotee Sign In';
-        if (pageSubheading) pageSubheading.textContent = 'Access your personal Puja itineraries, pick sacred festival avatars, and invite friends.';
+        if (pageSubheading) pageSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
         if (pageSubmitLabel) pageSubmitLabel.textContent = 'Sign In';
       }
     }
 
-    pageTabLogin?.addEventListener('click', () => setPageAuthMode(false));
-    pageTabSignup?.addEventListener('click', () => setPageAuthMode(true));
+    pageTabLogin?.addEventListener('click', () => setPageAuthMode('login'));
+    pageTabSignup?.addEventListener('click', () => setPageAuthMode('signup'));
+
+    // Dynamic counters for page inputs
+    pageUseridInput?.addEventListener('input', () => {
+      updateDynamicCounter(pageUseridInput, pageUseridCounter, 10, 'length');
+    });
+
+    pagePwdInput?.addEventListener('input', () => {
+      updateDynamicCounter(pagePwdInput, pagePwdCounter, 5, 'alphanumeric');
+    });
 
     pageTogglePwd?.addEventListener('click', () => {
-      if (pagePwdInput) {
-        const isPwd = pagePwdInput.type === 'password';
-        pagePwdInput.type = isPwd ? 'text' : 'password';
-        pageTogglePwd.textContent = isPwd ? 'Hide' : 'Show';
-      }
+      if (!pagePwdInput) return;
+      const isPwd = pagePwdInput.type === 'password';
+      pagePwdInput.type = isPwd ? 'text' : 'password';
+      pageTogglePwd.textContent = isPwd ? 'Hide' : 'Show';
     });
 
     pageSubmitBtn?.addEventListener('click', () => handleAuthSubmit(true));
-    pageForm?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(true); });
-    pageGoogleBtn?.addEventListener('click', handleGoogleLogin);
+    pageForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleAuthSubmit(true);
+    });
+
+    // Initialize initial counter states
+    if (pageUseridInput && pageUseridCounter) updateDynamicCounter(pageUseridInput, pageUseridCounter, 10, 'length');
+    if (pagePwdInput && pagePwdCounter) updateDynamicCounter(pagePwdInput, pagePwdCounter, 5, 'alphanumeric');
   }
 
   // ========================================================
@@ -6070,7 +5697,20 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
-    document.getElementById('auth-google-btn')?.addEventListener('click', handleGoogleLogin);
+
+    // Dynamic input counters for modal
+    const modalUseridInput = document.getElementById('auth-userid-input');
+    const modalUseridCounter = document.getElementById('auth-userid-counter');
+    const modalPwdInput = document.getElementById('auth-password-input');
+    const modalPwdCounter = document.getElementById('auth-password-counter');
+
+    modalUseridInput?.addEventListener('input', () => {
+      updateDynamicCounter(modalUseridInput, modalUseridCounter, 10, 'length');
+    });
+
+    modalPwdInput?.addEventListener('input', () => {
+      updateDynamicCounter(modalPwdInput, modalPwdCounter, 5, 'alphanumeric');
+    });
 
     // Save Auth Prompt Modal Handlers
     document.getElementById('close-save-auth-prompt-btn')?.addEventListener('click', () => {
@@ -6089,10 +5729,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       closeSaveAuthPromptModal();
       openAuthModal('signup');
     });
-    document.getElementById('save-auth-google-btn')?.addEventListener('click', () => {
-      closeSaveAuthPromptModal();
-      handleGoogleLogin();
-    });
     const savePromptModal = document.getElementById('save-auth-prompt-modal');
     if (savePromptModal) {
       savePromptModal.addEventListener('click', (e) => {
@@ -6102,49 +5738,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
       });
     }
-
-    // Modal Phone OTP Handlers
-    document.getElementById('modal-subtab-phone')?.addEventListener('click', () => switchModalAuthSubtab('phone'));
-    document.getElementById('modal-subtab-email')?.addEventListener('click', () => switchModalAuthSubtab('email'));
-    document.getElementById('modal-send-otp-btn')?.addEventListener('click', handleModalSendOtp);
-    document.getElementById('modal-verify-otp-btn')?.addEventListener('click', handleModalVerifyOtp);
-    document.getElementById('modal-change-phone-btn')?.addEventListener('click', () => {
-      document.getElementById('modal-phone-verify-step')?.classList.add('hidden');
-      document.getElementById('modal-phone-send-step')?.classList.remove('hidden');
-      if (modalResendInterval) clearInterval(modalResendInterval);
-    });
-    document.getElementById('modal-resend-otp-btn')?.addEventListener('click', () => {
-      const resendBtn = document.getElementById('modal-resend-otp-btn');
-      if (resendBtn && !resendBtn.disabled) handleModalSendOtp();
-    });
-
-    // Auto-advancing 6-digit OTP input boxes in modal
-    const modalOtpBoxes = document.querySelectorAll('.modal-otp-digit');
-    modalOtpBoxes.forEach((box, index) => {
-      box.addEventListener('input', (e) => {
-        const val = e.target.value.replace(/\D/g, '');
-        if (val.length > 1) {
-          const chars = val.slice(0, 6).split('');
-          chars.forEach((c, i) => {
-            if (index + i < 6) modalOtpBoxes[index + i].value = c;
-          });
-          const target = Math.min(index + chars.length, 5);
-          modalOtpBoxes[target]?.focus();
-          return;
-        }
-        box.value = val;
-        if (val && index < 5) modalOtpBoxes[index + 1]?.focus();
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && index > 0) {
-          modalOtpBoxes[index - 1]?.focus();
-        }
-        if (e.key === 'Enter') {
-          handleModalVerifyOtp();
-        }
-      });
-    });
 
     const authModal = document.getElementById('auth-modal');
     if (authModal) {
