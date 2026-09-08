@@ -2072,13 +2072,13 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               ${pandalBookmarks.map((b, idx) => {
-                const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/bagbazar.jpg';
+                const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/baghbazar.jpg';
                 return `
                 <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
                   <div>
                     <!-- Pandal Picture Thumbnail -->
                     <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/bagbazar.jpg'" />
+                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/baghbazar.jpg'" />
                       <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                       <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.zone || 'Kolkata'} Zone</span>
                     </div>
@@ -2120,13 +2120,13 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               ${foodBookmarks.map((b, idx) => {
-                const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/food-1.jpg';
+                const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/arsalan.avif';
                 return `
                 <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
                   <div>
                     <!-- Food/Shopping Picture Thumbnail -->
                     <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/food-1.jpg'" />
+                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
                       <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                       <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.category || 'Food & Shopping'}</span>
                     </div>
