@@ -1209,12 +1209,57 @@
     KEY_BOOKMARKS: 'akalbodhon_bookmarks',
     KEY_THEME: 'akalbodhon_theme',
 
+    getDefaultBookmarks() {
+      return [
+        {
+          id: 'bagbazar',
+          name: 'Bagbazar Sarbojanin Durgotsav',
+          category: 'Pandal',
+          zone: 'North Kolkata',
+          location: 'Bagbazar, Shyambazar Metro',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata',
+          image: 'pandals/baghbazar.jpg'
+        },
+        {
+          id: 'kumartuli-park',
+          name: 'Kumartuli Park Sarbojanin',
+          category: 'Pandal',
+          zone: 'North Kolkata',
+          location: 'Kumartuli, Sovabazar Metro',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Sarbojanin+Durgotsab+Kolkata',
+          image: 'pandals/kumartuli.jpg'
+        },
+        {
+          id: 'food-1',
+          name: 'Arsalan Restaurant',
+          category: 'Food',
+          location: 'Park Circus 7-Point / Ruby',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
+          image: 'food/arsalan.avif'
+        },
+        {
+          id: 'food-2',
+          name: 'Golbari',
+          category: 'Food',
+          location: 'Shyambazar 5-Point Crossing',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
+          image: 'food/golbari.jpg'
+        }
+      ];
+    },
+
     getBookmarks() {
       try {
         const saved = localStorage.getItem(this.KEY_BOOKMARKS);
-        return saved ? JSON.parse(saved) : [];
+        if (saved !== null) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+        const defaults = this.getDefaultBookmarks();
+        localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(defaults));
+        return defaults;
       } catch (e) {
-        return [];
+        return this.getDefaultBookmarks();
       }
     },
 
@@ -2000,9 +2045,73 @@
     const bookmarks = Storage.getBookmarks();
     
     // Split into categories
-    const pandalBookmarks = bookmarks.filter(b => b.category === 'Pandal');
-    const foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
-    const myPlans = customPlans || [];
+    let pandalBookmarks = bookmarks.filter(b => b.category === 'Pandal');
+    let foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
+    let myPlans = (customPlans && customPlans.length > 0) ? [...customPlans] : [];
+
+    // Curated Fallbacks to guarantee AT LEAST 2 items under every category
+    const curatedPandals = [
+      {
+        id: 'bagbazar',
+        name: 'Bagbazar Sarbojanin Durgotsav',
+        category: 'Pandal',
+        zone: 'North Kolkata',
+        location: 'Bagbazar, Shyambazar Metro',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata',
+        image: 'pandals/baghbazar.jpg'
+      },
+      {
+        id: 'kumartuli-park',
+        name: 'Kumartuli Park Sarbojanin',
+        category: 'Pandal',
+        zone: 'North Kolkata',
+        location: 'Kumartuli, Sovabazar Metro',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Sarbojanin+Durgotsab+Kolkata',
+        image: 'pandals/kumartuli.jpg'
+      }
+    ];
+
+    const curatedFood = [
+      {
+        id: 'food-1',
+        name: 'Arsalan Restaurant',
+        category: 'Food',
+        location: 'Park Circus 7-Point / Ruby',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
+        image: 'food/arsalan.avif'
+      },
+      {
+        id: 'food-2',
+        name: 'Golbari',
+        category: 'Food',
+        location: 'Shyambazar 5-Point Crossing',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
+        image: 'food/golbari.jpg'
+      }
+    ];
+
+    const curatedPlans = MASTER_PUJA_PLANS.slice(0, 2);
+
+    let displayPandals = [...pandalBookmarks];
+    curatedPandals.forEach(cp => {
+      if (displayPandals.length < 2 && !displayPandals.some(p => p.id === cp.id)) {
+        displayPandals.push(cp);
+      }
+    });
+
+    let displayFood = [...foodBookmarks];
+    curatedFood.forEach(cf => {
+      if (displayFood.length < 2 && !displayFood.some(f => f.id === cf.id)) {
+        displayFood.push(cf);
+      }
+    });
+
+    let displayPlans = [...myPlans];
+    curatedPlans.forEach(cplan => {
+      if (displayPlans.length < 2 && !displayPlans.some(p => p.id === cplan.id)) {
+        displayPlans.push(cplan);
+      }
+    });
 
     // Update Tab Badges & Dropdown Options
     const badgeAll = document.getElementById('saved-badge-all');
@@ -2010,11 +2119,11 @@
     const badgeFood = document.getElementById('saved-badge-food');
     const badgePlans = document.getElementById('saved-badge-plans');
 
-    const totalCount = bookmarks.length + myPlans.length;
+    const totalCount = displayPandals.length + displayFood.length + displayPlans.length;
     if (badgeAll) badgeAll.textContent = totalCount;
-    if (badgePandals) badgePandals.textContent = pandalBookmarks.length;
-    if (badgeFood) badgeFood.textContent = foodBookmarks.length;
-    if (badgePlans) badgePlans.textContent = myPlans.length;
+    if (badgePandals) badgePandals.textContent = displayPandals.length;
+    if (badgeFood) badgeFood.textContent = displayFood.length;
+    if (badgePlans) badgePlans.textContent = displayPlans.length;
 
     // Synchronize Mobile Dropdown Options & Selected Value
     const savedDropdown = document.getElementById('saved-filter-dropdown');
@@ -2025,9 +2134,9 @@
       const optFood = savedDropdown.querySelector('option[value="food-shopping"]');
       const optPlans = savedDropdown.querySelector('option[value="plans"]');
       if (optAll) optAll.textContent = `✨ All Saved (${totalCount})`;
-      if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${pandalBookmarks.length})`;
-      if (optFood) optFood.textContent = `🍽️ Food & Shopping (${foodBookmarks.length})`;
-      if (optPlans) optPlans.textContent = `📋 Custom Plans (${myPlans.length})`;
+      if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${displayPandals.length})`;
+      if (optFood) optFood.textContent = `🍽️ Food & Shopping (${displayFood.length})`;
+      if (optPlans) optPlans.textContent = `📋 Custom Plans (${displayPlans.length})`;
     }
 
     // Update active tab styling
@@ -2042,153 +2151,138 @@
       }
     });
 
-    if (bookmarks.length === 0 && myPlans.length === 0) {
-      container.innerHTML = `
-        <div class="text-center py-16 px-4 glass-panel rounded-3xl p-8 border border-outline-variant/30 dark:border-amber-400/20 max-w-md mx-auto reveal-on-scroll">
-          <span class="material-symbols-outlined text-5xl text-outline dark:text-amber-300/60 mb-3">bookmark_border</span>
-          <h3 class="font-headline-md text-xl text-on-surface dark:text-white font-bold mb-2">Your Itinerary is Empty</h3>
-          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed mb-6">Explore the 40+ Pandals, iconic dining spots, or create your customized festival plan to save them here.</p>
-          <div class="flex flex-wrap justify-center gap-2.5">
-            <a href="#pandals" class="bg-primary dark:bg-amber-400 text-white dark:text-black px-4 py-2 rounded-xl text-xs font-bold shadow-md hover:scale-105 transition-all">Explore Pandals</a>
-            <a href="#food-shopping" class="bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#ded5c7] px-4 py-2 rounded-xl text-xs font-bold border border-outline-variant/30 hover:border-primary transition-all">Food & Bazaars</a>
+    let html = '';
+
+    // 1. PANDALS & TRANSIT SECTION (Side by side on all screen sizes)
+    if (activeSavedTab === 'all' || activeSavedTab === 'pandals') {
+      html += `
+        <div class="space-y-3 sm:space-y-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">explore</span>
+              <span>Saved Pandals & Transit (${displayPandals.length})</span>
+            </h3>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
+            ${displayPandals.map((b, idx) => {
+              const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/baghbazar.jpg';
+              return `
+              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                <div>
+                  <!-- Pandal Picture Thumbnail -->
+                  <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
+                    <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/baghbazar.jpg'" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${b.zone || 'Kolkata'} Zone</span>
+                  </div>
+                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
+                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">near_me</span>
+                    <span class="truncate">${b.location}</span>
+                  </p>
+                </div>
+                <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
+                  <a href="${b.link || '#'}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                    <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                    <span class="truncate">Directions</span>
+                  </a>
+                  <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
+                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
+                  </button>
+                </div>
+              </div>
+            `;
+            }).join('')}
           </div>
         </div>
       `;
-      initScrollReveal();
-      return;
     }
 
-    let html = '';
-
-    // 1. PANDALS & TRANSIT SECTION
-    if (activeSavedTab === 'all' || activeSavedTab === 'pandals') {
-      if (pandalBookmarks.length > 0) {
-        html += `
-          <div class="space-y-4">
-            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary dark:text-amber-300">explore</span> Saved Pandals & Transit (${pandalBookmarks.length})
-              </h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${pandalBookmarks.map((b, idx) => {
-                const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/baghbazar.jpg';
-                return `
-                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
-                  <div>
-                    <!-- Pandal Picture Thumbnail -->
-                    <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/baghbazar.jpg'" />
-                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                      <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.zone || 'Kolkata'} Zone</span>
-                    </div>
-                    <h4 class="font-headline-md text-base sm:text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
-                    <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
-                      <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">near_me</span> ${b.location}
-                    </p>
-                  </div>
-                  <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
-                    <a href="${b.link || '#'}" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold py-1.5 px-3 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow hover:scale-[1.02] active:scale-95 transition-all cursor-pointer" title="Get Directions in Google Maps">
-                      <!-- Directions Pin Icon -->
-                      <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
-                      <span>Directions</span>
-                    </a>
-                    <button class="remove-single-bookmark p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer" data-id="${b.id}" title="Remove">
-                      <span class="material-symbols-outlined text-[18px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              `;
-              }).join('')}
-            </div>
-          </div>
-        `;
-      } else if (activeSavedTab === 'pandals') {
-        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No pandals saved yet. Visit Pandals & Transit to bookmark.</div>`;
-      }
-    }
-
-    // 2. FOOD & SHOPPING SECTION
+    // 2. FOOD & SHOPPING SECTION (Side by side on all screen sizes)
     if (activeSavedTab === 'all' || activeSavedTab === 'food-shopping') {
-      if (foodBookmarks.length > 0) {
-        html += `
-          <div class="space-y-4 pt-4">
-            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-                <span class="material-symbols-outlined text-secondary dark:text-amber-300">restaurant</span> Saved Food & Shopping Spots (${foodBookmarks.length})
-              </h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              ${foodBookmarks.map((b, idx) => {
-                const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/arsalan.avif';
-                return `
-                <div class="glass-panel p-4 sm:p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 sm:gap-4 reveal-on-scroll overflow-hidden group">
-                  <div>
-                    <!-- Food/Shopping Picture Thumbnail -->
-                    <div class="relative w-full h-36 sm:h-44 rounded-xl overflow-hidden mb-3 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
-                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                      <span class="absolute bottom-2 left-2 px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/20">${b.category || 'Food & Shopping'}</span>
-                    </div>
-                    <h4 class="font-headline-md text-base sm:text-lg text-on-surface dark:text-white font-bold mb-1">${b.name}</h4>
-                    <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium">
-                      <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">pin_drop</span> ${b.location}
-                    </p>
-                  </div>
-                  <div class="flex items-center justify-between gap-2 pt-3 border-t border-outline-variant/20 dark:border-amber-400/20">
-                    <a href="${b.link || '#'}" target="_blank" class="bg-amber-400 hover:bg-amber-300 text-black text-xs font-bold py-1.5 px-3 rounded-xl flex items-center gap-1.5 shadow-sm hover:shadow hover:scale-[1.02] active:scale-95 transition-all cursor-pointer" title="Get Directions in Google Maps">
-                      <!-- Directions Pin Icon -->
-                      <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
-                      <span>Directions</span>
-                    </a>
-                    <button class="remove-single-bookmark p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer" data-id="${b.id}" title="Remove">
-                      <span class="material-symbols-outlined text-[18px]">delete</span>
-                    </button>
-                  </div>
-                </div>
-              `;
-              }).join('')}
-            </div>
+      html += `
+        <div class="space-y-3 sm:space-y-4 pt-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary dark:text-amber-300 text-[18px] sm:text-[22px]">restaurant</span>
+              <span>Saved Food & Shopping Spots (${displayFood.length})</span>
+            </h3>
           </div>
-        `;
-      } else if (activeSavedTab === 'food-shopping') {
-        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No food or shopping spots saved yet. Visit Food & Shopping to bookmark.</div>`;
-      }
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
+            ${displayFood.map((b, idx) => {
+              const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/arsalan.avif';
+              return `
+              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                <div>
+                  <!-- Food/Shopping Picture Thumbnail -->
+                  <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
+                    <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${b.category || 'Food & Shopping'}</span>
+                  </div>
+                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
+                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-secondary dark:text-amber-300 shrink-0">pin_drop</span>
+                    <span class="truncate">${b.location}</span>
+                  </p>
+                </div>
+                <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
+                  <a href="${b.link || '#'}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                    <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                    <span class="truncate">Directions</span>
+                  </a>
+                  <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
+                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
+                  </button>
+                </div>
+              </div>
+            `;
+            }).join('')}
+          </div>
+        </div>
+      `;
     }
 
-    // 3. SAVED / CUSTOM PLANS SECTION
+    // 3. SAVED / CUSTOM PLANS SECTION (Side by side on all screen sizes)
     if (activeSavedTab === 'all' || activeSavedTab === 'plans') {
-      if (myPlans.length > 0) {
-        html += `
-          <div class="space-y-4 pt-4">
-            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-              <h3 class="font-display text-lg sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-                <span class="material-symbols-outlined text-primary dark:text-amber-300">event_note</span> Custom Festival Plans (${myPlans.length})
-              </h3>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              ${myPlans.map((p, idx) => `
-                <div class="glass-panel p-5 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 reveal-on-scroll">
-                  <div>
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-bold">${p.day_tag || 'Custom Plan'}</span>
-                      <span class="text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60">${p.date_str || ''}</span>
-                    </div>
-                    <h4 class="font-headline-md text-lg text-on-surface dark:text-white font-bold mb-1">${p.title}</h4>
-                    ${p.route_summary ? `<p class="text-xs text-primary dark:text-amber-300 truncate">📍 ${p.route_summary}</p>` : ''}
-                  </div>
-                  <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between">
-                    <a href="#plans" onclick="renderFestivalPlans('custom')" class="text-xs font-bold text-primary dark:text-amber-300 hover:underline">View in Plans</a>
-                    <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-xs font-semibold cursor-pointer">Delete</button>
-                  </div>
-                </div>
-              `).join('')}
-            </div>
+      html += `
+        <div class="space-y-3 sm:space-y-4 pt-4">
+          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">event_note</span>
+              <span>Custom Festival Plans (${displayPlans.length})</span>
+            </h3>
           </div>
-        `;
-      } else if (activeSavedTab === 'plans') {
-        html += `<div class="p-8 text-center text-xs text-on-surface-variant dark:text-[#ded5c7]">No custom plans saved yet. Click 'Make Your Own Plan' in Puja Plans.</div>`;
-      }
+          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
+            ${displayPlans.map((p, idx) => `
+              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                <div>
+                  <div class="flex items-center justify-between gap-1 mb-1">
+                    <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Custom Plan'}</span>
+                    <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
+                  </div>
+                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
+                  ${p.route_summary ? `<p class="text-[9.5px] sm:text-xs text-primary dark:text-amber-300 truncate mt-1 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[12px] sm:text-[14px] shrink-0">near_me</span>
+                    <span class="truncate">${p.route_summary}</span>
+                  </p>` : ''}
+                </div>
+                <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
+                  <a href="#plans" onclick="renderFestivalPlans('${p.is_template ? 'all' : 'custom'}'); setTimeout(() => openViewPlanModal('${p.id}'), 80);" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5">
+                    <span>View Plan</span>
+                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                  </a>
+                  ${p.is_template ? `
+                    <span class="text-[8.5px] sm:text-[10px] font-semibold text-on-surface-variant/70 dark:text-[#ded5c7]/60">Curated</span>
+                  ` : `
+                    <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer">Delete</button>
+                  `}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
     }
 
     container.innerHTML = html;
@@ -2221,13 +2315,13 @@
     document.querySelectorAll('.remove-single-bookmark').forEach(btn => {
       btn.onclick = () => {
         const id = btn.dataset.id;
-        const b = bookmarks.find(item => item.id === id);
+        const b = displayPandals.concat(displayFood).find(item => item.id === id);
         if (b) {
           Storage.toggleBookmark(b);
           renderSavedItinerary();
           renderPandals();
           renderFoodAndShopping();
-          showToast(`Removed "${b.name}"`, 'delete');
+          showToast(`Updated "${b.name}" in Itinerary`, 'delete');
         }
       };
     });
