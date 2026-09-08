@@ -1595,6 +1595,60 @@
     initScrollReveal();
   }
 
+  // --- AUTHENTICATION GATE FOR SAVING ITEMS ---
+  let pendingSaveAction = null;
+
+  function isUserLoggedIn() {
+    if (currentUser) return true;
+    try {
+      const raw = localStorage.getItem('akalbodhon_user_profile');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && (parsed.id || parsed.identifier || parsed.username)) {
+          currentUser = parsed;
+          return true;
+        }
+      }
+    } catch (e) {}
+    return false;
+  }
+
+  function promptAuthBeforeSave({ title, message, categoryName, defaultMode = 'login', onAuthenticatedSave }) {
+    if (isUserLoggedIn()) {
+      if (typeof onAuthenticatedSave === 'function') onAuthenticatedSave();
+      return;
+    }
+
+    pendingSaveAction = onAuthenticatedSave;
+
+    // Trigger lock notification toast
+    showToast('Please sign in or create an account to save to your itinerary!', 'lock');
+
+    // Open dedicated Devotee Account Required Modal
+    const modal = document.getElementById('save-auth-prompt-modal');
+    if (modal) {
+      document.body.classList.add('modal-open');
+      const titleEl = document.getElementById('save-auth-prompt-title');
+      const descEl = document.getElementById('save-auth-prompt-desc');
+      if (titleEl && title) titleEl.textContent = title;
+      if (descEl && message) descEl.innerHTML = message;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    } else {
+      openAuthModal(defaultMode, message);
+    }
+  }
+
+  function closeSaveAuthPromptModal() {
+    document.body.classList.remove('modal-open');
+    const modal = document.getElementById('save-auth-prompt-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  }
+
   function attachPandalEventListeners() {
     document.querySelectorAll('.pandal-bookmark-btn').forEach(btn => {
       btn.onclick = (e) => {
@@ -1603,38 +1657,53 @@
         const pandal = PANDALS_DATA.find(p => p.id === id);
         if (!pandal) return;
 
-        const isSaved = Storage.toggleBookmark({
-          id: pandal.id,
-          name: pandal.name,
-          category: 'Pandal',
-          location: pandal.transit,
-          zone: pandal.zone,
-          link: pandal.locationUrl,
-          image: pandal.image
-        });
+        const performSave = () => {
+          const isSaved = Storage.toggleBookmark({
+            id: pandal.id,
+            name: pandal.name,
+            category: 'Pandal',
+            location: pandal.transit,
+            zone: pandal.zone,
+            link: pandal.locationUrl,
+            image: pandal.image
+          });
 
-        const icon = btn.querySelector('.material-symbols-outlined');
-        if (icon) {
-          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
-          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          const icon = btn.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+            icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          }
+
+          const label = btn.querySelector('.save-btn-text');
+          if (label) {
+            label.textContent = isSaved ? 'Saved' : 'Save';
+          }
+          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+          if (isSaved) {
+            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          } else {
+            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          }
+
+          showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
+          renderSavedItinerary();
+        };
+
+        if (!isUserLoggedIn()) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Save Pandal',
+            message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${pandal.name}</em> under Pandals & Transit to your personal itinerary.`,
+            categoryName: 'Pandals & Transit',
+            defaultMode: 'login',
+            onAuthenticatedSave: performSave
+          });
+          return;
         }
 
-        const label = btn.querySelector('.save-btn-text');
-        if (label) {
-          label.textContent = isSaved ? 'Saved' : 'Save';
-        }
-        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
-
-        if (isSaved) {
-          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        } else {
-          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        }
-
-        showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
-        renderSavedItinerary();
+        performSave();
       };
     });
 
@@ -1873,38 +1942,53 @@
         const food = FOOD_DATA.find(f => f.id === id);
         if (!food) return;
 
-        const isSaved = Storage.toggleBookmark({
-          id: food.id,
-          name: food.name,
-          category: 'Food Destination',
-          location: food.location,
-          zone: 'Culinary Landmark',
-          link: food.locationUrl,
-          image: food.image
-        });
+        const performSave = () => {
+          const isSaved = Storage.toggleBookmark({
+            id: food.id,
+            name: food.name,
+            category: 'Food Destination',
+            location: food.location,
+            zone: 'Culinary Landmark',
+            link: food.locationUrl,
+            image: food.image
+          });
 
-        const icon = btn.querySelector('.material-symbols-outlined');
-        if (icon) {
-          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
-          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          const icon = btn.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+            icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          }
+
+          const label = btn.querySelector('.save-btn-text');
+          if (label) {
+            label.textContent = isSaved ? 'Saved' : 'Save';
+          }
+          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+          if (isSaved) {
+            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          } else {
+            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          }
+
+          showToast(isSaved ? `Added "${food.name}" to Itinerary!` : `Removed "${food.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
+          renderSavedItinerary();
+        };
+
+        if (!isUserLoggedIn()) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Save Dining Spot',
+            message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${food.name}</em> under Food & Shopping to your personal itinerary.`,
+            categoryName: 'Food & Shopping',
+            defaultMode: 'login',
+            onAuthenticatedSave: performSave
+          });
+          return;
         }
 
-        const label = btn.querySelector('.save-btn-text');
-        if (label) {
-          label.textContent = isSaved ? 'Saved' : 'Save';
-        }
-        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
-
-        if (isSaved) {
-          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        } else {
-          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        }
-
-        showToast(isSaved ? `Added "${food.name}" to Itinerary!` : `Removed "${food.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
-        renderSavedItinerary();
+        performSave();
       };
     });
 
@@ -1916,38 +2000,53 @@
         const shop = SHOPPING_DATA.find(s => s.id === id);
         if (!shop) return;
 
-        const isSaved = Storage.toggleBookmark({
-          id: shop.id,
-          name: shop.name,
-          category: 'Shopping Bazaar',
-          location: shop.location,
-          zone: 'Festive Shopping',
-          link: shop.locationUrl,
-          image: shop.image
-        });
+        const performSave = () => {
+          const isSaved = Storage.toggleBookmark({
+            id: shop.id,
+            name: shop.name,
+            category: 'Shopping Bazaar',
+            location: shop.location,
+            zone: 'Festive Shopping',
+            link: shop.locationUrl,
+            image: shop.image
+          });
 
-        const icon = btn.querySelector('.material-symbols-outlined');
-        if (icon) {
-          icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
-          icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          const icon = btn.querySelector('.material-symbols-outlined');
+          if (icon) {
+            icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+            icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          }
+
+          const label = btn.querySelector('.save-btn-text');
+          if (label) {
+            label.textContent = isSaved ? 'Saved' : 'Save';
+          }
+          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+          if (isSaved) {
+            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          } else {
+            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+          }
+
+          showToast(isSaved ? `Added "${shop.name}" to Itinerary!` : `Removed "${shop.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
+          renderSavedItinerary();
+        };
+
+        if (!isUserLoggedIn()) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Save Shopping District',
+            message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${shop.name}</em> under Food & Shopping to your personal itinerary.`,
+            categoryName: 'Food & Shopping',
+            defaultMode: 'login',
+            onAuthenticatedSave: performSave
+          });
+          return;
         }
 
-        const label = btn.querySelector('.save-btn-text');
-        if (label) {
-          label.textContent = isSaved ? 'Saved' : 'Save';
-        }
-        btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
-
-        if (isSaved) {
-          btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        } else {
-          btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-          btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-        }
-
-        showToast(isSaved ? `Added "${shop.name}" to Itinerary!` : `Removed "${shop.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
-        renderSavedItinerary();
+        performSave();
       };
     });
 
@@ -3777,6 +3876,16 @@
       localStorage.removeItem('akalbodhon_user_profile');
     }
     updateAccountUI();
+
+    if (user && typeof pendingSaveAction === 'function') {
+      try {
+        const action = pendingSaveAction;
+        pendingSaveAction = null;
+        setTimeout(() => action(), 180);
+      } catch (e) {
+        console.warn('Pending save action error:', e);
+      }
+    }
   }
 
   // Update Header Account Button & Avatar
@@ -4846,9 +4955,21 @@
 
     if (openBtn && modal) {
       openBtn.onclick = () => {
-        if (!currentUser) {
-          showToast('Please sign in or create an account to build your custom Puja plan!', 'lock');
-          openAuthModal('signup');
+        if (!isUserLoggedIn()) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Build Custom Plan',
+            message: 'Please <strong>log in</strong> to your account, or <strong>create an account</strong> if you do not have one, to design and save custom festival plans.',
+            categoryName: 'Puja Plans',
+            defaultMode: 'signup',
+            onAuthenticatedSave: () => {
+              const titleInput = document.getElementById('plan-title-input');
+              if (titleInput && !titleInput.value.trim()) {
+                titleInput.value = 'Plan';
+              }
+              modal.classList.remove('hidden');
+              modal.classList.add('flex');
+            }
+          });
           return;
         }
         const titleInput = document.getElementById('plan-title-input');
@@ -4874,9 +4995,13 @@
           e.stopPropagation();
         }
 
-        if (!currentUser) {
-          showToast('Please sign in or create an account to build your custom Puja plan!', 'lock');
-          openAuthModal('login');
+        if (!isUserLoggedIn()) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Save Custom Plan',
+            message: 'Please <strong>log in</strong> to your account, or <strong>create an account</strong> if you do not have one, to save this custom festival plan.',
+            categoryName: 'Puja Plans',
+            defaultMode: 'login'
+          });
           return false;
         }
 
@@ -5396,22 +5521,42 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 
-    if (plan.pandals) {
-      plan.pandals.forEach(pName => {
-        const pandalObj = PANDALS_DATA.find(pd => pd.name === (typeof pName === 'string' ? pName : pName.name));
-        if (pandalObj && !Storage.isPandalSaved(pandalObj.id)) {
-          Storage.togglePandal(pandalObj.id);
-        }
+    const performSave = () => {
+      if (plan.pandals) {
+        plan.pandals.forEach(pName => {
+          const rawName = typeof pName === 'string' ? pName : pName.name;
+          const pandalObj = PANDALS_DATA.find(pd => pd.name.toLowerCase() === rawName.toLowerCase());
+          if (pandalObj) {
+            Storage.toggleBookmark({
+              id: pandalObj.id,
+              name: pandalObj.name,
+              category: 'Pandal',
+              location: pandalObj.transit,
+              zone: pandalObj.zone,
+              link: pandalObj.locationUrl,
+              image: pandalObj.image
+            });
+          }
+        });
+      }
+
+      showToast(`Added pandals from "${plan.title}" to your Saved Itinerary!`, 'bookmark_added');
+      renderSavedItinerary();
+      renderPandals();
+    };
+
+    if (!isUserLoggedIn()) {
+      promptAuthBeforeSave({
+        title: 'Sign In to Save Plan',
+        message: `Please <strong>log in</strong> or <strong>create an account</strong> to save pandals from <em>${plan.title}</em> to your personal itinerary.`,
+        categoryName: 'Puja Plans',
+        defaultMode: 'login',
+        onAuthenticatedSave: performSave
       });
+      return;
     }
 
-    showToast(`Added pandals from "${plan.title}" to your Saved Itinerary!`, 'bookmark_added');
-    const badge = document.getElementById('saved-count-badge');
-    if (badge) {
-      const count = Storage.getSavedPandals().length;
-      badge.textContent = count;
-      badge.classList.toggle('hidden', count === 0);
-    }
+    performSave();
   };
 
   // ========================================================
@@ -5926,6 +6071,37 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
     document.getElementById('auth-google-btn')?.addEventListener('click', handleGoogleLogin);
+
+    // Save Auth Prompt Modal Handlers
+    document.getElementById('close-save-auth-prompt-btn')?.addEventListener('click', () => {
+      closeSaveAuthPromptModal();
+      pendingSaveAction = null;
+    });
+    document.getElementById('save-auth-dismiss-btn')?.addEventListener('click', () => {
+      closeSaveAuthPromptModal();
+      pendingSaveAction = null;
+    });
+    document.getElementById('save-auth-login-btn')?.addEventListener('click', () => {
+      closeSaveAuthPromptModal();
+      openAuthModal('login');
+    });
+    document.getElementById('save-auth-signup-btn')?.addEventListener('click', () => {
+      closeSaveAuthPromptModal();
+      openAuthModal('signup');
+    });
+    document.getElementById('save-auth-google-btn')?.addEventListener('click', () => {
+      closeSaveAuthPromptModal();
+      handleGoogleLogin();
+    });
+    const savePromptModal = document.getElementById('save-auth-prompt-modal');
+    if (savePromptModal) {
+      savePromptModal.addEventListener('click', (e) => {
+        if (e.target === savePromptModal) {
+          closeSaveAuthPromptModal();
+          pendingSaveAction = null;
+        }
+      });
+    }
 
     // Modal Phone OTP Handlers
     document.getElementById('modal-subtab-phone')?.addEventListener('click', () => switchModalAuthSubtab('phone'));
