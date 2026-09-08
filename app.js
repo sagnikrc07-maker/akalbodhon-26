@@ -2352,7 +2352,6 @@
       }
     }
 
-    const validSections = ['home', 'pandals', 'plans', 'audio', 'food-shopping', 'rituals', 'saved', 'login'];
     const activeSection = validSections.includes(rawHash) ? rawHash : 'home';
 
     document.querySelectorAll('.app-section').forEach(sec => {
