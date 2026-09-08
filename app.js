@@ -3847,6 +3847,188 @@
     showToast(`Profile & Avatar updated for ${currentUser.username}!`, 'check_circle');
   }
 
+  // --- Phone OTP (Twilio) State & Handlers for Auth Modal ---
+  let modalResendInterval = null;
+  let modalResendCountdown = 30;
+
+  function switchModalAuthSubtab(tab) {
+    const phoneBtn = document.getElementById('modal-subtab-phone');
+    const emailBtn = document.getElementById('modal-subtab-email');
+    const phoneMethod = document.getElementById('modal-phone-method');
+    const emailMethod = document.getElementById('modal-email-method');
+    const errorAlert = document.getElementById('auth-error-alert');
+    const successAlert = document.getElementById('auth-success-alert');
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (successAlert) successAlert.classList.add('hidden');
+
+    if (tab === 'phone') {
+      phoneBtn?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      phoneBtn?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      emailBtn?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      emailBtn?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      phoneMethod?.classList.remove('hidden');
+      emailMethod?.classList.add('hidden');
+    } else {
+      emailBtn?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      emailBtn?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      phoneBtn?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      phoneBtn?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      emailMethod?.classList.remove('hidden');
+      phoneMethod?.classList.add('hidden');
+    }
+  }
+
+  function getModalFullPhone() {
+    const countryEl = document.getElementById('modal-country-code-select');
+    const phoneEl = document.getElementById('modal-phone-number-input');
+    const code = countryEl ? countryEl.value.replace(/\D/g, '') : '91';
+    const number = phoneEl ? phoneEl.value.replace(/\D/g, '') : '';
+    return `+${code}${number}`;
+  }
+
+  async function handleModalSendOtp() {
+    const phoneEl = document.getElementById('modal-phone-number-input');
+    const sendBtn = document.getElementById('modal-send-otp-btn');
+    const sendText = document.getElementById('modal-send-otp-text');
+    const sendStep = document.getElementById('modal-phone-send-step');
+    const verifyStep = document.getElementById('modal-phone-verify-step');
+    const errorAlert = document.getElementById('auth-error-alert');
+    const successAlert = document.getElementById('auth-success-alert');
+    const successMsg = document.getElementById('auth-success-msg');
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (successAlert) successAlert.classList.add('hidden');
+
+    const rawNumber = phoneEl ? phoneEl.value.replace(/\D/g, '') : '';
+    if (rawNumber.length < 10) {
+      showAuthError('Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    const fullPhone = getModalFullPhone();
+    if (sendBtn) sendBtn.disabled = true;
+    if (sendText) sendText.textContent = 'Sending SMS via Twilio...';
+
+    try {
+      if (supabaseClient) {
+        const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullPhone });
+        if (error) throw error;
+      }
+
+      if (successAlert && successMsg) {
+        successMsg.textContent = `Sacred OTP sent to ${fullPhone}`;
+        successAlert.classList.remove('hidden');
+      }
+
+      sendStep?.classList.add('hidden');
+      verifyStep?.classList.remove('hidden');
+      startModalResendTimer();
+      const firstOtpBox = document.querySelector('.modal-otp-digit');
+      if (firstOtpBox) firstOtpBox.focus();
+    } catch (err) {
+      showAuthError(err.message || 'Failed to send OTP. Please check Twilio configuration.');
+    } finally {
+      if (sendBtn) sendBtn.disabled = false;
+      if (sendText) sendText.textContent = 'Send Sacred OTP';
+    }
+  }
+
+  function startModalResendTimer() {
+    if (modalResendInterval) clearInterval(modalResendInterval);
+    modalResendCountdown = 30;
+    const resendBtn = document.getElementById('modal-resend-otp-btn');
+    const timerText = document.getElementById('modal-resend-timer-text');
+    if (resendBtn) {
+      resendBtn.disabled = true;
+      resendBtn.className = "font-semibold text-neutral-400 cursor-not-allowed";
+    }
+
+    modalResendInterval = setInterval(() => {
+      if (modalResendCountdown > 1) {
+        modalResendCountdown--;
+        if (timerText) timerText.textContent = `Resend in ${modalResendCountdown}s`;
+      } else {
+        clearInterval(modalResendInterval);
+        if (resendBtn) {
+          resendBtn.disabled = false;
+          resendBtn.className = "font-semibold text-primary dark:text-amber-300 hover:underline cursor-pointer";
+        }
+        if (timerText) timerText.textContent = 'Resend OTP';
+      }
+    }, 1000);
+  }
+
+  async function handleModalVerifyOtp() {
+    const errorAlert = document.getElementById('auth-error-alert');
+    if (errorAlert) errorAlert.classList.add('hidden');
+
+    const otpBoxes = document.querySelectorAll('.modal-otp-digit');
+    let code = '';
+    otpBoxes.forEach(b => { code += b.value; });
+
+    if (code.length !== 6) {
+      showAuthError('Please enter the complete 6-digit OTP code.');
+      return;
+    }
+
+    const fullPhone = getModalFullPhone();
+    const verifyBtn = document.getElementById('modal-verify-otp-btn');
+    const verifyText = document.getElementById('modal-verify-otp-text');
+
+    if (verifyBtn) verifyBtn.disabled = true;
+    if (verifyText) verifyText.textContent = 'Verifying...';
+
+    try {
+      let authUser = null;
+      if (supabaseClient) {
+        const { data, error } = await supabaseClient.auth.verifyOtp({
+          phone: fullPhone,
+          token: code,
+          type: 'sms'
+        });
+        if (error) throw error;
+        authUser = data.user;
+      }
+
+      const userObj = {
+        id: authUser?.id || ('user_' + btoa(fullPhone).replace(/=/g, '').slice(0, 16).toLowerCase()),
+        identifier: fullPhone,
+        identifier_type: 'phone',
+        username: authUser?.user_metadata?.full_name || 'Devotee ' + fullPhone.slice(-4),
+        avatar: '🪔',
+        custom_avatar_url: null,
+        created_at: new Date().toISOString()
+      };
+
+      if (supabaseClient) {
+        await supabaseClient.from('profiles').upsert({
+          id: userObj.id,
+          identifier: userObj.identifier,
+          identifier_type: 'phone',
+          phone: userObj.identifier,
+          full_name: userObj.username,
+          username: userObj.username,
+          avatar: userObj.avatar,
+          updated_at: new Date().toISOString()
+        }).catch(() => {});
+      }
+
+      saveUserSession(userObj);
+      closeAuthModal();
+      showToast(`Welcome ${userObj.username}! Signed in via Twilio OTP.`, 'celebration');
+
+      if (pendingPlanJoinId) {
+        const targetPlanId = pendingPlanJoinId;
+        pendingPlanJoinId = null;
+        handleSharedPlanDeepLink(targetPlanId);
+      }
+    } catch (err) {
+      showAuthError(err.message || 'Invalid or expired OTP code.');
+    } finally {
+      if (verifyBtn) verifyBtn.disabled = false;
+      if (verifyText) verifyText.textContent = 'Verify & Sign In';
+    }
+  }
+
   // Core Authentication Handler
   async function handleAuthSubmit(isPage = false) {
     const idInput = document.getElementById(isPage ? 'page-identifier-input' : 'auth-identifier-input');
@@ -5365,6 +5547,49 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
     document.getElementById('auth-google-btn')?.addEventListener('click', handleGoogleLogin);
+
+    // Modal Phone OTP Handlers
+    document.getElementById('modal-subtab-phone')?.addEventListener('click', () => switchModalAuthSubtab('phone'));
+    document.getElementById('modal-subtab-email')?.addEventListener('click', () => switchModalAuthSubtab('email'));
+    document.getElementById('modal-send-otp-btn')?.addEventListener('click', handleModalSendOtp);
+    document.getElementById('modal-verify-otp-btn')?.addEventListener('click', handleModalVerifyOtp);
+    document.getElementById('modal-change-phone-btn')?.addEventListener('click', () => {
+      document.getElementById('modal-phone-verify-step')?.classList.add('hidden');
+      document.getElementById('modal-phone-send-step')?.classList.remove('hidden');
+      if (modalResendInterval) clearInterval(modalResendInterval);
+    });
+    document.getElementById('modal-resend-otp-btn')?.addEventListener('click', () => {
+      const resendBtn = document.getElementById('modal-resend-otp-btn');
+      if (resendBtn && !resendBtn.disabled) handleModalSendOtp();
+    });
+
+    // Auto-advancing 6-digit OTP input boxes in modal
+    const modalOtpBoxes = document.querySelectorAll('.modal-otp-digit');
+    modalOtpBoxes.forEach((box, index) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        if (val.length > 1) {
+          const chars = val.slice(0, 6).split('');
+          chars.forEach((c, i) => {
+            if (index + i < 6) modalOtpBoxes[index + i].value = c;
+          });
+          const target = Math.min(index + chars.length, 5);
+          modalOtpBoxes[target]?.focus();
+          return;
+        }
+        box.value = val;
+        if (val && index < 5) modalOtpBoxes[index + 1]?.focus();
+      });
+
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && index > 0) {
+          modalOtpBoxes[index - 1]?.focus();
+        }
+        if (e.key === 'Enter') {
+          handleModalVerifyOtp();
+        }
+      });
+    });
 
     const authModal = document.getElementById('auth-modal');
     if (authModal) {
