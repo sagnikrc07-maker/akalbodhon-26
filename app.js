@@ -5412,6 +5412,9 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   };
 
   // Initialize Page Section Login
+  let pageResendInterval = null;
+  let pageResendCountdown = 30;
+
   function initPageAuthSection() {
     const pageTabLogin = document.getElementById('page-tab-login');
     const pageTabSignup = document.getElementById('page-tab-signup');
@@ -5420,14 +5423,233 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const pageSubheading = document.getElementById('page-auth-subheading');
     const pageSubmitLabel = document.getElementById('page-submit-label');
     const pageErrorAlert = document.getElementById('page-error-alert');
+    const pageSuccessAlert = document.getElementById('page-success-alert');
     const pagePwdInput = document.getElementById('page-password-input');
     const pageTogglePwd = document.getElementById('page-toggle-pwd-btn');
     const pageSubmitBtn = document.getElementById('page-submit-btn');
     const pageGoogleBtn = document.getElementById('page-google-btn');
     const pageForm = document.getElementById('page-login-form');
 
+    // Method subtabs (Phone OTP vs Email)
+    const pageSubtabPhone = document.getElementById('page-subtab-phone');
+    const pageSubtabEmail = document.getElementById('page-subtab-email');
+    const pagePhoneMethod = document.getElementById('page-phone-method');
+    const pageEmailMethod = document.getElementById('page-email-method');
+
+    // Phone OTP Elements
+    const pagePhoneSendStep = document.getElementById('page-phone-send-step');
+    const pagePhoneVerifyStep = document.getElementById('page-phone-verify-step');
+    const pageCountryCodeSelect = document.getElementById('page-country-code-select');
+    const pagePhoneNumberInput = document.getElementById('page-phone-number-input');
+    const pageSendOtpBtn = document.getElementById('page-send-otp-btn');
+    const pageSendOtpText = document.getElementById('page-send-otp-text');
+    const pageVerifyOtpBtn = document.getElementById('page-verify-otp-btn');
+    const pageVerifyOtpText = document.getElementById('page-verify-otp-text');
+    const pageChangePhoneBtn = document.getElementById('page-change-phone-btn');
+    const pageResendOtpBtn = document.getElementById('page-resend-otp-btn');
+    const pageResendTimerText = document.getElementById('page-resend-timer-text');
+    const pageOtpBoxes = document.querySelectorAll('.page-otp-digit');
+
+    function clearPageAlerts() {
+      pageErrorAlert?.classList.add('hidden');
+      pageSuccessAlert?.classList.add('hidden');
+    }
+
+    function switchPageMethod(tab) {
+      clearPageAlerts();
+      if (tab === 'phone') {
+        pageSubtabPhone?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageSubtabPhone?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageSubtabEmail?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageSubtabEmail?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pagePhoneMethod?.classList.remove('hidden');
+        pageEmailMethod?.classList.add('hidden');
+      } else {
+        pageSubtabEmail?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageSubtabEmail?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageSubtabPhone?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+        pageSubtabPhone?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+        pageEmailMethod?.classList.remove('hidden');
+        pagePhoneMethod?.classList.add('hidden');
+      }
+    }
+
+    pageSubtabPhone?.addEventListener('click', () => switchPageMethod('phone'));
+    pageSubtabEmail?.addEventListener('click', () => switchPageMethod('email'));
+
+    function getPageFullPhone() {
+      const code = pageCountryCodeSelect ? pageCountryCodeSelect.value.replace(/\D/g, '') : '91';
+      const number = pagePhoneNumberInput ? pagePhoneNumberInput.value.replace(/\D/g, '') : '';
+      return `+${code}${number}`;
+    }
+
+    function startPageResendTimer() {
+      if (pageResendInterval) clearInterval(pageResendInterval);
+      pageResendCountdown = 30;
+      if (pageResendOtpBtn) {
+        pageResendOtpBtn.disabled = true;
+        pageResendOtpBtn.className = "font-semibold text-neutral-400 cursor-not-allowed";
+      }
+
+      pageResendInterval = setInterval(() => {
+        if (pageResendCountdown > 1) {
+          pageResendCountdown--;
+          if (pageResendTimerText) pageResendTimerText.textContent = `Resend in ${pageResendCountdown}s`;
+        } else {
+          clearInterval(pageResendInterval);
+          if (pageResendOtpBtn) {
+            pageResendOtpBtn.disabled = false;
+            pageResendOtpBtn.className = "font-semibold text-primary dark:text-amber-300 hover:underline cursor-pointer";
+          }
+          if (pageResendTimerText) pageResendTimerText.textContent = 'Resend OTP';
+        }
+      }, 1000);
+    }
+
+    async function handlePageSendOtp() {
+      clearPageAlerts();
+      const rawNumber = pagePhoneNumberInput ? pagePhoneNumberInput.value.replace(/\D/g, '') : '';
+      if (rawNumber.length < 10) {
+        showAuthError('Please enter a valid 10-digit mobile number.', true);
+        return;
+      }
+
+      const fullPhone = getPageFullPhone();
+      if (pageSendOtpBtn) pageSendOtpBtn.disabled = true;
+      if (pageSendOtpText) pageSendOtpText.textContent = 'Sending SMS via Twilio...';
+
+      try {
+        if (supabaseClient) {
+          const { error } = await supabaseClient.auth.signInWithOtp({ phone: fullPhone });
+          if (error) throw error;
+        }
+
+        const successMsg = document.getElementById('page-success-msg');
+        if (pageSuccessAlert && successMsg) {
+          successMsg.textContent = `Sacred OTP sent to ${fullPhone}`;
+          pageSuccessAlert.classList.remove('hidden');
+        }
+
+        pagePhoneSendStep?.classList.add('hidden');
+        pagePhoneVerifyStep?.classList.remove('hidden');
+        startPageResendTimer();
+        const firstOtpBox = document.querySelector('.page-otp-digit');
+        if (firstOtpBox) firstOtpBox.focus();
+      } catch (err) {
+        showAuthError(err.message || 'Failed to send OTP. Please check Twilio configuration.', true);
+      } finally {
+        if (pageSendOtpBtn) pageSendOtpBtn.disabled = false;
+        if (pageSendOtpText) pageSendOtpText.textContent = 'Send Sacred OTP';
+      }
+    }
+
+    async function handlePageVerifyOtp() {
+      clearPageAlerts();
+      let code = '';
+      pageOtpBoxes.forEach(b => { code += b.value; });
+
+      if (code.length !== 6) {
+        showAuthError('Please enter the complete 6-digit OTP code.', true);
+        return;
+      }
+
+      const fullPhone = getPageFullPhone();
+      if (pageVerifyOtpBtn) pageVerifyOtpBtn.disabled = true;
+      if (pageVerifyOtpText) pageVerifyOtpText.textContent = 'Verifying...';
+
+      try {
+        let authUser = null;
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.auth.verifyOtp({
+            phone: fullPhone,
+            token: code,
+            type: 'sms'
+          });
+          if (error) throw error;
+          authUser = data.user;
+        }
+
+        const userObj = {
+          id: authUser?.id || ('user_' + btoa(fullPhone).replace(/=/g, '').slice(0, 16).toLowerCase()),
+          identifier: fullPhone,
+          identifier_type: 'phone',
+          username: authUser?.user_metadata?.full_name || 'Devotee ' + fullPhone.slice(-4),
+          avatar: '🪔',
+          custom_avatar_url: null,
+          created_at: new Date().toISOString()
+        };
+
+        if (supabaseClient) {
+          await supabaseClient.from('profiles').upsert({
+            id: userObj.id,
+            identifier: userObj.identifier,
+            identifier_type: 'phone',
+            phone: userObj.identifier,
+            full_name: userObj.username,
+            username: userObj.username,
+            avatar: userObj.avatar,
+            updated_at: new Date().toISOString()
+          }).catch(() => {});
+        }
+
+        saveUserSession(userObj);
+        showToast(`Welcome ${userObj.username}! Signed in via Twilio OTP.`, 'celebration');
+
+        window.location.hash = 'plans';
+
+        if (pendingPlanJoinId) {
+          const targetPlanId = pendingPlanJoinId;
+          pendingPlanJoinId = null;
+          handleSharedPlanDeepLink(targetPlanId);
+        }
+      } catch (err) {
+        showAuthError(err.message || 'Invalid or expired OTP code.', true);
+      } finally {
+        if (pageVerifyOtpBtn) pageVerifyOtpBtn.disabled = false;
+        if (pageVerifyOtpText) pageVerifyOtpText.textContent = 'Verify & Sign In';
+      }
+    }
+
+    pageSendOtpBtn?.addEventListener('click', handlePageSendOtp);
+    pageVerifyOtpBtn?.addEventListener('click', handlePageVerifyOtp);
+    pageChangePhoneBtn?.addEventListener('click', () => {
+      pagePhoneVerifyStep?.classList.add('hidden');
+      pagePhoneSendStep?.classList.remove('hidden');
+      if (pageResendInterval) clearInterval(pageResendInterval);
+    });
+    pageResendOtpBtn?.addEventListener('click', () => {
+      if (pageResendOtpBtn && !pageResendOtpBtn.disabled) handlePageSendOtp();
+    });
+
+    // Auto-advancing 6-digit OTP input boxes on page
+    pageOtpBoxes.forEach((box, index) => {
+      box.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        if (val.length > 1) {
+          const chars = val.slice(0, 6).split('');
+          chars.forEach((c, i) => {
+            if (index + i < 6) pageOtpBoxes[index + i].value = c;
+          });
+          const target = Math.min(index + chars.length, 5);
+          pageOtpBoxes[target]?.focus();
+          return;
+        }
+        box.value = val;
+        if (val && index < 5) pageOtpBoxes[index + 1]?.focus();
+      });
+
+      box.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !box.value && index > 0) {
+          pageOtpBoxes[index - 1]?.focus();
+        }
+        if (e.key === 'Enter') {
+          handlePageVerifyOtp();
+        }
+      });
+    });
+
     function setPageAuthMode(isSignUp) {
-      if (pageErrorAlert) pageErrorAlert.classList.add('hidden');
+      clearPageAlerts();
       if (isSignUp) {
         pageTabLogin?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
         pageTabLogin?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');

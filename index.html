@@ -850,67 +850,8 @@
           </p>
         </div>
 
-        <!-- Tab Switcher (Sign In / Create Account) -->
-        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-          <button id="page-tab-login" class="flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
-          <button id="page-tab-signup" class="flex-1 py-2 rounded-xl text-xs sm:text-sm font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
-        </div>
-
-        <!-- Error Alert Box -->
-        <div id="page-error-alert" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-center gap-2">
-          <span class="material-symbols-outlined text-[18px]">error</span>
-          <span id="page-error-msg">Error occurred</span>
-        </div>
-
-        <!-- Authentication Form -->
-        <form id="page-login-form" class="space-y-4" onsubmit="return false;">
-          <!-- Identifier Input (Email or Phone) -->
-          <div class="space-y-1">
-            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address or Mobile Number</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">badge</span>
-              <input type="text" id="page-identifier-input" placeholder="e.g. devotee@gmail.com or 9876543210" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-          </div>
-
-          <!-- Optional Display Name on Sign Up -->
-          <div id="page-username-field" class="space-y-1 hidden">
-            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Display Name</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
-              <input type="text" id="page-username-input" placeholder="e.g. Sagnik Roy" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-          </div>
-
-          <!-- Password Input -->
-          <div class="space-y-1">
-            <div class="flex justify-between items-center">
-              <label class="text-xs font-semibold text-on-surface dark:text-amber-200">Password (Alphanumeric, Min 5 chars)</label>
-              <button type="button" id="page-toggle-pwd-btn" class="text-[11px] text-primary dark:text-amber-300 hover:underline cursor-pointer">Show</button>
-            </div>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
-              <input type="password" id="page-password-input" placeholder="Must include letters & numbers (e.g. Dugga2026)" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/70">Password must contain at least 5 alphanumeric characters (letters and numbers).</p>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" id="page-submit-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">login</span>
-            <span id="page-submit-label">Sign In</span>
-          </button>
-        </form>
-
-        <!-- Divider -->
-        <div class="flex items-center gap-3">
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">OR</span>
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-        </div>
-
         <!-- Google Sign In Button -->
-        <button id="page-google-btn" type="button" class="w-full py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-white font-semibold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3 cursor-pointer">
+        <button id="page-google-btn" type="button" class="w-full py-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-white font-semibold text-sm shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-3 cursor-pointer">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -919,6 +860,137 @@
           </svg>
           <span>Continue with Google</span>
         </button>
+
+        <!-- Divider -->
+        <div class="flex items-center gap-3">
+          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
+          <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with phone</span>
+          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
+        </div>
+
+        <!-- Auth Method Switcher (Phone OTP vs Email/Password) -->
+        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
+          <button id="page-subtab-phone" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">
+            📱 Phone OTP (Twilio)
+          </button>
+          <button id="page-subtab-email" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">
+            ✉️ Email / Password
+          </button>
+        </div>
+
+        <!-- Error Alert Box -->
+        <div id="page-error-alert" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">error</span>
+          <span id="page-error-msg">Error occurred</span>
+        </div>
+        <div id="page-success-alert" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">check_circle</span>
+          <span id="page-success-msg">Success</span>
+        </div>
+
+        <!-- 1. PHONE OTP METHOD (PAGE) -->
+        <div id="page-phone-method" class="space-y-4">
+          <!-- Step 1: Phone Input -->
+          <div id="page-phone-send-step" class="space-y-3">
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Mobile Number (Twilio SMS OTP)</label>
+              <div class="flex gap-2">
+                <select id="page-country-code-select" class="py-2.5 px-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs font-medium text-on-surface dark:text-white focus:outline-none">
+                  <option value="+91" selected>India (+91)</option>
+                  <option value="+1">USA / Canada (+1)</option>
+                  <option value="+44">UK (+44)</option>
+                  <option value="+61">Australia (+61)</option>
+                  <option value="+971">UAE (+971)</option>
+                  <option value="+65">Singapore (+65)</option>
+                  <option value="+49">Germany (+49)</option>
+                </select>
+                <input type="tel" id="page-phone-number-input" placeholder="9876543210" maxlength="15" class="flex-1 py-2.5 px-3.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+              </div>
+            </div>
+
+            <button id="page-send-otp-btn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">sms</span>
+              <span id="page-send-otp-text">Send Sacred OTP</span>
+            </button>
+          </div>
+
+          <!-- Step 2: 6-Digit OTP Verification -->
+          <div id="page-phone-verify-step" class="hidden space-y-4">
+            <div class="space-y-2 text-center">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Enter 6-Digit SMS Verification Code</label>
+              <div class="flex justify-center gap-2 sm:gap-2.5">
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="0" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="1" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="2" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="3" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="4" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+                <input type="text" maxlength="1" inputmode="numeric" data-page-otp="5" class="page-otp-digit w-11 h-12 text-center text-lg font-bold rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/50 dark:border-amber-400/30 text-on-surface dark:text-white focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+              </div>
+            </div>
+
+            <button id="page-verify-otp-btn" type="button" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+              <span id="page-verify-otp-text">Verify & Sign In</span>
+            </button>
+
+            <div class="flex items-center justify-between text-xs pt-2 border-t border-outline-variant/20 dark:border-amber-400/20">
+              <button id="page-change-phone-btn" type="button" class="text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 cursor-pointer">
+                ← Change Number
+              </button>
+              <button id="page-resend-otp-btn" type="button" disabled class="font-semibold text-neutral-400 cursor-not-allowed">
+                <span id="page-resend-timer-text">Resend in 30s</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. EMAIL & PASSWORD METHOD (PAGE) -->
+        <div id="page-email-method" class="hidden space-y-4">
+          <!-- Tab Switcher (Sign In / Create Account) -->
+          <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
+            <button id="page-tab-login" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
+            <button id="page-tab-signup" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
+          </div>
+
+          <form id="page-login-form" class="space-y-4" onsubmit="return false;">
+            <!-- Identifier Input (Email or Phone) -->
+            <div class="space-y-1">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">badge</span>
+                <input type="text" id="page-identifier-input" placeholder="e.g. devotee@gmail.com" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Optional Display Name on Sign Up -->
+            <div id="page-username-field" class="space-y-1 hidden">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Display Name</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
+                <input type="text" id="page-username-input" placeholder="e.g. Sagnik Roy" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-1">
+              <div class="flex justify-between items-center">
+                <label class="text-xs font-semibold text-on-surface dark:text-amber-200">Password (Alphanumeric, Min 5 chars)</label>
+                <button type="button" id="page-toggle-pwd-btn" class="text-[11px] text-primary dark:text-amber-300 hover:underline cursor-pointer">Show</button>
+              </div>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
+                <input type="password" id="page-password-input" placeholder="Must include letters & numbers (e.g. Dugga2026)" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+              <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/70">Password must contain at least 5 alphanumeric characters (letters and numbers).</p>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="page-submit-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">login</span>
+              <span id="page-submit-label">Sign In</span>
+            </button>
+          </form>
+        </div>
       </div>
     </section>
 
