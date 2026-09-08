@@ -1212,22 +1212,22 @@
     getDefaultBookmarks() {
       return [
         {
-          id: 'bagbazar',
-          name: 'Bagbazar Sarbojanin Durgotsav',
+          id: 'maniktala-chaltabagan',
+          name: 'Maniktala Chaltabagan Lohapatty',
           category: 'Pandal',
-          zone: 'North Kolkata',
-          location: 'Bagbazar, Shyambazar Metro',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata',
-          image: 'pandals/baghbazar.jpg'
+          zone: 'North',
+          location: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata',
+          image: 'pandals/maniktala chaltabagan lohapatty.jpg'
         },
         {
           id: 'kumartuli-park',
           name: 'Kumartuli Park Sarbojanin',
           category: 'Pandal',
-          zone: 'North Kolkata',
-          location: 'Kumartuli, Sovabazar Metro',
-          link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Sarbojanin+Durgotsab+Kolkata',
-          image: 'pandals/kumartuli.jpg'
+          zone: 'North',
+          location: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
+          link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata',
+          image: 'pandals/Kumartuli Park Sarbojanin.jpg'
         },
         {
           id: 'food-1',
@@ -1250,14 +1250,87 @@
 
     getBookmarks() {
       try {
+        let list = null;
         const saved = localStorage.getItem(this.KEY_BOOKMARKS);
         if (saved !== null) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            list = parsed;
+          }
         }
-        const defaults = this.getDefaultBookmarks();
-        localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(defaults));
-        return defaults;
+        if (!list) {
+          list = this.getDefaultBookmarks();
+          localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
+        }
+
+        // Auto-heal and sync bookmarks with the latest authentic photos and transit details
+        let modified = false;
+        list = list.map(b => {
+          // Check if matches PANDALS_DATA
+          const pandal = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
+          if (pandal) {
+            if (b.image !== pandal.image || b.location !== pandal.transit || b.link !== pandal.locationUrl || b.zone !== pandal.zone) {
+              modified = true;
+              return {
+                ...b,
+                id: pandal.id,
+                name: pandal.name,
+                category: 'Pandal',
+                location: pandal.transit,
+                zone: pandal.zone,
+                link: pandal.locationUrl,
+                image: pandal.image
+              };
+            }
+            return b;
+          }
+
+          // Check if matches FOOD_DATA
+          const food = FOOD_DATA.find(f => f.id === b.id || f.name.toLowerCase() === b.name.toLowerCase());
+          if (food) {
+            if (b.image !== food.image || b.location !== food.location || b.link !== food.locationUrl) {
+              modified = true;
+              return {
+                ...b,
+                id: food.id,
+                name: food.name,
+                category: 'Food',
+                location: food.location,
+                link: food.locationUrl,
+                image: food.image
+              };
+            }
+            return b;
+          }
+
+          // Check if matches SHOPPING_DATA
+          const shop = SHOPPING_DATA.find(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+          if (shop) {
+            if (b.image !== shop.image || b.location !== shop.location || b.link !== shop.locationUrl) {
+              modified = true;
+              return {
+                ...b,
+                id: shop.id,
+                name: shop.name,
+                category: 'Shop',
+                location: shop.location,
+                link: shop.locationUrl,
+                image: shop.image
+              };
+            }
+            return b;
+          }
+
+          return b;
+        });
+
+        if (modified) {
+          try {
+            localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
+          } catch (e) {}
+        }
+
+        return list;
       } catch (e) {
         return this.getDefaultBookmarks();
       }
@@ -2052,22 +2125,22 @@
     // Curated Fallbacks to guarantee AT LEAST 2 items under every category
     const curatedPandals = [
       {
-        id: 'bagbazar',
-        name: 'Bagbazar Sarbojanin Durgotsav',
+        id: 'maniktala-chaltabagan',
+        name: 'Maniktala Chaltabagan Lohapatty',
         category: 'Pandal',
-        zone: 'North Kolkata',
-        location: 'Bagbazar, Shyambazar Metro',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata',
-        image: 'pandals/baghbazar.jpg'
+        zone: 'North',
+        location: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata',
+        image: 'pandals/maniktala chaltabagan lohapatty.jpg'
       },
       {
         id: 'kumartuli-park',
         name: 'Kumartuli Park Sarbojanin',
         category: 'Pandal',
-        zone: 'North Kolkata',
-        location: 'Kumartuli, Sovabazar Metro',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Sarbojanin+Durgotsab+Kolkata',
-        image: 'pandals/kumartuli.jpg'
+        zone: 'North',
+        location: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
+        link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata',
+        image: 'pandals/Kumartuli Park Sarbojanin.jpg'
       }
     ];
 
@@ -2165,24 +2238,31 @@
           </div>
           <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
             ${displayPandals.map((b, idx) => {
-              const pandalImg = b.image || PANDALS_DATA.find(p => p.id === b.id)?.image || 'pandals/baghbazar.jpg';
+              const pandalData = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
+              const pandalImg = (pandalData && pandalData.image) 
+                ? pandalData.image 
+                : (b.image && !b.image.includes('unsplash.com') ? b.image : 'pandals/maniktala chaltabagan lohapatty.jpg');
+              const pandalZone = (pandalData && pandalData.zone) ? pandalData.zone : (b.zone || 'North');
+              const pandalTransit = (pandalData && pandalData.transit) ? pandalData.transit : (b.location || 'Kolkata Metro');
+              const pandalLink = (pandalData && pandalData.locationUrl) ? pandalData.locationUrl : (b.link || '#');
+
               return `
               <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
                 <div>
                   <!-- Pandal Picture Thumbnail -->
                   <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
-                    <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/baghbazar.jpg'" />
+                    <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/maniktala chaltabagan lohapatty.jpg'" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
-                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${b.zone || 'Kolkata'} Zone</span>
+                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${pandalZone} Zone</span>
                   </div>
                   <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
-                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5">
+                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${pandalTransit}">
                     <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">near_me</span>
-                    <span class="truncate">${b.location}</span>
+                    <span class="truncate">${pandalTransit}</span>
                   </p>
                 </div>
                 <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                  <a href="${b.link || '#'}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                  <a href="${pandalLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
                     <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
                     <span class="truncate">Directions</span>
                   </a>
@@ -2210,7 +2290,13 @@
           </div>
           <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
             ${displayFood.map((b, idx) => {
-              const spotImg = b.image || FOOD_DATA.find(f => f.id === b.id)?.image || SHOPPING_DATA.find(s => s.id === b.id)?.image || 'food/arsalan.avif';
+              const foodData = FOOD_DATA.find(f => f.id === b.id || f.name.toLowerCase() === b.name.toLowerCase());
+              const shopData = SHOPPING_DATA.find(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+              const spotImg = (foodData && foodData.image) || (shopData && shopData.image) || (b.image && !b.image.includes('unsplash.com') ? b.image : 'food/arsalan.avif');
+              const spotCat = (foodData && foodData.category) || (shopData && shopData.category) || b.category || 'Food & Shopping';
+              const spotLoc = (foodData && foodData.location) || (shopData && shopData.location) || b.location || 'Kolkata';
+              const spotLink = (foodData && foodData.locationUrl) || (shopData && shopData.locationUrl) || b.link || '#';
+
               return `
               <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
                 <div>
@@ -2218,16 +2304,16 @@
                   <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
                     <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
                     <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
-                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${b.category || 'Food & Shopping'}</span>
+                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${spotCat}</span>
                   </div>
                   <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
-                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5">
+                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${spotLoc}">
                     <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-secondary dark:text-amber-300 shrink-0">pin_drop</span>
-                    <span class="truncate">${b.location}</span>
+                    <span class="truncate">${spotLoc}</span>
                   </p>
                 </div>
                 <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                  <a href="${b.link || '#'}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                  <a href="${spotLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
                     <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
                     <span class="truncate">Directions</span>
                   </a>
