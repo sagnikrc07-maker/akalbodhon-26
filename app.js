@@ -4418,7 +4418,13 @@
               custom_notes: p.custom_notes
             }));
 
-          customPlans = remotePlans;
+          // Merge remote custom plans and existing plans cleanly
+          const planMap = new Map();
+          remotePlans.forEach(p => planMap.set(p.id, p));
+          (customPlans || []).forEach(p => {
+            if (!planMap.has(p.id)) planMap.set(p.id, p);
+          });
+          customPlans = Array.from(planMap.values());
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
         }
       }
@@ -4439,7 +4445,19 @@
     // Combine Master Plans & Custom Plans
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
 
-    if (dayFilter === 'custom') {
+    if (dayFilter === 'my-plans') {
+      if (currentUser) {
+        allPlans = customPlans.filter(p => p.creator_id === currentUser.id || p.creator_id === currentUser.user_id);
+      } else {
+        allPlans = [];
+      }
+    } else if (dayFilter === 'shared') {
+      if (currentUser) {
+        allPlans = customPlans.filter(p => p.creator_id !== currentUser.id && p.creator_id !== currentUser.user_id);
+      } else {
+        allPlans = customPlans;
+      }
+    } else if (dayFilter === 'custom') {
       allPlans = customPlans;
     } else if (dayFilter !== 'all') {
       allPlans = allPlans.filter(p => {
@@ -4450,15 +4468,20 @@
     }
 
     if (allPlans.length === 0) {
+      const isMyPlansFilter = dayFilter === 'my-plans';
       container.innerHTML = `
         <div class="col-span-full text-center py-16 px-4 rounded-3xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 space-y-3">
           <span class="text-4xl">🪔</span>
-          <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">No custom plans found for this selection</h3>
+          <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">
+            ${isMyPlansFilter && !currentUser ? 'Sign in to view your created plans' : 'No plans found for this selection'}
+          </h3>
           <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-sm mx-auto">
-            Create your customized festival itinerary to hop pandals, follow canonical rituals, and share with your friends.
+            ${isMyPlansFilter && !currentUser 
+              ? 'Log in to your devotee account to view, edit, and share your personal Puja itineraries.' 
+              : 'Create your customized festival itinerary to hop pandals, follow canonical rituals, and share with your friends.'}
           </p>
-          <button onclick="document.getElementById('open-create-plan-btn').click()" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
-            + Create Plan Now
+          <button onclick="${isMyPlansFilter && !currentUser ? "openAuthModal('login')" : "document.getElementById('open-create-plan-btn').click()"}" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
+            ${isMyPlansFilter && !currentUser ? 'Sign In Now' : '+ Create Plan Now'}
           </button>
         </div>
       `;
@@ -4467,23 +4490,31 @@
 
     container.innerHTML = allPlans.map(plan => {
       const isCustom = !plan.is_template;
-      const isMyPlan = currentUser && plan.creator_id === currentUser.id;
+      const isMyPlan = currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id);
       const members = plan.members || [];
       const hasMembers = members.length > 0;
       const pandalCount = (plan.pandals || []).length;
       const foodCount = (plan.food_stops || []).length;
+      const creatorNameDisplay = isMyPlan 
+        ? `You (${plan.creator_name || currentUser.username || 'Devotee'})` 
+        : (plan.creator_name || 'Community Devotee');
 
       return `
         <div id="plan-card-${plan.id}" data-plan-id="${plan.id}" class="glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
           <div class="space-y-2 sm:space-y-3">
-            <!-- Header: Puja Day Centered in Middle -->
-            <div class="flex items-center justify-center w-full">
+            <!-- Header: Puja Day Centered in Middle with Badge -->
+            <div class="flex items-center justify-between w-full">
               <span class="px-3 py-0.5 sm:px-3.5 sm:py-1 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[10px] sm:text-xs font-bold text-center border border-primary/20 dark:border-amber-400/30 shadow-sm">
                 ${plan.day_tag || 'Festive Day'}
               </span>
+              ${isCustom ? `
+                <span class="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full ${isMyPlan ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-secondary-container/30 text-secondary dark:text-amber-300 border border-secondary-container/40'}">
+                  ${isMyPlan ? 'My Plan' : 'Shared'}
+                </span>
+              ` : ''}
             </div>
 
-            <!-- Subheader: Date & Creator (Stacked one under the other, not side by side) -->
+            <!-- Subheader: Date & Creator Name prominently displayed on plan -->
             <div class="flex flex-col items-start gap-1.5 pt-0.5 w-full">
               ${plan.date_str ? `
                 <div class="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-on-surface-variant dark:text-[#ded5c7] leading-snug w-full">
@@ -4492,10 +4523,12 @@
                 </div>
               ` : ''}
 
-              <!-- Creator: Just the Icon and "HOST" on its own line under the date -->
-              <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30" title="Plan Host">
+              <!-- Creator: Name clearly written on the plan -->
+              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30 max-w-full shadow-xs" title="Created by ${escapeHtml(plan.creator_name || 'Devotee')}">
                 <span class="text-xs sm:text-sm">${plan.creator_avatar || '🌺'}</span>
-                <span class="creator-badge text-[8px] sm:text-[9px] px-1 py-0.5 rounded uppercase font-bold tracking-wider">Host</span>
+                <span class="text-[10px] sm:text-xs text-on-surface dark:text-[#ded5c7] truncate">
+                  Created by <strong class="font-bold text-primary dark:text-amber-300">${escapeHtml(creatorNameDisplay)}</strong>
+                </span>
               </div>
             </div>
 
@@ -4524,13 +4557,16 @@
             </div>
           </div>
 
-          <!-- Action: View Plan Button (Opens Overlaying Menu) -->
+          <!-- Action: View Plan Button & Share Plan Button -->
           <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
             <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
               <span>View Plan</span>
             </button>
-            ${isCustom ? `
+            <button onclick="event.stopPropagation(); window.openSharePlanModal('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-secondary-container dark:border-amber-400/40 text-primary dark:text-amber-300 hover:bg-secondary-container/20 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Share Plan with Friends">
+              <span class="material-symbols-outlined text-[17px]">share</span>
+            </button>
+            ${isCustom && isMyPlan ? `
               <button onclick="event.stopPropagation(); window.deleteCustomPlan('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" title="Delete Plan">
                 <span class="material-symbols-outlined text-[18px]">delete</span>
               </button>
@@ -4569,9 +4605,17 @@
       dateEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span> <span>${plan.date_str || plan.day_tag || 'Festive Day'}</span>`;
     }
 
-    // Host
+    // Host & Creator Name
     const hostAvatar = document.getElementById('vp-host-avatar');
+    const hostName = document.getElementById('vp-host-name');
     if (hostAvatar) hostAvatar.textContent = plan.creator_avatar || '🌺';
+    if (hostName) {
+      if (currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id)) {
+        hostName.textContent = `You (${plan.creator_name || currentUser.username || 'Devotee'})`;
+      } else {
+        hostName.textContent = plan.creator_name || 'Community Devotee';
+      }
+    }
 
     // Title
     const titleEl = document.getElementById('vp-title');
@@ -4684,17 +4728,25 @@
       };
     }
 
-    // Save button
+    // Save button (adapts for personal itinerary vs shared plan)
     const saveBtn = document.getElementById('vp-save-btn');
     if (saveBtn) {
+      const isMyPlan = currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id);
+      if (!isMyPlan && !plan.is_template) {
+        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_add</span> <span>Save to My Account</span>`;
+        saveBtn.title = `Save plan by ${plan.creator_name || 'Devotee'} to your account`;
+      } else {
+        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark</span> <span>Save to Itinerary</span>`;
+        saveBtn.title = "Save plan pandals to itinerary";
+      }
       saveBtn.onclick = () => {
         window.savePlanToItinerary(plan.id);
       };
     }
 
-    // Delete button (for custom created plans)
+    // Delete button (strictly for custom created plans owned by active user)
     const deleteBtn = document.getElementById('vp-delete-btn');
-    const isDeletable = !plan.is_template || (currentUser && plan.creator_id === currentUser.id);
+    const isDeletable = !plan.is_template && currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id);
     if (deleteBtn) {
       if (isDeletable) {
         deleteBtn.classList.remove('hidden');
@@ -4840,11 +4892,15 @@
         const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
         const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
 
+        const creatorDisplayName = (currentUser && currentUser.username) ? currentUser.username : (currentUser?.user_id || 'Devotee');
+        const creatorUserId = (currentUser && currentUser.id) ? currentUser.id : (currentUser?.user_id || 'user_devotee');
+        const creatorAvatarIcon = (currentUser && currentUser.avatar) ? currentUser.avatar : '🌺';
+
         const newPlan = {
           id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
-          creator_id: currentUser.id,
-          creator_name: currentUser.username || 'Devotee',
-          creator_avatar: currentUser.avatar || '🌺',
+          creator_id: creatorUserId,
+          creator_name: creatorDisplayName,
+          creator_avatar: creatorAvatarIcon,
           title: title,
           day_tag: day,
           day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
@@ -4855,9 +4911,9 @@
           rituals: ritualsList,
           members: [
             {
-              user_id: currentUser.id,
-              user_name: currentUser.username || 'Devotee',
-              user_avatar: currentUser.avatar || '🌺',
+              user_id: creatorUserId,
+              user_name: creatorDisplayName,
+              user_avatar: creatorAvatarIcon,
               role: 'creator'
             }
           ],
@@ -4868,10 +4924,10 @@
         if (supabaseClient) {
           try {
             await supabaseClient.from('puja_plans').insert([{
-              id: newPlan.id.length > 36 ? undefined : newPlan.id,
-              creator_id: currentUser.id,
-              creator_name: currentUser.username,
-              creator_avatar: currentUser.avatar || '🌺',
+              id: newPlan.id,
+              creator_id: newPlan.creator_id,
+              creator_name: newPlan.creator_name,
+              creator_avatar: newPlan.creator_avatar,
               title: newPlan.title,
               day_tag: newPlan.day_tag,
               date_str: newPlan.date_str,
@@ -5012,7 +5068,7 @@
       if (!plan) return;
 
       heading = 'Share Puja Plan';
-      subTitle = `${plan.title} (${plan.day_tag || 'Festive Days'})`;
+      subTitle = `${plan.title} • Created by ${plan.creator_name || 'Devotee'}`;
       label = 'Direct Plan Link';
 
       const isCustom = customPlans.some(p => p.id === plan.id) || (typeof plan.id === 'string' && (plan.id.startsWith('custom-') || plan.id.startsWith('plan_')));
@@ -5023,7 +5079,9 @@
             title: plan.title,
             day_tag: plan.day_tag,
             date_str: plan.date_str,
-            creator_name: plan.creator_name,
+            creator_name: plan.creator_name || 'Devotee',
+            creator_avatar: plan.creator_avatar || '🌺',
+            creator_id: plan.creator_id,
             route_summary: plan.route_summary,
             pandals: plan.pandals,
             food_stops: plan.food_stops,
@@ -5042,7 +5100,8 @@
       const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
 
       message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
-✨ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
+✨ Created by: ${plan.creator_name || 'Akalbodhon Devotee'}
+🏛️ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
 🪔 View the full itinerary, map directions & food pit-stops on Akalbodhon:`;
 
     } else if (type === 'pandal') {
@@ -5282,30 +5341,41 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
       }, 350);
 
-      showToast(`🌺 Opened shared plan: "${plan.title}"`, 'event_available');
+      showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
 
-      // If user is logged in, join collaboratively
+      // If user is logged in, attach this shared plan to receiver's logged in account
       if (currentUser) {
         plan.members = plan.members || [];
-        const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id);
+        const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id || m.user_id === currentUser.user_id);
         if (!isAlreadyMember) {
           const newMember = {
             plan_id: plan.id,
-            user_id: currentUser.id,
-            user_name: currentUser.username || 'Devotee',
+            user_id: currentUser.id || currentUser.user_id,
+            user_name: currentUser.username || currentUser.user_id || 'Devotee',
             user_avatar: currentUser.avatar || '🪔',
             role: plan.creator_id === currentUser.id ? 'creator' : 'member'
           };
           plan.members.push(newMember);
           if (supabaseClient) {
             try {
-              await supabaseClient.from('plan_members').upsert(newMember);
+              supabaseClient.from('plan_members').upsert(newMember).then(() => {});
             } catch (e) {
               console.warn('Member sync notice:', e);
             }
           }
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
         }
+        // Save to receiver's profile in Supabase so it appears on all devices
+        if (supabaseClient) {
+          const targetId = (currentUser.id || '').toLowerCase();
+          const targetUid = currentUser.user_id || currentUser.id;
+          supabaseClient.from('profiles').update({
+            custom_plans: customPlans,
+            updated_at: new Date().toISOString()
+          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+        }
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      } else {
+        pendingPlanJoinId = plan.id;
       }
 
       // Clean up the URL search params so the receiver is not trapped when navigating around
@@ -5342,7 +5412,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     showToast('Plan deleted from your collection.', 'delete');
   };
 
-  // Save Plan to Itinerary
+  // Save Plan to Itinerary & Collection
   window.savePlanToItinerary = function (planId) {
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     const plan = allPlans.find(p => p.id === planId);
@@ -5354,20 +5424,40 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           const rawName = typeof pName === 'string' ? pName : pName.name;
           const pandalObj = PANDALS_DATA.find(pd => pd.name.toLowerCase() === rawName.toLowerCase());
           if (pandalObj) {
-            Storage.toggleBookmark({
-              id: pandalObj.id,
-              name: pandalObj.name,
-              category: 'Pandal',
-              location: pandalObj.transit,
-              zone: pandalObj.zone,
-              link: pandalObj.locationUrl,
-              image: pandalObj.image
-            });
+            const currentBookmarks = Storage.getBookmarks();
+            if (!currentBookmarks.some(b => b.id === pandalObj.id)) {
+              Storage.toggleBookmark({
+                id: pandalObj.id,
+                name: pandalObj.name,
+                category: 'Pandal',
+                location: pandalObj.transit,
+                zone: pandalObj.zone,
+                link: pandalObj.locationUrl,
+                image: pandalObj.image
+              });
+            }
           }
         });
       }
 
-      showToast(`Added pandals from "${plan.title}" to your Saved Itinerary!`, 'bookmark_added');
+      // If it is a custom/shared plan, save into receiver's custom plans in Supabase & local storage
+      if (!plan.is_template) {
+        if (!customPlans.some(p => p.id === plan.id)) {
+          customPlans.unshift(plan);
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+        }
+        if (currentUser && supabaseClient) {
+          const targetId = (currentUser.id || '').toLowerCase();
+          const targetUid = currentUser.user_id || currentUser.id;
+          supabaseClient.from('profiles').update({
+            custom_plans: customPlans,
+            updated_at: new Date().toISOString()
+          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+        }
+      }
+
+      showToast(`Plan "${plan.title}" (by ${plan.creator_name || 'Devotee'}) saved to your account!`, 'bookmark_added');
+      renderFestivalPlans(activePlanFilter);
       renderSavedItinerary();
       renderPandals();
     };
@@ -5375,7 +5465,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (!isUserLoggedIn()) {
       promptAuthBeforeSave({
         title: 'Sign In to Save Plan',
-        message: `Please <strong>log in</strong> or <strong>create an account</strong> to save pandals from <em>${plan.title}</em> to your personal itinerary.`,
+        message: `Please <strong>log in</strong> or <strong>create an account</strong> to save this plan by <strong>${escapeHtml(plan.creator_name || 'Devotee')}</strong> to your festival collection.`,
         categoryName: 'Puja Plans',
         defaultMode: 'login',
         onAuthenticatedSave: performSave

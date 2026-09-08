@@ -713,13 +713,15 @@
         <div class="relative w-full sm:w-72">
           <select id="plan-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
             <option value="all" selected>🌟 All Plans (Full Festival)</option>
+            <option value="my-plans">👤 My Created Plans</option>
+            <option value="shared">🤝 Shared / Friends' Plans</option>
             <option value="mahalaya">🌅 Mahalaya (Dawn Chokshudaan)</option>
             <option value="shasthi">🥁 Maha Shasthi (Bodhon & Amontron)</option>
             <option value="saptami">🌿 Maha Saptami (Nabapatrika Pravesh)</option>
             <option value="ashtami">🔥 Maha Ashtami (Sandhi Puja & Pushpanjali)</option>
             <option value="navami">✨ Maha Navami (Dhunuchi Naach & Homa)</option>
             <option value="dashami">🪷 Bijoya Dashami (Sindoor Khela & Visarjan)</option>
-            <option value="custom">📝 Custom / Shared Plans</option>
+            <option value="custom">📝 All Custom Plans</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
             <span class="material-symbols-outlined text-[20px]">expand_more</span>
@@ -1268,9 +1270,9 @@
               <span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span>
               Date
             </span>
-            <div id="vp-host-badge" class="flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30">
-              <span id="vp-host-avatar" class="text-xs sm:text-sm">🌺</span>
-              <span class="creator-badge text-[9px] px-1.5 py-0.2 rounded uppercase font-bold tracking-wider">HOST</span>
+            <div id="vp-host-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30 shadow-xs">
+              <span id="vp-host-avatar" class="text-sm">🌺</span>
+              <span class="text-xs font-medium text-on-surface dark:text-[#ded5c7]">Created by <span id="vp-host-name" class="font-bold text-primary dark:text-amber-300 underline decoration-amber-400/40">Devotee</span></span>
             </div>
           </div>
           <h3 id="vp-title" class="font-display text-lg sm:text-2xl font-bold text-on-surface dark:text-white pt-1">
