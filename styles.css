@@ -546,10 +546,16 @@ body.modal-open {
   animation: timerPulse 2s infinite ease-in-out;
 }
 
-/* Modern Tabular Countdown Number Typography */
+/* Modern Tabular Countdown Number Typography - Sacred Epigraphic Roman Aesthetic */
 .countdown-number {
-  font-family: 'Outfit', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif !important;
   font-feature-settings: 'tnum' 1, 'lnum' 1;
   font-variant-numeric: tabular-nums lining-nums;
-  letter-spacing: -0.025em;
+  letter-spacing: 0.02em;
 }
+
+/* Ensure Toast Notification always renders on top of all dialogs */
+#toast-notification {
+  z-index: 100 !important;
+}
+

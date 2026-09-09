@@ -17,10 +17,10 @@
   <meta property="og:image" content="logo.jpg" />
   <meta property="og:type" content="website" />
 
-  <!-- Google Fonts: Playfair Display, Inter & Outfit -->
+  <!-- Google Fonts: Cinzel, Playfair Display, Inter & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet" />
   
   <!-- Material Symbols Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
@@ -71,7 +71,7 @@
           fontFamily: {
             "display": ["Playfair Display", "serif"],
             "body": ["Inter", "sans-serif"],
-            "countdown": ["Outfit", "Inter", "system-ui", "sans-serif"]
+            "countdown": ["Cinzel", "Playfair Display", "Georgia", "serif"]
           },
           spacing: {
             "unit": "8px",
@@ -173,21 +173,14 @@
           Akalbodhon represents the power of faith against insurmountable odds. When Lord Rama faced the demon king Ravana, he could not wait for spring to seek divine grace. He broke tradition to awaken Goddess Durga in autumn—an &quot;untimely invocation&quot; that forever changed how we celebrate Durga Puja today.
         </p>
 
-        <!-- Akalbodhon Story Deep-Dive "Read More" Trigger -->
-        <div class="pt-1">
-          <button id="open-akalbodhon-story-btn" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary-container/20 dark:bg-amber-400/10 border border-secondary-container/40 dark:border-amber-400/30 text-xs font-bold text-primary dark:text-amber-300 hover:bg-secondary-container/40 dark:hover:bg-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm">
+        <!-- Akalbodhon Story Deep-Dive "Read More" Trigger & Centered Explore Rituals CTA -->
+        <div class="pt-1 flex flex-col items-center gap-3">
+          <button id="open-akalbodhon-story-btn" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-secondary-container/20 dark:bg-amber-400/10 border border-secondary-container/40 dark:border-amber-400/30 text-xs font-bold text-primary dark:text-amber-300 hover:bg-secondary-container/40 dark:hover:bg-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm">
             <span>Read More</span>
             <span class="material-symbols-outlined text-[15px]">auto_stories</span>
           </button>
-        </div>
 
-        <!-- Quick Access Action CTAs (User Avatar/Username only + Explore Rituals) -->
-        <div class="flex items-center justify-center flex-wrap gap-3 pt-2">
-          <button id="hero-account-cta-btn" class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-lg hover:shadow-primary/30 dark:hover:shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
-            <span id="hero-user-avatar" class="text-base">🪔</span>
-            <span id="hero-user-name">Sign In</span>
-          </button>
-          <a id="hero-rituals-cta-btn" href="#rituals" class="px-5 py-2.5 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 text-on-surface dark:text-amber-200 hover:border-primary dark:hover:border-amber-400 font-bold text-xs sm:text-sm transition-all flex items-center gap-2">
+          <a id="hero-rituals-cta-btn" href="#rituals" class="px-6 py-2.5 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 text-on-surface dark:text-amber-200 hover:border-primary dark:hover:border-amber-400 font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-[18px]">calendar_month</span> Explore Rituals
           </a>
         </div>
@@ -739,9 +732,9 @@
     <!-- 6. SECTION: RITUALS TIMELINE -->
     <!-- ======================================================== -->
     <section id="section-rituals" class="app-section hidden space-y-8">
-      <!-- Top Go Back to Home Navigation -->
-      <div class="flex items-center justify-between pb-1 reveal-on-scroll">
-        <button id="rituals-go-back-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 text-xs sm:text-sm font-bold text-on-surface dark:text-amber-200 hover:border-primary dark:hover:border-amber-400 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm">
+      <!-- Top Go Back to Home Navigation (Sticky on top left as user scrolls) -->
+      <div class="sticky top-20 z-40 py-2 -mt-2">
+        <button id="rituals-go-back-btn" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high/95 dark:bg-[#252016]/95 backdrop-blur-md border border-outline-variant/40 dark:border-amber-400/30 text-xs sm:text-sm font-bold text-on-surface dark:text-amber-200 hover:border-primary dark:hover:border-amber-400 hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-md">
           <span class="material-symbols-outlined text-[18px]">arrow_back</span>
           <span>Go Back to Home</span>
         </button>
@@ -1515,7 +1508,7 @@
         <!-- Section 2: Features of the Page & User Experience -->
         <div class="space-y-3">
           <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[16px]">stars</span> Features & Experiences
+            <span class="material-symbols-outlined text-[16px]">stars</span> Features & Highlights
           </h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
             <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
@@ -1560,10 +1553,10 @@
             </div>
             <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
               <span class="font-bold text-on-surface dark:text-white flex items-center gap-1.5">
-                <span>👑</span> 14 Sacred Avatars
+                <span>✨</span> Collaborative Plan Architect
               </span>
               <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-                Express your festival spirit with culturally authentic Bengali avatars complete with spiritual significance overlays.
+                Craft bespoke pandal hopping plans with creator credentials and easily share live festival itineraries with friends.
               </p>
             </div>
           </div>
@@ -1634,9 +1627,15 @@
               </button>
             </div>
           </div>
-          <div id="feedback-thanks" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
-            <span class="material-symbols-outlined text-[16px]">check_circle</span>
-            <span>Thank you for your feedback! We read every message. 🙏</span>
+          <div id="feedback-thanks" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px]">check_circle</span>
+              <span>Thank you for your feedback! We read every message. 🙏</span>
+            </div>
+            <div id="feedback-cooldown-notice" class="flex items-center gap-1 font-semibold text-[11px] text-primary dark:text-amber-300 bg-surface-container-high/70 dark:bg-[#1a160f]/80 px-2.5 py-1 rounded-lg border border-primary/20 dark:border-amber-400/20 shadow-xs">
+              <span>refresh in : </span>
+              <span id="feedback-cooldown-timer">7h</span>
+            </div>
           </div>
         </div>
 
@@ -1647,15 +1646,8 @@
             <span class="font-bold text-on-surface dark:text-white">Active Maintenance & Periodic Updates</span>
           </div>
           <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-            Akalbodhon is actively maintained and continually polished. The application will be updated frequently in case of finding out any bugs or introducing community-requested features to ensure the smoothest festival experience.
+            Akalbodhon is diligently maintained and continuously refined. Our platform receives regular performance enhancements, swift resolution for any reported anomalies, and frequent integration of community-inspired features to provide an immaculate, seamless, and reverent festival companion for every devotee.
           </p>
-        </div>
-
-        <!-- Close Button -->
-        <div class="pt-1">
-          <button id="dismiss-about-modal-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
-            Close
-          </button>
         </div>
       </div>
     </div>
@@ -1699,102 +1691,98 @@
 
   <!-- ==================== AKALBODHON SACRED STORY PRESENTATION MODAL ==================== -->
   <div id="akalbodhon-story-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-6 animate-scale-up">
-      <!-- Cross Button on Top Right -->
-      <button id="close-akalbodhon-story-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer" title="Close Story">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right (Fixed still above scroll area) -->
+      <button id="close-akalbodhon-story-btn" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105" title="Close Story">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <!-- Story Header -->
-      <div class="text-center space-y-2 border-b border-outline-variant/20 dark:border-amber-400/20 pb-4">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border border-secondary-container dark:border-amber-400 flex items-center justify-center mx-auto text-3xl shadow-lg">
-          🪷
-        </div>
-        <span class="text-[10px] uppercase tracking-widest text-primary dark:text-amber-300 font-bold block">
-          Puranic Heritage & Tradition
-        </span>
-        <h3 class="font-display text-2xl sm:text-3xl font-bold crimson-gradient-text">
-          The Sacred Story of Akalbodhon (অকালবোধন)
-        </h3>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
-          How Lord Rama awakened Goddess Durga in autumn and gave birth to Sharodiya Durga Puja.
-        </p>
-      </div>
-
-      <!-- Story Chapter Presentation Flow -->
-      <div class="space-y-4 text-xs sm:text-sm text-on-surface dark:text-[#ded5c7] leading-relaxed">
-        <!-- Chapter 1 -->
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">1</span>
-            <span>The Crisis at Lanka</span>
+      <!-- Scrollable Inner Content -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-6 flex-1">
+        <!-- Story Header -->
+        <div class="text-center space-y-2 border-b border-outline-variant/20 dark:border-amber-400/20 pb-4 pt-1">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border border-secondary-container dark:border-amber-400 flex items-center justify-center mx-auto text-3xl shadow-lg">
+            🪷
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7]">
-            In Treta Yuga, during the ferocious battle of Lanka, Lord Rama found the demon king Ravana virtually invincible. Ravana was an ardent devotee of Lord Shiva and Goddess Chandi, enjoying direct divine protection. Every arrow Rama unleashed seemed futile against Ravana's mystical boons.
+          <span class="text-[10px] uppercase tracking-widest text-primary dark:text-amber-300 font-bold block">
+            Puranic Heritage & Tradition
+          </span>
+          <h3 class="font-display text-2xl sm:text-3xl font-bold crimson-gradient-text">
+            The Sacred Story of Akalbodhon (অকালবোধন)
+          </h3>
+          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
+            How Lord Rama awakened Goddess Durga in autumn and gave birth to Sharodiya Durga Puja.
           </p>
         </div>
 
-        <!-- Chapter 2 -->
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">2</span>
-            <span>The Spring Tradition vs. The Autumn Slumber</span>
+        <!-- Story Chapter Presentation Flow -->
+        <div class="space-y-4 text-xs sm:text-sm text-on-surface dark:text-[#ded5c7] leading-relaxed">
+          <!-- Chapter 1 -->
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">1</span>
+              <span>The Crisis at Lanka</span>
+            </div>
+            <p class="text-on-surface-variant dark:text-[#ded5c7]">
+              In Treta Yuga, during the ferocious battle of Lanka, Lord Rama found the demon king Ravana virtually invincible. Ravana was an ardent devotee of Lord Shiva and Goddess Chandi, enjoying direct divine protection. Every arrow Rama unleashed seemed futile against Ravana's mystical boons.
+            </p>
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7]">
-            Traditionally, scriptures ordained that Goddess Durga be worshipped in spring (the month of Chaitra, known as <em>Basanti Puja</em>). In autumn (<em>Sharad</em>), the cosmos enters <em>Dakshinayana</em>—the divine slumber of the deities. To awaken the Supreme Mother out of season was considered spiritually perilous and unprecedented.
-          </p>
-        </div>
 
-        <!-- Chapter 3 -->
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">3</span>
-            <span>The Bodhon: An Untimely Invocation</span>
+          <!-- Chapter 2 -->
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">2</span>
+              <span>The Spring Tradition vs. The Autumn Slumber</span>
+            </div>
+            <p class="text-on-surface-variant dark:text-[#ded5c7]">
+              Traditionally, scriptures ordained that Goddess Durga be worshipped in spring (the month of Chaitra, known as <em>Basanti Puja</em>). In autumn (<em>Sharad</em>), the cosmos enters <em>Dakshinayana</em>—the divine slumber of the deities. To awaken the Supreme Mother out of season was considered spiritually perilous and unprecedented.
+            </p>
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7]">
-            Guided by Brahma and Sage Brihaspati, Lord Rama resolved that dharma could not wait for spring while Sita was held captive. Rama undertook the <strong>Akalbodhon</strong>—literally the <em>untimely awakening</em> of Mahashakti under a Bilva (Wood-apple) tree on the eve of Maha Shasthi.
-          </p>
-        </div>
 
-        <!-- Chapter 4 -->
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">4</span>
-            <span>The Quest for 108 Neel Padma (Blue Lotuses)</span>
+          <!-- Chapter 3 -->
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">3</span>
+              <span>The Bodhon: An Untimely Invocation</span>
+            </div>
+            <p class="text-on-surface-variant dark:text-[#ded5c7]">
+              Guided by Brahma and Sage Brihaspati, Lord Rama resolved that dharma could not wait for spring while Sita was held captive. Rama undertook the <strong>Akalbodhon</strong>—literally the <em>untimely awakening</em> of Mahashakti under a Bilva (Wood-apple) tree on the eve of Maha Shasthi.
+            </p>
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7]">
-            The sacred ritual required an offering of exactly 108 rare, celestial blue lotuses (<em>Neel Padma</em>). Rama sent Pawanputra Hanuman across dangerous realms to the mystical mountain lake of Devidaha. Hanuman gathered all 108 radiant blossoms so the yajna could proceed on Maha Ashtami.
-          </p>
-        </div>
 
-        <!-- Chapter 5 -->
-        <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">5</span>
-            <span>The Divine Test & The Lotus Eye Sacrifice</span>
+          <!-- Chapter 4 -->
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">4</span>
+              <span>The Quest for 108 Neel Padma (Blue Lotuses)</span>
+            </div>
+            <p class="text-on-surface-variant dark:text-[#ded5c7]">
+              The sacred ritual required an offering of exactly 108 rare, celestial blue lotuses (<em>Neel Padma</em>). Rama sent Pawanputra Hanuman across dangerous realms to the mystical mountain lake of Devidaha. Hanuman gathered all 108 radiant blossoms so the yajna could proceed on Maha Ashtami.
+            </p>
           </div>
-          <p class="text-on-surface-variant dark:text-[#ded5c7]">
-            To test Rama's unshakeable devotion, Goddess Durga invisibly took away the 108th blue lotus. When Rama began offering the flowers with mantras, he found only 107. An incomplete yajna would bring cosmic defeat. Without hesitation, Rama recalled that his mother Kausalya affectionately called him <strong>Padmalochana</strong> (<em>"The Lotus-Eyed One"</em>). Drawing his arrow, Rama was poised to gouge out his own right eye to offer as the 108th lotus!
-          </p>
-        </div>
 
-        <!-- Chapter 6 -->
-        <div class="p-4 rounded-2xl bg-primary/10 dark:bg-amber-400/15 border-2 border-primary/30 dark:border-amber-400/40 space-y-1.5">
-          <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
-            <span class="w-6 h-6 rounded-full bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center text-xs">6</span>
-            <span>The Epiphany & Why We Celebrate Today</span>
+          <!-- Chapter 5 -->
+          <div class="p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-xs">5</span>
+              <span>The Divine Test & The Lotus Eye Sacrifice</span>
+            </div>
+            <p class="text-on-surface-variant dark:text-[#ded5c7]">
+              To test Rama's unshakeable devotion, Goddess Durga invisibly took away the 108th blue lotus. When Rama began offering the flowers with mantras, he found only 107. An incomplete yajna would bring cosmic defeat. Without hesitation, Rama recalled that his mother Kausalya affectionately called him <strong>Padmalochana</strong> (<em>"The Lotus-Eyed One"</em>). Drawing his arrow, Rama was poised to gouge out his own right eye to offer as the 108th lotus!
+            </p>
           </div>
-          <p class="text-on-surface dark:text-white font-medium">
-            At that climactic moment, Goddess Durga manifested in her dazzling ten-armed form and caught Rama's hand, proclaiming: <em>"Tushtosmi!"</em> ("I am pleased by your supreme devotion!"). She granted him the divine Brahmastra boon. On Vijayadashami, Ravana fell, and righteousness was restored. Ever since Krittibas Ojha immortalized this in the Bengali Ramayana, Sharodiya Durga Puja became the soul of Bengal—a celebration of light over darkness, love over despair, and divine motherhood.
-          </p>
-        </div>
-      </div>
 
-      <!-- Bottom Close Button -->
-      <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20">
-        <button id="dismiss-akalbodhon-story-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all cursor-pointer">
-          Close & Return to Festival
-        </button>
+          <!-- Chapter 6 -->
+          <div class="p-4 rounded-2xl bg-primary/10 dark:bg-amber-400/15 border-2 border-primary/30 dark:border-amber-400/40 space-y-1.5">
+            <div class="flex items-center gap-2 text-primary dark:text-amber-300 font-bold font-display text-sm">
+              <span class="w-6 h-6 rounded-full bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center text-xs">6</span>
+              <span>The Epiphany & Why We Celebrate Today</span>
+            </div>
+            <p class="text-on-surface dark:text-white font-medium">
+              At that climactic moment, Goddess Durga manifested in her dazzling ten-armed form and caught Rama's hand, proclaiming: <em>"Tushtosmi!"</em> ("I am pleased by your supreme devotion!"). She granted him the divine Brahmastra boon. On Vijayadashami, Ravana fell, and righteousness was restored. Ever since Krittibas Ojha immortalized this in the Bengali Ramayana, Sharodiya Durga Puja became the soul of Bengal—a celebration of light over darkness, love over despair, and divine motherhood.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1884,7 +1872,7 @@
   </div>
 
   <!-- ==================== TOAST NOTIFICATION ==================== -->
-  <div id="toast-notification" class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-50 glass-panel border border-secondary-container dark:border-amber-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm text-on-surface dark:text-white translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
+  <div id="toast-notification" class="fixed bottom-20 md:bottom-8 right-4 md:right-8 z-[100] glass-panel border border-secondary-container dark:border-amber-400 px-4 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm text-on-surface dark:text-white translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
     <span class="toast-icon material-symbols-outlined text-primary dark:text-amber-300 text-[22px]">info</span>
     <span class="toast-msg font-medium">Notification</span>
   </div>
