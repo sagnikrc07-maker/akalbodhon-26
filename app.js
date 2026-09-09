@@ -2706,7 +2706,7 @@
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
       youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC',
       youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?list=PLNW14fSkx0r8&autoplay=1&enablejsapi=1',
-      cover: 'https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2',
+      cover: 'radio/dugga_ma_asche.jpg',
       description: 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.'
     },
     mahalaya: {
@@ -2717,7 +2717,7 @@
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
       youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC',
       youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?list=PLJVPabLHUolo&autoplay=1&enablejsapi=1',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
+      cover: 'radio/durga_vandana.jpg',
       description: 'The eternal dawn Mahishasuramardini, sacred Vedic stotras, and Birendra Krishna Bhadra invocation.'
     }
   };
@@ -2733,7 +2733,7 @@
       spotifyTrackId: '0qo204uS81FwkIQDYkQfCi',
       spotifyUrl: 'https://open.spotify.com/track/0qo204uS81FwkIQDYkQfCi',
       embedUrl: 'https://open.spotify.com/embed/track/0qo204uS81FwkIQDYkQfCi?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27308484e96386e9532e18109d7',
+      cover: 'radio/dugga_ma_asche.jpg',
       previewUrl: 'https://p.scdn.co/mp3-preview/8fd52ee34e2425deecd0981428ae7e3a6ccea88d'
     },
     {
@@ -3365,8 +3365,8 @@
         ? 'The eternal dawn Mahishasuramardini, Vedic stotras, and Chandi Path chants.' 
         : 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.',
       cover: playlistKey === 'mahalaya' 
-        ? 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4' 
-        : 'https://mosaic.scdn.co/640/ab67616d00001e0208484e96386e9532e18109d7ab67616d00001e0221792f8da1279de3b03b4b80ab67616d00001e0227fe75746b882c2cf91b7624ab67616d00001e02877df1f4d86607531a93ead2',
+        ? 'radio/durga_vandana.jpg' 
+        : 'radio/dugga_ma_asche.jpg',
       spotifyUrl: playlistKey === 'mahalaya'
         ? 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link'
         : 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
