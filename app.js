@@ -5926,6 +5926,22 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       });
     }
 
+    // Modal scroll reset helper
+    function resetModalScroll(modalEl) {
+      if (!modalEl) return;
+      modalEl.scrollTop = 0;
+      if (typeof modalEl.scrollTo === 'function') {
+        modalEl.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      }
+      const scrollables = modalEl.querySelectorAll('.modal-scrollable, .overflow-y-auto, [class*="overflow-y"]');
+      scrollables.forEach(el => {
+        el.scrollTop = 0;
+        if (typeof el.scrollTo === 'function') {
+          el.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
+      });
+    }
+
     // Akalbodhon Sacred Story Presentation Modal Handlers
     const storyModal = document.getElementById('akalbodhon-story-modal');
     const openStoryBtn = document.getElementById('open-akalbodhon-story-btn');
@@ -5934,9 +5950,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     if (openStoryBtn && storyModal) {
       openStoryBtn.addEventListener('click', () => {
+        resetModalScroll(storyModal);
         document.body.classList.add('modal-open');
         storyModal.classList.remove('hidden');
         storyModal.classList.add('flex');
+        resetModalScroll(storyModal);
+        requestAnimationFrame(() => resetModalScroll(storyModal));
+        setTimeout(() => resetModalScroll(storyModal), 30);
       });
     }
 
@@ -5945,6 +5965,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (storyModal) {
         storyModal.classList.add('hidden');
         storyModal.classList.remove('flex');
+        resetModalScroll(storyModal);
       }
     };
 
@@ -6047,9 +6068,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const openAbout = (e) => {
       if (e) e.stopPropagation();
       if (aboutModal) {
+        resetModalScroll(aboutModal);
         document.body.classList.add('modal-open');
         aboutModal.classList.remove('hidden');
         aboutModal.classList.add('flex');
+        resetModalScroll(aboutModal);
+        requestAnimationFrame(() => resetModalScroll(aboutModal));
+        setTimeout(() => resetModalScroll(aboutModal), 30);
         checkFeedbackCooldown();
       }
     };
@@ -6059,6 +6084,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (aboutModal) {
         aboutModal.classList.add('hidden');
         aboutModal.classList.remove('flex');
+        resetModalScroll(aboutModal);
       }
     };
 
