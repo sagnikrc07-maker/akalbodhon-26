@@ -1204,6 +1204,15 @@
 
   const soundEngine = new SacredSoundEngine();
 
+  // One-time reset to ensure "My Puja Itinerary" starts completely empty
+  try {
+    if (localStorage.getItem('akalbodhon_itinerary_cleared_v5') !== 'true') {
+      localStorage.setItem('akalbodhon_bookmarks', JSON.stringify([]));
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify([]));
+      localStorage.setItem('akalbodhon_itinerary_cleared_v5', 'true');
+    }
+  } catch (e) {}
+
   // --- 3. LOCAL STORAGE BOOKMARK STORE ---
   const Storage = {
     KEY_BOOKMARKS: 'akalbodhon_bookmarks',
@@ -1339,6 +1348,10 @@
 
     clearBookmarks() {
       localStorage.removeItem(this.KEY_BOOKMARKS);
+      localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify([]));
+      if (typeof syncUserSavedItemsToSupabase === 'function') {
+        syncUserSavedItemsToSupabase([]);
+      }
     }
   };
 
@@ -2188,6 +2201,61 @@
   // --- 10. RENDER SAVED ITINERARY ---
   let activeSavedTab = 'all';
 
+  function attachSavedItineraryTabEvents() {
+    document.querySelectorAll('.saved-tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        const cat = btn.dataset.category;
+        renderSavedItinerary(cat);
+      };
+    });
+
+    const savedDropdownSelect = document.getElementById('saved-filter-dropdown');
+    if (savedDropdownSelect) {
+      savedDropdownSelect.onchange = (e) => {
+        renderSavedItinerary(e.target.value);
+      };
+    }
+
+    const clearAllBtn = document.getElementById('clear-all-bookmarks-btn');
+    if (clearAllBtn) {
+      clearAllBtn.onclick = () => {
+        if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
+          Storage.clearBookmarks();
+          customPlans = [];
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify([]));
+          if (currentUser) {
+            currentUser.saved_items = [];
+            currentUser.custom_plans = [];
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            if (supabaseClient) {
+              syncUserSavedItemsToSupabase([]);
+            }
+          }
+          renderSavedItinerary();
+          renderPandals();
+          renderFoodAndShopping();
+          showToast('Itinerary cleared', 'delete');
+        }
+      };
+    }
+  }
+
+  function attachSavedItineraryItemEvents(displayPandals, displayFood) {
+    document.querySelectorAll('.remove-single-bookmark').forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.dataset.id;
+        const b = displayPandals.concat(displayFood).find(item => item.id === id);
+        if (b) {
+          Storage.toggleBookmark(b);
+          renderSavedItinerary();
+          renderPandals();
+          renderFoodAndShopping();
+          showToast(`Updated "${b.name}" in Itinerary`, 'delete');
+        }
+      };
+    });
+  }
+
   function renderSavedItinerary(filterCategory = activeSavedTab) {
     activeSavedTab = filterCategory;
     const container = document.getElementById('saved-itinerary-container');
@@ -2195,74 +2263,14 @@
 
     const bookmarks = Storage.getBookmarks();
     
-    // Split into categories
+    // Split into categories strictly based on saved bookmarks and user custom plans
     let pandalBookmarks = bookmarks.filter(b => b.category === 'Pandal');
     let foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
     let myPlans = (customPlans && customPlans.length > 0) ? [...customPlans] : [];
 
-    // Curated Fallbacks to guarantee AT LEAST 2 items under every category
-    const curatedPandals = [
-      {
-        id: 'maniktala-chaltabagan',
-        name: 'Maniktala Chaltabagan Lohapatty',
-        category: 'Pandal',
-        zone: 'North',
-        location: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata',
-        image: 'pandals/maniktala chaltabagan lohapatty.jpg'
-      },
-      {
-        id: 'kumartuli-park',
-        name: 'Kumartuli Park Sarbojanin',
-        category: 'Pandal',
-        zone: 'North',
-        location: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata',
-        image: 'pandals/Kumartuli Park Sarbojanin.jpg'
-      }
-    ];
-
-    const curatedFood = [
-      {
-        id: 'food-1',
-        name: 'Arsalan Restaurant',
-        category: 'Food',
-        location: 'Park Circus 7-Point / Ruby',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
-        image: 'food/arsalan.avif'
-      },
-      {
-        id: 'food-2',
-        name: 'Golbari',
-        category: 'Food',
-        location: 'Shyambazar 5-Point Crossing',
-        link: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
-        image: 'food/golbari.jpg'
-      }
-    ];
-
-    const curatedPlans = MASTER_PUJA_PLANS.slice(0, 2);
-
     let displayPandals = [...pandalBookmarks];
-    curatedPandals.forEach(cp => {
-      if (displayPandals.length < 2 && !displayPandals.some(p => p.id === cp.id)) {
-        displayPandals.push(cp);
-      }
-    });
-
     let displayFood = [...foodBookmarks];
-    curatedFood.forEach(cf => {
-      if (displayFood.length < 2 && !displayFood.some(f => f.id === cf.id)) {
-        displayFood.push(cf);
-      }
-    });
-
     let displayPlans = [...myPlans];
-    curatedPlans.forEach(cplan => {
-      if (displayPlans.length < 2 && !displayPlans.some(p => p.id === cplan.id)) {
-        displayPlans.push(cplan);
-      }
-    });
 
     // Update Tab Badges & Dropdown Options
     const badgeAll = document.getElementById('saved-badge-all');
@@ -2302,194 +2310,232 @@
       }
     });
 
+    // When the itinerary is completely empty, show an inviting empty state
+    if (totalCount === 0) {
+      container.innerHTML = `
+        <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-xl mx-auto my-6 space-y-5 reveal-on-scroll">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-400/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto shadow-inner">
+            <span class="material-symbols-outlined text-[36px] sm:text-[44px]">bookmark_border</span>
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Your Puja Itinerary is Empty</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7] leading-relaxed max-w-md mx-auto">
+              You haven't saved any pandals, iconic dining spots, or festival plans yet. Explore Kolkata's festival highlights and tap the bookmark icon on any card to curate your personal itinerary!
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+            <a href="#pandals" onclick="document.querySelector('nav a[href=\\'#pandals\\']')?.click();" class="px-4 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">explore</span> Explore Pandals
+            </a>
+            <a href="#food-shopping" onclick="document.querySelector('nav a[href=\\'#food-shopping\\']')?.click();" class="px-4 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs hover:bg-surface-container-highest dark:hover:bg-[#322c20] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">restaurant</span> Discover Food Spots
+            </a>
+            <a href="#plans" onclick="document.querySelector('nav a[href=\\'#plans\\']')?.click();" class="px-4 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs hover:bg-surface-container-highest dark:hover:bg-[#322c20] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">event_note</span> Puja Plans
+            </a>
+          </div>
+        </div>
+      `;
+      attachSavedItineraryTabEvents();
+      initScrollReveal();
+      return;
+    }
+
     let html = '';
 
-    // 1. PANDALS & TRANSIT SECTION (Side by side on all screen sizes)
+    // 1. PANDALS & TRANSIT SECTION (At least 3 side-by-side on laptop view)
     if (activeSavedTab === 'all' || activeSavedTab === 'pandals') {
-      html += `
-        <div class="space-y-3 sm:space-y-4">
-          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">explore</span>
-              <span>Saved Pandals & Transit (${displayPandals.length})</span>
-            </h3>
-          </div>
-          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
-            ${displayPandals.map((b, idx) => {
-              const pandalData = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
-              const pandalImg = (pandalData && pandalData.image) 
-                ? pandalData.image 
-                : (b.image && !b.image.includes('unsplash.com') ? b.image : 'pandals/maniktala chaltabagan lohapatty.jpg');
-              const pandalZone = (pandalData && pandalData.zone) ? pandalData.zone : (b.zone || 'North');
-              const pandalTransit = (pandalData && pandalData.transit) ? pandalData.transit : (b.location || 'Kolkata Metro');
-              const pandalLink = (pandalData && pandalData.locationUrl) ? pandalData.locationUrl : (b.link || '#');
+      if (displayPandals.length > 0) {
+        html += `
+          <div class="space-y-3 sm:space-y-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">explore</span>
+                <span>Saved Pandals & Transit (${displayPandals.length})</span>
+              </h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
+              ${displayPandals.map((b) => {
+                const pandalData = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
+                const pandalImg = (pandalData && pandalData.image) 
+                  ? pandalData.image 
+                  : (b.image && !b.image.includes('unsplash.com') ? b.image : 'pandals/maniktala chaltabagan lohapatty.jpg');
+                const pandalZone = (pandalData && pandalData.zone) ? pandalData.zone : (b.zone || 'North');
+                const pandalTransit = (pandalData && pandalData.transit) ? pandalData.transit : (b.location || 'Kolkata Metro');
+                const pandalLink = (pandalData && pandalData.locationUrl) ? pandalData.locationUrl : (b.link || '#');
 
-              return `
-              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
-                <div>
-                  <!-- Pandal Picture Thumbnail -->
-                  <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
-                    <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/maniktala chaltabagan lohapatty.jpg'" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
-                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${pandalZone} Zone</span>
+                return `
+                <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                  <div>
+                    <!-- Pandal Picture Thumbnail -->
+                    <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
+                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/maniktala chaltabagan lohapatty.jpg'" />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                      <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${pandalZone} Zone</span>
+                    </div>
+                    <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
+                    <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${pandalTransit}">
+                      <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">near_me</span>
+                      <span class="truncate">${pandalTransit}</span>
+                    </p>
                   </div>
-                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
-                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${pandalTransit}">
-                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">near_me</span>
-                    <span class="truncate">${pandalTransit}</span>
-                  </p>
+                  <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
+                    <a href="${pandalLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                      <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                      <span class="truncate">Directions</span>
+                    </a>
+                    <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
+                      <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                  <a href="${pandalLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
-                    <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
-                    <span class="truncate">Directions</span>
-                  </a>
-                  <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
-                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
-                  </button>
-                </div>
-              </div>
-            `;
-            }).join('')}
+              `;
+              }).join('')}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } else if (activeSavedTab === 'pandals') {
+        html += `
+          <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-lg mx-auto my-4 space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-[28px]">explore</span>
+            </div>
+            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Pandals Saved Yet</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Explore Kolkata's 100+ iconic pandals and tap the bookmark icon on any pandal to add it to your itinerary.</p>
+            <a href="#pandals" onclick="document.querySelector('nav a[href=\\'#pandals\\']')?.click();" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">explore</span> Explore Pandals
+            </a>
+          </div>
+        `;
+      }
     }
 
-    // 2. FOOD & SHOPPING SECTION (Side by side on all screen sizes)
+    // 2. FOOD & SHOPPING SECTION (At least 3 side-by-side on laptop view)
     if (activeSavedTab === 'all' || activeSavedTab === 'food-shopping') {
-      html += `
-        <div class="space-y-3 sm:space-y-4 pt-4">
-          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-              <span class="material-symbols-outlined text-secondary dark:text-amber-300 text-[18px] sm:text-[22px]">restaurant</span>
-              <span>Saved Food & Shopping Spots (${displayFood.length})</span>
-            </h3>
-          </div>
-          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
-            ${displayFood.map((b, idx) => {
-              const foodData = FOOD_DATA.find(f => f.id === b.id || f.name.toLowerCase() === b.name.toLowerCase());
-              const shopData = SHOPPING_DATA.find(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
-              const spotImg = (foodData && foodData.image) || (shopData && shopData.image) || (b.image && !b.image.includes('unsplash.com') ? b.image : 'food/arsalan.avif');
-              const spotCat = (foodData && foodData.category) || (shopData && shopData.category) || b.category || 'Food & Shopping';
-              const spotLoc = (foodData && foodData.location) || (shopData && shopData.location) || b.location || 'Kolkata';
-              const spotLink = (foodData && foodData.locationUrl) || (shopData && shopData.locationUrl) || b.link || '#';
+      if (displayFood.length > 0) {
+        html += `
+          <div class="space-y-3 sm:space-y-4 pt-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-secondary dark:text-amber-300 text-[18px] sm:text-[22px]">restaurant</span>
+                <span>Saved Food & Shopping Spots (${displayFood.length})</span>
+              </h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
+              ${displayFood.map((b) => {
+                const foodData = FOOD_DATA.find(f => f.id === b.id || f.name.toLowerCase() === b.name.toLowerCase());
+                const shopData = SHOPPING_DATA.find(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+                const spotImg = (foodData && foodData.image) || (shopData && shopData.image) || (b.image && !b.image.includes('unsplash.com') ? b.image : 'food/arsalan.avif');
+                const spotCat = (foodData && foodData.category) || (shopData && shopData.category) || b.category || 'Food & Shopping';
+                const spotLoc = (foodData && foodData.location) || (shopData && shopData.location) || b.location || 'Kolkata';
+                const spotLink = (foodData && foodData.locationUrl) || (shopData && shopData.locationUrl) || b.link || '#';
 
-              return `
-              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
-                <div>
-                  <!-- Food/Shopping Picture Thumbnail -->
-                  <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
-                    <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
-                    <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${spotCat}</span>
+                return `
+                <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll overflow-hidden group hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                  <div>
+                    <!-- Food/Shopping Picture Thumbnail -->
+                    <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
+                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
+                      <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${spotCat}</span>
+                    </div>
+                    <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
+                    <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${spotLoc}">
+                      <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-secondary dark:text-amber-300 shrink-0">pin_drop</span>
+                      <span class="truncate">${spotLoc}</span>
+                    </p>
                   </div>
-                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-1 group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${b.name}">${b.name}</h4>
-                  <p class="text-[10px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7] flex items-center gap-1 font-medium truncate mt-0.5" title="${spotLoc}">
-                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-secondary dark:text-amber-300 shrink-0">pin_drop</span>
-                    <span class="truncate">${spotLoc}</span>
-                  </p>
+                  <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
+                    <a href="${spotLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
+                      <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                      <span class="truncate">Directions</span>
+                    </a>
+                    <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
+                      <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
+                    </button>
+                  </div>
                 </div>
-                <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                  <a href="${spotLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
-                    <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
-                    <span class="truncate">Directions</span>
-                  </a>
-                  <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
-                    <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
-                  </button>
-                </div>
-              </div>
-            `;
-            }).join('')}
+              `;
+              }).join('')}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } else if (activeSavedTab === 'food-shopping') {
+        html += `
+          <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-lg mx-auto my-4 space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-secondary/10 dark:bg-amber-400/20 text-secondary dark:text-amber-300 flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-[28px]">restaurant</span>
+            </div>
+            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Food & Shopping Spots Saved</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Bookmark Kolkata's legendary restaurants, roll hubs, and heritage mishti shops to build your festival trail.</p>
+            <a href="#food-shopping" onclick="document.querySelector('nav a[href=\\'#food-shopping\\']')?.click();" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">restaurant</span> Discover Food Spots
+            </a>
+          </div>
+        `;
+      }
     }
 
-    // 3. SAVED / CUSTOM PLANS SECTION (Side by side on all screen sizes)
+    // 3. SAVED / CUSTOM PLANS SECTION (At least 3 side-by-side on laptop view)
     if (activeSavedTab === 'all' || activeSavedTab === 'plans') {
-      html += `
-        <div class="space-y-3 sm:space-y-4 pt-4">
-          <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
-            <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">event_note</span>
-              <span>Custom Festival Plans (${displayPlans.length})</span>
-            </h3>
-          </div>
-          <div class="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-6">
-            ${displayPlans.map((p, idx) => `
-              <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
-                <div>
-                  <div class="flex items-center justify-between gap-1 mb-1">
-                    <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Custom Plan'}</span>
-                    <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
+      if (displayPlans.length > 0) {
+        html += `
+          <div class="space-y-3 sm:space-y-4 pt-4">
+            <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
+              <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">event_note</span>
+                <span>Custom Festival Plans (${displayPlans.length})</span>
+              </h3>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
+              ${displayPlans.map((p) => `
+                <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                  <div>
+                    <div class="flex items-center justify-between gap-1 mb-1">
+                      <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Custom Plan'}</span>
+                      <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
+                    </div>
+                    <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
+                    ${p.route_summary ? `<p class="text-[9.5px] sm:text-xs text-primary dark:text-amber-300 truncate mt-1 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[12px] sm:text-[14px] shrink-0">near_me</span>
+                      <span class="truncate">${p.route_summary}</span>
+                    </p>` : ''}
                   </div>
-                  <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
-                  ${p.route_summary ? `<p class="text-[9.5px] sm:text-xs text-primary dark:text-amber-300 truncate mt-1 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[12px] sm:text-[14px] shrink-0">near_me</span>
-                    <span class="truncate">${p.route_summary}</span>
-                  </p>` : ''}
+                  <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
+                    <a href="#plans" onclick="renderFestivalPlans('${p.is_template ? 'all' : 'custom'}'); setTimeout(() => openViewPlanModal('${p.id}'), 80);" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5 cursor-pointer">
+                      <span>View Plan</span>
+                      <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                    </a>
+                    ${p.is_template ? `
+                      <span class="text-[8.5px] sm:text-[10px] font-semibold text-on-surface-variant/70 dark:text-[#ded5c7]/60">Curated</span>
+                    ` : `
+                      <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer">Delete</button>
+                    `}
+                  </div>
                 </div>
-                <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
-                  <a href="#plans" onclick="renderFestivalPlans('${p.is_template ? 'all' : 'custom'}'); setTimeout(() => openViewPlanModal('${p.id}'), 80);" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5">
-                    <span>View Plan</span>
-                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-                  </a>
-                  ${p.is_template ? `
-                    <span class="text-[8.5px] sm:text-[10px] font-semibold text-on-surface-variant/70 dark:text-[#ded5c7]/60">Curated</span>
-                  ` : `
-                    <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer">Delete</button>
-                  `}
-                </div>
-              </div>
-            `).join('')}
+              `).join('')}
+            </div>
           </div>
-        </div>
-      `;
+        `;
+      } else if (activeSavedTab === 'plans') {
+        html += `
+          <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-lg mx-auto my-4 space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto">
+              <span class="material-symbols-outlined text-[28px]">event_note</span>
+            </div>
+            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Custom Plans Created</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Design day-by-day festival routes with friends or save custom plans under Puja Plans.</p>
+            <a href="#plans" onclick="document.querySelector('nav a[href=\\'#plans\\']')?.click();" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">event_note</span> Puja Plans
+            </a>
+          </div>
+        `;
+      }
     }
 
     container.innerHTML = html;
-
-    // Attach Category Tab click listeners & Dropdown change listener
-    document.querySelectorAll('.saved-tab-btn').forEach(btn => {
-      btn.onclick = () => {
-        const cat = btn.dataset.category;
-        renderSavedItinerary(cat);
-      };
-    });
-
-    const savedDropdownSelect = document.getElementById('saved-filter-dropdown');
-    if (savedDropdownSelect) {
-      savedDropdownSelect.onchange = (e) => {
-        renderSavedItinerary(e.target.value);
-      };
-    }
-
-    document.getElementById('clear-all-bookmarks-btn')?.addEventListener('click', () => {
-      if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
-        Storage.clearBookmarks();
-        renderSavedItinerary();
-        renderPandals();
-        renderFoodAndShopping();
-        showToast('Itinerary cleared', 'delete');
-      }
-    });
-
-    document.querySelectorAll('.remove-single-bookmark').forEach(btn => {
-      btn.onclick = () => {
-        const id = btn.dataset.id;
-        const b = displayPandals.concat(displayFood).find(item => item.id === id);
-        if (b) {
-          Storage.toggleBookmark(b);
-          renderSavedItinerary();
-          renderPandals();
-          renderFoodAndShopping();
-          showToast(`Updated "${b.name}" in Itinerary`, 'delete');
-        }
-      };
-    });
-
+    attachSavedItineraryTabEvents();
+    attachSavedItineraryItemEvents(displayPandals, displayFood);
     initScrollReveal();
   }
 
