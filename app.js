@@ -3285,7 +3285,7 @@
             <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">${song.title}</h4>
             <div class="flex items-center gap-1.5 mt-1">
               <span class="text-[9px] font-mono text-on-surface-variant/70 dark:text-[#ded5c7]/60">${song.duration}</span>
-              <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full ${song.playlist === 'sharodiya' ? 'bg-[#1DB954]/15 text-[#1DB954] dark:text-[#1ed760]' : 'bg-amber-400/15 text-primary dark:text-amber-300'}">#${index + 1}</span>
+              <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full ${song.playlist === 'sharodiya' ? 'bg-[#1DB954]/15 text-[#1DB954] dark:text-[#1ed760]' : 'bg-amber-400/15 text-primary dark:text-amber-300'}">${index + 1}</span>
             </div>
           </div>
         </div>
@@ -3405,7 +3405,7 @@
       tracklistEl.innerHTML = songs.map((song, idx) => `
         <div class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md">
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
-            <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">#${idx + 1}</span>
+            <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">${idx + 1}</span>
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
               <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='logo.jpg'" loading="lazy" />
             </div>
