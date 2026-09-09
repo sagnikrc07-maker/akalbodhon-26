@@ -665,39 +665,57 @@
       ]
     },
     {
-      id: 'food-4',
-      name: 'Peter Cat',
-      category: 'food',
-      categoryLabel: 'Park Street Continental Icon',
-      location: 'Park Street (Near Stephen Court)',
-      metro: 'Park Street Metro (4 min walk)',
-      desc: 'Kolkata heritage institution renowned for its legendary Chelo Kebab served on buttered rice topped with poached egg.',
-      mustTry: 'Original Chelo Kebab, Sizzling Steaks & Cocktail Pitchers',
-      timings: 'Lunch to Late Night',
-      image: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Peter+Cat+Park+Street+Kolkata',
+      id: 'food-kasturi',
+      name: 'Kasturi Restaurant',
+      category: 'bengali',
+      categoryLabel: 'Authentic Dhakai Bengali Cuisine',
+      location: 'Free School St / Ballygunge / Gariahat',
+      metro: 'Park Street Metro (4 min walk) / Kalighat Metro',
+      desc: 'Famed pioneers of traditional Dhakai Bengali recipes cooked with heritage mustard oil and aromatic spices, serving devotees unforgettable festive feasts.',
+      mustTry: 'Kochu Pata Diye Chingri Bhapa, Bhetki Paturi & Dhakai Morog Polao',
+      timings: 'Lunch & Dinner (Puja Special Hours)',
+      image: 'food/Kasturi Restaurant.jpg',
+      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kasturi+Restaurant+Free+School+Street+Kolkata',
       nearbyPandals: [
         { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
-        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
         { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
       ]
     },
     {
-      id: 'food-5',
-      name: 'Mocambo',
-      category: 'food',
-      categoryLabel: 'Park Street Vintage Continental',
-      location: 'Park Street / Free School St',
-      metro: 'Park Street Metro (3 min walk)',
-      desc: 'Serving Kolkata since 1956 with retro dining charm, live organ melodies, and decadent vintage continental recipes.',
-      mustTry: 'Deviled Crab, Chicken Tetrazzini & Baked Alaska',
-      timings: 'Lunch to Late Night',
-      image: 'food/Mocambo.webp',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mocambo+Restaurant+Park+Street+Kolkata',
+      id: 'food-oudh',
+      name: 'Oudh 1590',
+      category: 'biryani',
+      categoryLabel: 'Period Dining Awadhi Cuisine',
+      location: 'Deshapriya Park / Salt Lake / Naktala',
+      metro: 'Kalighat Metro (3 min walk) / City Centre Metro',
+      desc: 'Kolkata\'s first period dining restaurant recreating the regal dastarkhwan of Lucknow with slow-cooked handi biryanis and melt-in-mouth kebabs.',
+      mustTry: 'Awadhi Handi Biryani, Galawati Kebab with Ulta Tawa Paratha & Murgh Pardah Biryani',
+      timings: 'Lunch to Midnight',
+      image: 'food/Oudh 1590.jpg',
+      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Oudh+1590+Deshapriya+Park+Kolkata',
       nearbyPandals: [
-        { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
-        { name: 'Santosh Mitra Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Santosh+Mitra+Square+Durga+Puja+Kolkata' },
-        { name: 'Ekdalia Evergreen Club', url: 'https://www.google.com/maps/dir/?api=1&destination=Ekdalia+Evergreen+Club+Durga+Puja+Kolkata' }
+        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' }
+      ]
+    },
+    {
+      id: 'food-royal',
+      name: 'Royal Indian Hotel',
+      category: 'biryani',
+      categoryLabel: 'Heritage Mughlai Institution (Estd. 1905)',
+      location: 'Chitpur (Near Nakhoda Masjid) / Park Circus',
+      metro: 'Mahatma Gandhi Road Metro / Girish Park Metro',
+      desc: 'Over a century of Mughlai mastery, celebrated across India for its potato-free Lucknowi-style mutton biryani, succulent mutton chaap, and shahi pasinda.',
+      mustTry: 'Royal Mutton Chaap, Shahi Mutton Biryani & Mutton Pasinda',
+      timings: 'Lunch to Late Night',
+      image: 'food/Royal Indian Hotel.jpg',
+      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Royal+Indian+Hotel+Chitpur+Kolkata',
+      nearbyPandals: [
+        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' },
+        { name: 'College Square', url: 'https://www.google.com/maps/dir/?api=1&destination=College+Square+Durga+Puja+Kolkata' },
+        { name: 'Santosh Mitra Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Santosh+Mitra+Square+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -741,7 +759,7 @@
       name: 'Kusum Rolls',
       category: 'food',
       categoryLabel: 'Kolkata Street Kati Roll Pioneer',
-      location: 'Park Street (Opposite Peter Cat)',
+      location: 'Park Street (Near Stephen Court / Karnani Mansion)',
       metro: 'Park Street Metro (3 min walk)',
       desc: 'The iconic midnight snacking joint famed for flaky parathas wrapped around succulent chicken and mutton kebabs with lime and green chillies.',
       mustTry: 'Double Egg Double Chicken Roll, Cheese Mutton Roll',
@@ -752,24 +770,6 @@
         { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
         { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
         { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
-      ]
-    },
-    {
-      id: 'food-12',
-      name: 'Balaram Mullick & Radharaman Mullick',
-      category: 'sweets',
-      categoryLabel: 'Modern & Traditional Mishti Pioneer',
-      location: 'Bhowanipore (Near 75 Palli & 64 Palli)',
-      metro: 'Netaji Bhavan Metro (3 min walk)',
-      desc: 'Since 1885, pioneers of artisanal baked rosogolla, melt-in-mouth nolen gur delicacies, and festive dry-fruit sweets.',
-      mustTry: 'Baked Rosogolla, Chocolate Sandesh & Jalbhara Talsash',
-      timings: 'Morning to Night',
-      image: 'food/Balaram Mullick & Radharaman Mullick.avif',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Balaram+Mullick+Radharaman+Mullick+Bhowanipore+Kolkata',
-      nearbyPandals: [
-        { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
-        { name: 'Chetla Agrani', url: 'https://www.google.com/maps/dir/?api=1&destination=Chetla+Agrani+Durga+Puja+Kolkata' },
-        { name: 'Mudiali Club', url: 'https://www.google.com/maps/dir/?api=1&destination=Mudiali+Club+Durga+Puja+Kolkata' }
       ]
     }
   ];
@@ -1707,7 +1707,7 @@
     let shopList = SHOPPING_DATA;
 
     // Filter logic
-    if (filter === 'food' || filter === 'biryani' || filter === 'bengali' || filter === 'sweets') {
+    if (filter === 'food' || filter === 'biryani' || filter === 'bengali') {
       if (shopSectionBlock) shopSectionBlock.classList.add('hidden');
       if (foodSectionBlock) foodSectionBlock.classList.remove('hidden');
       if (filter !== 'food') {
@@ -3802,7 +3802,7 @@
       route_summary: 'New Alipore -> Suruchi Sangha -> Chetla Agrani -> Mudiali Club -> Behala Nutan Dal -> Barisha Club',
       pandals: ['Suruchi Sangha (New Alipore)', 'Mudiali Club', 'Behala Nutan Dal', 'Barisha Club', 'Rajdanga Naba Uday Sangha'],
       food_stops: [
-        { name: 'Peter Cat (Park Street)', dish: 'Chelo Kebab' },
+        { name: 'Oudh 1590 (Deshapriya Park)', dish: 'Awadhi Handi Biryani & Galawati Kebab' },
         { name: 'Kusum Rolls', dish: 'Double Chicken Egg Roll' }
       ],
       custom_notes: 'Navami is the night when the entire city stays awake! Metro trains run late into the night. Enjoy dramatic thematic installations and mesmerizing Dhunuchi Naach.'

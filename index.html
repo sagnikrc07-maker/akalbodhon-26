@@ -635,7 +635,6 @@
             <option value="shopping">🛍️ Shopping & Markets</option>
             <option value="biryani">🍗 Biryani & Mughlai</option>
             <option value="bengali">🐟 Heritage Bengali</option>
-            <option value="sweets">🍬 Sweets & Mishti</option>
             <option value="sarees">🥻 Traditional Sarees & Apparel</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
@@ -646,9 +645,18 @@
 
       <!-- Food & Dining Section -->
       <div id="food-section-block" class="space-y-4">
-        <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2 reveal-on-scroll">
-          <span class="material-symbols-outlined text-primary dark:text-amber-300">restaurant_menu</span> Iconic Puja Food Destinations (9 Locations)
-        </h3>
+        <div class="space-y-2 reveal-on-scroll">
+          <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary dark:text-amber-300">restaurant_menu</span> Iconic Puja Food Destinations (9 Locations)
+          </h3>
+          <!-- Friendly Non-Promotion Disclaimer -->
+          <div class="flex items-start sm:items-center gap-2.5 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 text-xs text-on-surface-variant dark:text-[#ded5c7] shadow-xs">
+            <span class="material-symbols-outlined text-[18px] text-primary dark:text-amber-300 shrink-0 mt-0.5 sm:mt-0">favorite</span>
+            <p class="leading-relaxed">
+              <strong class="text-on-surface dark:text-amber-200">Devotee Note:</strong> Our food recommendations are curated purely out of heartfelt passion for Kolkata's timeless gastronomic heritage. None of these restaurant listings are sponsored, paid partnerships, or commercial promotions — just authentic culinary guidance to help you plan your festive pandal-hopping trails!
+            </p>
+          </div>
+        </div>
         <div id="food-cards-container" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-6"></div>
       </div>
 
