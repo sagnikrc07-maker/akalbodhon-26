@@ -104,6 +104,9 @@
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(222, 211, 196, 0.6);
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  /* GPU paint containment — each card lives in its own compositor layer */
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .dark .glass-panel {
@@ -376,6 +379,15 @@ body.modal-open {
 /* Toast Notifications */
 #toast-notification {
   transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Pre-promote to compositor layer for jank-free slide animation */
+  will-change: transform, opacity;
+}
+
+/* App sections: skip rendering off-screen content for faster scroll */
+.app-section {
+  min-height: calc(100vh - 80px);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
 }
 
 /* Typography & Layout Flow */
@@ -392,9 +404,7 @@ body.modal-open {
   text-wrap: pretty;
 }
 
-.app-section {
-  min-height: calc(100vh - 80px);
-}
+/* (min-height merged into .app-section rule above) */
 
 /* Modal scaling animation */
 @keyframes scaleUp {

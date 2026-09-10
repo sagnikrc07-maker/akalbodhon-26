@@ -155,7 +155,7 @@
 
           <div class="flex items-center gap-3">
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with User ID</span>
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with Email / Phone</span>
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
           </div>
         </div>
@@ -171,30 +171,29 @@
             </div>
           </div>
 
-          <!-- User ID Input with Dynamic Counter (_/_) -->
+          <!-- Email or Phone Number Input -->
           <div class="space-y-1">
-            <div class="flex justify-between items-center">
-              <label for="userid-input" class="text-xs font-semibold text-on-surface dark:text-amber-200">User ID</label>
-              <span id="userid-counter" class="text-[11px] font-mono font-bold text-primary dark:text-amber-300">(0/10)</span>
-            </div>
+            <label for="userid-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email or Phone Number</label>
             <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">badge</span>
-              <input type="text" id="userid-input" maxlength="10" autocomplete="username" placeholder="Enter User ID" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">contact_mail</span>
+              <input type="text" id="userid-input" autocomplete="username" placeholder="e.g. devotee@example.com or +91 9876543210" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
             </div>
+            <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Example: devotee@example.com or +91 9876543210</p>
           </div>
 
-          <!-- Password Input with Dynamic Counter (_/_) -->
+          <!-- Password Input with Conditions & Show Button under field on right side -->
           <div class="space-y-1">
-            <div class="flex justify-between items-center">
-              <label for="password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200">Password</label>
-              <div class="flex items-center gap-2">
-                <span id="password-counter" class="text-[11px] font-mono font-bold text-primary dark:text-amber-300">(0/5)</span>
-                <button type="button" id="toggle-pwd-btn" class="text-[11px] text-primary dark:text-amber-300 hover:underline cursor-pointer">Show</button>
-              </div>
-            </div>
+            <label for="password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
-              <input type="password" id="password-input" autocomplete="current-password" placeholder="Enter password" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              <input type="password" id="password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+            </div>
+            <div class="flex items-center justify-between pt-0.5">
+              <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Condition: Min 6 characters (letters & numbers)</span>
+              <button type="button" id="toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
+                <span class="material-symbols-outlined text-[15px]" id="toggle-pwd-icon">visibility</span>
+                <span id="toggle-pwd-text">Show</span>
+              </button>
             </div>
           </div>
 
@@ -211,83 +210,7 @@
         Your saved pandals, sacred food stops, and itineraries sync across all devices with your devotee account.
       </p>
     </div>
-  <!-- ==================== GOOGLE AUTH OPTIONS & SETUP MODAL ==================== -->
-  <div id="google-auth-options-modal" class="fixed inset-0 z-[70] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
-      <!-- Close Button -->
-      <button id="close-google-auth-modal-btn" type="button" onclick="closeGoogleAuthModal()" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer shadow-sm">
-        <span class="material-symbols-outlined text-[20px]">close</span>
-      </button>
 
-      <!-- Modal Header with Google Icon -->
-      <div class="text-center space-y-1.5 pt-1">
-        <div class="w-14 h-14 rounded-2xl bg-white dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 flex items-center justify-center mx-auto shadow-md">
-          <svg class="w-8 h-8" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-        </div>
-        <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white">Sign In with Google</h3>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-          Sign in immediately with your Google identity. Your profile, custom Puja plans, and sacred avatars will sync directly with the Supabase database.
-        </p>
-      </div>
-
-      <!-- Quick 1-Click Google Devotee Sign-In Form -->
-      <form id="google-devotee-quick-form" class="space-y-3.5" onsubmit="return false;">
-        <div class="space-y-1">
-          <label for="google-devotee-name" class="text-xs font-semibold text-on-surface dark:text-amber-200 block text-left">Your Name / Display Name</label>
-          <input type="text" id="google-devotee-name" placeholder="e.g. Rajat" value="Devotee" required class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
-
-        <div class="space-y-1">
-          <label for="google-devotee-email" class="text-xs font-semibold text-on-surface dark:text-amber-200 block text-left">Your Google Email</label>
-          <input type="email" id="google-devotee-email" placeholder="e.g. yourname@gmail.com" value="" required class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
-
-        <button type="button" id="confirm-google-login-btn" onclick="executeGoogleDevoteeSignIn()" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          </svg>
-          <span>Continue as Google Devotee</span>
-        </button>
-      </form>
-
-      <!-- Expandable Setup Guide for Live OAuth Redirect -->
-      <div class="pt-1">
-        <details class="group rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] border border-outline-variant/20 dark:border-amber-400/20 text-left overflow-hidden transition-all">
-          <summary class="p-3 text-xs font-bold text-primary dark:text-amber-300 flex items-center justify-between cursor-pointer select-none">
-            <span class="flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px]">settings</span>
-              <span>How to enable live Google redirect</span>
-            </span>
-            <span class="material-symbols-outlined text-[18px] transition-transform group-open:rotate-180">expand_more</span>
-          </summary>
-          <div class="p-3.5 pt-0 space-y-2.5 text-[11px] text-on-surface-variant dark:text-[#ded5c7] leading-relaxed border-t border-outline-variant/15 dark:border-amber-400/15">
-            <p>To enable live Google OAuth popup/redirect via Supabase:</p>
-            <ol class="list-decimal list-inside space-y-1.5 pl-1">
-              <li>Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" class="text-primary dark:text-amber-300 underline font-semibold">Google Cloud Credentials</a> and create an <strong>OAuth 2.0 Client ID</strong> (Web Application).</li>
-              <li>Add this Authorized Redirect URI:
-                <div class="mt-1 flex items-center gap-1.5 p-1.5 rounded-lg bg-black/5 dark:bg-black/30 border border-outline-variant/20 font-mono text-[10px] break-all select-all">
-                  <span id="supabase-redirect-uri-text" class="flex-1">https://yagvczdnfyhdtvggkclj.supabase.co/auth/v1/callback</span>
-                  <button type="button" onclick="navigator.clipboard.writeText('https://yagvczdnfyhdtvggkclj.supabase.co/auth/v1/callback'); showAlert('Callback URL copied to clipboard!', false);" class="px-2 py-0.5 rounded bg-primary dark:bg-amber-400 text-white dark:text-black font-sans font-bold text-[9px] shrink-0 cursor-pointer">Copy</button>
-                </div>
-              </li>
-              <li>Go to <a href="https://supabase.com/dashboard/project/yagvczdnfyhdtvggkclj/auth/providers" target="_blank" class="text-primary dark:text-amber-300 underline font-semibold">Supabase Authentication &gt; Providers &gt; Google</a>, enable it, paste the Client ID and Secret, and Save.</li>
-            </ol>
-            <p class="text-[10px] text-on-surface-variant/80 italic pt-1">Once saved in Supabase, clicking 'Sign in with Google' automatically redirects to accounts.google.com!</p>
-          </div>
-        </details>
-      </div>
-
-      <button type="button" onclick="closeGoogleAuthModal()" class="w-full py-2 rounded-xl text-on-surface-variant dark:text-[#ded5c7] text-xs hover:underline cursor-pointer">
-        Back to Sign In options
-      </button>
-    </div>
-  </div>
 
   <footer class="text-center py-4 text-xs text-on-surface-variant/60 dark:text-[#ded5c7]/50">
     Akalbodhon Sharodiya Durga Puja 2026 • Kolkata
@@ -383,19 +306,14 @@
       }
     }
 
-    useridInput.addEventListener('input', () => {
-      updateDynamicCounter(useridInput, useridCounter, 10, 'length');
-    });
-
-    pwdInput.addEventListener('input', () => {
-      updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
-    });
-
     // Toggle Password Visibility
-    togglePwdBtn.addEventListener('click', () => {
+    const togglePwdIcon = document.getElementById('toggle-pwd-icon');
+    const togglePwdText = document.getElementById('toggle-pwd-text');
+    togglePwdBtn?.addEventListener('click', () => {
       const isPwd = pwdInput.type === 'password';
       pwdInput.type = isPwd ? 'text' : 'password';
-      togglePwdBtn.textContent = isPwd ? 'Hide' : 'Show';
+      if (togglePwdIcon) togglePwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
+      if (togglePwdText) togglePwdText.textContent = isPwd ? 'Hide' : 'Show';
     });
 
     // Switch Auth Mode
@@ -439,89 +357,7 @@
       }
     }
 
-    // Google Auth Modal Controls
-    function openGoogleAuthModal() {
-      const modal = document.getElementById('google-auth-options-modal');
-      if (!modal) return;
-      const nameInput = document.getElementById('google-devotee-name');
-      const emailInput = document.getElementById('google-devotee-email');
-      if (nameInput && !nameInput.value.trim()) nameInput.value = 'Devotee';
-      if (emailInput && !emailInput.value.trim()) emailInput.value = 'devotee@gmail.com';
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-    window.openGoogleAuthModal = openGoogleAuthModal;
 
-    function closeGoogleAuthModal() {
-      const modal = document.getElementById('google-auth-options-modal');
-      if (!modal) return;
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    }
-    window.closeGoogleAuthModal = closeGoogleAuthModal;
-
-    const googleAuthOptionsModal = document.getElementById('google-auth-options-modal');
-    if (googleAuthOptionsModal) {
-      googleAuthOptionsModal.addEventListener('click', (e) => {
-        if (e.target === googleAuthOptionsModal) closeGoogleAuthModal();
-      });
-    }
-
-    // Execute 1-Click Google Devotee Sign-in
-    async function executeGoogleDevoteeSignIn() {
-      const nameInput = document.getElementById('google-devotee-name');
-      const emailInput = document.getElementById('google-devotee-email');
-      const btn = document.getElementById('confirm-google-login-btn');
-
-      const devoteeName = (nameInput?.value || '').trim() || 'Devotee';
-      const devoteeEmail = (emailInput?.value || '').trim() || 'devotee@gmail.com';
-
-      if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Signing in...`;
-      }
-
-      const simGoogleUser = {
-        id: 'google_' + Math.random().toString(36).substring(2, 10),
-        user_id: 'google_' + Math.random().toString(36).substring(2, 10),
-        identifier: devoteeEmail,
-        identifier_type: 'google',
-        username: devoteeName,
-        avatar: '🪔',
-        custom_avatar_url: null,
-        created_at: new Date().toISOString()
-      };
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('profiles').upsert({
-            id: simGoogleUser.id,
-            user_id: simGoogleUser.id,
-            identifier: simGoogleUser.identifier,
-            identifier_type: 'google',
-            username: simGoogleUser.username,
-            avatar: simGoogleUser.avatar,
-            created_at: simGoogleUser.created_at,
-            updated_at: new Date().toISOString()
-          });
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            await window.AkalbodhonFirebase.syncProfile(simGoogleUser);
-          } catch (e) {
-            console.warn('Firebase profile sync error:', e);
-          }
-        }
-      }
-
-      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(simGoogleUser));
-      closeGoogleAuthModal();
-      showLoggedInState(simGoogleUser);
-      showAlert(`Welcome, ${simGoogleUser.username}! Signed in with Google. Redirecting to festival...`, false);
-      setTimeout(() => {
-        window.location.href = 'index.html#saved';
-      }, 700);
-    }
-    window.executeGoogleDevoteeSignIn = executeGoogleDevoteeSignIn;
 
     // Google Auth Button
     const googleAuthBtn = document.getElementById('google-auth-btn');
@@ -530,17 +366,27 @@
     async function handleGoogleSignIn() {
       clearAlerts();
       if (googleAuthBtn) googleAuthBtn.disabled = true;
-      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Signing in with Google...';
+      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Initiating Google Sign-In...';
 
-      // 1. First attempt: Live Native Firebase Google Popup Sign-in
+      // 1. Wait for Firebase SDK if needed
+      if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+        await new Promise(resolve => {
+          if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
+          const handler = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', handler); };
+          window.addEventListener('akalbodhon:firebase-ready', handler);
+          setTimeout(resolve, 2200);
+        });
+      }
+
+      // 2. Real Firebase Google OAuth Popup
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         try {
           const profile = await window.AkalbodhonFirebase.signInWithGoogle();
           if (profile) {
             showLoggedInState(profile);
-            showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting...`, false);
+            showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
             setTimeout(() => {
-              window.location.href = 'index.html#saved';
+              window.location.href = 'index.html';
             }, 700);
             return;
           }
@@ -551,18 +397,20 @@
             if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
             return;
           }
-          // If popup blocked or Google provider not yet enabled in console, show devotee modal
-          openGoogleAuthModal();
+          if (fbErr.code === 'auth/popup-blocked') {
+            showAlert('Google sign-in popup was blocked by browser. Please allow popups for this site and try again.');
+          } else {
+            showAlert(fbErr.message || 'Google sign-in could not be initiated. Please try again or sign in with email/phone.');
+          }
           if (googleAuthBtn) googleAuthBtn.disabled = false;
           if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
           return;
         }
+      } else {
+        showAlert('Firebase Authentication is connecting. Please try again in a moment.');
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
       }
-
-      // 2. Supabase / Devotee Fallback Modal
-      openGoogleAuthModal();
-      if (googleAuthBtn) googleAuthBtn.disabled = false;
-      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
     }
     window.handleGoogleSignIn = handleGoogleSignIn;
 
@@ -642,26 +490,25 @@
     // Form Submit Handler
     async function handleAuth() {
       clearAlerts();
-      const rawUserId = useridInput.value.trim();
+      const rawIdentifier = useridInput.value.trim();
       const rawPassword = pwdInput.value;
       const rawName = nameInput.value.trim();
 
-      if (!rawUserId) {
-        showAlert('Please enter your User ID.');
-        return;
-      }
-      if (rawUserId.length > 10) {
-        showAlert('Please enter a valid User ID.');
+      if (!rawIdentifier) {
+        showAlert('Please enter your email or phone number.');
         return;
       }
 
-      const alphanumericMatches = rawPassword.match(/[a-zA-Z0-9]/g) || [];
-      if (alphanumericMatches.length < 5) {
-        showAlert('Please enter a valid password.');
+      if (rawPassword.length < 6) {
+        showAlert('Password must be at least 6 characters (letters and numbers recommended).');
         return;
       }
 
-      const userIdNormalized = rawUserId.toLowerCase();
+      const cleanIdentifier = rawIdentifier.toLowerCase();
+      const safeDocId = cleanIdentifier.replace(/[^a-z0-9]/g, '_');
+      const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
+      const isPhone = /^(\+?\d{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s-]{7,14}$/.test(rawIdentifier.replace(/\s+/g, ''));
+
       const originalLabel = submitLabel.textContent;
       submitBtn.disabled = true;
       submitLabel.textContent = currentMode === 'signup' ? 'Creating Account...' : 'Signing In...';
@@ -671,27 +518,39 @@
 
         if (currentMode === 'signup') {
           // --- CREATE ACCOUNT ---
-          const displayName = rawName || rawUserId;
+          const displayName = rawName || (isEmail ? rawIdentifier.split('@')[0] : 'Devotee');
 
-          // Check if User ID already exists in Firebase Firestore
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          // Check if identifier already exists in Firebase Firestore
+          let existing = null;
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
             try {
-              const existing = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
-              if (existing) {
-                showAlert('This User ID is already taken. Please choose another.');
-                return;
-              }
-            } catch (e) {}
-          } else if (supabaseClient) {
-            const { data: existing } = await supabaseClient
-              .from('profiles')
-              .select('id, user_id, identifier')
-              .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`);
-
-            if (existing && existing.length > 0) {
-              showAlert('This User ID is already taken. Please choose another.');
-              return;
+              existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
+            } catch (e) {
+              console.warn('Firebase duplicate check notice:', e);
             }
+          } else if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+            } catch (e) {}
+          }
+
+          if (!existing && supabaseClient) {
+            try {
+              const { data } = await supabaseClient
+                .from('profiles')
+                .select('id, identifier')
+                .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+                .limit(1);
+              if (data && data.length > 0) existing = data[0];
+            } catch (e) {}
+          }
+
+          if (existing) {
+            showAlert('An account with this email or phone number already exists. Please sign in instead with the same credentials.');
+            setTimeout(() => {
+              setAuthMode('login');
+            }, 2200);
+            return;
           }
 
           let initialSaved = [];
@@ -707,10 +566,12 @@
           } catch (e) {}
 
           const newProfile = {
-            id: userIdNormalized,
-            user_id: rawUserId,
-            identifier: rawUserId,
-            identifier_type: 'userid',
+            id: safeDocId,
+            user_id: rawIdentifier,
+            identifier: rawIdentifier,
+            identifier_type: isEmail ? 'email' : (isPhone ? 'phone' : 'identifier'),
+            email: isEmail ? rawIdentifier : null,
+            phone: isPhone ? rawIdentifier : null,
             username: displayName,
             avatar: '🪔',
             avatar_type: 'puja',
@@ -721,7 +582,7 @@
             updated_at: new Date().toISOString()
           };
 
-          // Save to Firebase Firestore
+          // Save to Firebase Firestore ('users' collection)
           if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
             try {
               await window.AkalbodhonFirebase.syncProfile(newProfile);
@@ -738,34 +599,41 @@
           }
 
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(newProfile));
-          showAlert(`Welcome ${displayName}! Your account has been created. Redirecting...`, false);
-          setTimeout(() => { window.location.href = 'index.html#saved'; }, 900);
+          showAlert(`Welcome ${displayName}! Your account has been created. Redirecting to home...`, false);
+          setTimeout(() => { window.location.href = 'index.html'; }, 800);
 
         } else {
           // --- SIGN IN ---
           let foundProfile = null;
 
           // 1. Try Firebase Firestore
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
             try {
-              const fbProf = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
-              if (fbProf) foundProfile = fbProf;
+              foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
             } catch (e) {
               console.warn('Firebase getProfile notice:', e);
             }
           }
 
+          if (!foundProfile && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              foundProfile = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+            } catch (e) {}
+          }
+
           // 2. Supabase fallback
           if (!foundProfile && supabaseClient) {
-            const { data, error: fetchErr } = await supabaseClient
-              .from('profiles')
-              .select('*')
-              .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`)
-              .limit(1);
+            try {
+              const { data, error: fetchErr } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+                .limit(1);
 
-            if (!fetchErr && data && data.length > 0) {
-              foundProfile = data[0];
-            }
+              if (!fetchErr && data && data.length > 0) {
+                foundProfile = data[0];
+              }
+            } catch (e) {}
           }
 
           if (!foundProfile) {
@@ -773,7 +641,7 @@
             if (cached) {
               try {
                 const p = JSON.parse(cached);
-                if (p.id?.toLowerCase() === userIdNormalized || p.user_id === rawUserId) {
+                if (p.identifier?.toLowerCase() === cleanIdentifier || p.user_id?.toLowerCase() === cleanIdentifier || p.id === safeDocId) {
                   foundProfile = p;
                 }
               } catch (e) {}
@@ -781,7 +649,7 @@
           }
 
           if (!foundProfile) {
-            showAlert('No devotee account found with this User ID. Please create an account.');
+            showAlert('No devotee account found with this email or phone number. Please create an account.');
             return;
           }
 
@@ -790,7 +658,7 @@
             return;
           }
 
-          // Fetch & restore saved details stored in Database under that userid
+          // Fetch & restore saved details stored in Database
           const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
           localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
 
@@ -799,21 +667,25 @@
           }
 
           const authenticatedUser = {
-            id: foundProfile.id,
-            user_id: foundProfile.user_id || foundProfile.id,
-            identifier: foundProfile.identifier || foundProfile.id,
-            identifier_type: 'userid',
+            id: foundProfile.id || safeDocId,
+            user_id: foundProfile.user_id || rawIdentifier,
+            identifier: foundProfile.identifier || rawIdentifier,
+            identifier_type: foundProfile.identifier_type || (isEmail ? 'email' : 'phone'),
             username: foundProfile.username || 'Devotee',
             avatar: foundProfile.avatar || '🪔',
-            custom_avatar_url: foundProfile.custom_avatar_url || null,
+            custom_avatar_url: null,
             saved_items: restoredSavedItems,
             custom_plans: foundProfile.custom_plans || [],
-            created_at: foundProfile.created_at
+            created_at: foundProfile.created_at || new Date().toISOString()
           };
 
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            window.AkalbodhonFirebase.syncProfile(authenticatedUser).catch(() => {});
+          }
+
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(authenticatedUser));
-          showAlert(`Welcome back, ${authenticatedUser.username}! Your saved details are loaded. Redirecting...`, false);
-          setTimeout(() => { window.location.href = 'index.html#saved'; }, 900);
+          showAlert(`Welcome back, ${authenticatedUser.username}! Redirecting to home...`, false);
+          setTimeout(() => { window.location.href = 'index.html'; }, 800);
         }
 
       } catch (err) {

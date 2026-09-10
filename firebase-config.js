@@ -178,6 +178,50 @@ export const AkalbodhonFirebase = {
     }
   },
 
+  // 3b. Look up profile by Email or Phone identifier in Firestore
+  async getProfileByIdentifier(identifier) {
+    if (!db || !identifier) return null;
+    const rawClean = String(identifier).trim();
+    const cleanId = rawClean.toLowerCase();
+    const safeDocId = cleanId.replace(/[^a-z0-9]/g, '_');
+
+    // 1. Direct doc lookups
+    const direct1 = await this.getProfile(cleanId);
+    if (direct1) return direct1;
+    const direct2 = await this.getProfile(safeDocId);
+    if (direct2) return direct2;
+
+    // 2. Query by identifier field
+    try {
+      const q = query(collection(db, "users"), where("identifier", "==", cleanId));
+      const snap = await withTimeout(getDocs(q), 2000);
+      if (snap && !snap.empty) {
+        return snap.docs[0].data();
+      }
+    } catch (e) {}
+
+    try {
+      const qRaw = query(collection(db, "users"), where("identifier", "==", rawClean));
+      const snapRaw = await withTimeout(getDocs(qRaw), 2000);
+      if (snapRaw && !snapRaw.empty) {
+        return snapRaw.docs[0].data();
+      }
+    } catch (e) {}
+
+    // 3. Query by email field if contains '@'
+    if (cleanId.includes('@')) {
+      try {
+        const qEmail = query(collection(db, "users"), where("email", "==", cleanId));
+        const snapEmail = await withTimeout(getDocs(qEmail), 2000);
+        if (snapEmail && !snapEmail.empty) {
+          return snapEmail.docs[0].data();
+        }
+      } catch (e) {}
+    }
+
+    return null;
+  },
+
   // 4. Save/Sync Saved Items under User's Own Credentials in Firestore
   async saveBookmarks(userId, bookmarks) {
     if (!db || !userId) return false;
@@ -401,5 +445,7 @@ export const AkalbodhonFirebase = {
 // Attach to window so existing scripts and handlers can call it directly
 if (typeof window !== "undefined") {
   window.AkalbodhonFirebase = AkalbodhonFirebase;
+  // Set a flag BEFORE dispatching so app.js can detect the event even if it loads late
+  window.__akalbodhonFirebaseReady = true;
   window.dispatchEvent(new CustomEvent('akalbodhon:firebase-ready', { detail: AkalbodhonFirebase }));
 }

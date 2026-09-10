@@ -1384,11 +1384,29 @@
     }, 3200);
   }
 
-  // --- 5. SCROLL DISPLAY (NO BLURRING - CRISP & IMMEDIATELY CLEAR) ---
+  // --- 5. SCROLL REVEAL (IntersectionObserver for GPU-efficient reveal) ---
+  let _scrollRevealObserver = null;
   function initScrollReveal() {
-    document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+    // Immediately reveal any already-visible elements
+    document.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => {
       el.classList.add('is-revealed');
     });
+    // Use IntersectionObserver for future elements added dynamically
+    if (!_scrollRevealObserver && 'IntersectionObserver' in window) {
+      _scrollRevealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            _scrollRevealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+    }
+    if (_scrollRevealObserver) {
+      document.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => {
+        _scrollRevealObserver.observe(el);
+      });
+    }
   }
 
   // --- 6. REAL-TIME FESTIVAL COUNTDOWN TO MAHALAYA ---
@@ -1429,7 +1447,14 @@
     }
 
     update();
-    setInterval(update, 1000);
+    const cdInterval = setInterval(() => {
+      // Auto-stop the interval once the target date has passed
+      if (targetDate <= new Date()) {
+        clearInterval(cdInterval);
+        return;
+      }
+      update();
+    }, 1000);
   }
 
   // 14 Curated Recommended Watch Pandals (Strictly these 14 specified iconic pandals)
@@ -2360,7 +2385,7 @@
                   <div>
                     <!-- Pandal Picture Thumbnail -->
                     <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='pandals/maniktala chaltabagan lohapatty.jpg'" />
+                      <img src="${pandalImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" onerror="this.src='pandals/maniktala chaltabagan lohapatty.jpg'" />
                       <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
                       <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${pandalZone} Zone</span>
                     </div>
@@ -2426,7 +2451,7 @@
                   <div>
                     <!-- Food/Shopping Picture Thumbnail -->
                     <div class="relative w-full h-24 sm:h-36 md:h-44 rounded-xl sm:rounded-2xl overflow-hidden mb-2 sm:mb-2.5 bg-surface-container-high dark:bg-[#252016]">
-                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='food/arsalan.avif'" />
+                      <img src="${spotImg}" alt="${b.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" onerror="this.src='food/arsalan.avif'" />
                       <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent"></div>
                       <span class="absolute bottom-1.5 left-1.5 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md text-white text-[8.5px] sm:text-[10px] font-bold border border-white/20 truncate max-w-[85%]">${spotCat}</span>
                     </div>
@@ -3392,7 +3417,7 @@
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">${idx + 1}</span>
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
-              <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='logo.jpg'" loading="lazy" />
+              <img src="${song.cover}" alt="${song.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='logo.jpg'" loading="lazy" decoding="async" />
             </div>
             <div class="min-w-0 flex-1">
               <h4 class="font-display font-bold text-xs sm:text-sm text-on-surface dark:text-white break-words leading-snug group-hover:text-primary dark:group-hover:text-amber-300 transition-colors" title="${song.title}">
@@ -3634,41 +3659,45 @@
     const counterEl = document.getElementById('devotees-count-val');
     if (!counterEl) return;
 
-    const STORAGE_KEY = 'akalbodhon_devotee_count';
-    const VISITOR_KEY = 'akalbodhon_visitor_logged';
+    // Purge any legacy count keys that held >=100
+    try {
+      localStorage.removeItem('akalbodhon_devotee_count');
+    } catch (e) {}
+
+    const STORAGE_KEY = 'akalbodhon_devotee_count_v2';
+    const VISITOR_KEY = 'akalbodhon_visitor_logged_v2';
 
     let currentCount = parseInt(localStorage.getItem(STORAGE_KEY), 10);
-    // Reset if missing, invalid, below minimum, or >= 200 (clearing previous 4,000+ counts from user storage)
-    if (!currentCount || isNaN(currentCount) || currentCount < 30 || currentCount >= 200) {
-      currentCount = Math.floor(Math.random() * 25) + 68; // realistic initial range ~68-92
+    // Unconditionally reset if missing, NaN, or outside strictly <100 range
+    if (!currentCount || isNaN(currentCount) || currentCount < 45 || currentCount >= 95) {
+      currentCount = Math.floor(Math.random() * 22) + 55; // 55 to 76
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
     }
 
     if (!sessionStorage.getItem(VISITOR_KEY)) {
-      if (currentCount < 185) {
+      if (currentCount < 88) {
         currentCount += 1;
       }
       sessionStorage.setItem(VISITOR_KEY, 'true');
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
     }
 
-    // Always enforce strict upper ceiling strictly below 200
-    currentCount = Math.min(195, Math.max(35, currentCount));
+    // Hard guarantee: always strictly below 100 (capped at 92)
+    currentCount = Math.min(92, Math.max(45, currentCount));
     counterEl.textContent = currentCount.toLocaleString();
 
     setInterval(() => {
       let delta;
-      if (currentCount >= 188) {
-        // Dip down when approaching 200 to strictly keep it under 200
+      if (currentCount >= 88) {
+        // Dip down when approaching higher 80s to strictly stay under 100
         delta = -Math.floor(Math.random() * 3 + 1);
-      } else if (currentCount <= 55) {
+      } else if (currentCount <= 50) {
         delta = Math.floor(Math.random() * 3 + 1);
       } else {
-        // Natural live concurrent users fluctuation (+1 or -1)
-        delta = Math.random() > 0.45 ? 1 : -1;
+        delta = Math.random() > 0.48 ? 1 : -1;
       }
-      // Strict guarantee: always stays between 35 and 195 (strictly under 200)
-      currentCount = Math.max(35, Math.min(195, currentCount + delta));
+      // Strict guarantee: always stays between 45 and 92 (strictly under 100)
+      currentCount = Math.max(45, Math.min(92, currentCount + delta));
       localStorage.setItem(STORAGE_KEY, currentCount.toString());
       if (counterEl) {
         counterEl.textContent = currentCount.toLocaleString();
@@ -4378,28 +4407,29 @@
     const submitBtn = document.getElementById(isPage ? 'page-submit-btn' : 'auth-submit-btn');
     const submitLabel = document.getElementById(isPage ? 'page-submit-label' : 'auth-submit-label');
 
-    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary');
+    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary') ||
+      document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('dark:bg-amber-400');
 
-    const rawUserId = idInput ? idInput.value.trim() : '';
+    const rawIdentifier = idInput ? idInput.value.trim() : '';
     const rawPassword = pwdInput ? pwdInput.value : '';
     const rawName = nameInput ? nameInput.value.trim() : '';
 
-    if (!rawUserId) {
-      showAuthError('Please enter your User ID.', isPage);
-      return;
-    }
-    if (rawUserId.length > 10) {
-      showAuthError('Please enter a valid User ID.', isPage);
+    if (!rawIdentifier) {
+      showAuthError('Please enter your email or phone number.', isPage);
       return;
     }
 
-    const alphanumericMatches = rawPassword.match(/[a-zA-Z0-9]/g) || [];
-    if (alphanumericMatches.length < 5) {
-      showAuthError('Please enter a valid password.', isPage);
+    // Password validation: minimum 6 characters
+    if (rawPassword.length < 6) {
+      showAuthError('Password must be at least 6 characters (letters and numbers recommended).', isPage);
       return;
     }
 
-    const userIdNormalized = rawUserId.toLowerCase();
+    const cleanIdentifier = rawIdentifier.toLowerCase();
+    const safeDocId = cleanIdentifier.replace(/[^a-z0-9]/g, '_');
+    const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
+    const isPhone = /^(\+?\d{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s-]{7,14}$/.test(rawIdentifier.replace(/\s+/g, ''));
+
     const originalLabel = submitLabel ? submitLabel.textContent : (isSignUp ? 'Create Account' : 'Sign In');
     if (submitBtn) submitBtn.disabled = true;
     if (submitLabel) submitLabel.textContent = isSignUp ? 'Creating Account...' : 'Signing In...';
@@ -4409,35 +4439,54 @@
 
       if (isSignUp) {
         // --- CREATE ACCOUNT ---
-        const displayName = rawName || rawUserId;
+        const displayName = rawName || (isEmail ? rawIdentifier.split('@')[0] : 'Devotee');
 
-        // Check if User ID already exists in Firebase Firestore
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        // Check if account with this identifier already exists in Firebase Firestore
+        let existing = null;
+        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
           try {
-            const existing = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
-            if (existing) {
-              showAuthError('This User ID is already taken. Please choose another.', isPage);
-              return;
-            }
-          } catch (e) {}
-        } else if (supabaseClient) {
-          const { data: existing } = await supabaseClient
-            .from('profiles')
-            .select('id, user_id, identifier')
-            .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`);
-
-          if (existing && existing.length > 0) {
-            showAuthError('This User ID is already taken. Please choose another.', isPage);
-            return;
+            existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
+          } catch (e) {
+            console.warn('Firebase duplicate check notice:', e);
           }
+        } else if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+          } catch (e) {}
+        }
+
+        if (!existing && supabaseClient) {
+          try {
+            const { data } = await supabaseClient
+              .from('profiles')
+              .select('id, identifier')
+              .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+              .limit(1);
+            if (data && data.length > 0) existing = data[0];
+          } catch (e) {}
+        }
+
+        if (existing) {
+          showAuthError('An account with this email or phone number already exists. Please sign in instead with the same credentials.', isPage);
+          // Auto switch tab or invite user to Sign In
+          setTimeout(() => {
+            if (!isPage && typeof setAuthMode === 'function') {
+              setAuthMode('login');
+            } else if (isPage) {
+              document.getElementById('page-tab-login')?.click();
+            }
+          }, 2400);
+          return;
         }
 
         const initialSaved = Storage.getBookmarks() || [];
         const newProfile = {
-          id: userIdNormalized,
-          user_id: rawUserId,
-          identifier: rawUserId,
-          identifier_type: 'userid',
+          id: safeDocId,
+          user_id: rawIdentifier,
+          identifier: rawIdentifier,
+          identifier_type: isEmail ? 'email' : (isPhone ? 'phone' : 'identifier'),
+          email: isEmail ? rawIdentifier : null,
+          phone: isPhone ? rawIdentifier : null,
           username: displayName,
           avatar: '🪔',
           avatar_type: 'puja',
@@ -4448,7 +4497,7 @@
           updated_at: new Date().toISOString()
         };
 
-        // Save to Firebase Firestore Database ('profiles' collection)
+        // Save to Firebase Firestore Database ('users' collection)
         if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
           try {
             await window.AkalbodhonFirebase.syncProfile(newProfile);
@@ -4458,56 +4507,61 @@
         }
 
         if (supabaseClient) {
-          const { error: insertErr } = await supabaseClient
-            .from('profiles')
-            .insert(newProfile);
-
-          if (insertErr) {
-            console.warn('Supabase profile insert error:', insertErr);
+          try {
+            await supabaseClient.from('profiles').insert(newProfile);
+          } catch (supErr) {
+            console.warn('Supabase profile insert notice:', supErr);
           }
         }
 
         saveUserSession(newProfile);
         closeAuthModal();
-        showToast(`Welcome ${displayName}! Your account has been created.`, 'celebration');
+        showToast(`Welcome ${displayName}! Your devotee account has been created.`, 'celebration');
+
+        // Bring user to home page
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
       } else {
         // --- SIGN IN ---
         let foundProfile = null;
 
         // 1. Try Firebase Firestore
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
           try {
-            const fbProf = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
-            if (fbProf) foundProfile = fbProf;
+            foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
           } catch (e) {
-            console.warn('Firebase getProfile notice:', e);
+            console.warn('Firebase getProfileByIdentifier notice:', e);
           }
+        }
+
+        if (!foundProfile && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            foundProfile = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+          } catch (e) {}
         }
 
         // 2. Supabase fallback
         if (!foundProfile && supabaseClient) {
-          const { data, error: fetchErr } = await supabaseClient
-            .from('profiles')
-            .select('*')
-            .or(`id.eq.${userIdNormalized},identifier.eq.${userIdNormalized},user_id.eq.${rawUserId}`)
-            .limit(1);
-
-          if (fetchErr) {
-            console.warn('Supabase profile query error:', fetchErr);
-          }
-
-          if (data && data.length > 0) {
-            foundProfile = data[0];
+          try {
+            const { data } = await supabaseClient
+              .from('profiles')
+              .select('*')
+              .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+              .limit(1);
+            if (data && data.length > 0) foundProfile = data[0];
+          } catch (fetchErr) {
+            console.warn('Supabase profile query notice:', fetchErr);
           }
         }
 
+        // 3. Cached profile fallback
         if (!foundProfile) {
           const cached = localStorage.getItem('akalbodhon_user_profile');
           if (cached) {
             try {
               const p = JSON.parse(cached);
-              if (p.id?.toLowerCase() === userIdNormalized || p.user_id === rawUserId) {
+              if (p.identifier?.toLowerCase() === cleanIdentifier || p.user_id?.toLowerCase() === cleanIdentifier || p.id === safeDocId) {
                 foundProfile = p;
               }
             } catch (e) {}
@@ -4515,7 +4569,7 @@
         }
 
         if (!foundProfile) {
-          showAuthError('No devotee account found with this User ID. Please check or create an account.', isPage);
+          showAuthError('No devotee account found with this email or phone number. Please check or create an account.', isPage);
           return;
         }
 
@@ -4525,7 +4579,7 @@
           return;
         }
 
-        // Restore saved details from Supabase under that userid!
+        // Restore saved details from Firestore
         const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
         Storage.setBookmarks(restoredSavedItems);
 
@@ -4535,21 +4589,30 @@
         }
 
         const authenticatedUser = {
-          id: foundProfile.id,
-          user_id: foundProfile.user_id || foundProfile.id,
-          identifier: foundProfile.identifier || foundProfile.id,
-          identifier_type: 'userid',
+          id: foundProfile.id || safeDocId,
+          user_id: foundProfile.user_id || rawIdentifier,
+          identifier: foundProfile.identifier || rawIdentifier,
+          identifier_type: foundProfile.identifier_type || (isEmail ? 'email' : 'phone'),
           username: foundProfile.username || 'Devotee',
           avatar: foundProfile.avatar || '🪔',
-          custom_avatar_url: foundProfile.custom_avatar_url || null,
+          custom_avatar_url: null,
           saved_items: restoredSavedItems,
           custom_plans: customPlans,
-          created_at: foundProfile.created_at
+          created_at: foundProfile.created_at || new Date().toISOString()
         };
+
+        // Reflect login in Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          window.AkalbodhonFirebase.syncProfile(authenticatedUser).catch(() => {});
+        }
 
         saveUserSession(authenticatedUser);
         closeAuthModal();
-        showToast(`Welcome back, ${authenticatedUser.username}! Your saved details are loaded.`, 'celebration');
+        showToast(`Welcome back, ${authenticatedUser.username}! Your devotee account is signed in.`, 'celebration');
+
+        // Bring user to home page
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       if (typeof renderSavedSection === 'function') renderSavedSection();
@@ -4575,202 +4638,11 @@
     }
   }
 
-  // Supabase Storage: Custom Avatar Photo Upload Handler
-  async function handleAvatarPhotoUpload(e) {
-    const file = e.target.files?.[0];
-    if (!file || !currentUser) return;
 
-    const statusEl = document.getElementById('avatar-upload-status');
-    const btnLabel = document.getElementById('avatar-upload-btn-label');
-    const uploadBtn = document.getElementById('trigger-avatar-upload-btn');
 
-    if (!file.type.startsWith('image/')) {
-      showToast('Please select an image file (JPG, PNG, WebP).', 'error');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Image file must be under 5 MB.', 'error');
-      return;
-    }
 
-    if (!supabaseClient) {
-      showToast('Supabase client not connected.', 'error');
-      return;
-    }
 
-    try {
-      if (btnLabel) btnLabel.textContent = 'Uploading to Supabase Storage...';
-      if (uploadBtn) uploadBtn.disabled = true;
-      if (statusEl) {
-        statusEl.textContent = 'Uploading picture to Supabase avatars bucket...';
-        statusEl.className = 'text-[11px] text-primary dark:text-amber-300 font-semibold mt-1 block';
-      }
-
-      const fileExt = file.name.split('.').pop() || 'jpg';
-      const cleanUserId = (currentUser.id || 'devotee').replace(/[^a-zA-Z0-9_-]/g, '_');
-      const filePath = `devotee_${cleanUserId}_${Date.now()}.${fileExt}`;
-
-      const { data, error } = await supabaseClient.storage
-        .from('avatars')
-        .upload(filePath, file, {
-          cacheControl: '3600',
-          upsert: true
-        });
-
-      if (error) throw error;
-
-      const { data: publicUrlData } = supabaseClient.storage
-        .from('avatars')
-        .getPublicUrl(filePath);
-
-      const publicUrl = publicUrlData?.publicUrl;
-      if (publicUrl) {
-        currentUser.custom_avatar_url = publicUrl;
-        currentUser.avatar_type = 'custom';
-        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-        updateProfileAvatarDisplay();
-        updateAccountUI();
-
-        // Persist to Supabase profiles database
-        await supabaseClient.from('profiles').update({
-          custom_avatar_url: publicUrl,
-          avatar_type: 'custom',
-          updated_at: new Date().toISOString()
-        }).or(`id.eq.${currentUser.id},identifier.eq.${currentUser.id}`);
-
-        if (statusEl) {
-          statusEl.textContent = '✓ Uploaded successfully to Supabase Storage!';
-          statusEl.className = 'text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 block';
-        }
-        showToast('Devotee photo saved to Supabase Storage!', 'cloud_done');
-      }
-    } catch (err) {
-      console.error('Storage upload error:', err);
-      if (statusEl) {
-        statusEl.textContent = `Upload failed: ${err.message || 'Please try again'}`;
-        statusEl.className = 'text-[11px] text-red-500 font-semibold mt-1 block';
-      }
-      showToast(`Upload error: ${err.message || 'Failed'}`, 'error');
-    } finally {
-      if (btnLabel) btnLabel.textContent = 'Upload Picture to Supabase Storage';
-      if (uploadBtn) uploadBtn.disabled = false;
-      e.target.value = '';
-    }
-  }
-
-  function handleRemoveCustomAvatar() {
-    if (!currentUser) return;
-    currentUser.custom_avatar_url = null;
-    currentUser.avatar_type = 'puja';
-    currentUser.avatar = currentUser.avatar || '🪔';
-    localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-    updateProfileAvatarDisplay();
-    updateAccountUI();
-    if (supabaseClient) {
-      supabaseClient.from('profiles').update({
-        custom_avatar_url: null,
-        avatar_type: 'puja',
-        updated_at: new Date().toISOString()
-      }).or(`id.eq.${currentUser.id},identifier.eq.${currentUser.id}`).then(() => {});
-    }
-    const statusEl = document.getElementById('avatar-upload-status');
-    if (statusEl) statusEl.className = 'text-[11px] hidden';
-    showToast('Reset to default sacred emoji avatar.', 'refresh');
-  }
-
-  // Open / Close Google Auth Helper Modal
-  function openGoogleAuthModal() {
-    const modal = document.getElementById('google-auth-options-modal');
-    if (!modal) return;
-    const nameInput = document.getElementById('google-devotee-name');
-    const emailInput = document.getElementById('google-devotee-email');
-    if (nameInput && !nameInput.value.trim()) nameInput.value = 'Devotee';
-    if (emailInput && !emailInput.value.trim()) emailInput.value = 'devotee@gmail.com';
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.classList.add('modal-open');
-  }
-  window.openGoogleAuthModal = openGoogleAuthModal;
-
-  function closeGoogleAuthModal() {
-    const modal = document.getElementById('google-auth-options-modal');
-    if (!modal) return;
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.classList.remove('modal-open');
-  }
-  window.closeGoogleAuthModal = closeGoogleAuthModal;
-
-  // Instant Google Devotee Sign-in (Synchronized with Firebase & Supabase DB)
-  async function executeGoogleDevoteeSignIn() {
-    const nameInput = document.getElementById('google-devotee-name');
-    const emailInput = document.getElementById('google-devotee-email');
-    const btn = document.getElementById('confirm-google-login-btn');
-
-    const devoteeName = (nameInput?.value || '').trim() || 'Devotee';
-    const devoteeEmail = (emailInput?.value || '').trim() || 'devotee@gmail.com';
-
-    if (btn) {
-      btn.disabled = true;
-      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Signing in...`;
-    }
-
-    const simGoogleUser = {
-      id: 'google_' + Math.random().toString(36).substring(2, 10),
-      user_id: 'google_' + Math.random().toString(36).substring(2, 10),
-      identifier: devoteeEmail,
-      identifier_type: 'google',
-      username: devoteeName,
-      avatar: '🪔',
-      custom_avatar_url: null,
-      created_at: new Date().toISOString()
-    };
-
-    // Sync with Firebase Firestore
-    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-      try {
-        await window.AkalbodhonFirebase.syncProfile(simGoogleUser);
-      } catch (e) {
-        console.warn('Firebase profile sync error:', e);
-      }
-    }
-
-    if (supabaseClient) {
-      try {
-        await supabaseClient.from('profiles').upsert({
-          id: simGoogleUser.id,
-          user_id: simGoogleUser.id,
-          identifier: simGoogleUser.identifier,
-          identifier_type: 'google',
-          username: simGoogleUser.username,
-          avatar: simGoogleUser.avatar,
-          created_at: simGoogleUser.created_at,
-          updated_at: new Date().toISOString()
-        });
-      } catch (e) {
-        console.warn('Supabase profile upsert error:', e);
-      }
-    }
-
-    saveUserSession(simGoogleUser);
-    closeGoogleAuthModal();
-    closeAuthModal();
-    closeSaveAuthPromptModal();
-
-    if (typeof renderSavedSection === 'function') renderSavedSection();
-    if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
-    if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-
-    showToast(`Welcome, ${simGoogleUser.username}! Signed in with Google.`, 'celebration');
-
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/></svg><span>Continue as Google Devotee</span>`;
-    }
-  }
-  window.executeGoogleDevoteeSignIn = executeGoogleDevoteeSignIn;
-
-  // Sign in with Google Handler
+  // Sign in with Google Handler (Direct Firebase Google OAuth Popup)
   async function handleGoogleSignIn() {
     const errorAlert = document.getElementById('auth-error-alert');
     const btn = document.getElementById('google-auth-btn');
@@ -4787,22 +4659,38 @@
 
     if (errorAlert) errorAlert.classList.add('hidden');
     if (btn) btn.disabled = true;
-    if (label) label.textContent = 'Signing in with Google...';
+    if (label) label.textContent = 'Initiating Google Sign-In...';
     if (saveBtn) saveBtn.disabled = true;
-    if (saveLabel) saveLabel.textContent = 'Signing in with Google...';
+    if (saveLabel) saveLabel.textContent = 'Initiating Google Sign-In...';
 
-    // 1. Primary: Native Firebase Google Popup Authentication
+    // 1. Wait for Firebase SDK to be ready if needed
+    if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+      await new Promise(resolve => {
+        if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
+        const handler = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', handler); };
+        window.addEventListener('akalbodhon:firebase-ready', handler);
+        setTimeout(resolve, 2200);
+      });
+    }
+
+    // 2. Primary: Real Firebase Google OAuth Popup Authentication
     if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
       try {
         const profile = await window.AkalbodhonFirebase.signInWithGoogle();
         if (profile) {
+          // Account created from user's Google account (Name from Google, Identifier = Gmail ID)
           saveUserSession(profile);
           closeAuthModal();
           closeSaveAuthPromptModal();
-          closeGoogleAuthModal();
+
           if (typeof renderSavedSection === 'function') renderSavedSection();
           if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
           if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+          // Bring user straight to home page and top
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
           showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
           resetGoogleButtons();
           return;
@@ -4813,15 +4701,19 @@
           resetGoogleButtons();
           return;
         }
-        openGoogleAuthModal();
+        if (fbErr.code === 'auth/popup-blocked') {
+          showAuthError('Google sign-in popup was blocked by browser. Please allow popups for this site and try again.', false);
+          resetGoogleButtons();
+          return;
+        }
+        showAuthError(fbErr.message || 'Google sign-in could not be initiated. Please try again or use email/phone.', false);
         resetGoogleButtons();
         return;
       }
+    } else {
+      showAuthError('Firebase Authentication is currently connecting. Please wait a moment and try again.', false);
+      resetGoogleButtons();
     }
-
-    // 2. Devotee Fallback Modal
-    openGoogleAuthModal();
-    resetGoogleButtons();
   }
   window.handleGoogleSignIn = handleGoogleSignIn;
 
@@ -4853,15 +4745,21 @@
     try {
       const local = localStorage.getItem('akalbodhon_custom_plans');
       if (local) {
-        customPlans = JSON.parse(local);
+        const parsed = JSON.parse(local);
+        // Guard: only accept arrays, discard corrupted values
+        customPlans = Array.isArray(parsed) ? parsed : [];
       }
       customPlans = (customPlans || []).filter(p => {
+        if (!p || typeof p !== 'object') return false;
         const t = (p.title || '').trim().toLowerCase();
         return t !== 'x' && t !== 'bnfhm' && t !== 'test';
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
     } catch (e) {
-      console.warn('Local plans cache notice:', e);
+      // Corrupted JSON — reset to a clean empty state
+      console.warn('Local plans cache corrupted, resetting:', e);
+      customPlans = [];
+      try { localStorage.removeItem('akalbodhon_custom_plans'); } catch (_) {}
     }
   }
 
@@ -6292,7 +6190,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (!pagePwdInput) return;
       const isPwd = pagePwdInput.type === 'password';
       pagePwdInput.type = isPwd ? 'text' : 'password';
-      pageTogglePwd.textContent = isPwd ? 'Hide' : 'Show';
+      const icon = document.getElementById('page-toggle-pwd-icon');
+      const text = document.getElementById('page-toggle-pwd-text');
+      if (icon) icon.textContent = isPwd ? 'visibility_off' : 'visibility';
+      if (text) text.textContent = isPwd ? 'Hide' : 'Show';
     });
 
     pageSubmitBtn?.addEventListener('click', () => handleAuthSubmit(true));
@@ -6388,31 +6289,17 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
-    // Supabase Storage Avatar File Upload Listeners
-    const avatarFileInput = document.getElementById('profile-avatar-file-input');
-    const triggerUploadBtn = document.getElementById('trigger-avatar-upload-btn');
-    const removeAvatarBtn = document.getElementById('remove-custom-avatar-btn');
 
-    triggerUploadBtn?.addEventListener('click', () => {
-      avatarFileInput?.click();
-    });
 
-    avatarFileInput?.addEventListener('change', handleAvatarPhotoUpload);
-    removeAvatarBtn?.addEventListener('click', handleRemoveCustomAvatar);
 
-    // Dynamic input counters for modal
-    const modalUseridInput = document.getElementById('auth-userid-input');
-    const modalUseridCounter = document.getElementById('auth-userid-counter');
+    // Password dynamic counter for modal if present
     const modalPwdInput = document.getElementById('auth-password-input');
     const modalPwdCounter = document.getElementById('auth-password-counter');
-
-    modalUseridInput?.addEventListener('input', () => {
-      updateDynamicCounter(modalUseridInput, modalUseridCounter, 10, 'length');
-    });
-
-    modalPwdInput?.addEventListener('input', () => {
-      updateDynamicCounter(modalPwdInput, modalPwdCounter, 5, 'alphanumeric');
-    });
+    if (modalPwdInput && modalPwdCounter) {
+      modalPwdInput.addEventListener('input', () => {
+        updateDynamicCounter(modalPwdInput, modalPwdCounter, 6, 'alphanumeric');
+      });
+    }
 
     // Save Auth Prompt Modal Handlers
     document.getElementById('close-save-auth-prompt-btn')?.addEventListener('click', () => {
@@ -6448,20 +6335,18 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       });
     }
 
-    const googleAuthOptionsModal = document.getElementById('google-auth-options-modal');
-    if (googleAuthOptionsModal) {
-      googleAuthOptionsModal.addEventListener('click', (e) => {
-        if (e.target === googleAuthOptionsModal) closeGoogleAuthModal();
-      });
-    }
+
 
     // Password Visibility Toggle
     document.getElementById('toggle-pwd-visibility')?.addEventListener('click', function () {
       const pwdInput = document.getElementById('auth-password-input');
+      const icon = document.getElementById('toggle-pwd-icon');
+      const text = document.getElementById('toggle-pwd-text');
       if (pwdInput) {
         const isPwd = pwdInput.type === 'password';
         pwdInput.type = isPwd ? 'text' : 'password';
-        this.textContent = isPwd ? 'Hide' : 'Show';
+        if (icon) icon.textContent = isPwd ? 'visibility_off' : 'visibility';
+        if (text) text.textContent = isPwd ? 'Hide' : 'Show';
       }
     });
 
@@ -6777,7 +6662,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     if (feedbackSubmitBtn) {
-      feedbackSubmitBtn.addEventListener('click', () => {
+      feedbackSubmitBtn.addEventListener('click', async () => {
         const text = feedbackTextarea ? feedbackTextarea.value.trim() : '';
         if (!text) {
           showToast('Please write your feedback before submitting.', 'error');
@@ -6788,21 +6673,87 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           showToast('Feedback must be 50 words or less.', 'error');
           return;
         }
-        // Store feedback locally
+
+        // Disable button while sending
+        feedbackSubmitBtn.disabled = true;
+        feedbackSubmitBtn.textContent = 'Sending…';
+
+        // Send via Web3Forms so the feedback arrives as an email
+        let emailDelivered = false;
+        try {
+          const senderName = currentUser?.username || currentUser?.name || 'Devotee';
+          const emailInput = document.getElementById('feedback-email-input');
+          const senderEmail = (emailInput?.value || '').trim() || 
+            currentUser?.email || 
+            (currentUser?.identifier && currentUser.identifier.includes('@') ? currentUser.identifier : 'devotee.feedback.akalbodhon@gmail.com');
+
+          // FormData payload is the official and most reliable format for Web3Forms
+          const formData = new FormData();
+          formData.append('access_key', '61c7f9d3-94bb-42e4-8353-a70f98af0434');
+          formData.append('name', senderName);
+          formData.append('email', senderEmail);
+          formData.append('message', text);
+          formData.append('subject', `Akalbodhon Devotee Feedback - ${senderName}`);
+          formData.append('from_name', `Akalbodhon Durga Puja App`);
+          formData.append('botcheck', '');
+
+          const response = await fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: formData
+          });
+
+          const result = await response.json();
+          if (result && result.success) {
+            emailDelivered = true;
+          } else {
+            console.warn('Web3Forms response not successful, attempting JSON payload fallback:', result);
+            const jsonResp = await fetch('https://api.web3forms.com/submit', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify({
+                access_key: '61c7f9d3-94bb-42e4-8353-a70f98af0434',
+                name: senderName,
+                email: senderEmail,
+                message: text,
+                subject: `Akalbodhon Devotee Feedback - ${senderName}`,
+                from_name: `Akalbodhon Durga Puja App`,
+                botcheck: ''
+              })
+            });
+            const jsonResult = await jsonResp.json();
+            if (jsonResult && jsonResult.success) {
+              emailDelivered = true;
+            } else {
+              console.warn('Web3Forms JSON fallback also returned:', jsonResult);
+            }
+          }
+        } catch (err) {
+          console.warn('Feedback email delivery network error:', err);
+        } finally {
+          feedbackSubmitBtn.disabled = false;
+          feedbackSubmitBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">send</span> Submit';
+        }
+
+        if (!emailDelivered) {
+          showToast('Feedback email could not be delivered. Please check connection and try again.', 'error');
+          return;
+        }
+
+        // Store feedback locally as a backup record
         try {
           const feedbackList = JSON.parse(localStorage.getItem('akalbodhon_feedback') || '[]');
           feedbackList.push({ text, ts: new Date().toISOString(), user: currentUser?.username || 'Anonymous' });
           localStorage.setItem('akalbodhon_feedback', JSON.stringify(feedbackList));
         } catch (e) {}
 
-        // Set 7-hour timer for this specific user
+        // Set 7-hour cooldown timer for this specific user
         const key = getFeedbackCooldownKey();
         const expiryTime = Date.now() + SEVEN_HOURS_MS;
         localStorage.setItem(key, expiryTime.toString());
 
-        // Update UI with cooldown timer
+        // Update UI with cooldown state
         checkFeedbackCooldown();
-        showToast('Feedback submitted! Thank you 🙏', 'check_circle');
+        showToast('Feedback email delivered! Please check Spam/Junk folder if not in primary inbox.', 'check_circle');
       });
     }
 
@@ -6920,7 +6871,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     // Trigger background remote data synchronizer (Firestore + Supabase)
     setTimeout(syncAllRemoteData, 50);
-    window.addEventListener('akalbodhon:firebase-ready', syncAllRemoteData);
+    // Firebase ready-event race fix:
+    // firebase-config.js fires 'akalbodhon:firebase-ready' synchronously on module load,
+    // which can happen BEFORE this listener is registered. Check the flag first.
+    if (window.__akalbodhonFirebaseReady) {
+      setTimeout(syncAllRemoteData, 80);
+    } else {
+      window.addEventListener('akalbodhon:firebase-ready', syncAllRemoteData, { once: true });
+    }
   }
 
   // Execute immediately if DOM is ready, or wait for DOMContentLoaded

@@ -15,7 +15,7 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     daemon_threads = True
-    allow_reuse_address = True
+    allow_reuse_address = False
 
 class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -115,9 +115,10 @@ def btoa_py(s):
 
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    with ThreadedTCPServer(("", PORT), AkalbodhonHandler) as httpd:
+    with ThreadedTCPServer(("0.0.0.0", PORT), AkalbodhonHandler) as httpd:
         print(f"🪔 Akalbodhon Backend Server running at http://localhost:{PORT}")
         print(f"🌺 Supabase Backend Connected: {SUPABASE_URL}")
+        sys.stdout.flush()
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
