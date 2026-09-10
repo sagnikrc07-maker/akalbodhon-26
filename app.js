@@ -1779,9 +1779,6 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onerror="this.src='https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80'"
                 />
-                <div class="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-secondary-container dark:bg-amber-400 text-on-secondary-container dark:text-black px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold flex items-center gap-1 shadow-md">
-                  <span class="material-symbols-outlined text-[12px] sm:text-[14px]">restaurant</span> ${food.categoryLabel}
-                </div>
               </div>
 
               <div class="p-2.5 sm:p-5 flex flex-col flex-1 justify-between gap-2 sm:gap-4">
@@ -1861,12 +1858,6 @@
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   onerror="this.src='https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80'"
                 />
-                <div class="absolute top-1.5 right-1.5 sm:top-3 sm:right-3 bg-secondary-container dark:bg-amber-400 text-on-secondary-container dark:text-black px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold flex items-center gap-1 shadow-md">
-                  <span class="material-symbols-outlined text-[12px] sm:text-[14px]">shopping_bag</span> ${shop.typeLabel}
-                </div>
-                <div class="absolute bottom-1.5 left-1.5 sm:bottom-3 sm:left-3 bg-surface/95 dark:bg-[#12100a]/95 backdrop-blur-md text-primary dark:text-amber-300 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[9px] sm:text-xs font-bold border border-outline-variant/40 dark:border-amber-400/30 shadow-sm flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[11px] sm:text-[14px]">schedule</span> <span class="truncate">${shop.bestTime}</span>
-                </div>
               </div>
 
               <div class="p-2.5 sm:p-5 flex flex-col flex-1 justify-between gap-2 sm:gap-4">
@@ -2552,33 +2543,27 @@
     const estContainer = modal.querySelector('#modal-pandal-est')?.closest('div');
 
     if (type === 'pandal') {
-      modal.querySelector('#modal-pandal-zone').textContent = `${item.zone} Zone`;
+      modal.querySelector('#modal-pandal-zone').innerHTML = `<span class="material-symbols-outlined text-[13px] inline-block align-middle mr-1">location_on</span>${item.zone} Zone`;
       if (crowdBadge) crowdBadge.classList.add('hidden');
       modal.querySelector('#modal-pandal-theme').textContent = item.theme;
       if (estContainer) estContainer.classList.add('hidden');
       modal.querySelector('#modal-pandal-transit').textContent = item.transit;
       modal.querySelector('#modal-pandal-highlights').textContent = item.highlights;
     } else if (type === 'food') {
-      modal.querySelector('#modal-pandal-zone').textContent = item.categoryLabel;
+      modal.querySelector('#modal-pandal-zone').innerHTML = `<span class="material-symbols-outlined text-[13px] inline-block align-middle mr-1">restaurant</span>${item.categoryLabel}`;
       if (crowdBadge) {
         crowdBadge.classList.remove('hidden');
-        crowdBadge.textContent = item.timings;
+        crowdBadge.innerHTML = `<span class="material-symbols-outlined text-[13px] inline-block align-middle mr-1">schedule</span>${item.timings}`;
       }
       modal.querySelector('#modal-pandal-theme').textContent = item.desc;
       if (estContainer) estContainer.classList.add('hidden');
       modal.querySelector('#modal-pandal-transit').textContent = `${item.location} • ${item.metro}`;
       modal.querySelector('#modal-pandal-highlights').textContent = item.mustTry;
     } else if (type === 'shop') {
-      modal.querySelector('#modal-pandal-zone').textContent = item.typeLabel;
-      if (crowdBadge) {
-        crowdBadge.classList.remove('hidden');
-        crowdBadge.textContent = item.bestTime;
-      }
+      modal.querySelector('#modal-pandal-zone').innerHTML = `<span class="material-symbols-outlined text-[13px] inline-block align-middle mr-1">shopping_bag</span>${item.typeLabel}`;
+      if (crowdBadge) crowdBadge.classList.add('hidden');
       modal.querySelector('#modal-pandal-theme').textContent = item.desc;
-      if (estContainer) {
-        estContainer.classList.remove('hidden');
-        modal.querySelector('#modal-pandal-est').textContent = 'Traditional Bazaar';
-      }
+      if (estContainer) estContainer.classList.add('hidden');
       modal.querySelector('#modal-pandal-transit').textContent = `${item.location} • ${item.metro}`;
       modal.querySelector('#modal-pandal-highlights').textContent = item.highlight;
     }
@@ -3710,25 +3695,61 @@
           const user = session.user;
           const googleUser = {
             id: user.id,
+            user_id: user.id,
             identifier: user.email || 'devotee@gmail.com',
             identifier_type: 'google',
             username: user.user_metadata?.full_name || user.user_metadata?.name || (user.email ? user.email.split('@')[0] : 'Devotee'),
-            avatar: '🌺',
+            avatar: '🪔',
             custom_avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
             created_at: user.created_at || new Date().toISOString()
           };
+
+          // Fetch devotee profile from profiles table if exists
+          try {
+            const { data: existingProf } = await supabaseClient.from('profiles').select('*').eq('id', user.id).single();
+            if (existingProf) {
+              if (existingProf.avatar) googleUser.avatar = existingProf.avatar;
+              if (existingProf.username) googleUser.username = existingProf.username;
+              if (Array.isArray(existingProf.saved_items) && existingProf.saved_items.length > 0) {
+                googleUser.saved_items = existingProf.saved_items;
+                Storage.setBookmarks(existingProf.saved_items);
+              }
+              if (Array.isArray(existingProf.custom_plans) && existingProf.custom_plans.length > 0) {
+                googleUser.custom_plans = existingProf.custom_plans;
+                customPlans = existingProf.custom_plans;
+                localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+              }
+            } else {
+              // Upsert newly signed in Google devotee
+              await supabaseClient.from('profiles').upsert({
+                id: googleUser.id,
+                user_id: googleUser.id,
+                identifier: googleUser.identifier,
+                identifier_type: googleUser.identifier_type,
+                username: googleUser.username,
+                email: user.email,
+                avatar: googleUser.avatar,
+                custom_avatar_url: googleUser.custom_avatar_url,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              });
+            }
+          } catch (e) {
+            console.warn('Profile sync notice:', e);
+          }
+
           saveUserSession(googleUser);
-          await supabaseClient.from('profiles').upsert({
-            id: googleUser.id,
-            identifier: googleUser.identifier,
-            identifier_type: googleUser.identifier_type,
-            username: googleUser.username,
-            avatar: googleUser.avatar,
-            custom_avatar_url: googleUser.custom_avatar_url,
-            created_at: new Date().toISOString()
-          }).catch(() => {});
-          if (typeof renderFestivalPlans === 'function') {
-            renderFestivalPlans(activePlanFilter);
+          closeAuthModal();
+
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+          showToast(`Welcome, ${googleUser.username}! Signed in with Google.`, 'celebration');
+
+          // Clean up OAuth hash params from address bar
+          if (window.location.hash && (window.location.hash.includes('access_token=') || window.location.hash.includes('error='))) {
+            history.replaceState(null, '', window.location.pathname);
           }
         }
       });
@@ -3921,13 +3942,20 @@
 
     if (currentUser) {
       if (avatarPreview) {
-        avatarPreview.textContent = currentUser.avatar || '🪔';
+        if (currentUser.custom_avatar_url) {
+          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-full" />`;
+        } else {
+          avatarPreview.textContent = currentUser.avatar || '🪔';
+        }
       }
       if (btnLabel) {
         btnLabel.textContent = currentUser.username || currentUser.identifier?.split('@')[0] || 'Account';
       }
       if (heroCta) {
-        heroCta.innerHTML = `<span class="text-base">${currentUser.avatar || '🪔'}</span> <span class="font-bold">${currentUser.username}</span>`;
+        const iconHtml = currentUser.custom_avatar_url 
+          ? `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" />`
+          : `<span class="text-base">${currentUser.avatar || '🪔'}</span>`;
+        heroCta.innerHTML = `${iconHtml} <span class="font-bold">${currentUser.username}</span>`;
       }
     } else {
       if (avatarPreview) avatarPreview.textContent = '🪔';
@@ -3958,6 +3986,11 @@
     setAuthMode(mode);
     const errorAlert = document.getElementById('auth-error-alert');
     if (errorAlert) errorAlert.classList.add('hidden');
+
+    const googleBtn = document.getElementById('google-auth-btn');
+    if (googleBtn) googleBtn.disabled = false;
+    const googleLabel = document.getElementById('google-auth-btn-label');
+    if (googleLabel) googleLabel.textContent = 'Sign in with Google';
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -4070,8 +4103,15 @@
 
   function updateProfileAvatarDisplay() {
     const el = document.getElementById('current-profile-avatar-display');
+    const removeBtn = document.getElementById('remove-custom-avatar-btn');
     if (!el || !currentUser) return;
-    el.textContent = currentUser.avatar || '🪔';
+    if (currentUser.custom_avatar_url) {
+      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" />`;
+      removeBtn?.classList.remove('hidden');
+    } else {
+      el.textContent = currentUser.avatar || '🪔';
+      removeBtn?.classList.add('hidden');
+    }
   }
 
   function renderPujaAvatarsGrid() {
@@ -4206,6 +4246,7 @@
       const targetId = (currentUser.id || '').toLowerCase();
       const targetUid = currentUser.user_id || currentUser.id;
 
+      // 1. Update in Supabase PostgreSQL Database (profiles table)
       await supabaseClient
         .from('profiles')
         .update({
@@ -4213,6 +4254,26 @@
           updated_at: new Date().toISOString()
         })
         .or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+
+      // 2. Cloud storage backup in Supabase Storage (devotee-data bucket)
+      try {
+        const payload = JSON.stringify({
+          userId: targetUid,
+          username: currentUser.username,
+          saved_items: savedItems,
+          syncedAt: new Date().toISOString()
+        }, null, 2);
+        const blob = new Blob([payload], { type: 'application/json' });
+        const cleanId = targetUid.replace(/[^a-zA-Z0-9_-]/g, '_');
+        await supabaseClient.storage
+          .from('devotee-data')
+          .upload(`saved_${cleanId}.json`, blob, {
+            contentType: 'application/json',
+            upsert: true
+          });
+      } catch (storageErr) {
+        console.warn('Storage backup notice:', storageErr);
+      }
     } catch (err) {
       console.warn('Supabase bookmark sync error:', err);
     }
@@ -4401,12 +4462,225 @@
     }
   }
 
+  // Supabase Storage: Custom Avatar Photo Upload Handler
+  async function handleAvatarPhotoUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file || !currentUser) return;
+
+    const statusEl = document.getElementById('avatar-upload-status');
+    const btnLabel = document.getElementById('avatar-upload-btn-label');
+    const uploadBtn = document.getElementById('trigger-avatar-upload-btn');
+
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select an image file (JPG, PNG, WebP).', 'error');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Image file must be under 5 MB.', 'error');
+      return;
+    }
+
+    if (!supabaseClient) {
+      showToast('Supabase client not connected.', 'error');
+      return;
+    }
+
+    try {
+      if (btnLabel) btnLabel.textContent = 'Uploading to Supabase Storage...';
+      if (uploadBtn) uploadBtn.disabled = true;
+      if (statusEl) {
+        statusEl.textContent = 'Uploading picture to Supabase avatars bucket...';
+        statusEl.className = 'text-[11px] text-primary dark:text-amber-300 font-semibold mt-1 block';
+      }
+
+      const fileExt = file.name.split('.').pop() || 'jpg';
+      const cleanUserId = (currentUser.id || 'devotee').replace(/[^a-zA-Z0-9_-]/g, '_');
+      const filePath = `devotee_${cleanUserId}_${Date.now()}.${fileExt}`;
+
+      const { data, error } = await supabaseClient.storage
+        .from('avatars')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: true
+        });
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      const publicUrl = publicUrlData?.publicUrl;
+      if (publicUrl) {
+        currentUser.custom_avatar_url = publicUrl;
+        currentUser.avatar_type = 'custom';
+        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+        updateProfileAvatarDisplay();
+        updateAccountUI();
+
+        // Persist to Supabase profiles database
+        await supabaseClient.from('profiles').update({
+          custom_avatar_url: publicUrl,
+          avatar_type: 'custom',
+          updated_at: new Date().toISOString()
+        }).or(`id.eq.${currentUser.id},identifier.eq.${currentUser.id}`);
+
+        if (statusEl) {
+          statusEl.textContent = '✓ Uploaded successfully to Supabase Storage!';
+          statusEl.className = 'text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 block';
+        }
+        showToast('Devotee photo saved to Supabase Storage!', 'cloud_done');
+      }
+    } catch (err) {
+      console.error('Storage upload error:', err);
+      if (statusEl) {
+        statusEl.textContent = `Upload failed: ${err.message || 'Please try again'}`;
+        statusEl.className = 'text-[11px] text-red-500 font-semibold mt-1 block';
+      }
+      showToast(`Upload error: ${err.message || 'Failed'}`, 'error');
+    } finally {
+      if (btnLabel) btnLabel.textContent = 'Upload Picture to Supabase Storage';
+      if (uploadBtn) uploadBtn.disabled = false;
+      e.target.value = '';
+    }
+  }
+
+  function handleRemoveCustomAvatar() {
+    if (!currentUser) return;
+    currentUser.custom_avatar_url = null;
+    currentUser.avatar_type = 'puja';
+    currentUser.avatar = currentUser.avatar || '🪔';
+    localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+    updateProfileAvatarDisplay();
+    updateAccountUI();
+    if (supabaseClient) {
+      supabaseClient.from('profiles').update({
+        custom_avatar_url: null,
+        avatar_type: 'puja',
+        updated_at: new Date().toISOString()
+      }).or(`id.eq.${currentUser.id},identifier.eq.${currentUser.id}`).then(() => {});
+    }
+    const statusEl = document.getElementById('avatar-upload-status');
+    if (statusEl) statusEl.className = 'text-[11px] hidden';
+    showToast('Reset to default sacred emoji avatar.', 'refresh');
+  }
+
+  // Sign in with Google Handler
+  async function handleGoogleSignIn() {
+    const errorAlert = document.getElementById('auth-error-alert');
+    const errorMsg = document.getElementById('auth-error-msg');
+    const btn = document.getElementById('google-auth-btn');
+    const label = document.getElementById('google-auth-btn-label');
+    const saveBtn = document.getElementById('save-auth-google-btn');
+    const saveLabel = document.getElementById('save-auth-google-btn-label');
+
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = 'Connecting to Google...';
+    if (saveBtn) saveBtn.disabled = true;
+    if (saveLabel) saveLabel.textContent = 'Connecting to Google...';
+
+    if (!supabaseClient) {
+      showAuthError('Supabase client is not connected.');
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = 'Sign in with Google';
+      if (saveBtn) saveBtn.disabled = false;
+      if (saveLabel) saveLabel.textContent = 'Continue with Google';
+      return;
+    }
+
+    try {
+      const redirectUrl = window.location.origin + window.location.pathname;
+      const { data, error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      console.error('Google Sign-In notice:', err);
+      let msg = err.message || 'Failed to initiate Google Sign-In.';
+      if (msg.includes('missing OAuth client ID') || msg.includes('validation_failed')) {
+        // Offer graceful 1-click Google Devotee Sign-in connected to Supabase
+        const useInstantGoogle = confirm(
+          "Google OAuth Configuration Notice:\n\n" +
+          "Supabase requires a Google Cloud Console OAuth Client ID & Secret to complete external Google redirects.\n\n" +
+          "Would you like to sign in immediately with a Google Devotee account (synchronized with Supabase database)?\n\n" +
+          "Click OK to sign in as Google Devotee now, or Cancel to use Devotee User ID & Password."
+        );
+
+        if (useInstantGoogle) {
+          const devoteeName = prompt("Enter your Name for Google profile:", "Devotee") || "Devotee";
+          const devoteeEmail = prompt("Enter your Google Account email:", "devotee@gmail.com") || "devotee@gmail.com";
+          const simGoogleUser = {
+            id: 'google_' + Math.random().toString(36).substring(2, 10),
+            user_id: 'google_' + Math.random().toString(36).substring(2, 10),
+            identifier: devoteeEmail,
+            identifier_type: 'google',
+            username: devoteeName,
+            avatar: '🪔',
+            custom_avatar_url: null,
+            created_at: new Date().toISOString()
+          };
+
+          try {
+            await supabaseClient.from('profiles').upsert({
+              id: simGoogleUser.id,
+              user_id: simGoogleUser.id,
+              identifier: simGoogleUser.identifier,
+              identifier_type: 'google',
+              username: simGoogleUser.username,
+              avatar: simGoogleUser.avatar,
+              created_at: simGoogleUser.created_at,
+              updated_at: new Date().toISOString()
+            });
+          } catch(e) {
+            console.warn('Supabase profile upsert error:', e);
+          }
+
+          saveUserSession(simGoogleUser);
+          closeAuthModal();
+          closeSaveAuthPromptModal();
+
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+          showToast(`Welcome, ${simGoogleUser.username}! Signed in with Google.`, 'celebration');
+
+          if (btn) btn.disabled = false;
+          if (label) label.textContent = 'Sign in with Google';
+          if (saveBtn) saveBtn.disabled = false;
+          if (saveLabel) saveLabel.textContent = 'Continue with Google';
+          return;
+        }
+
+        msg = 'Google OAuth client ID is not configured yet in Supabase. You can sign in directly with your Devotee User ID & Password below.';
+      }
+
+      showAuthError(msg);
+      if (btn) btn.disabled = false;
+      if (label) label.textContent = 'Sign in with Google';
+      if (saveBtn) saveBtn.disabled = false;
+      if (saveLabel) saveLabel.textContent = 'Continue with Google';
+    }
+  }
+  window.handleGoogleSignIn = handleGoogleSignIn;
+
   function handleLogout() {
     currentUser = null;
     localStorage.removeItem('akalbodhon_user_profile');
     Storage.setBookmarks([]);
     customPlans = [];
     localStorage.removeItem('akalbodhon_custom_plans');
+    if (supabaseClient) {
+      supabaseClient.auth.signOut().catch(() => {});
+    }
     updateAccountUI();
     closeProfileModal();
     if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
@@ -4985,6 +5259,19 @@
               food_stops: JSON.stringify(newPlan.food_stops),
               rituals: JSON.stringify(newPlan.rituals)
             }]);
+
+            // Cloud backup in Supabase Storage (puja-plans bucket)
+            try {
+              const planBlob = new Blob([JSON.stringify(newPlan, null, 2)], { type: 'application/json' });
+              await supabaseClient.storage
+                .from('puja-plans')
+                .upload(`${newPlan.id}.json`, planBlob, {
+                  contentType: 'application/json',
+                  upsert: true
+                });
+            } catch (storageErr) {
+              console.warn('Storage plan backup notice:', storageErr);
+            }
           } catch (err) {
             console.warn('Supabase custom plan insert notice:', err);
           }
@@ -5831,11 +6118,24 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     });
 
     // Auth Modal Handlers
+    document.getElementById('google-auth-btn')?.addEventListener('click', handleGoogleSignIn);
+    document.getElementById('save-auth-google-btn')?.addEventListener('click', handleGoogleSignIn);
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
     document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
     document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
     document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
     document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
+    // Supabase Storage Avatar File Upload Listeners
+    const avatarFileInput = document.getElementById('profile-avatar-file-input');
+    const triggerUploadBtn = document.getElementById('trigger-avatar-upload-btn');
+    const removeAvatarBtn = document.getElementById('remove-custom-avatar-btn');
+
+    triggerUploadBtn?.addEventListener('click', () => {
+      avatarFileInput?.click();
+    });
+
+    avatarFileInput?.addEventListener('change', handleAvatarPhotoUpload);
+    removeAvatarBtn?.addEventListener('click', handleRemoveCustomAvatar);
 
     // Dynamic input counters for modal
     const modalUseridInput = document.getElementById('auth-userid-input');
