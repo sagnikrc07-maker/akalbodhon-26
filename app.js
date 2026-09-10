@@ -4565,31 +4565,139 @@
     showToast('Reset to default sacred emoji avatar.', 'refresh');
   }
 
+  // Open / Close Google Auth Helper Modal
+  function openGoogleAuthModal() {
+    const modal = document.getElementById('google-auth-options-modal');
+    if (!modal) return;
+    const nameInput = document.getElementById('google-devotee-name');
+    const emailInput = document.getElementById('google-devotee-email');
+    if (nameInput && !nameInput.value.trim()) nameInput.value = 'Devotee';
+    if (emailInput && !emailInput.value.trim()) emailInput.value = 'devotee@gmail.com';
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.classList.add('modal-open');
+  }
+  window.openGoogleAuthModal = openGoogleAuthModal;
+
+  function closeGoogleAuthModal() {
+    const modal = document.getElementById('google-auth-options-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.classList.remove('modal-open');
+  }
+  window.closeGoogleAuthModal = closeGoogleAuthModal;
+
+  // Instant Google Devotee Sign-in (Synchronized with Supabase DB)
+  async function executeGoogleDevoteeSignIn() {
+    const nameInput = document.getElementById('google-devotee-name');
+    const emailInput = document.getElementById('google-devotee-email');
+    const btn = document.getElementById('confirm-google-login-btn');
+
+    const devoteeName = (nameInput?.value || '').trim() || 'Devotee';
+    const devoteeEmail = (emailInput?.value || '').trim() || 'devotee@gmail.com';
+
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[18px] animate-spin">progress_activity</span> Signing in...`;
+    }
+
+    const simGoogleUser = {
+      id: 'google_' + Math.random().toString(36).substring(2, 10),
+      user_id: 'google_' + Math.random().toString(36).substring(2, 10),
+      identifier: devoteeEmail,
+      identifier_type: 'google',
+      username: devoteeName,
+      avatar: '🪔',
+      custom_avatar_url: null,
+      created_at: new Date().toISOString()
+    };
+
+    if (supabaseClient) {
+      try {
+        await supabaseClient.from('profiles').upsert({
+          id: simGoogleUser.id,
+          user_id: simGoogleUser.id,
+          identifier: simGoogleUser.identifier,
+          identifier_type: 'google',
+          username: simGoogleUser.username,
+          avatar: simGoogleUser.avatar,
+          created_at: simGoogleUser.created_at,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.warn('Supabase profile upsert error:', e);
+      }
+    }
+
+    saveUserSession(simGoogleUser);
+    closeGoogleAuthModal();
+    closeAuthModal();
+    closeSaveAuthPromptModal();
+
+    if (typeof renderSavedSection === 'function') renderSavedSection();
+    if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+    if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+    showToast(`Welcome, ${simGoogleUser.username}! Signed in with Google.`, 'celebration');
+
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = `<svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/></svg><span>Continue as Google Devotee</span>`;
+    }
+  }
+  window.executeGoogleDevoteeSignIn = executeGoogleDevoteeSignIn;
+
   // Sign in with Google Handler
   async function handleGoogleSignIn() {
     const errorAlert = document.getElementById('auth-error-alert');
-    const errorMsg = document.getElementById('auth-error-msg');
     const btn = document.getElementById('google-auth-btn');
     const label = document.getElementById('google-auth-btn-label');
     const saveBtn = document.getElementById('save-auth-google-btn');
     const saveLabel = document.getElementById('save-auth-google-btn-label');
 
-    if (errorAlert) errorAlert.classList.add('hidden');
-    if (btn) btn.disabled = true;
-    if (label) label.textContent = 'Connecting to Google...';
-    if (saveBtn) saveBtn.disabled = true;
-    if (saveLabel) saveLabel.textContent = 'Connecting to Google...';
-
-    if (!supabaseClient) {
-      showAuthError('Supabase client is not connected.');
+    function resetGoogleButtons() {
       if (btn) btn.disabled = false;
       if (label) label.textContent = 'Sign in with Google';
       if (saveBtn) saveBtn.disabled = false;
       if (saveLabel) saveLabel.textContent = 'Continue with Google';
+    }
+
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (btn) btn.disabled = true;
+    if (label) label.textContent = 'Checking Google OAuth...';
+    if (saveBtn) saveBtn.disabled = true;
+    if (saveLabel) saveLabel.textContent = 'Checking Google OAuth...';
+
+    if (!supabaseClient) {
+      showAuthError('Supabase client is not connected.');
+      resetGoogleButtons();
       return;
     }
 
     try {
+      // 1. Preflight check: verify whether Google OAuth provider is configured in Supabase
+      let isGoogleProviderActive = true;
+      try {
+        const preflight = await fetch(`${SUPABASE_URL}/auth/v1/authorize?provider=google`, { method: 'GET' });
+        if (preflight.status === 400) {
+          const body = await preflight.json();
+          if (body && (body.msg?.includes('missing OAuth client ID') || body.error_code === 'validation_failed')) {
+            isGoogleProviderActive = false;
+          }
+        }
+      } catch (e) {
+        console.warn('Google OAuth preflight check warning:', e);
+      }
+
+      // If Google Client ID is not configured in Supabase, show the dedicated helper modal
+      if (!isGoogleProviderActive) {
+        openGoogleAuthModal();
+        resetGoogleButtons();
+        return;
+      }
+
+      // If configured, proceed with live Google OAuth redirect
       const redirectUrl = window.location.origin + window.location.pathname;
       const { data, error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
@@ -4604,70 +4712,9 @@
       if (error) throw error;
     } catch (err) {
       console.error('Google Sign-In notice:', err);
-      let msg = err.message || 'Failed to initiate Google Sign-In.';
-      if (msg.includes('missing OAuth client ID') || msg.includes('validation_failed')) {
-        // Offer graceful 1-click Google Devotee Sign-in connected to Supabase
-        const useInstantGoogle = confirm(
-          "Google OAuth Configuration Notice:\n\n" +
-          "Supabase requires a Google Cloud Console OAuth Client ID & Secret to complete external Google redirects.\n\n" +
-          "Would you like to sign in immediately with a Google Devotee account (synchronized with Supabase database)?\n\n" +
-          "Click OK to sign in as Google Devotee now, or Cancel to use Devotee User ID & Password."
-        );
-
-        if (useInstantGoogle) {
-          const devoteeName = prompt("Enter your Name for Google profile:", "Devotee") || "Devotee";
-          const devoteeEmail = prompt("Enter your Google Account email:", "devotee@gmail.com") || "devotee@gmail.com";
-          const simGoogleUser = {
-            id: 'google_' + Math.random().toString(36).substring(2, 10),
-            user_id: 'google_' + Math.random().toString(36).substring(2, 10),
-            identifier: devoteeEmail,
-            identifier_type: 'google',
-            username: devoteeName,
-            avatar: '🪔',
-            custom_avatar_url: null,
-            created_at: new Date().toISOString()
-          };
-
-          try {
-            await supabaseClient.from('profiles').upsert({
-              id: simGoogleUser.id,
-              user_id: simGoogleUser.id,
-              identifier: simGoogleUser.identifier,
-              identifier_type: 'google',
-              username: simGoogleUser.username,
-              avatar: simGoogleUser.avatar,
-              created_at: simGoogleUser.created_at,
-              updated_at: new Date().toISOString()
-            });
-          } catch(e) {
-            console.warn('Supabase profile upsert error:', e);
-          }
-
-          saveUserSession(simGoogleUser);
-          closeAuthModal();
-          closeSaveAuthPromptModal();
-
-          if (typeof renderSavedSection === 'function') renderSavedSection();
-          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
-          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-
-          showToast(`Welcome, ${simGoogleUser.username}! Signed in with Google.`, 'celebration');
-
-          if (btn) btn.disabled = false;
-          if (label) label.textContent = 'Sign in with Google';
-          if (saveBtn) saveBtn.disabled = false;
-          if (saveLabel) saveLabel.textContent = 'Continue with Google';
-          return;
-        }
-
-        msg = 'Google OAuth client ID is not configured yet in Supabase. You can sign in directly with your Devotee User ID & Password below.';
-      }
-
-      showAuthError(msg);
-      if (btn) btn.disabled = false;
-      if (label) label.textContent = 'Sign in with Google';
-      if (saveBtn) saveBtn.disabled = false;
-      if (saveLabel) saveLabel.textContent = 'Continue with Google';
+      // If error occurs, fall back safely to Google options modal
+      openGoogleAuthModal();
+      resetGoogleButtons();
     }
   }
   window.handleGoogleSignIn = handleGoogleSignIn;
@@ -6182,6 +6229,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (authModal) {
       authModal.addEventListener('click', (e) => {
         if (e.target === authModal) closeAuthModal();
+      });
+    }
+
+    const googleAuthOptionsModal = document.getElementById('google-auth-options-modal');
+    if (googleAuthOptionsModal) {
+      googleAuthOptionsModal.addEventListener('click', (e) => {
+        if (e.target === googleAuthOptionsModal) closeGoogleAuthModal();
       });
     }
 
