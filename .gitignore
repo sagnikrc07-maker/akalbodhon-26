@@ -15,3 +15,12 @@ desktop.ini
 __pycache__/
 *.pyc
 scratch/
+
+# Firebase & Cloud Credentials
+*-adminsdk-*.json
+serviceAccount*.json
+*credentials*.json
+.env
+.env.*
+.venv/
+

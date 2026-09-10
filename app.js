@@ -4237,7 +4237,7 @@
 
   // Sync saved items under active devotee's account to Supabase
   async function syncUserSavedItemsToSupabase(list) {
-    if (!currentUser || !currentUser.id || !supabaseClient) return;
+    if (!currentUser || !currentUser.id) return;
     try {
       const savedItems = Array.isArray(list) ? list : Storage.getBookmarks();
       currentUser.saved_items = savedItems;
@@ -4245,6 +4245,17 @@
       
       const targetId = (currentUser.id || '').toLowerCase();
       const targetUid = currentUser.user_id || currentUser.id;
+
+      // Sync to Firebase Firestore Database ('profiles' collection)
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          await window.AkalbodhonFirebase.saveBookmarks(targetId || targetUid, savedItems);
+        } catch (fbErr) {
+          console.warn('Firebase bookmark sync notice:', fbErr);
+        }
+      }
+
+      if (!supabaseClient) return;
 
       // 1. Update in Supabase PostgreSQL Database (profiles table)
       await supabaseClient
@@ -4325,7 +4336,16 @@
         // --- CREATE ACCOUNT ---
         const displayName = rawName || rawUserId;
 
-        if (supabaseClient) {
+        // Check if User ID already exists in Firebase Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            const existing = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
+            if (existing) {
+              showAuthError('This User ID is already taken. Please choose another.', isPage);
+              return;
+            }
+          } catch (e) {}
+        } else if (supabaseClient) {
           const { data: existing } = await supabaseClient
             .from('profiles')
             .select('id, user_id, identifier')
@@ -4353,6 +4373,15 @@
           updated_at: new Date().toISOString()
         };
 
+        // Save to Firebase Firestore Database ('profiles' collection)
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            await window.AkalbodhonFirebase.syncProfile(newProfile);
+          } catch (fbErr) {
+            console.warn('Firebase profile sync notice:', fbErr);
+          }
+        }
+
         if (supabaseClient) {
           const { error: insertErr } = await supabaseClient
             .from('profiles')
@@ -4360,8 +4389,6 @@
 
           if (insertErr) {
             console.warn('Supabase profile insert error:', insertErr);
-            showAuthError(`Unable to create account: ${insertErr.message || 'Please try again.'}`, isPage);
-            return;
           }
         }
 
@@ -4373,7 +4400,18 @@
         // --- SIGN IN ---
         let foundProfile = null;
 
-        if (supabaseClient) {
+        // 1. Try Firebase Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            const fbProf = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
+            if (fbProf) foundProfile = fbProf;
+          } catch (e) {
+            console.warn('Firebase getProfile notice:', e);
+          }
+        }
+
+        // 2. Supabase fallback
+        if (!foundProfile && supabaseClient) {
           const { data, error: fetchErr } = await supabaseClient
             .from('profiles')
             .select('*')
@@ -4588,7 +4626,7 @@
   }
   window.closeGoogleAuthModal = closeGoogleAuthModal;
 
-  // Instant Google Devotee Sign-in (Synchronized with Supabase DB)
+  // Instant Google Devotee Sign-in (Synchronized with Firebase & Supabase DB)
   async function executeGoogleDevoteeSignIn() {
     const nameInput = document.getElementById('google-devotee-name');
     const emailInput = document.getElementById('google-devotee-email');
@@ -4612,6 +4650,15 @@
       custom_avatar_url: null,
       created_at: new Date().toISOString()
     };
+
+    // Sync with Firebase Firestore
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        await window.AkalbodhonFirebase.syncProfile(simGoogleUser);
+      } catch (e) {
+        console.warn('Firebase profile sync error:', e);
+      }
+    }
 
     if (supabaseClient) {
       try {
@@ -4665,57 +4712,41 @@
 
     if (errorAlert) errorAlert.classList.add('hidden');
     if (btn) btn.disabled = true;
-    if (label) label.textContent = 'Checking Google OAuth...';
+    if (label) label.textContent = 'Signing in with Google...';
     if (saveBtn) saveBtn.disabled = true;
-    if (saveLabel) saveLabel.textContent = 'Checking Google OAuth...';
+    if (saveLabel) saveLabel.textContent = 'Signing in with Google...';
 
-    if (!supabaseClient) {
-      showAuthError('Supabase client is not connected.');
-      resetGoogleButtons();
-      return;
-    }
-
-    try {
-      // 1. Preflight check: verify whether Google OAuth provider is configured in Supabase
-      let isGoogleProviderActive = true;
+    // 1. Primary: Native Firebase Google Popup Authentication
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
       try {
-        const preflight = await fetch(`${SUPABASE_URL}/auth/v1/authorize?provider=google`, { method: 'GET' });
-        if (preflight.status === 400) {
-          const body = await preflight.json();
-          if (body && (body.msg?.includes('missing OAuth client ID') || body.error_code === 'validation_failed')) {
-            isGoogleProviderActive = false;
-          }
+        const profile = await window.AkalbodhonFirebase.signInWithGoogle();
+        if (profile) {
+          saveUserSession(profile);
+          closeAuthModal();
+          closeSaveAuthPromptModal();
+          closeGoogleAuthModal();
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+          showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
+          resetGoogleButtons();
+          return;
         }
-      } catch (e) {
-        console.warn('Google OAuth preflight check warning:', e);
-      }
-
-      // If Google Client ID is not configured in Supabase, show the dedicated helper modal
-      if (!isGoogleProviderActive) {
+      } catch (fbErr) {
+        console.warn('Firebase Google Sign-In notice:', fbErr);
+        if (fbErr.code === 'auth/popup-closed-by-user') {
+          resetGoogleButtons();
+          return;
+        }
         openGoogleAuthModal();
         resetGoogleButtons();
         return;
       }
-
-      // If configured, proceed with live Google OAuth redirect
-      const redirectUrl = window.location.origin + window.location.pathname;
-      const { data, error } = await supabaseClient.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
-        }
-      });
-      if (error) throw error;
-    } catch (err) {
-      console.error('Google Sign-In notice:', err);
-      // If error occurs, fall back safely to Google options modal
-      openGoogleAuthModal();
-      resetGoogleButtons();
     }
+
+    // 2. Devotee Fallback Modal
+    openGoogleAuthModal();
+    resetGoogleButtons();
   }
   window.handleGoogleSignIn = handleGoogleSignIn;
 
@@ -4725,6 +4756,9 @@
     Storage.setBookmarks([]);
     customPlans = [];
     localStorage.removeItem('akalbodhon_custom_plans');
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      window.AkalbodhonFirebase.signOutUser().catch(() => {});
+    }
     if (supabaseClient) {
       supabaseClient.auth.signOut().catch(() => {});
     }
@@ -4752,6 +4786,30 @@
         return t !== 'x' && t !== 'bnfhm' && t !== 'test';
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+      // Firebase Firestore remote sync
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const fbPlans = await window.AkalbodhonFirebase.fetchAllPlans();
+          if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+            const planMap = new Map();
+            fbPlans
+              .filter(p => {
+                const t = (p.title || '').trim().toLowerCase();
+                return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+              })
+              .forEach(p => planMap.set(p.id, p));
+
+            (customPlans || []).forEach(p => {
+              if (!planMap.has(p.id)) planMap.set(p.id, p);
+            });
+            customPlans = Array.from(planMap.values());
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          }
+        } catch (fbErr) {
+          console.warn('Firebase plans load notice:', fbErr);
+        }
+      }
 
       // Supabase remote sync
       if (supabaseClient) {
@@ -5290,6 +5348,15 @@
           created_at: new Date().toISOString()
         };
 
+        // Save to Firebase Firestore Database ('plans' collection)
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            await window.AkalbodhonFirebase.savePlan(newPlan);
+          } catch (fbErr) {
+            console.warn('Firebase custom plan save notice:', fbErr);
+          }
+        }
+
         // Save to Supabase
         if (supabaseClient) {
           try {
@@ -5326,6 +5393,14 @@
 
         customPlans.unshift(newPlan);
         localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+        // Sync custom plans to Firebase devotee profile
+        if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          window.AkalbodhonFirebase.syncProfile({
+            id: currentUser.id || currentUser.user_id,
+            custom_plans: customPlans
+          }).catch(() => {});
+        }
 
         if (currentUser && supabaseClient) {
           const targetId = (currentUser.id || '').toLowerCase();
@@ -5777,6 +5852,17 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (!confirm('Are you sure you want to delete this custom Puja plan?')) return;
     customPlans = customPlans.filter(p => p.id !== planId);
     localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+    // Delete from Firebase Firestore Database
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      window.AkalbodhonFirebase.deletePlan(planId).catch(() => {});
+      if (currentUser) {
+        window.AkalbodhonFirebase.syncProfile({
+          id: currentUser.id || currentUser.user_id,
+          custom_plans: customPlans
+        }).catch(() => {});
+      }
+    }
 
     if (supabaseClient) {
       supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});

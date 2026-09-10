@@ -18,6 +18,9 @@
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
+  <!-- Firebase Configuration & Database Module -->
+  <script type="module" src="firebase-config.js"></script>
+  
   <script>
     tailwind.config = {
       darkMode: "class",
@@ -501,8 +504,12 @@
             created_at: simGoogleUser.created_at,
             updated_at: new Date().toISOString()
           });
-        } catch(e) {
-          console.warn('Supabase profile sync error:', e);
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            await window.AkalbodhonFirebase.syncProfile(simGoogleUser);
+          } catch (e) {
+            console.warn('Firebase profile sync error:', e);
+          }
         }
       }
 
@@ -522,55 +529,40 @@
 
     async function handleGoogleSignIn() {
       clearAlerts();
-      if (!supabaseClient) {
-        showAlert('Supabase client is not connected.');
-        return;
-      }
-      try {
-        if (googleAuthBtn) googleAuthBtn.disabled = true;
-        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Checking Google OAuth...';
-        
-        // 1. Preflight check: verify whether Google OAuth provider is configured in Supabase
-        let isGoogleProviderActive = true;
-        try {
-          const preflight = await fetch(`${SUPABASE_URL}/auth/v1/authorize?provider=google`, { method: 'GET' });
-          if (preflight.status === 400) {
-            const body = await preflight.json();
-            if (body && (body.msg?.includes('missing OAuth client ID') || body.error_code === 'validation_failed')) {
-              isGoogleProviderActive = false;
-            }
-          }
-        } catch (e) {
-          console.warn('Google OAuth preflight check warning:', e);
-        }
+      if (googleAuthBtn) googleAuthBtn.disabled = true;
+      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Signing in with Google...';
 
-        // If Google Client ID is not configured in Supabase, show the dedicated helper modal
-        if (!isGoogleProviderActive) {
+      // 1. First attempt: Live Native Firebase Google Popup Sign-in
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const profile = await window.AkalbodhonFirebase.signInWithGoogle();
+          if (profile) {
+            showLoggedInState(profile);
+            showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting...`, false);
+            setTimeout(() => {
+              window.location.href = 'index.html';
+            }, 700);
+            return;
+          }
+        } catch (fbErr) {
+          console.warn('Firebase Google Sign-In notice:', fbErr);
+          if (fbErr.code === 'auth/popup-closed-by-user') {
+            if (googleAuthBtn) googleAuthBtn.disabled = false;
+            if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
+            return;
+          }
+          // If popup blocked or Google provider not yet enabled in console, show devotee modal
           openGoogleAuthModal();
           if (googleAuthBtn) googleAuthBtn.disabled = false;
           if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
           return;
         }
-
-        // If configured, proceed with live Google OAuth redirect
-        const redirectUrl = window.location.origin + window.location.pathname.replace('login.html', 'index.html');
-        const { data, error } = await supabaseClient.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: redirectUrl,
-            queryParams: {
-              access_type: 'offline',
-              prompt: 'consent'
-            }
-          }
-        });
-        if (error) throw error;
-      } catch (err) {
-        console.error('Google Sign-In notice:', err);
-        openGoogleAuthModal();
-        if (googleAuthBtn) googleAuthBtn.disabled = false;
-        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
       }
+
+      // 2. Supabase / Devotee Fallback Modal
+      openGoogleAuthModal();
+      if (googleAuthBtn) googleAuthBtn.disabled = false;
+      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
     }
     window.handleGoogleSignIn = handleGoogleSignIn;
 
@@ -637,6 +629,11 @@
       localStorage.removeItem('akalbodhon_user_profile');
       localStorage.setItem('akalbodhon_bookmarks', JSON.stringify([]));
       localStorage.removeItem('akalbodhon_custom_plans');
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          await window.AkalbodhonFirebase.signOutUser();
+        } catch (e) {}
+      }
       loggedInView.classList.add('hidden');
       authFlowContainer.classList.remove('hidden');
       showAlert('Signed out successfully.', false);
@@ -676,7 +673,16 @@
           // --- CREATE ACCOUNT ---
           const displayName = rawName || rawUserId;
 
-          if (supabaseClient) {
+          // Check if User ID already exists in Firebase Firestore
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              const existing = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
+              if (existing) {
+                showAlert('This User ID is already taken. Please choose another.');
+                return;
+              }
+            } catch (e) {}
+          } else if (supabaseClient) {
             const { data: existing } = await supabaseClient
               .from('profiles')
               .select('id, user_id, identifier')
@@ -715,15 +721,20 @@
             updated_at: new Date().toISOString()
           };
 
-          if (supabaseClient) {
-            const { error: insertErr } = await supabaseClient
-              .from('profiles')
-              .insert(newProfile);
-
-            if (insertErr) {
-              showAlert(`Unable to create account: ${insertErr.message || 'Please try again.'}`);
-              return;
+          // Save to Firebase Firestore
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              await window.AkalbodhonFirebase.syncProfile(newProfile);
+            } catch (e) {
+              console.warn('Firebase syncProfile notice:', e);
             }
+          }
+
+          // Backup to Supabase
+          if (supabaseClient) {
+            try {
+              await supabaseClient.from('profiles').insert(newProfile);
+            } catch (e) {}
           }
 
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(newProfile));
@@ -734,7 +745,18 @@
           // --- SIGN IN ---
           let foundProfile = null;
 
-          if (supabaseClient) {
+          // 1. Try Firebase Firestore
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              const fbProf = await window.AkalbodhonFirebase.getProfile(userIdNormalized);
+              if (fbProf) foundProfile = fbProf;
+            } catch (e) {
+              console.warn('Firebase getProfile notice:', e);
+            }
+          }
+
+          // 2. Supabase fallback
+          if (!foundProfile && supabaseClient) {
             const { data, error: fetchErr } = await supabaseClient
               .from('profiles')
               .select('*')
@@ -768,7 +790,7 @@
             return;
           }
 
-          // Fetch & restore saved details stored in Supabase under that userid
+          // Fetch & restore saved details stored in Database under that userid
           const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
           localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
 
