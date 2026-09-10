@@ -3900,28 +3900,97 @@
     return hasAlpha && hasNum;
   }
 
-  // Load Saved User State from LocalStorage
-  function loadLocalUserSession() {
+  // Load Saved User State & Restore their own saved items and plans from Firestore
+  async function loadLocalUserSession() {
     try {
       const raw = localStorage.getItem('akalbodhon_user_profile');
       if (raw) {
         currentUser = JSON.parse(raw);
         updateAccountUI();
+
+        // Restore user's own saved items & custom plans under their own credentials
+        const targetUid = currentUser.id || currentUser.user_id;
+        if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
+            if (Array.isArray(fbSaved)) {
+              Storage.setBookmarks(fbSaved);
+              currentUser.saved_items = fbSaved;
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            }
+            const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
+            if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+              const planMap = new Map();
+              (customPlans || []).forEach(p => planMap.set(p.id, p));
+              fbPlans.forEach(p => planMap.set(p.id, p));
+              customPlans = Array.from(planMap.values());
+              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+            }
+          } catch (e) {
+            console.warn('Firestore user data restore notice:', e);
+          }
+        }
       }
     } catch (e) {
       console.warn('Session parse error:', e);
     }
   }
 
-  // Save User State
-  function saveUserSession(user) {
+  // Save User State & apply user-specific data isolation
+  async function saveUserSession(user) {
     currentUser = user;
     if (user) {
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+
+      // Restore user-specific saved items immediately if present
+      if (Array.isArray(user.saved_items)) {
+        Storage.setBookmarks(user.saved_items);
+      }
+
+      // Restore user-specific custom plans immediately if present
+      if (Array.isArray(user.custom_plans)) {
+        const planMap = new Map();
+        (customPlans || []).forEach(p => planMap.set(p.id, p));
+        user.custom_plans.forEach(p => planMap.set(p.id, p));
+        customPlans = Array.from(planMap.values());
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      }
+
+      // Dual-sync from Firestore database to ensure freshest user credentials and saved items
+      const targetUid = user.id || user.user_id;
+      if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
+          if (Array.isArray(fbSaved)) {
+            Storage.setBookmarks(fbSaved);
+            currentUser.saved_items = fbSaved;
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          }
+          const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
+          if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+            const planMap = new Map();
+            (customPlans || []).forEach(p => planMap.set(p.id, p));
+            fbPlans.forEach(p => planMap.set(p.id, p));
+            customPlans = Array.from(planMap.values());
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          }
+        } catch (fbErr) {
+          console.warn('Firestore session sync notice:', fbErr);
+        }
+      }
     } else {
       localStorage.removeItem('akalbodhon_user_profile');
+      Storage.setBookmarks([]);
+      customPlans = [];
+      localStorage.removeItem('akalbodhon_bookmarks');
+      localStorage.removeItem('akalbodhon_custom_plans');
     }
+
     updateAccountUI();
+    if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+    if (typeof renderSavedSection === 'function') renderSavedSection();
+    if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+    if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
 
     if (user && typeof pendingSaveAction === 'function') {
       try {
@@ -4951,11 +5020,13 @@
                 </div>
               ` : ''}
 
-              <!-- Creator: Name clearly written on the plan -->
-              <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container-high dark:bg-[#252016] border border-secondary-container/50 dark:border-amber-400/30 max-w-full shadow-xs" title="Created by ${escapeHtml(plan.creator_name || 'Devotee')}">
-                <span class="text-xs sm:text-sm">${plan.creator_avatar || '🌺'}</span>
-                <span class="text-[10px] sm:text-xs text-on-surface dark:text-[#ded5c7] truncate">
-                  Created by <strong class="font-bold text-primary dark:text-amber-300">${escapeHtml(creatorNameDisplay)}</strong>
+              <!-- Creator: Highlighted Creator Bar with Creator Name Spotlight -->
+              <div class="creator-bar inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border max-w-full shadow-sm" title="Plan Creator: ${escapeHtml(plan.creator_name || 'Devotee')}">
+                <span class="text-xs sm:text-sm shrink-0">👑</span>
+                <span class="text-xs shrink-0">${plan.creator_avatar || '🌺'}</span>
+                <span class="text-[10px] sm:text-xs text-neutral-900 dark:text-amber-100 font-semibold truncate flex items-center gap-1">
+                  <span>Created by:</span>
+                  <span class="creator-name-pill px-2 py-0.5 rounded-md text-black font-extrabold tracking-wide truncate">${escapeHtml(plan.creator_name || creatorNameDisplay)}</span>
                 </span>
               </div>
             </div>
@@ -5733,7 +5804,23 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       }
     }
 
-    // If not found in memory, try fetching from Supabase
+    // 1. Try fetching from Firebase Firestore Database
+    if (!plan && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        const fbPlan = await window.AkalbodhonFirebase.fetchPlanById(cleanId);
+        if (fbPlan) {
+          plan = fbPlan;
+          if (!customPlans.some(p => p.id === plan.id)) {
+            customPlans.unshift(plan);
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          }
+        }
+      } catch (fbErr) {
+        console.warn('Firebase deep link plan lookup error:', fbErr);
+      }
+    }
+
+    // 2. Supabase fallback
     if (!plan && supabaseClient) {
       try {
         const { data } = await supabaseClient.from('puja_plans').select('*, plan_members(*)').eq('id', cleanId).single();
@@ -5789,13 +5876,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         window.openViewPlanModal(plan.id);
       }
 
-      // Scroll to card and highlight
+      // Scroll to card and highlight with glowing pulsing creator spotlight
       setTimeout(() => {
         const card = document.getElementById(`plan-card-${plan.id}`) || document.querySelector(`[data-plan-id="${plan.id}"]`);
         if (card) {
           card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          card.classList.add('ring-4', 'ring-amber-400', 'shadow-2xl');
-          setTimeout(() => card.classList.remove('ring-4', 'ring-amber-400', 'shadow-2xl'), 3500);
+          card.classList.add('plan-highlight-focus', 'ring-4', 'ring-amber-400', 'shadow-2xl');
+          setTimeout(() => card.classList.remove('plan-highlight-focus', 'ring-4', 'ring-amber-400', 'shadow-2xl'), 4500);
         }
       }, 350);
 
@@ -5855,10 +5942,11 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     // Delete from Firebase Firestore Database
     if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-      window.AkalbodhonFirebase.deletePlan(planId).catch(() => {});
+      const creatorUid = currentUser ? (currentUser.id || currentUser.user_id) : null;
+      window.AkalbodhonFirebase.deletePlan(planId, creatorUid).catch(() => {});
       if (currentUser) {
         window.AkalbodhonFirebase.syncProfile({
-          id: currentUser.id || currentUser.user_id,
+          id: creatorUid,
           custom_plans: customPlans
         }).catch(() => {});
       }
@@ -5909,12 +5997,23 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         });
       }
 
-      // If it is a custom/shared plan, save into receiver's custom plans in Supabase & local storage
+      // If it is a custom/shared plan, save into receiver's custom plans in Firestore & Supabase
       if (!plan.is_template) {
         if (!customPlans.some(p => p.id === plan.id)) {
           customPlans.unshift(plan);
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
         }
+
+        // Firebase Firestore dual-sync
+        if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          const targetUid = currentUser.id || currentUser.user_id;
+          window.AkalbodhonFirebase.savePlan(plan).catch(() => {});
+          window.AkalbodhonFirebase.syncProfile({
+            id: targetUid,
+            custom_plans: customPlans
+          }).catch(() => {});
+        }
+
         if (currentUser && supabaseClient) {
           const targetId = (currentUser.id || '').toLowerCase();
           const targetUid = currentUser.user_id || currentUser.id;
@@ -5923,6 +6022,12 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
             updated_at: new Date().toISOString()
           }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
         }
+      }
+
+      // Sync updated bookmarks to Firebase Firestore
+      if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        const targetUid = currentUser.id || currentUser.user_id;
+        window.AkalbodhonFirebase.saveBookmarks(targetUid, Storage.getBookmarks()).catch(() => {});
       }
 
       showToast(`Plan "${plan.title}" (by ${plan.creator_name || 'Devotee'}) saved to your account!`, 'bookmark_added');

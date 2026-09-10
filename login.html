@@ -518,7 +518,7 @@
       showLoggedInState(simGoogleUser);
       showAlert(`Welcome, ${simGoogleUser.username}! Signed in with Google. Redirecting to festival...`, false);
       setTimeout(() => {
-        window.location.href = 'index.html';
+        window.location.href = 'index.html#saved';
       }, 700);
     }
     window.executeGoogleDevoteeSignIn = executeGoogleDevoteeSignIn;
@@ -540,7 +540,7 @@
             showLoggedInState(profile);
             showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting...`, false);
             setTimeout(() => {
-              window.location.href = 'index.html';
+              window.location.href = 'index.html#saved';
             }, 700);
             return;
           }
