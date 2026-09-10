@@ -156,9 +156,83 @@ footer {
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-/* Modal Body Scroll Locking & Reachable Scrollbars */
+/* Modal Body Scroll Locking & Universal Screen Blur on Dialog Open */
 body.modal-open {
   overflow: hidden !important;
+}
+
+body.modal-open > header,
+body.modal-open > main,
+body.modal-open > footer,
+body.modal-open > nav {
+  filter: blur(8px) saturate(120%);
+  -webkit-filter: blur(8px) saturate(120%);
+  transform: scale(0.995);
+  transition: filter 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  user-select: none;
+}
+
+header, main, footer, nav {
+  transition: filter 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Full-Screen Frosted Backdrop Blur Overlay: Blurs the entire screen under the dialog */
+.modal-overlay {
+  background-color: rgba(12, 10, 7, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(160%) brightness(0.82) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(160%) brightness(0.82) !important;
+}
+
+.dark .modal-overlay {
+  background-color: rgba(5, 4, 2, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(180%) brightness(0.72) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) brightness(0.72) !important;
+}
+
+/* Frosted Glass Dialog Box: Translucent blurred floating container */
+.modal-glass-card {
+  position: relative;
+  background: rgba(255, 248, 239, 0.84) !important;
+  backdrop-filter: blur(32px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(190%) !important;
+  border: 1px solid rgba(225, 212, 195, 0.75) !important;
+  box-shadow: 
+    0 25px 65px -12px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+    0 0 40px rgba(222, 176, 56, 0.12) !important;
+  clip-path: none !important;
+}
+
+.dark .modal-glass-card {
+  background: rgba(22, 17, 10, 0.86) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid rgba(254, 214, 91, 0.35) !important;
+  box-shadow: 
+    0 25px 65px -12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(254, 214, 91, 0.22) inset,
+    0 0 48px rgba(254, 214, 91, 0.16) !important;
+  clip-path: none !important;
+}
+
+/* Golden luminous accent line across top edge of every dialog box */
+.modal-glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(222, 176, 56, 0.85) 50%, transparent 100%);
+  pointer-events: none;
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  z-index: 25;
+}
+
+.dark .modal-glass-card::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(254, 214, 91, 0.95) 50%, transparent 100%);
 }
 
 .modal-scrollable {
