@@ -50,6 +50,15 @@ try {
   console.error("Firebase init error:", err);
 }
 
+// Timeout helper so Firestore never hangs the main thread or promises
+const DEFAULT_TIMEOUT_MS = 2500;
+function withTimeout(promise, ms = DEFAULT_TIMEOUT_MS) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms))
+  ]);
+}
+
 export const AkalbodhonFirebase = {
   app,
   auth,
@@ -66,24 +75,24 @@ export const AkalbodhonFirebase = {
     const user = result.user;
     const cleanUid = String(user.uid);
 
-    // Fetch existing user data under this specific user's credentials
+    // Fetch existing user data under this specific user's credentials with timeout
     let existingData = {};
     if (db) {
       try {
         const userDocRef = doc(db, "users", cleanUid);
-        const userSnap = await getDoc(userDocRef);
-        if (userSnap.exists()) {
+        const userSnap = await withTimeout(getDoc(userDocRef), 2000);
+        if (userSnap && userSnap.exists()) {
           existingData = userSnap.data() || {};
         } else {
           // Check profiles collection fallback
           const profDocRef = doc(db, "profiles", cleanUid);
-          const profSnap = await getDoc(profDocRef);
-          if (profSnap.exists()) {
+          const profSnap = await withTimeout(getDoc(profDocRef), 1500);
+          if (profSnap && profSnap.exists()) {
             existingData = profSnap.data() || {};
           }
         }
       } catch (e) {
-        console.warn("Notice checking existing user data:", e);
+        console.warn("Notice checking existing user data in Firestore:", e.message || e);
       }
     }
 
@@ -106,13 +115,17 @@ export const AkalbodhonFirebase = {
       updated_at: new Date().toISOString()
     };
 
-    // Store/Update user credentials and profile in Firestore under their own UID
-    await this.syncProfile(profile);
+    // Store/Update user credentials and profile in Firestore under their own UID (non-blocking)
+    this.syncProfile(profile).catch(() => {});
 
     // Restore to localStorage for active user session
     localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
-    localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(restoredSavedItems));
-    localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(restoredPlans));
+    if (restoredSavedItems.length > 0) {
+      localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(restoredSavedItems));
+    }
+    if (restoredPlans.length > 0) {
+      localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(restoredPlans));
+    }
 
     return profile;
   },
@@ -129,13 +142,13 @@ export const AkalbodhonFirebase = {
     try {
       // 1. Primary: users/{userId}
       const userRef = doc(db, "users", docId);
-      await setDoc(userRef, payload, { merge: true });
+      await withTimeout(setDoc(userRef, payload, { merge: true }), 2500);
 
       // 2. Secondary/Legacy compatibility: profiles/{userId}
       const profRef = doc(db, "profiles", docId);
-      await setDoc(profRef, payload, { merge: true });
+      await withTimeout(setDoc(profRef, payload, { merge: true }), 2000).catch(() => {});
     } catch (err) {
-      console.warn("Firestore profile sync notice:", err);
+      console.warn("Firestore profile sync notice:", err.message || err);
     }
   },
 
@@ -146,29 +159,21 @@ export const AkalbodhonFirebase = {
     try {
       // Check users/{userId}
       const userRef = doc(db, "users", cleanId);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
+      const userSnap = await withTimeout(getDoc(userRef), 2000);
+      if (userSnap && userSnap.exists()) {
         return userSnap.data();
       }
 
       // Check profiles/{userId}
       const profRef = doc(db, "profiles", cleanId);
-      const profSnap = await getDoc(profRef);
-      if (profSnap.exists()) {
+      const profSnap = await withTimeout(getDoc(profRef), 1500);
+      if (profSnap && profSnap.exists()) {
         return profSnap.data();
-      }
-
-      // Query fallback by identifier or user_id in users collection
-      const usersRef = collection(db, "users");
-      const q = query(usersRef, where("identifier", "==", cleanId));
-      const qSnap = await getDocs(q);
-      if (!qSnap.empty) {
-        return qSnap.docs[0].data();
       }
 
       return null;
     } catch (err) {
-      console.warn("Firestore getProfile notice:", err);
+      console.warn("Firestore getProfile notice:", err.message || err);
       return null;
     }
   },
@@ -186,27 +191,15 @@ export const AkalbodhonFirebase = {
 
       // 1. Write to users/{userId}
       const userRef = doc(db, "users", docId);
-      await setDoc(userRef, payload, { merge: true });
+      await withTimeout(setDoc(userRef, payload, { merge: true }), 2500);
 
       // 2. Write to profiles/{userId}
       const profRef = doc(db, "profiles", docId);
-      await setDoc(profRef, payload, { merge: true });
-
-      // 3. Update subcollection users/{userId}/saved_items
-      for (const item of list) {
-        if (item && item.id) {
-          const itemRef = doc(db, "users", docId, "saved_items", String(item.id));
-          await setDoc(itemRef, {
-            ...item,
-            user_id: docId,
-            saved_at: new Date().toISOString()
-          }, { merge: true }).catch(() => {});
-        }
-      }
+      await withTimeout(setDoc(profRef, payload, { merge: true }), 1500).catch(() => {});
 
       return true;
     } catch (err) {
-      console.warn("Firestore save bookmarks notice:", err);
+      console.warn("Firestore save bookmarks notice:", err.message || err);
       return false;
     }
   },
@@ -216,28 +209,23 @@ export const AkalbodhonFirebase = {
     if (!db || !userId) return [];
     const docId = String(userId).trim().toLowerCase();
     try {
-      // Direct doc check
+      // Direct doc check in users/{userId}
       const userRef = doc(db, "users", docId);
-      const snap = await getDoc(userRef);
-      if (snap.exists() && Array.isArray(snap.data()?.saved_items)) {
+      const snap = await withTimeout(getDoc(userRef), 2000);
+      if (snap && snap.exists() && Array.isArray(snap.data()?.saved_items)) {
         return snap.data().saved_items;
       }
 
       // Fallback check in profiles
       const profRef = doc(db, "profiles", docId);
-      const pSnap = await getDoc(profRef);
-      if (pSnap.exists() && Array.isArray(pSnap.data()?.saved_items)) {
+      const pSnap = await withTimeout(getDoc(profRef), 1500);
+      if (pSnap && pSnap.exists() && Array.isArray(pSnap.data()?.saved_items)) {
         return pSnap.data().saved_items;
       }
 
-      // Fallback check subcollection
-      const itemsRef = collection(db, "users", docId, "saved_items");
-      const subSnap = await getDocs(itemsRef);
-      const items = [];
-      subSnap.forEach(d => items.push(d.data()));
-      return items;
+      return [];
     } catch (err) {
-      console.warn("Firestore fetch saved items notice:", err);
+      console.warn("Firestore fetch saved items notice:", err.message || err);
       return [];
     }
   },
@@ -255,31 +243,33 @@ export const AkalbodhonFirebase = {
     try {
       // 1. Save to global 'plans/{planId}' so shared links open properly for recipients
       const planRef = doc(db, "plans", planId);
-      await setDoc(planRef, payload, { merge: true });
+      await withTimeout(setDoc(planRef, payload, { merge: true }), 2500);
 
       // 2. Save specifically under the creator's credentials in 'users/{creatorId}/plans/{planId}'
       if (creatorId) {
         const userPlanRef = doc(db, "users", creatorId, "plans", planId);
-        await setDoc(userPlanRef, payload, { merge: true }).catch(() => {});
+        await withTimeout(setDoc(userPlanRef, payload, { merge: true }), 2000).catch(() => {});
 
         // 3. Update user document's custom_plans list
-        const userRef = doc(db, "users", creatorId);
-        const userSnap = await getDoc(userRef);
-        let userPlans = [];
-        if (userSnap.exists()) {
-          userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
-        }
-        const filtered = userPlans.filter(p => p.id !== planId);
-        filtered.unshift(payload);
-        await setDoc(userRef, {
-          custom_plans: filtered,
-          updated_at: new Date().toISOString()
-        }, { merge: true }).catch(() => {});
+        try {
+          const userRef = doc(db, "users", creatorId);
+          const userSnap = await withTimeout(getDoc(userRef), 1500);
+          let userPlans = [];
+          if (userSnap && userSnap.exists()) {
+            userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
+          }
+          const filtered = userPlans.filter(p => p.id !== planId);
+          filtered.unshift(payload);
+          await withTimeout(setDoc(userRef, {
+            custom_plans: filtered,
+            updated_at: new Date().toISOString()
+          }, { merge: true }), 2000).catch(() => {});
+        } catch (e) {}
       }
 
       return true;
     } catch (err) {
-      console.warn("Firestore save plan notice:", err);
+      console.warn("Firestore save plan notice:", err.message || err);
       return false;
     }
   },
@@ -291,29 +281,32 @@ export const AkalbodhonFirebase = {
     try {
       const plansMap = new Map();
 
+      // Check users/{creatorId} doc's custom_plans
+      try {
+        const userRef = doc(db, "users", creatorId);
+        const uSnap = await withTimeout(getDoc(userRef), 2000);
+        if (uSnap && uSnap.exists() && Array.isArray(uSnap.data()?.custom_plans)) {
+          uSnap.data().custom_plans.forEach(p => {
+            if (p && p.id) plansMap.set(p.id, p);
+          });
+        }
+      } catch (e) {}
+
       // Check users/{creatorId}/plans subcollection
       try {
         const userPlansRef = collection(db, "users", creatorId, "plans");
-        const userPlansSnap = await getDocs(userPlansRef);
-        userPlansSnap.forEach(d => {
-          const p = d.data();
-          if (p && p.id) plansMap.set(p.id, p);
-        });
-      } catch (e) {}
-
-      // Also query top-level plans collection where creator_id == userId
-      try {
-        const q = query(collection(db, "plans"), where("creator_id", "==", creatorId));
-        const qSnap = await getDocs(q);
-        qSnap.forEach(d => {
-          const p = d.data();
-          if (p && p.id) plansMap.set(p.id, p);
-        });
+        const userPlansSnap = await withTimeout(getDocs(userPlansRef), 2000);
+        if (userPlansSnap) {
+          userPlansSnap.forEach(d => {
+            const p = d.data();
+            if (p && p.id) plansMap.set(p.id, p);
+          });
+        }
       } catch (e) {}
 
       return Array.from(plansMap.values());
     } catch (err) {
-      console.warn("Firestore fetch user plans notice:", err);
+      console.warn("Firestore fetch user plans notice:", err.message || err);
       return [];
     }
   },
@@ -324,13 +317,13 @@ export const AkalbodhonFirebase = {
     const cleanId = String(planId).trim();
     try {
       const planRef = doc(db, "plans", cleanId);
-      const snap = await getDoc(planRef);
-      if (snap.exists()) {
+      const snap = await withTimeout(getDoc(planRef), 2500);
+      if (snap && snap.exists()) {
         return snap.data();
       }
       return null;
     } catch (err) {
-      console.warn("Firestore fetch plan by ID notice:", err);
+      console.warn("Firestore fetch plan by ID notice:", err.message || err);
       return null;
     }
   },
@@ -339,14 +332,16 @@ export const AkalbodhonFirebase = {
   async fetchAllPlans() {
     if (!db) return [];
     try {
-      const snap = await getDocs(collection(db, "plans"));
+      const snap = await withTimeout(getDocs(collection(db, "plans")), 2500);
       const plans = [];
-      snap.forEach(docSnap => {
-        plans.push(docSnap.data());
-      });
+      if (snap) {
+        snap.forEach(docSnap => {
+          plans.push(docSnap.data());
+        });
+      }
       return plans;
     } catch (err) {
-      console.warn("Firestore fetch all plans notice:", err);
+      console.warn("Firestore fetch all plans notice:", err.message || err);
       return [];
     }
   },
@@ -357,25 +352,27 @@ export const AkalbodhonFirebase = {
     const cleanPlanId = String(planId);
     try {
       // 1. Delete from top-level plans
-      await deleteDoc(doc(db, "plans", cleanPlanId));
+      await withTimeout(deleteDoc(doc(db, "plans", cleanPlanId)), 2000);
 
       // 2. Delete from users/{userId}/plans if userId provided
       if (userId) {
         const creatorId = String(userId).toLowerCase();
-        await deleteDoc(doc(db, "users", creatorId, "plans", cleanPlanId)).catch(() => {});
+        await withTimeout(deleteDoc(doc(db, "users", creatorId, "plans", cleanPlanId)), 1500).catch(() => {});
         
         // Update user document's custom_plans
-        const userRef = doc(db, "users", creatorId);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
-          const updated = userPlans.filter(p => p.id !== cleanPlanId);
-          await setDoc(userRef, { custom_plans: updated, updated_at: new Date().toISOString() }, { merge: true }).catch(() => {});
-        }
+        try {
+          const userRef = doc(db, "users", creatorId);
+          const userSnap = await withTimeout(getDoc(userRef), 1500);
+          if (userSnap && userSnap.exists()) {
+            const userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
+            const updated = userPlans.filter(p => p.id !== cleanPlanId);
+            await withTimeout(setDoc(userRef, { custom_plans: updated, updated_at: new Date().toISOString() }, { merge: true }), 1500).catch(() => {});
+          }
+        } catch (e) {}
       }
       return true;
     } catch (err) {
-      console.warn("Firestore delete plan notice:", err);
+      console.warn("Firestore delete plan notice:", err.message || err);
       return false;
     }
   },
@@ -384,9 +381,9 @@ export const AkalbodhonFirebase = {
   async signOutUser() {
     if (auth) {
       try {
-        await signOut(auth);
+        await withTimeout(signOut(auth), 1500);
       } catch (err) {
-        console.warn("Firebase signout notice:", err);
+        console.warn("Firebase signout notice:", err.message || err);
       }
     }
     localStorage.removeItem("akalbodhon_user_profile");

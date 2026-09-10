@@ -3900,39 +3900,45 @@
     return hasAlpha && hasNum;
   }
 
-  // Load Saved User State & Restore their own saved items and plans from Firestore
-  async function loadLocalUserSession() {
+  // Load Saved User State immediately from local storage (Synchronous, zero-delay)
+  function loadLocalUserSession() {
     try {
       const raw = localStorage.getItem('akalbodhon_user_profile');
       if (raw) {
         currentUser = JSON.parse(raw);
         updateAccountUI();
-
-        // Restore user's own saved items & custom plans under their own credentials
-        const targetUid = currentUser.id || currentUser.user_id;
-        if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
-            if (Array.isArray(fbSaved)) {
-              Storage.setBookmarks(fbSaved);
-              currentUser.saved_items = fbSaved;
-              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-            }
-            const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
-            if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-              const planMap = new Map();
-              (customPlans || []).forEach(p => planMap.set(p.id, p));
-              fbPlans.forEach(p => planMap.set(p.id, p));
-              customPlans = Array.from(planMap.values());
-              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-            }
-          } catch (e) {
-            console.warn('Firestore user data restore notice:', e);
-          }
-        }
       }
     } catch (e) {
       console.warn('Session parse error:', e);
+    }
+  }
+
+  // Background sync for user credentials & saved items from Firestore
+  async function syncRemoteUserSession() {
+    if (!currentUser) return;
+    const targetUid = currentUser.id || currentUser.user_id;
+    if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
+        if (Array.isArray(fbSaved) && fbSaved.length > 0) {
+          Storage.setBookmarks(fbSaved);
+          currentUser.saved_items = fbSaved;
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+        }
+        const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
+        if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+          const planMap = new Map();
+          (customPlans || []).forEach(p => planMap.set(p.id, p));
+          fbPlans.forEach(p => planMap.set(p.id, p));
+          customPlans = Array.from(planMap.values());
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter || 'all');
+        }
+      } catch (e) {
+        console.warn('Firestore user data background restore notice:', e);
+      }
     }
   }
 
@@ -4842,57 +4848,65 @@
   // ========================================================
   // 17. FESTIVAL PUJA PLANS & CUSTOM BUILDER ENGINE
   // ========================================================
-  async function loadCustomPlans() {
+  // Synchronous local cache loader for custom plans (Instant, zero-delay rendering)
+  function loadLocalCustomPlans() {
     try {
-      // Local cache
       const local = localStorage.getItem('akalbodhon_custom_plans');
       if (local) {
         customPlans = JSON.parse(local);
       }
-      // Purge test plans 'x' and 'bnfhm'
       customPlans = (customPlans || []).filter(p => {
         const t = (p.title || '').trim().toLowerCase();
         return t !== 'x' && t !== 'bnfhm' && t !== 'test';
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+    } catch (e) {
+      console.warn('Local plans cache notice:', e);
+    }
+  }
 
-      // Firebase Firestore remote sync
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          const fbPlans = await window.AkalbodhonFirebase.fetchAllPlans();
-          if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-            const planMap = new Map();
-            fbPlans
-              .filter(p => {
-                const t = (p.title || '').trim().toLowerCase();
-                return t !== 'x' && t !== 'bnfhm' && t !== 'test';
-              })
-              .forEach(p => planMap.set(p.id, p));
+  // Asynchronous remote sync for plans (runs non-blockingly in background)
+  async function syncRemotePlans() {
+    let hasNewPlans = false;
 
-            (customPlans || []).forEach(p => {
-              if (!planMap.has(p.id)) planMap.set(p.id, p);
-            });
-            customPlans = Array.from(planMap.values());
-            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          }
-        } catch (fbErr) {
-          console.warn('Firebase plans load notice:', fbErr);
+    // Firebase Firestore remote sync
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        const fbPlans = await window.AkalbodhonFirebase.fetchAllPlans();
+        if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+          const planMap = new Map();
+          fbPlans
+            .filter(p => {
+              const t = (p.title || '').trim().toLowerCase();
+              return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+            })
+            .forEach(p => planMap.set(p.id, p));
+
+          (customPlans || []).forEach(p => {
+            if (!planMap.has(p.id)) planMap.set(p.id, p);
+          });
+          customPlans = Array.from(planMap.values());
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          hasNewPlans = true;
         }
+      } catch (fbErr) {
+        console.warn('Firebase plans load notice:', fbErr);
       }
+    }
 
-      // Supabase remote sync
-      if (supabaseClient) {
-        try {
-          supabaseClient.from('puja_plans').delete().in('title', ['x', 'bnfhm', 'X', 'Bnfhm']).then(() => {});
-        } catch (e) {}
+    // Supabase remote sync
+    if (supabaseClient) {
+      try {
+        supabaseClient.from('puja_plans').delete().in('title', ['x', 'bnfhm', 'X', 'Bnfhm']).then(() => {});
+      } catch (e) {}
 
+      try {
         const { data, error } = await supabaseClient
           .from('puja_plans')
           .select('*, plan_members(*)')
           .order('created_at', { ascending: false });
 
         if (!error && data) {
-          // Merge remote custom plans
           const remotePlans = data
             .filter(p => {
               const t = (p.title || '').trim().toLowerCase();
@@ -4915,7 +4929,6 @@
               custom_notes: p.custom_notes
             }));
 
-          // Merge remote custom plans and existing plans cleanly
           const planMap = new Map();
           remotePlans.forEach(p => planMap.set(p.id, p));
           (customPlans || []).forEach(p => {
@@ -4923,11 +4936,24 @@
           });
           customPlans = Array.from(planMap.values());
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          hasNewPlans = true;
         }
+      } catch (supaErr) {
+        console.warn('Supabase plans load notice:', supaErr);
       }
-    } catch (err) {
-      console.warn('Plans load warning:', err);
     }
+
+    if (hasNewPlans && typeof renderFestivalPlans === 'function') {
+      renderFestivalPlans(activePlanFilter || 'all');
+    }
+  }
+
+  // Combined background remote data synchronizer
+  async function syncAllRemoteData() {
+    await Promise.allSettled([
+      syncRemotePlans(),
+      syncRemoteUserSession()
+    ]);
   }
 
   function renderFestivalPlans(dayFilter = 'all') {
@@ -6300,14 +6326,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       initAudioHub();
     } catch (e) { console.warn('initAudioHub error:', e); }
 
+    // Instant local cache loading (Synchronous, zero network delay)
     try {
       loadLocalUserSession();
-    } catch (e) { console.warn('loadLocalUserSession error:', e); }
+      loadLocalCustomPlans();
+    } catch (e) { console.warn('loadLocalData error:', e); }
 
-    try {
-      await loadCustomPlans();
-    } catch (e) { console.warn('loadCustomPlans error:', e); }
-
+    // Instant UI rendering from local data
     try {
       renderPandals('recommended');
       renderFoodAndShopping('all');
@@ -6892,6 +6917,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();
     initScrollReveal();
+
+    // Trigger background remote data synchronizer (Firestore + Supabase)
+    setTimeout(syncAllRemoteData, 50);
+    window.addEventListener('akalbodhon:firebase-ready', syncAllRemoteData);
   }
 
   // Execute immediately if DOM is ready, or wait for DOMContentLoaded
