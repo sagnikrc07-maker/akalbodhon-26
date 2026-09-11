@@ -4120,6 +4120,9 @@
     if (typeof window.checkFeedbackCooldown === 'function') {
       window.checkFeedbackCooldown();
     }
+    if (typeof window.updateFeedbackAuthBanner === 'function') {
+      window.updateFeedbackAuthBanner();
+    }
   }
 
   // Open Account / Profile Modal
@@ -6703,11 +6706,43 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     let feedbackCooldownInterval = null;
 
     function getFeedbackCooldownKey() {
-      const username = (currentUser && currentUser.username) ? currentUser.username : 'guest_devotee';
-      return `akalbodhon_feedback_cooldown_${username}`;
+      const id = (currentUser && (currentUser.identifier || currentUser.email || currentUser.phone || currentUser.id || currentUser.user_id))
+        ? (currentUser.identifier || currentUser.email || currentUser.phone || currentUser.id)
+        : 'guest_devotee';
+      return `akalbodhon_feedback_cooldown_${id.replace(/[^a-zA-Z0-9]/g, '_')}`;
     }
 
+    function updateFeedbackAuthBanner() {
+      const banner = document.getElementById('feedback-auth-banner');
+      if (!banner) return;
+      if (isUserLoggedIn() && currentUser) {
+        const contact = (currentUser.email) || (currentUser.phone) || (currentUser.identifier) || (currentUser.user_id) || '';
+        const name = currentUser.username || currentUser.name || 'Devotee';
+        const isEmail = typeof contact === 'string' && contact.includes('@');
+        banner.innerHTML = `
+          <div class="flex items-center gap-1.5 text-xs text-neutral-800 dark:text-neutral-200 py-1.5 px-3 rounded-xl bg-surface-container-high/60 dark:bg-[#1a160f]/70 border border-outline-variant/30 dark:border-amber-400/25 w-full truncate shadow-2xs">
+            <span class="material-symbols-outlined text-[16px] text-emerald-500 dark:text-emerald-400 shrink-0">verified_user</span>
+            <span class="truncate">Sending as: <strong class="text-primary dark:text-amber-300 font-bold">${escapeHtml(name)}</strong> <span class="text-on-surface-variant/75 dark:text-[#ded5c7]/70">(${escapeHtml(contact)})</span></span>
+          </div>
+        `;
+      } else {
+        banner.innerHTML = `
+          <div class="flex items-center justify-between gap-2 text-xs py-1.5 px-3 rounded-xl bg-amber-400/10 border border-amber-400/25 w-full text-neutral-800 dark:text-amber-100 shadow-2xs">
+            <span class="flex items-center gap-1.5 truncate">
+              <span class="material-symbols-outlined text-[15px] text-amber-500 shrink-0">lock</span>
+              <span class="truncate font-medium">Please sign in to send feedback</span>
+            </span>
+            <button type="button" onclick="openAuthModal('login')" class="px-3 py-1 rounded-lg bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-[11px] shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0">
+              Sign In
+            </button>
+          </div>
+        `;
+      }
+    }
+    window.updateFeedbackAuthBanner = updateFeedbackAuthBanner;
+
     function checkFeedbackCooldown() {
+      updateFeedbackAuthBanner();
       if (!feedbackFormArea || !feedbackThanks) return;
 
       const key = getFeedbackCooldownKey();
@@ -6796,6 +6831,36 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     if (feedbackSubmitBtn) {
       feedbackSubmitBtn.addEventListener('click', async () => {
+        // Enforce devotee authentication before sending feedback
+        if (!isUserLoggedIn() || !currentUser) {
+          const pendingText = feedbackTextarea ? feedbackTextarea.value.trim() : '';
+          showToast('Please sign in or create an account to send feedback.', 'lock');
+          promptAuthBeforeSave({
+            title: 'Sign In to Send Feedback',
+            message: `Please <strong>log in</strong> or <strong>create an account</strong> before sending suggestions or feedback so our team can follow up with you.`,
+            categoryName: 'Feedback',
+            defaultMode: 'login',
+            onAuthenticatedSave: () => {
+              const aboutModal = document.getElementById('about-page-modal') || document.getElementById('social-links-modal');
+              if (aboutModal) {
+                aboutModal.classList.remove('hidden');
+                aboutModal.classList.add('flex');
+                document.body.classList.add('modal-open');
+              }
+              if (feedbackTextarea && pendingText) {
+                feedbackTextarea.value = pendingText;
+              }
+              updateFeedbackAuthBanner();
+              if (pendingText) {
+                setTimeout(() => {
+                  feedbackSubmitBtn?.click();
+                }, 200);
+              }
+            }
+          });
+          return;
+        }
+
         const text = feedbackTextarea ? feedbackTextarea.value.trim() : '';
         if (!text) {
           showToast('Please write your feedback before submitting.', 'error');
@@ -6811,24 +6876,34 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         feedbackSubmitBtn.disabled = true;
         feedbackSubmitBtn.textContent = 'Sending…';
 
+        // Automatically fetch the user's logged-in email or phone number
+        const senderName = currentUser?.username || currentUser?.name || 'Devotee';
+        const userContact = (currentUser?.email) || 
+                            (currentUser?.phone) || 
+                            (currentUser?.identifier) || 
+                            (currentUser?.user_id) || 
+                            'Devotee Contact';
+        const isEmail = typeof userContact === 'string' && userContact.includes('@');
+        // Web3Forms requires a valid email format for its 'email' parameter
+        const senderEmail = isEmail 
+          ? userContact 
+          : (currentUser?.email || `devotee.${(currentUser?.id || currentUser?.user_id || 'user').replace(/[^a-zA-Z0-9]/g, '')}@akalbodhon.com`);
+
         // Send via Web3Forms so the feedback arrives as an email
         let emailDelivered = false;
         try {
-          const senderName = currentUser?.username || currentUser?.name || 'Devotee';
-          const emailInput = document.getElementById('feedback-email-input');
-          const senderEmail = (emailInput?.value || '').trim() || 
-            currentUser?.email || 
-            (currentUser?.identifier && currentUser.identifier.includes('@') ? currentUser.identifier : 'devotee.feedback.akalbodhon@gmail.com');
-
           // FormData payload is the official and most reliable format for Web3Forms
           const formData = new FormData();
           formData.append('access_key', '61c7f9d3-94bb-42e4-8353-a70f98af0434');
           formData.append('name', senderName);
           formData.append('email', senderEmail);
-          formData.append('message', text);
-          formData.append('subject', `Akalbodhon Devotee Feedback - ${senderName}`);
+          formData.append('phone_or_identifier', userContact);
+          formData.append('account_type', currentUser?.identifier_type || (isEmail ? 'email' : 'phone'));
+          formData.append('user_id', currentUser?.id || currentUser?.user_id || '');
+          formData.append('subject', `Akalbodhon Feedback from ${senderName} (${userContact})`);
           formData.append('from_name', `Akalbodhon Durga Puja App`);
           formData.append('botcheck', '');
+          formData.append('message', `[Akalbodhon Devotee Feedback]\nDevotee: ${senderName}\nContact (${isEmail ? 'Email' : 'Phone / ID'}): ${userContact}\nUser Account ID: ${currentUser?.id || currentUser?.user_id || 'N/A'}\n\nFeedback Message:\n${text}`);
 
           const response = await fetch('https://api.web3forms.com/submit', {
             method: 'POST',
@@ -6847,10 +6922,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
                 access_key: '61c7f9d3-94bb-42e4-8353-a70f98af0434',
                 name: senderName,
                 email: senderEmail,
-                message: text,
-                subject: `Akalbodhon Devotee Feedback - ${senderName}`,
+                phone_or_identifier: userContact,
+                account_type: currentUser?.identifier_type || (isEmail ? 'email' : 'phone'),
+                user_id: currentUser?.id || currentUser?.user_id || '',
+                subject: `Akalbodhon Feedback from ${senderName} (${userContact})`,
                 from_name: `Akalbodhon Durga Puja App`,
-                botcheck: ''
+                botcheck: '',
+                message: `[Akalbodhon Devotee Feedback]\nDevotee: ${senderName}\nContact (${isEmail ? 'Email' : 'Phone / ID'}): ${userContact}\nUser Account ID: ${currentUser?.id || currentUser?.user_id || 'N/A'}\n\nFeedback Message:\n${text}`
               })
             });
             const jsonResult = await jsonResp.json();
@@ -6875,7 +6953,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         // Store feedback locally as a backup record
         try {
           const feedbackList = JSON.parse(localStorage.getItem('akalbodhon_feedback') || '[]');
-          feedbackList.push({ text, ts: new Date().toISOString(), user: currentUser?.username || 'Anonymous' });
+          feedbackList.push({ text, ts: new Date().toISOString(), user: senderName, contact: userContact });
           localStorage.setItem('akalbodhon_feedback', JSON.stringify(feedbackList));
         } catch (e) {}
 
@@ -6886,10 +6964,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
         // Update UI with cooldown state
         checkFeedbackCooldown();
-        showToast('Feedback email delivered! Please check Spam/Junk folder if not in primary inbox.', 'check_circle');
+        showToast('Feedback email delivered! We appreciate your suggestions. 🙏', 'check_circle');
       });
-    }
-
     // Initial check on load
     checkFeedbackCooldown();
 

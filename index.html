@@ -1673,12 +1673,9 @@
             <span class="material-symbols-outlined text-[16px]">feedback</span> Suggestions & Feedback
           </h4>
           <div id="feedback-form-area" class="space-y-2">
-            <input 
-              type="email" 
-              id="feedback-email-input" 
-              placeholder="Your email (optional, for reply)" 
-              class="w-full px-3.5 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50"
-            />
+            <div id="feedback-auth-banner" class="min-h-[22px] flex items-center">
+              <!-- Dynamically populated with user's verified contact/login status -->
+            </div>
             <textarea 
               id="feedback-textarea"
               maxlength="300"
