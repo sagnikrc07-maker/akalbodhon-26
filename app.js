@@ -3961,9 +3961,8 @@
       creator_avatar: '🪷',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Respective Local Pandal ➔ Badamtala Ashar Sangha ➔ Ballygunge Cultural ➔ Ekdalia Evergreen ➔ Maddox Square',
+      route_summary: 'Badamtala Ashar Sangha ➔ Ballygunge Cultural ➔ Singhi Park ➔ Ekdalia Evergreen ➔ Maddox Square',
       pandals: [
-        'Respective Local Neighborhood Pandal (Morning Pushpanjali)',
         'Badamtala Ashar Sangha',
         'Ballygunge Cultural Association',
         'Singhi Park Sarbojanin',
@@ -3974,7 +3973,7 @@
         { name: '6 Ballygunge Place', dish: 'Traditional Ashtami Bhog & Kosha Mangsho' },
         { name: 'Paramount Sherbets', dish: 'Historic Malai Roll & Daab Sarbat' }
       ],
-      custom_notes: 'Attend your local pandal in the morning for sacred Pushpanjali with fresh flowers and Bel leaves. After taking an afternoon rest, head out for a classic South Kolkata pandal hopping trail to witness majestic art installations and dazzling evening illuminations.'
+      custom_notes: 'Offer sacred Pushpanjali with fresh flowers and Bel leaves at your local pandal. After taking an afternoon rest, head out for a classic South Kolkata pandal hopping trail to witness majestic art installations and dazzling evening illuminations.'
     },
     {
       id: 'plan-navami',
@@ -4004,15 +4003,10 @@
       creator_avatar: '🐚',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Respective Local Pandal ➔ Meeting Family, Relatives & Friends (Bijoya Greetings)',
-      pandals: [
-        'Respective Local Neighborhood Pandal (Devi Baran & Sindoor Khela for Women)'
-      ],
-      food_stops: [
-        { name: 'Balaram Mullick & Radharaman Mullick', dish: 'Warm Baked Rosogolla, Jolbhora Sandesh & Mishti Doi' },
-        { name: 'Girish Chandra Dey & Nakur Chandra Nandy', dish: 'Parijat, Kacha Golla & Chocolate Sandesh' }
-      ],
-      custom_notes: 'Attend your local pandal in the morning to perform sacred Devi Baran and joyous Sindoor Khela for women. Later in the day, visit family and friends to exchange traditional Shubho Bijoya embraces (Kola-Koli) and share festive Bengali sweets.'
+      route_summary: 'Visiting Family, Relatives & Friends (Bijoya Milita & Greetings)',
+      pandals: [],
+      food_stops: [],
+      custom_notes: 'Perform the sacred farewell rituals of Devi Baran and joyous Sindoor Khela for women at your local pandal before the evening immersion. Afterwards, visit beloved family, relatives, and friends to exchange traditional Shubho Bijoya embraces (Kola-Koli) and share festive sweet blessings.'
     }
   ];
 
@@ -5292,9 +5286,15 @@
 
             <!-- Compact Preview Badges -->
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-0.5 text-[9px] sm:text-xs text-on-surface-variant dark:text-[#ded5c7]">
-              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
-                🏛️ ${pandalCount} Pandals
-              </span>
+              ${pandalCount > 0 ? `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
+                  🏛️ ${pandalCount} Pandals
+                </span>
+              ` : `
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
+                  🪷 Rituals & Family Gathering
+                </span>
+              `}
               ${foodCount > 0 ? `
                 <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-surface-container-high dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/20 font-medium">
                   🍽️ ${foodCount} Food Stops
@@ -5604,9 +5604,17 @@
     }
 
     // Pandals list
+    const pandalsSec = document.getElementById('vp-pandals-section');
     const pandalsList = document.getElementById('vp-pandals-list');
     const pandalsCount = document.getElementById('vp-pandals-count');
     const pandals = plan.pandals || [];
+    if (pandalsSec) {
+      if (pandals.length > 0) {
+        pandalsSec.classList.remove('hidden');
+      } else {
+        pandalsSec.classList.add('hidden');
+      }
+    }
     if (pandalsCount) pandalsCount.textContent = `${pandals.length} Pandals`;
 
     if (pandalsList) {
