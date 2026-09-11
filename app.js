@@ -3875,7 +3875,7 @@
     { id: 'trishul', icon: '🔱', name: 'Maa Durga\'s Trishul', meaning: 'The supreme three-pronged trident symbolizing truth, wisdom, and triumph over Mahishasura.' },
     { id: 'japamala', icon: '📿', name: 'Japa Mala (Rudraksha)', meaning: 'The sacred 108 rosary prayer beads used for devout chanting of Sri Sri Chandi Path and Devi Suktam.' },
     { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma (Blue Lotus)', meaning: 'The celestial blue lotuses brought from Devidaha by Hanuman for Lord Rama\'s historic autumn Akalbodhon.' },
-    { id: 'mukut', icon: '👑', name: 'Daaker Saaj Mukut', meaning: 'The magnificent silver filigree crown worn by Goddess Durga in traditional Kolkata Bonedi Bari idols.' },
+    { id: 'dhunuchi_naach', icon: '💃', name: 'Dhunuchi Naach', meaning: 'The ecstatic devotional Aarti dance performed to the thunderous rhythmic tempo of dhak and gong.' },
     { id: 'mayur', icon: '🦚', name: 'Sacred Mayur (Peacock)', meaning: 'The glorious vahana mount of Lord Kartikeya, symbolizing divine majesty, vigilance, and regal beauty.' },
     { id: 'kalash', icon: '🏺', name: 'Mangal Ghat (Kalash)', meaning: 'The consecrated sacred water vessel topped with mango leaves and coconut, invoking the Devi\'s presence.' },
     { id: 'dhunuchi', icon: '🔥', name: 'Dhunuchi (Aarti Flame)', meaning: 'The traditional earthen incense chalice filled with burning coconut husk and camphor for the Sandhi Aarti dance.' },
@@ -3892,8 +3892,8 @@
       title: 'Mahalaya Artisan Trail: Kumartuli Deity Eye-Drawing (Chokkhu Daan)',
       day_tag: 'Mahalaya',
       day_key: 'mahalaya',
-      date_str: '10 October 2026 (Dawn Chokkhu Daan)',
-      creator_name: 'Akalbodhon Curators',
+      date_str: '10 October 2026',
+      creator_name: 'the.transparent.coder',
       creator_avatar: '🪔',
       creator_id: 'akalbodhon-official',
       is_template: true,
@@ -3911,7 +3911,7 @@
       day_tag: 'Maha Shasthi',
       day_key: 'shasthi',
       date_str: '17 October 2026',
-      creator_name: 'Akalbodhon Curators',
+      creator_name: 'the.transparent.coder',
       creator_avatar: '🌺',
       creator_id: 'akalbodhon-official',
       is_template: true,
@@ -3928,7 +3928,7 @@
       day_tag: 'Maha Saptami',
       day_key: 'saptami',
       date_str: '18 October 2026',
-      creator_name: 'Akalbodhon Curators',
+      creator_name: 'the.transparent.coder',
       creator_avatar: '🔱',
       creator_id: 'akalbodhon-official',
       is_template: true,
@@ -3946,7 +3946,7 @@
       day_tag: 'Maha Ashtami',
       day_key: 'ashtami',
       date_str: '19 October 2026',
-      creator_name: 'Akalbodhon Curators',
+      creator_name: 'the.transparent.coder',
       creator_avatar: '🪷',
       creator_id: 'akalbodhon-official',
       is_template: true,
@@ -3964,7 +3964,7 @@
       day_tag: 'Maha Navami',
       day_key: 'navami',
       date_str: '20 October 2026',
-      creator_name: 'Akalbodhon Curators',
+      creator_name: 'the.transparent.coder',
       creator_avatar: '💃',
       creator_id: 'akalbodhon-official',
       is_template: true,
@@ -3982,8 +3982,8 @@
       day_tag: 'Bijoya Dashami',
       day_key: 'dashami',
       date_str: '21 October 2026',
-      creator_name: 'Akalbodhon Curators',
-      creator_avatar: '👑',
+      creator_name: 'the.transparent.coder',
+      creator_avatar: '🐚',
       creator_id: 'akalbodhon-official',
       is_template: true,
       route_summary: 'Respective Nearest Locality Pandal -> Local Community Ghat / Riverfront for Bisarjan',
@@ -5172,9 +5172,8 @@
                 </div>
               ` : ''}
 
-              <!-- Creator: Highlighted Creator Bar with Creator Name Spotlight -->
+              <!-- Creator: Highlighted Creator Bar with Creator Name Spotlight (Single Festive Emoji) -->
               <div class="creator-bar inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border max-w-full shadow-sm" title="Plan Creator: ${escapeHtml(plan.creator_name || 'Devotee')}">
-                <span class="text-xs sm:text-sm shrink-0">👑</span>
                 <span class="text-xs shrink-0">${plan.creator_avatar || '🌺'}</span>
                 <span class="text-[10px] sm:text-xs text-neutral-900 dark:text-amber-100 font-semibold truncate flex items-center gap-1">
                   <span>Created by:</span>
@@ -5188,6 +5187,11 @@
               <h3 class="font-display text-xs sm:text-lg font-bold text-on-surface dark:text-white group-hover:text-primary dark:group-hover:text-amber-300 transition-colors line-clamp-2">
                 ${plan.title}
               </h3>
+              ${(plan.custom_notes || plan.description) ? `
+                <p class="text-[11px] text-on-surface-variant/90 dark:text-[#ded5c7]/80 line-clamp-2 italic pt-1">
+                  "${escapeHtml(plan.custom_notes || plan.description)}"
+                </p>
+              ` : ''}
             </div>
 
             <!-- Compact Preview Badges -->
@@ -5320,6 +5324,48 @@
   }
   window.joinPlanAsMember = joinPlanAsMember;
 
+  // Helper: Creator-Controlled Custom Plan Description Updater (Stored in DB and Synced with Plan)
+  window.updatePlanDescription = async function (planId, newDescription) {
+    if (!planId) return false;
+    const cleanDesc = (newDescription || '').trim();
+
+    // 1. Update in local memory & local storage
+    const localPlan = customPlans.find(p => p.id === planId);
+    if (localPlan) {
+      localPlan.custom_notes = cleanDesc;
+      localPlan.description = cleanDesc;
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+    }
+
+    // 2. Save directly to Firebase Firestore ('plans' collection and devotee account)
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        await window.AkalbodhonFirebase.savePlan({
+          id: planId,
+          custom_notes: cleanDesc,
+          description: cleanDesc,
+          updated_at: new Date().toISOString()
+        });
+      } catch (fbErr) {
+        console.warn('Firebase plan description sync notice:', fbErr);
+      }
+    }
+
+    // 3. Save to Supabase (puja_plans table)
+    if (supabaseClient) {
+      try {
+        await supabaseClient.from('puja_plans').update({
+          custom_notes: cleanDesc,
+          updated_at: new Date().toISOString()
+        }).eq('id', planId);
+      } catch (sbErr) {
+        console.warn('Supabase plan description sync notice:', sbErr);
+      }
+    }
+
+    return true;
+  };
+
   // ========================================================
   // VIEW FULL PUJA PLAN OVERLAY MODAL ENGINE
   // ========================================================
@@ -5357,15 +5403,96 @@
     const titleEl = document.getElementById('vp-title');
     if (titleEl) titleEl.textContent = plan.title;
 
-    // Custom notes
+    // Determine if viewer is the plan creator (only creator can edit description anytime)
+    const isPlanCreator = !plan.is_template && currentUser && (
+      plan.creator_id === currentUser.id ||
+      plan.creator_id === currentUser.user_id ||
+      plan.creator_id === currentUser.uid ||
+      (currentUser.username && plan.creator_name && currentUser.username.toLowerCase() === plan.creator_name.toLowerCase())
+    );
+
+    // Custom Description & Creator Edit Logic
+    const descSection = document.getElementById('vp-desc-section');
+    const descView = document.getElementById('vp-desc-view');
     const notesEl = document.getElementById('vp-notes');
-    if (notesEl) {
-      if (plan.custom_notes) {
-        notesEl.textContent = `"${plan.custom_notes}"`;
-        notesEl.classList.remove('hidden');
-      } else {
-        notesEl.classList.add('hidden');
+    const editDescBtn = document.getElementById('vp-edit-desc-btn');
+    const editDescBtnText = document.getElementById('vp-edit-desc-btn-text');
+    const editForm = document.getElementById('vp-desc-edit-form');
+    const descInput = document.getElementById('vp-desc-input');
+    const cancelDescBtn = document.getElementById('vp-desc-cancel-btn');
+    const saveDescBtn = document.getElementById('vp-desc-save-btn');
+
+    function renderDescriptionDisplay() {
+      const currentDesc = (plan.custom_notes || plan.description || '').trim();
+      if (editForm) editForm.classList.add('hidden');
+      if (descView) descView.classList.remove('hidden');
+
+      if (notesEl) {
+        if (currentDesc) {
+          notesEl.textContent = `"${currentDesc}"`;
+          notesEl.classList.remove('hidden');
+        } else {
+          notesEl.textContent = '';
+          notesEl.classList.add('hidden');
+        }
       }
+
+      if (editDescBtn) {
+        if (isPlanCreator) {
+          editDescBtn.classList.remove('hidden');
+          if (editDescBtnText) {
+            editDescBtnText.textContent = currentDesc ? 'Edit Description' : 'Add Custom Description';
+          }
+        } else {
+          editDescBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    renderDescriptionDisplay();
+
+    if (editDescBtn && isPlanCreator) {
+      editDescBtn.onclick = () => {
+        if (descView) descView.classList.add('hidden');
+        if (editForm) {
+          editForm.classList.remove('hidden');
+          if (descInput) {
+            descInput.value = (plan.custom_notes || plan.description || '').trim();
+            descInput.focus();
+          }
+        }
+      };
+    }
+
+    if (cancelDescBtn) {
+      cancelDescBtn.onclick = () => {
+        renderDescriptionDisplay();
+      };
+    }
+
+    if (saveDescBtn && isPlanCreator) {
+      saveDescBtn.onclick = async () => {
+        const newDesc = descInput ? descInput.value.trim() : '';
+        saveDescBtn.disabled = true;
+        saveDescBtn.innerHTML = `<span class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span> Saving...`;
+
+        try {
+          await window.updatePlanDescription(plan.id, newDesc);
+          plan.custom_notes = newDesc;
+          plan.description = newDesc;
+          renderDescriptionDisplay();
+          if (typeof renderFestivalPlans === 'function') {
+            renderFestivalPlans(activePlanFilter);
+          }
+          showToast('Custom description updated successfully!', 'success');
+        } catch (err) {
+          console.warn('Failed to update plan description:', err);
+          showToast('Failed to save description. Please try again.', 'error');
+        } finally {
+          saveDescBtn.disabled = false;
+          saveDescBtn.innerHTML = `<span class="material-symbols-outlined text-[14px]">check</span> Save Description`;
+        }
+      };
     }
 
     // Route summary
@@ -5499,26 +5626,42 @@
 
     renderPlanMembersList(plan.members || []);
 
-    // Fetch freshest plan from Firebase Firestore so creator & all receivers see everyone who joined
+    // Fetch freshest plan from Firebase Firestore so creator & all receivers see everyone who joined and description changes
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
       window.AkalbodhonFirebase.fetchPlanById(plan.id).then(fresh => {
-        if (fresh && Array.isArray(fresh.members)) {
-          plan.members = fresh.members;
-          renderPlanMembersList(fresh.members);
+        if (fresh) {
+          if (Array.isArray(fresh.members)) {
+            plan.members = fresh.members;
+            renderPlanMembersList(fresh.members);
+          }
+          if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
+            const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
+            plan.custom_notes = freshDesc;
+            plan.description = freshDesc;
+            renderDescriptionDisplay();
+          }
         }
       }).catch(() => {});
     }
 
-    // Set up real-time listener so changes from any receiver appear immediately without refresh
+    // Set up real-time listener so changes from any receiver or creator appear immediately without refresh
     if (activePlanListenerUnsub) {
       try { activePlanListenerUnsub(); } catch (e) {}
       activePlanListenerUnsub = null;
     }
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.listenToPlan === 'function') {
       activePlanListenerUnsub = window.AkalbodhonFirebase.listenToPlan(plan.id, (fresh) => {
-        if (fresh && Array.isArray(fresh.members)) {
-          plan.members = fresh.members;
-          renderPlanMembersList(fresh.members);
+        if (fresh) {
+          if (Array.isArray(fresh.members)) {
+            plan.members = fresh.members;
+            renderPlanMembersList(fresh.members);
+          }
+          if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
+            const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
+            plan.custom_notes = freshDesc;
+            plan.description = freshDesc;
+            renderDescriptionDisplay();
+          }
         }
       });
     }
@@ -5701,15 +5844,23 @@
         const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
         const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
 
-        const creatorDisplayName = (currentUser && currentUser.username) ? currentUser.username : (currentUser?.user_id || 'Devotee');
+        // Keep the devotee name they logged in with
+        const creatorDisplayName = (currentUser && currentUser.username) ? currentUser.username : (currentUser?.name || currentUser?.user_id || 'Devotee');
         const creatorUserId = (currentUser && currentUser.id) ? currentUser.id : (currentUser?.user_id || 'user_devotee');
-        const creatorAvatarIcon = (currentUser && currentUser.avatar) ? currentUser.avatar : '🌺';
+
+        // Pick a random festive icon out of the 14 authentic Puja avatars for every new plan created
+        const randomFestiveIcon = (Array.isArray(PUJA_AVATARS) && PUJA_AVATARS.length > 0)
+          ? PUJA_AVATARS[Math.floor(Math.random() * PUJA_AVATARS.length)].icon
+          : '🌺';
+
+        // Creator custom description for the Puja plan
+        const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
 
         const newPlan = {
           id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
           creator_id: creatorUserId,
           creator_name: creatorDisplayName,
-          creator_avatar: creatorAvatarIcon,
+          creator_avatar: randomFestiveIcon,
           title: title,
           day_tag: day,
           day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
@@ -5718,11 +5869,13 @@
           pandals: checkedPandals,
           food_stops: foodStopsList,
           rituals: ritualsList,
+          custom_notes: customDescription,
+          description: customDescription,
           members: [
             {
               user_id: creatorUserId,
               user_name: creatorDisplayName,
-              user_avatar: creatorAvatarIcon,
+              user_avatar: randomFestiveIcon,
               role: 'creator'
             }
           ],
@@ -5754,7 +5907,8 @@
               route_summary: newPlan.route_summary,
               pandals: JSON.stringify(newPlan.pandals),
               food_stops: JSON.stringify(newPlan.food_stops),
-              rituals: JSON.stringify(newPlan.rituals)
+              rituals: JSON.stringify(newPlan.rituals),
+              custom_notes: newPlan.custom_notes || ''
             }]);
 
             // Cloud backup in Supabase Storage (puja-plans bucket)
@@ -5799,6 +5953,8 @@
         form.reset();
         const titleInput = document.getElementById('plan-title-input');
         if (titleInput) titleInput.value = 'Plan';
+        const descInputEl = document.getElementById('plan-description-input');
+        if (descInputEl) descInputEl.value = '';
 
         renderFestivalPlans(activePlanFilter);
         showToast(`🎉 "${title}" created successfully! You can now share it with friends.`, 'celebration');
