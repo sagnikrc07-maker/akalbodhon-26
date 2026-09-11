@@ -4213,9 +4213,6 @@
     if (typeof window.checkFeedbackCooldown === 'function') {
       window.checkFeedbackCooldown();
     }
-    if (typeof window.updateFeedbackAuthBanner === 'function') {
-      window.updateFeedbackAuthBanner();
-    }
   }
 
   // Open Account / Profile Modal
@@ -7194,37 +7191,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       return `akalbodhon_feedback_cooldown_${id.replace(/[^a-z0-9]/g, '_')}`;
     }
 
-    function updateFeedbackAuthBanner() {
-      const banner = document.getElementById('feedback-auth-banner');
-      if (!banner) return;
-      if (isUserLoggedIn() && currentUser) {
-        const contact = (currentUser.email) || (currentUser.phone) || (currentUser.identifier) || (currentUser.user_id) || '';
-        const name = currentUser.username || currentUser.name || 'Devotee';
-        const isEmail = typeof contact === 'string' && contact.includes('@');
-        banner.innerHTML = `
-          <div class="flex items-center gap-1.5 text-xs text-neutral-800 dark:text-neutral-200 py-1.5 px-3 rounded-xl bg-surface-container-high/60 dark:bg-[#1a160f]/70 border border-outline-variant/30 dark:border-amber-400/25 w-full truncate shadow-2xs">
-            <span class="material-symbols-outlined text-[16px] text-emerald-500 dark:text-emerald-400 shrink-0">verified_user</span>
-            <span class="truncate">Sending as: <strong class="text-primary dark:text-amber-300 font-bold">${escapeHtml(name)}</strong> <span class="text-on-surface-variant/75 dark:text-[#ded5c7]/70">(${escapeHtml(contact)})</span></span>
-          </div>
-        `;
-      } else {
-        banner.innerHTML = `
-          <div class="flex items-center justify-between gap-2 text-xs py-1.5 px-3 rounded-xl bg-amber-400/10 border border-amber-400/25 w-full text-neutral-800 dark:text-amber-100 shadow-2xs">
-            <span class="flex items-center gap-1.5 truncate">
-              <span class="material-symbols-outlined text-[15px] text-amber-500 shrink-0">lock</span>
-              <span class="truncate font-medium">Please sign in to send feedback</span>
-            </span>
-            <button type="button" onclick="openAuthModal('login')" class="px-3 py-1 rounded-lg bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-[11px] shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0">
-              Sign In
-            </button>
-          </div>
-        `;
-      }
-    }
-    window.updateFeedbackAuthBanner = updateFeedbackAuthBanner;
-
     function checkFeedbackCooldown() {
-      updateFeedbackAuthBanner();
       if (!feedbackFormArea || !feedbackThanks) return;
 
       const key = getFeedbackCooldownKey(currentUser);
@@ -7357,7 +7324,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               if (feedbackTextarea && pendingText) {
                 feedbackTextarea.value = pendingText;
               }
-              updateFeedbackAuthBanner();
               if (pendingText) {
                 setTimeout(() => {
                   feedbackSubmitBtn?.click();
