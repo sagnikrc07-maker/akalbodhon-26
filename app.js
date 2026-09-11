@@ -4236,7 +4236,7 @@
     if (currentUser) {
       if (avatarPreview) {
         if (currentUser.custom_avatar_url) {
-          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-full" />`;
+          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-full" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
         } else {
           avatarPreview.textContent = currentUser.avatar || '🪔';
         }
@@ -4246,7 +4246,7 @@
       }
       if (heroCta) {
         const iconHtml = currentUser.custom_avatar_url 
-          ? `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" />`
+          ? `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" onerror="this.outerHTML='<span class=\\'text-base\\'>${currentUser.avatar || '🪔'}</span>'" />`
           : `<span class="text-base">${currentUser.avatar || '🪔'}</span>`;
         heroCta.innerHTML = `${iconHtml} <span class="font-bold">${currentUser.username}</span>`;
       }
@@ -4403,7 +4403,7 @@
     const removeBtn = document.getElementById('remove-custom-avatar-btn');
     if (!el || !currentUser) return;
     if (currentUser.custom_avatar_url) {
-      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" />`;
+      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
       removeBtn?.classList.remove('hidden');
     } else {
       el.textContent = currentUser.avatar || '🪔';
@@ -7641,6 +7641,107 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         window.openViewPlanModal(planId);
       }
     };
+
+    // Universal Modal Body Scroll Lock Observer & Global Escape Key Handler
+    const modalIds = [
+      'view-plan-modal', 'create-plan-modal', 'share-plan-modal',
+      'pandal-detail-modal', 'auth-modal', 'save-auth-prompt-modal',
+      'profile-modal', 'playlist-detail-modal', 'about-page-modal',
+      'devotee-feedback-modal', 'avatar-detail-modal', 'gate-welcome-modal'
+    ];
+    
+    function checkAndSyncModalScrollLock() {
+      let isAnyModalOpen = false;
+      for (const id of modalIds) {
+        const el = document.getElementById(id);
+        if (el && !el.classList.contains('hidden')) {
+          isAnyModalOpen = true;
+          break;
+        }
+      }
+      if (isAnyModalOpen) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    // Attach MutationObservers to all modal containers
+    if ('MutationObserver' in window) {
+      const modalObserver = new MutationObserver(checkAndSyncModalScrollLock);
+      modalIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          modalObserver.observe(el, { attributes: true, attributeFilter: ['class', 'style'] });
+        }
+      });
+    }
+
+    // Universal Global Escape Key Handler
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const feedbackModal = document.getElementById('devotee-feedback-modal');
+        if (feedbackModal && !feedbackModal.classList.contains('hidden')) {
+          document.getElementById('close-feedback-modal-btn')?.click();
+          return;
+        }
+        const authModal = document.getElementById('auth-modal');
+        if (authModal && !authModal.classList.contains('hidden')) {
+          if (typeof closeAuthModal === 'function') closeAuthModal();
+          return;
+        }
+        const saveAuthPrompt = document.getElementById('save-auth-prompt-modal');
+        if (saveAuthPrompt && !saveAuthPrompt.classList.contains('hidden')) {
+          if (typeof closeSaveAuthPromptModal === 'function') closeSaveAuthPromptModal();
+          return;
+        }
+        const shareModal = document.getElementById('share-plan-modal');
+        if (shareModal && !shareModal.classList.contains('hidden')) {
+          if (typeof window.closeSharePlanModal === 'function') window.closeSharePlanModal();
+          return;
+        }
+        const createPlanModal = document.getElementById('create-plan-modal');
+        if (createPlanModal && !createPlanModal.classList.contains('hidden')) {
+          document.getElementById('close-create-plan-modal-btn')?.click();
+          return;
+        }
+        const viewPlanModal = document.getElementById('view-plan-modal');
+        if (viewPlanModal && !viewPlanModal.classList.contains('hidden')) {
+          if (typeof window.closeViewPlanModal === 'function') window.closeViewPlanModal();
+          return;
+        }
+        const pandalModal = document.getElementById('pandal-detail-modal');
+        if (pandalModal && !pandalModal.classList.contains('hidden')) {
+          document.getElementById('close-pandal-modal-btn')?.click();
+          return;
+        }
+        const profileModal = document.getElementById('profile-modal');
+        if (profileModal && !profileModal.classList.contains('hidden')) {
+          if (typeof closeProfileModal === 'function') closeProfileModal();
+          return;
+        }
+        const playlistModal = document.getElementById('playlist-detail-modal');
+        if (playlistModal && !playlistModal.classList.contains('hidden')) {
+          if (typeof window.closePlaylistDetailModal === 'function') window.closePlaylistDetailModal();
+          return;
+        }
+        const avatarModal = document.getElementById('avatar-detail-modal');
+        if (avatarModal && !avatarModal.classList.contains('hidden')) {
+          document.getElementById('close-avatar-modal-btn')?.click();
+          return;
+        }
+        const aboutModal = document.getElementById('about-page-modal');
+        if (aboutModal && !aboutModal.classList.contains('hidden')) {
+          document.getElementById('close-about-modal-btn')?.click();
+          return;
+        }
+        const gateModal = document.getElementById('gate-welcome-modal');
+        if (gateModal && !gateModal.classList.contains('hidden')) {
+          document.getElementById('close-gate-modal-btn')?.click();
+          return;
+        }
+      }
+    });
 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();

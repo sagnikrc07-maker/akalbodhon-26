@@ -134,7 +134,11 @@
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(222, 211, 196, 0.6);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s ease, 
+              border-color 0.3s ease, 
+              background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   /* GPU paint containment — each card lives in its own compositor layer */
   contain: layout style paint;
   transform: translateZ(0);
@@ -161,12 +165,24 @@
 /* ======================================================== */
 /* CLEAN & SMOOTH THEME TRANSITIONS                         */
 /* ======================================================== */
-html,
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, select, input, textarea {
+  touch-action: manipulation;
+}
+
 body,
 header,
 nav,
 .app-section,
-.glass-panel,
 footer {
   transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
