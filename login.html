@@ -57,6 +57,35 @@
 </head>
 <body class="bg-surface dark:bg-[#12100a] text-on-surface dark:text-[#f7f2ea] font-body min-h-screen antialiased selection:bg-primary selection:text-white kash-phool-bg flex flex-col justify-between transition-colors duration-300">
 
+  <!-- Top Horizontal Network & Cloud Sync Progress Bar -->
+  <div id="top-sync-progress-bar" class="hidden-progress" role="progressbar" aria-label="Loading and syncing content"></div>
+
+  <!-- Global High-Priority Kinetic Loading Interface Modal -->
+  <div id="global-loading-overlay" class="hidden-loader" role="dialog" aria-modal="true" aria-live="polite">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col items-center text-center max-w-xs sm:max-w-sm mx-4 space-y-4 transform transition-all duration-300 scale-100 bg-[#1e1912]/95 backdrop-blur-md text-white">
+      <!-- Concentric Sacred Glowing Rings & Pulse -->
+      <div class="diya-spinner-container">
+        <div class="diya-spin-ring"></div>
+        <div class="diya-spin-ring-inner"></div>
+        <span class="diya-pulsing-icon" id="loading-spinner-emoji">🪔</span>
+      </div>
+      <!-- Text Status -->
+      <div class="space-y-1.5 w-full">
+        <h3 id="loading-overlay-title" class="font-display text-base sm:text-lg font-bold text-amber-300 tracking-wide">
+          Connecting to Sanctuary...
+        </h3>
+        <p id="loading-overlay-desc" class="text-xs text-[#ded5c7] leading-relaxed">
+          Please wait a moment while we authenticate your devotee account.
+        </p>
+      </div>
+      <!-- Subtle Pulsing Pill -->
+      <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-[11px] text-amber-200">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <span id="loading-overlay-status" class="font-medium">Securing Cloud Session...</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Header -->
   <header class="w-full h-16 glass-nav flex items-center justify-between px-4 md:px-12 fixed top-0 left-0 z-50">
     <a href="index.html#home" class="flex items-center gap-3 group">
@@ -357,7 +386,45 @@
       }
     }
 
+    // Kinetic Loading & Top Progress Bar Helpers
+    let activeProgressBarCount = 0;
+    function showTopProgressBar() {
+      activeProgressBarCount++;
+      const bar = document.getElementById('top-sync-progress-bar');
+      if (bar) bar.classList.remove('hidden-progress');
+    }
+    function hideTopProgressBar() {
+      activeProgressBarCount = Math.max(0, activeProgressBarCount - 1);
+      if (activeProgressBarCount === 0) {
+        const bar = document.getElementById('top-sync-progress-bar');
+        if (bar) bar.classList.add('hidden-progress');
+      }
+    }
+    function showGlobalLoader(title, desc, emoji = '🪔', status = 'Securing Cloud Session...') {
+      const overlay = document.getElementById('global-loading-overlay');
+      if (!overlay) return;
+      const titleEl = document.getElementById('loading-overlay-title');
+      const descEl = document.getElementById('loading-overlay-desc');
+      const emojiEl = document.getElementById('loading-spinner-emoji');
+      const statusEl = document.getElementById('loading-overlay-status');
 
+      if (titleEl && title) titleEl.textContent = title;
+      if (descEl && desc) descEl.textContent = desc;
+      if (emojiEl && emoji) emojiEl.textContent = emoji;
+      if (statusEl && status) statusEl.textContent = status;
+
+      overlay.classList.remove('hidden-loader');
+      showTopProgressBar();
+    }
+    function hideGlobalLoader() {
+      const overlay = document.getElementById('global-loading-overlay');
+      if (overlay) {
+        overlay.classList.add('hidden-loader');
+      }
+      hideTopProgressBar();
+    }
+    window.showGlobalLoader = showGlobalLoader;
+    window.hideGlobalLoader = hideGlobalLoader;
 
     // Google Auth Button
     const googleAuthBtn = document.getElementById('google-auth-btn');
@@ -370,13 +437,21 @@
 
       clearAlerts();
       if (googleAuthBtn) googleAuthBtn.disabled = true;
-      if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Initiating Google Sign-In...';
+      if (googleAuthBtnLabel) googleAuthBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Initiating Google Sign-In...';
 
       function resetGoogleBtn() {
         isGoogleAuthInProgress = false;
+        hideGlobalLoader();
         if (googleAuthBtn) googleAuthBtn.disabled = false;
         if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
       }
+
+      showGlobalLoader(
+        'Connecting to Google...',
+        'Please authenticate your devotee Google account in the popup window...',
+        '🌺',
+        'Authenticating with Google...'
+      );
 
       // 1. Wait for Firebase SDK if needed
       if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
@@ -398,6 +473,7 @@
       try {
         const profile = await window.AkalbodhonFirebase.signInWithGoogle();
         if (profile) {
+          hideGlobalLoader();
           showLoggedInState(profile);
           showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
           setTimeout(() => {
@@ -414,6 +490,13 @@
         }
 
         if (fbErr.code === 'auth/popup-blocked') {
+          showGlobalLoader(
+            'Redirecting to Google...',
+            'Popup was blocked by your browser. Redirecting directly to Google Sign-In portal...',
+            '🌺',
+            'Redirecting...'
+          );
+
           showAlert(
             `<div class="space-y-1.5">
               <p class="font-medium">Popup was blocked by your browser. Redirecting directly to Google Sign-In...</p>
@@ -474,47 +557,52 @@
 
     // Check Existing Session
     async function checkCurrentSession() {
-      if (supabaseClient) {
-        try {
-          const { data: { session } } = await supabaseClient.auth.getSession();
-          if (session && session.user) {
-            const u = session.user;
-            const googleUser = {
-              id: u.id,
-              user_id: u.id,
-              identifier: u.email || 'devotee@gmail.com',
-              identifier_type: 'google',
-              username: u.user_metadata?.full_name || u.user_metadata?.name || (u.email ? u.email.split('@')[0] : 'Devotee'),
-              avatar: '🌺',
-              custom_avatar_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
-              created_at: u.created_at || new Date().toISOString()
-            };
-            
-            // Sync with profile table
-            const { data: prof } = await supabaseClient.from('profiles').select('*').eq('id', u.id).single();
-            if (prof) {
-              if (prof.avatar) googleUser.avatar = prof.avatar;
-              if (prof.username) googleUser.username = prof.username;
-              if (prof.saved_items) localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(prof.saved_items));
-              if (prof.custom_plans) localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(prof.custom_plans));
+      showTopProgressBar();
+      try {
+        if (supabaseClient) {
+          try {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+              const u = session.user;
+              const googleUser = {
+                id: u.id,
+                user_id: u.id,
+                identifier: u.email || 'devotee@gmail.com',
+                identifier_type: 'google',
+                username: u.user_metadata?.full_name || u.user_metadata?.name || (u.email ? u.email.split('@')[0] : 'Devotee'),
+                avatar: '🌺',
+                custom_avatar_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
+                created_at: u.created_at || new Date().toISOString()
+              };
+              
+              // Sync with profile table
+              const { data: prof } = await supabaseClient.from('profiles').select('*').eq('id', u.id).single();
+              if (prof) {
+                if (prof.avatar) googleUser.avatar = prof.avatar;
+                if (prof.username) googleUser.username = prof.username;
+                if (prof.saved_items) localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(prof.saved_items));
+                if (prof.custom_plans) localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(prof.custom_plans));
+              }
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(googleUser));
+              showLoggedInState(googleUser);
+              return;
             }
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(googleUser));
-            showLoggedInState(googleUser);
-            return;
+          } catch (e) {
+            console.warn('Session check error:', e);
           }
-        } catch (e) {
-          console.warn('Session check error:', e);
         }
-      }
 
-      const local = localStorage.getItem('akalbodhon_user_profile');
-      if (local) {
-        try {
-          const user = JSON.parse(local);
-          if (user && (user.id || user.user_id)) {
-            showLoggedInState(user);
-          }
-        } catch (e) {}
+        const local = localStorage.getItem('akalbodhon_user_profile');
+        if (local) {
+          try {
+            const user = JSON.parse(local);
+            if (user && (user.id || user.user_id)) {
+              showLoggedInState(user);
+            }
+          } catch (e) {}
+        }
+      } finally {
+        hideTopProgressBar();
       }
     }
 
@@ -565,7 +653,14 @@
 
       const originalLabel = submitLabel.textContent;
       submitBtn.disabled = true;
-      submitLabel.textContent = currentMode === 'signup' ? 'Creating Account...' : 'Signing In...';
+      submitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${currentMode === 'signup' ? 'Creating Account...' : 'Signing In...'}`;
+
+      showGlobalLoader(
+        currentMode === 'signup' ? 'Creating Devotee Account...' : 'Signing In to Sanctuary...',
+        currentMode === 'signup' ? 'Securing devotee credentials & establishing cloud itinerary...' : 'Verifying credentials & syncing personal festival plans...',
+        '🪔',
+        currentMode === 'signup' ? 'Registering Account...' : 'Authenticating with Cloud...'
+      );
 
       try {
         const passwordHash = await hashPassword(rawPassword);
@@ -768,6 +863,7 @@
         console.error('Auth error:', err);
         showAlert('An unexpected error occurred. Please try again.');
       } finally {
+        hideGlobalLoader();
         submitBtn.disabled = false;
         submitLabel.textContent = originalLabel;
       }

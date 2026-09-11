@@ -102,6 +102,35 @@
 </head>
 <body class="bg-surface dark:bg-[#12100a] text-on-surface dark:text-[#f7f2ea] font-body min-h-screen antialiased selection:bg-primary selection:text-white kash-phool-bg pb-28 md:pb-12 transition-colors duration-300">
 
+  <!-- Top Horizontal Network & Cloud Sync Progress Bar -->
+  <div id="top-sync-progress-bar" class="hidden-progress" role="progressbar" aria-label="Loading and syncing content"></div>
+
+  <!-- Global High-Priority Kinetic Loading Interface Modal -->
+  <div id="global-loading-overlay" class="hidden-loader" role="dialog" aria-modal="true" aria-live="polite">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col items-center text-center max-w-xs sm:max-w-sm mx-4 space-y-4 transform transition-all duration-300 scale-100 bg-[#1e1912]/95 backdrop-blur-md text-white">
+      <!-- Concentric Sacred Glowing Rings & Pulse -->
+      <div class="diya-spinner-container">
+        <div class="diya-spin-ring"></div>
+        <div class="diya-spin-ring-inner"></div>
+        <span class="diya-pulsing-icon" id="loading-spinner-emoji">🪔</span>
+      </div>
+      <!-- Text Status -->
+      <div class="space-y-1.5 w-full">
+        <h3 id="loading-overlay-title" class="font-display text-base sm:text-lg font-bold text-amber-300 tracking-wide">
+          Connecting to Sanctuary...
+        </h3>
+        <p id="loading-overlay-desc" class="text-xs text-[#ded5c7] leading-relaxed">
+          Please wait a moment while we synchronize your festival experience.
+        </p>
+      </div>
+      <!-- Subtle Pulsing Pill -->
+      <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-[11px] text-amber-200">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <span id="loading-overlay-status" class="font-medium">Connecting to Cloud Database...</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== TOP NAVIGATION BAR ==================== -->
   <header class="fixed top-0 left-0 w-full z-50 h-16 glass-nav flex items-center justify-between px-4 md:px-12 transition-all">
     <div class="flex items-center gap-3">

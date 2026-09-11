@@ -627,3 +627,171 @@ body.modal-open {
   border-color: #f59e0b !important;
 }
 
+/* ======================================================== */
+/* KINETIC SACRED LOADING INTERFACE & SPINNERS             */
+/* ======================================================== */
+
+/* 1. Global Loading Overlay */
+#global-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 16, 10, 0.76);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#global-loading-overlay.hidden-loader {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Glowing Diya / Sacred Ring Loader */
+.diya-spinner-container {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diya-spin-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(245, 158, 11, 0.2);
+  border-top-color: #f59e0b;
+  border-right-color: #fbbf24;
+  animation: sacredSpin 1s linear infinite;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+}
+
+.diya-spin-ring-inner {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(239, 68, 68, 0.18);
+  border-bottom-color: #ef4444;
+  border-left-color: #f59e0b;
+  animation: sacredSpinReverse 1.4s linear infinite;
+}
+
+.diya-pulsing-icon {
+  font-size: 28px;
+  line-height: 1;
+  animation: diyaGlowPulse 1.6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));
+  user-select: none;
+}
+
+@keyframes sacredSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sacredSpinReverse {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes diyaGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.85; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5)); }
+  100% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.95)); }
+}
+
+/* 2. Micro Button Spinners */
+.btn-loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: sacredSpin 0.75s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* 3. Top Horizontal Progress Bar (Global Network & Sync indicator) */
+#top-sync-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 100000;
+  background: linear-gradient(90deg, #f59e0b, #ef4444, #fbbf24, #f59e0b);
+  background-size: 200% 100%;
+  animation: progressShimmer 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#top-sync-progress-bar.hidden-progress {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-4px);
+}
+
+@keyframes progressShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* 4. Skeleton Shimmer Loading States for Cards and Grids */
+.skeleton-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .skeleton-card {
+  background: rgba(37, 32, 22, 0.6);
+  border: 1px solid rgba(251, 191, 36, 0.12);
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.18) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.8s infinite;
+  content: '';
+}
+
+.dark .skeleton-shimmer::after {
+  background-image: linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0) 0,
+    rgba(251, 191, 36, 0.06) 20%,
+    rgba(251, 191, 36, 0.14) 60%,
+    rgba(251, 191, 36, 0)
+  );
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
