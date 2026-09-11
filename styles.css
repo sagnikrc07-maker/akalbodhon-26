@@ -655,28 +655,32 @@ body.modal-open {
 /* HIGHLIGHTED CREATOR BAR & CREATOR SPOTLIGHT STYLES       */
 /* ======================================================== */
 .creator-bar {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(251, 191, 36, 0.32) 50%, rgba(245, 158, 11, 0.18) 100%) !important;
-  border: 1.5px solid #d97706 !important;
-  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.22);
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(217, 119, 6, 0.35) !important;
+  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.1);
+  white-space: nowrap !important;
 }
 
 .dark .creator-bar {
-  background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(217, 119, 6, 0.28) 50%, rgba(251, 191, 36, 0.16) 100%) !important;
-  border: 1.5px solid #fbbf24 !important;
-  box-shadow: 0 2px 10px rgba(251, 191, 36, 0.25);
+  background: rgba(251, 191, 36, 0.12) !important;
+  border: 1px solid rgba(251, 191, 36, 0.35) !important;
+  box-shadow: 0 1px 6px rgba(251, 191, 36, 0.15);
+  white-space: nowrap !important;
 }
 
 .creator-name-pill {
-  background: #f59e0b !important;
-  color: #000000 !important;
+  background: transparent !important;
+  color: #b45309 !important;
   font-weight: 800 !important;
-  letter-spacing: 0.02em;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  letter-spacing: 0.01em;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 .dark .creator-name-pill {
-  background: #fbbf24 !important;
-  color: #000000 !important;
+  background: transparent !important;
+  color: #fbbf24 !important;
+  font-weight: 800 !important;
 }
 
 /* Deep link card pulse animation */

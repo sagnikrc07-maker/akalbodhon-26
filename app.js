@@ -5262,13 +5262,11 @@
                 </div>
               ` : ''}
 
-              <!-- Creator: Highlighted Creator Bar with Creator Name Spotlight (Single Festive Emoji) -->
-              <div class="creator-bar inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border max-w-full shadow-sm" title="Plan Creator: ${escapeHtml(plan.creator_name || 'Devotee')}">
+              <!-- Creator: Clean Sacred Badge with Unbroken Creator Attribution -->
+              <div class="creator-bar inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl border max-w-full shadow-sm" title="Plan Creator: ${escapeHtml(plan.creator_name || 'Devotee')}">
                 <span class="text-xs shrink-0">${plan.creator_avatar || '🌺'}</span>
-                <span class="text-[10px] sm:text-xs text-neutral-900 dark:text-amber-100 font-semibold truncate flex items-center gap-1">
-                  <span>Created by:</span>
-                  <span class="creator-name-pill px-2 py-0.5 rounded-md text-black font-extrabold tracking-wide truncate">${escapeHtml(plan.creator_name || creatorNameDisplay)}</span>
-                </span>
+                <span class="text-[10.5px] sm:text-xs text-neutral-800 dark:text-[#ded5c7] font-medium whitespace-nowrap shrink-0">Created by:</span>
+                <span class="creator-name-pill text-[10.5px] sm:text-xs font-extrabold truncate min-w-0">${escapeHtml(plan.creator_name || creatorNameDisplay)}</span>
               </div>
             </div>
 
@@ -5308,7 +5306,7 @@
             </div>
           </div>
 
-          <!-- Action: View Plan Button & Share Plan Button & Quick Save to Itinerary -->
+          <!-- Action: View Plan Button & Quick Save to Itinerary -->
           <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
             <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
@@ -5316,9 +5314,6 @@
             </button>
             <button onclick="event.stopPropagation(); window.savePlanToItinerary('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border ${customPlans.some(p => p.id === plan.id) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500 dark:text-emerald-400' : 'border-outline-variant/40 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:bg-primary/10'} text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="${customPlans.some(p => p.id === plan.id) ? 'Saved in Itinerary (Click to Remove)' : 'Save entire plan to Itinerary'}">
               <span class="material-symbols-outlined text-[17px]">${customPlans.some(p => p.id === plan.id) ? 'bookmark_added' : 'bookmark_add'}</span>
-            </button>
-            <button onclick="event.stopPropagation(); window.openSharePlanModal('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-secondary-container dark:border-amber-400/40 text-primary dark:text-amber-300 hover:bg-secondary-container/20 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Share Plan with Friends">
-              <span class="material-symbols-outlined text-[17px]">share</span>
             </button>
             ${isCustom && isMyPlan ? `
               <button onclick="event.stopPropagation(); window.deleteCustomPlan('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" title="Delete Plan">
@@ -5785,10 +5780,16 @@
       });
     }
 
-    // Share button
+    // Share buttons (Header quick share & Bottom action bar)
     const shareBtn = document.getElementById('vp-share-btn');
     if (shareBtn) {
       shareBtn.onclick = () => {
+        window.openSharePlanModal(plan.id);
+      };
+    }
+    const headerShareBtn = document.getElementById('vp-header-share-btn');
+    if (headerShareBtn) {
+      headerShareBtn.onclick = () => {
         window.openSharePlanModal(plan.id);
       };
     }
