@@ -3953,7 +3953,7 @@
     },
     {
       id: 'plan-ashtami',
-      title: 'Maha Ashtami Sacred Morning Anjali & South Kolkata Grandeur Hop',
+      title: 'Maha Ashtami Sacred Pushpanjali & South Kolkata Grandeur Trail',
       day_tag: 'Maha Ashtami',
       day_key: 'ashtami',
       date_str: '19 October 2026',
@@ -3961,13 +3961,20 @@
       creator_avatar: '🪷',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Nearest Local Neighborhood Pandal -> Badamtala Ashar Sangha -> Ballygunge Cultural -> Singhi Park -> Ekdalia Evergreen -> Maddox Square',
-      pandals: ["Respective Nearest Locality Pandal (Morning Pushpanjali)", 'Badamtala Ashar Sangha', 'Ballygunge Cultural Association', 'Singhi Park Sarbojanin', 'Ekdalia Evergreen Club', 'Tridhara Sammilani'],
-      food_stops: [
-        { name: '6 Ballygunge Place', dish: 'Daab Chingri & Kosha Mangsho' },
-        { name: 'Bhojohori Manna', dish: 'Traditional Bhog-style Chholar Daal & Luchi' }
+      route_summary: 'Respective Local Pandal ➔ Badamtala Ashar Sangha ➔ Ballygunge Cultural ➔ Ekdalia Evergreen ➔ Maddox Square',
+      pandals: [
+        'Respective Local Neighborhood Pandal (Morning Pushpanjali)',
+        'Badamtala Ashar Sangha',
+        'Ballygunge Cultural Association',
+        'Singhi Park Sarbojanin',
+        'Ekdalia Evergreen Club',
+        'Maddox Square'
       ],
-      custom_notes: 'Start the sacred morning with Pushpanjali and flower offerings at your own respective nearest pandal in your locality. In the afternoon and evening, head out for the legendary South Kolkata pandal hopping circuit.'
+      food_stops: [
+        { name: '6 Ballygunge Place', dish: 'Traditional Ashtami Bhog & Kosha Mangsho' },
+        { name: 'Paramount Sherbets', dish: 'Historic Malai Roll & Daab Sarbat' }
+      ],
+      custom_notes: 'Attend your local pandal in the morning for sacred Pushpanjali with fresh flowers and Bel leaves. After taking an afternoon rest, head out for a classic South Kolkata pandal hopping trail to witness majestic art installations and dazzling evening illuminations.'
     },
     {
       id: 'plan-navami',
@@ -3989,7 +3996,7 @@
     },
     {
       id: 'plan-dashami',
-      title: 'Bijoya Dashami Sindoor Khela & Sacred Immersion at Respective Local Pandal',
+      title: 'Bijoya Dashami Devi Baran, Sindoor Khela & Bijoya Milita with Family & Friends',
       day_tag: 'Bijoya Dashami',
       day_key: 'dashami',
       date_str: '21 October 2026',
@@ -3997,10 +4004,15 @@
       creator_avatar: '🐚',
       creator_id: 'akalbodhon-official',
       is_template: true,
-      route_summary: 'Respective Nearest Locality Pandal -> Local Community Ghat / Riverfront for Bisarjan',
-      pandals: ["Respective Nearest Locality Pandal (Sindoor Khela & Baran)", "Local Neighborhood Immersion Ghat (Visarjan)"],
-      food_stops: [], // As requested, no food/dining pit stops suggested for Bijoya Dashami
-      custom_notes: 'Perform the emotional farewell rituals of Devi Baran and Sindoor Khela at your respective nearest pandal in your locality, sharing warm Shubho Bijoya greetings and sweets with family and neighbors.'
+      route_summary: 'Respective Local Pandal ➔ Meeting Family, Relatives & Friends (Bijoya Greetings)',
+      pandals: [
+        'Respective Local Neighborhood Pandal (Devi Baran & Sindoor Khela for Women)'
+      ],
+      food_stops: [
+        { name: 'Balaram Mullick & Radharaman Mullick', dish: 'Warm Baked Rosogolla, Jolbhora Sandesh & Mishti Doi' },
+        { name: 'Girish Chandra Dey & Nakur Chandra Nandy', dish: 'Parijat, Kacha Golla & Chocolate Sandesh' }
+      ],
+      custom_notes: 'Attend your local pandal in the morning to perform sacred Devi Baran and joyous Sindoor Khela for women. Later in the day, visit family and friends to exchange traditional Shubho Bijoya embraces (Kola-Koli) and share festive Bengali sweets.'
     }
   ];
 
@@ -5600,6 +5612,21 @@
     if (pandalsList) {
       pandalsList.innerHTML = pandals.map(p => {
         const pName = typeof p === 'string' ? p : p.name;
+        const isLocal = pName.toLowerCase().includes('local') || pName.toLowerCase().includes('respective');
+        if (isLocal) {
+          return `
+            <div class="p-2.5 sm:p-3 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm">
+              <div class="min-w-0 flex-1">
+                <span class="font-bold text-xs text-on-surface dark:text-white block">🏛️ ${pName}</span>
+              </div>
+              <span class="py-1 px-2.5 rounded-xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-semibold flex items-center gap-1 shrink-0">
+                <span class="material-symbols-outlined text-[13px]">home_pin</span>
+                <span>Your Locality</span>
+              </span>
+            </div>
+          `;
+        }
+
         const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
         const metro = matched ? (matched.metro_station || matched.transit_info || matched.location) : null;
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pName + ' Durga Puja Kolkata')}`;
@@ -5940,6 +5967,17 @@
         // Creator custom description for the Puja plan
         const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
 
+        const PUJA_DAY_DATES = {
+          'Mahalaya': '10 October 2026',
+          'Maha Shasthi': '17 October 2026',
+          'Maha Saptami': '18 October 2026',
+          'Maha Ashtami': '19 October 2026',
+          'Maha Navami': '20 October 2026',
+          'Bijoya Dashami': '21 October 2026',
+          'Custom Festival Day': 'Durga Puja 2026'
+        };
+        const resolvedDateStr = PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`);
+
         const newPlan = {
           id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
           creator_id: creatorUserId,
@@ -5948,7 +5986,7 @@
           title: title,
           day_tag: day,
           day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
-          date_str: day,
+          date_str: resolvedDateStr,
           route_summary: route,
           pandals: checkedPandals,
           food_stops: foodStopsList,
