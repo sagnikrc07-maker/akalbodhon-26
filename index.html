@@ -29,6 +29,9 @@
   <link rel="dns-prefetch" href="https://www.gstatic.com" />
   <link rel="dns-prefetch" href="https://api.web3forms.com" />
 
+  <!-- Firebase Module Preload -->
+  <link rel="modulepreload" href="firebase-config.js" />
+
   <!-- Material Symbols Icons (display=optional prevents layout shift / FOUT) -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=optional" rel="stylesheet" />
 
@@ -1007,7 +1010,7 @@
 
       <!-- Sign In with Google Option -->
       <div class="space-y-3">
-        <button id="google-auth-btn" type="button" onclick="handleGoogleSignIn()" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+        <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
           <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1400,7 +1403,7 @@
       <!-- Quick Action Buttons: Sign In / Create Account / Google / Later -->
       <div class="w-full space-y-2.5 pt-2">
         <!-- Sign in with Google Option in Prompt Modal -->
-        <button id="save-auth-google-btn" type="button" onclick="handleGoogleSignIn()" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+        <button id="save-auth-google-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
           <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>

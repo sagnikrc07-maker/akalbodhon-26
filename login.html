@@ -143,7 +143,7 @@
 
         <!-- Sign In with Google Option -->
         <div class="space-y-3">
-          <button id="google-auth-btn" type="button" onclick="handleGoogleSignIn()" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+          <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -270,11 +270,11 @@
 
     function showAlert(msg, isError = true) {
       if (isError) {
-        errorMsg.textContent = msg;
+        errorMsg.innerHTML = msg;
         errorAlert.classList.remove('hidden');
         successAlert.classList.add('hidden');
       } else {
-        successMsg.textContent = msg;
+        successMsg.innerHTML = msg;
         successAlert.classList.remove('hidden');
         errorAlert.classList.add('hidden');
       }
@@ -362,11 +362,21 @@
     // Google Auth Button
     const googleAuthBtn = document.getElementById('google-auth-btn');
     const googleAuthBtnLabel = document.getElementById('google-auth-btn-label');
+    let isGoogleAuthInProgress = false;
 
     async function handleGoogleSignIn() {
+      if (isGoogleAuthInProgress) return;
+      isGoogleAuthInProgress = true;
+
       clearAlerts();
       if (googleAuthBtn) googleAuthBtn.disabled = true;
       if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Initiating Google Sign-In...';
+
+      function resetGoogleBtn() {
+        isGoogleAuthInProgress = false;
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
+      }
 
       // 1. Wait for Firebase SDK if needed
       if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
@@ -374,48 +384,92 @@
           if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
           const handler = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', handler); };
           window.addEventListener('akalbodhon:firebase-ready', handler);
-          setTimeout(resolve, 2200);
+          setTimeout(resolve, 1000);
         });
       }
 
-      // 2. Real Firebase Google OAuth Popup
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          const profile = await window.AkalbodhonFirebase.signInWithGoogle();
-          if (profile) {
-            showLoggedInState(profile);
-            showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
-            setTimeout(() => {
-              window.location.href = 'index.html';
-            }, 700);
-            return;
-          }
-        } catch (fbErr) {
-          console.warn('Firebase Google Sign-In notice:', fbErr);
-          if (fbErr.code === 'auth/popup-closed-by-user') {
-            if (googleAuthBtn) googleAuthBtn.disabled = false;
-            if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
-            return;
-          }
-          if (fbErr.code === 'auth/popup-blocked') {
-            showAlert('Google sign-in popup was blocked by browser. Please allow popups for this site and try again.');
-          } else {
-            showAlert(fbErr.message || 'Google sign-in could not be initiated. Please try again or sign in with email/phone.');
-          }
-          if (googleAuthBtn) googleAuthBtn.disabled = false;
-          if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
+      if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+        showAlert('Firebase Authentication is connecting. Please try again in a few seconds.');
+        resetGoogleBtn();
+        return;
+      }
+
+      // 2. Primary: Firebase Google OAuth Popup
+      try {
+        const profile = await window.AkalbodhonFirebase.signInWithGoogle();
+        if (profile) {
+          showLoggedInState(profile);
+          showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 700);
+          resetGoogleBtn();
           return;
         }
-      } else {
-        showAlert('Firebase Authentication is connecting. Please try again in a moment.');
-        if (googleAuthBtn) googleAuthBtn.disabled = false;
-        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
+      } catch (fbErr) {
+        console.warn('Firebase Google Sign-In notice:', fbErr);
+        if (fbErr.code === 'auth/popup-closed-by-user') {
+          resetGoogleBtn();
+          return;
+        }
+
+        if (fbErr.code === 'auth/popup-blocked') {
+          showAlert(
+            `<div class="space-y-1.5">
+              <p class="font-medium">Popup was blocked by your browser. Redirecting directly to Google Sign-In...</p>
+              <div class="pt-1">
+                <button type="button" id="login-force-redirect-btn" class="px-3 py-1 bg-amber-400 text-black font-bold rounded-lg text-xs hover:bg-amber-300 transition-all cursor-pointer shadow-sm">
+                  Continue to Google Sign-In ↗
+                </button>
+              </div>
+            </div>`
+          );
+
+          const forceBtn = document.getElementById('login-force-redirect-btn');
+          if (forceBtn) {
+            forceBtn.onclick = () => {
+              window.AkalbodhonFirebase.signInWithGoogleRedirect();
+            };
+          }
+
+          try {
+            await window.AkalbodhonFirebase.signInWithGoogleRedirect();
+            return;
+          } catch (redirErr) {
+            console.error('Redirect sign-in error:', redirErr);
+            showAlert('Unable to open Google sign-in redirect. Please allow popups for this site, or sign in using email/phone.');
+            resetGoogleBtn();
+            return;
+          }
+        }
+
+        showAlert(fbErr.message || 'Google sign-in could not be initiated. Please try again or sign in with email/phone.');
+        resetGoogleBtn();
+        return;
       }
     }
     window.handleGoogleSignIn = handleGoogleSignIn;
 
     if (googleAuthBtn) {
       googleAuthBtn.addEventListener('click', handleGoogleSignIn);
+    }
+
+    // Google Redirect Sign-In Session Recovery for login.html
+    function handleRedirectSuccess(profile) {
+      if (!profile) return;
+      showLoggedInState(profile);
+      showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
+      setTimeout(() => {
+        window.location.href = 'index.html';
+      }, 800);
+    }
+
+    window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
+      handleRedirectSuccess(e.detail);
+    });
+
+    if (window.__akalbodhonRedirectProfile) {
+      handleRedirectSuccess(window.__akalbodhonRedirectProfile);
     }
 
     // Check Existing Session
@@ -659,12 +713,34 @@
           }
 
           // Fetch & restore saved details stored in Database
-          const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
+          let restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserSavedItems === 'function') {
+            try {
+              const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(foundProfile);
+              if (Array.isArray(fbSaved) && fbSaved.length > 0) {
+                restoredSavedItems = fbSaved;
+              }
+            } catch (e) {
+              console.warn('Firebase saved items fetch notice:', e);
+            }
+          }
           localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
 
-          if (Array.isArray(foundProfile.custom_plans)) {
-            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(foundProfile.custom_plans));
+          let restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserPlans === 'function') {
+            try {
+              const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(foundProfile);
+              if (Array.isArray(fbPlans) && fbPlans.length > 0) {
+                const planMap = new Map();
+                restoredCustomPlans.forEach(p => planMap.set(p.id, p));
+                fbPlans.forEach(p => planMap.set(p.id, p));
+                restoredCustomPlans = Array.from(planMap.values());
+              }
+            } catch (e) {
+              console.warn('Firebase plans fetch notice:', e);
+            }
           }
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(restoredCustomPlans));
 
           const authenticatedUser = {
             id: foundProfile.id || safeDocId,
@@ -675,7 +751,7 @@
             avatar: foundProfile.avatar || '🪔',
             custom_avatar_url: null,
             saved_items: restoredSavedItems,
-            custom_plans: foundProfile.custom_plans || [],
+            custom_plans: restoredCustomPlans,
             created_at: foundProfile.created_at || new Date().toISOString()
           };
 

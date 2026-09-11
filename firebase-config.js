@@ -8,6 +8,8 @@ import {
   getAuth, 
   GoogleAuthProvider, 
   signInWithPopup, 
+  signInWithRedirect,
+  getRedirectResult,
   signOut, 
   onAuthStateChanged 
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -59,6 +61,37 @@ function withTimeout(promise, ms = DEFAULT_TIMEOUT_MS) {
   ]);
 }
 
+// Helper to extract all possible docId keys (raw, lowercase, and safeDocId) for a user
+function getPossibleUserDocIds(userOrId) {
+  const ids = new Set();
+  if (!userOrId) return [];
+  if (typeof userOrId === 'object') {
+    ['id', 'user_id', 'uid', 'identifier', 'email'].forEach(k => {
+      const val = userOrId[k];
+      if (val && typeof val === 'string') {
+        const clean = val.trim().toLowerCase();
+        if (clean) {
+          ids.add(clean);
+          ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+          if (clean.startsWith('user_')) {
+            ids.add(clean.replace(/^user_/, ''));
+          }
+        }
+      }
+    });
+  } else if (typeof userOrId === 'string') {
+    const clean = userOrId.trim().toLowerCase();
+    if (clean) {
+      ids.add(clean);
+      ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+      if (clean.startsWith('user_')) {
+        ids.add(clean.replace(/^user_/, ''));
+      }
+    }
+  }
+  return Array.from(ids);
+}
+
 export const AkalbodhonFirebase = {
   app,
   auth,
@@ -66,13 +99,9 @@ export const AkalbodhonFirebase = {
   googleProvider,
   isAvailable: () => Boolean(auth && db),
 
-  // 1. Google Sign-In with Popup and User Data Restoration
-  async signInWithGoogle() {
-    if (!auth || !googleProvider) {
-      throw new Error("Firebase Auth is not initialized.");
-    }
-    const result = await signInWithPopup(auth, googleProvider);
-    const user = result.user;
+  // Internal helper to build devotee profile and sync with Firestore & localStorage
+  async buildAndStoreProfile(user) {
+    if (!user) throw new Error("No user credentials provided.");
     const cleanUid = String(user.uid);
 
     // Fetch existing user data under this specific user's credentials with timeout
@@ -128,6 +157,46 @@ export const AkalbodhonFirebase = {
     }
 
     return profile;
+  },
+
+  // 1. Google Sign-In with Popup and User Data Restoration
+  async signInWithGoogle() {
+    if (!auth || !googleProvider) {
+      throw new Error("Firebase Auth is not initialized.");
+    }
+    const result = await signInWithPopup(auth, googleProvider);
+    if (!result || !result.user) {
+      throw new Error("Google sign-in popup did not return a user.");
+    }
+    return await this.buildAndStoreProfile(result.user);
+  },
+
+  // 1b. Google Sign-In with Direct Window Redirect (immune to popup blockers)
+  async signInWithGoogleRedirect() {
+    if (!auth || !googleProvider) {
+      throw new Error("Firebase Auth is not initialized.");
+    }
+    sessionStorage.setItem('akalbodhon_google_redirect_in_progress', '1');
+    return await signInWithRedirect(auth, googleProvider);
+  },
+
+  // 1c. Handle redirect result when user returns from Google Sign-In
+  async handleRedirectResult() {
+    if (!auth) return null;
+    try {
+      const result = await getRedirectResult(auth);
+      if (result && result.user) {
+        sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
+        const profile = await this.buildAndStoreProfile(result.user);
+        window.__akalbodhonRedirectProfile = profile;
+        return profile;
+      }
+    } catch (err) {
+      sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
+      console.warn("Redirect authentication check notice:", err);
+      throw err;
+    }
+    return null;
   },
 
   // 2. Sync Profile with Firestore database ('users' and 'profiles' collections)
@@ -223,9 +292,10 @@ export const AkalbodhonFirebase = {
   },
 
   // 4. Save/Sync Saved Items under User's Own Credentials in Firestore
-  async saveBookmarks(userId, bookmarks) {
-    if (!db || !userId) return false;
-    const docId = String(userId).trim().toLowerCase();
+  async saveBookmarks(userOrId, bookmarks) {
+    if (!db || !userOrId) return false;
+    const docIds = getPossibleUserDocIds(userOrId);
+    if (docIds.length === 0) return false;
     const list = Array.isArray(bookmarks) ? bookmarks : [];
     try {
       const payload = {
@@ -233,13 +303,15 @@ export const AkalbodhonFirebase = {
         updated_at: new Date().toISOString()
       };
 
-      // 1. Write to users/{userId}
-      const userRef = doc(db, "users", docId);
-      await withTimeout(setDoc(userRef, payload, { merge: true }), 2500);
+      for (const docId of docIds) {
+        // 1. Write to users/{docId}
+        const userRef = doc(db, "users", docId);
+        await withTimeout(setDoc(userRef, payload, { merge: true }), 2500).catch(() => {});
 
-      // 2. Write to profiles/{userId}
-      const profRef = doc(db, "profiles", docId);
-      await withTimeout(setDoc(profRef, payload, { merge: true }), 1500).catch(() => {});
+        // 2. Write to profiles/{docId}
+        const profRef = doc(db, "profiles", docId);
+        await withTimeout(setDoc(profRef, payload, { merge: true }), 1500).catch(() => {});
+      }
 
       return true;
     } catch (err) {
@@ -249,22 +321,38 @@ export const AkalbodhonFirebase = {
   },
 
   // 5. Fetch User's Saved Items specifically from their Firestore Credentials
-  async fetchUserSavedItems(userId) {
-    if (!db || !userId) return [];
-    const docId = String(userId).trim().toLowerCase();
+  async fetchUserSavedItems(userOrId) {
+    if (!db || !userOrId) return [];
+    const docIds = getPossibleUserDocIds(userOrId);
     try {
-      // Direct doc check in users/{userId}
-      const userRef = doc(db, "users", docId);
-      const snap = await withTimeout(getDoc(userRef), 2000);
-      if (snap && snap.exists() && Array.isArray(snap.data()?.saved_items)) {
-        return snap.data().saved_items;
+      for (const docId of docIds) {
+        // Direct doc check in users/{docId}
+        const userRef = doc(db, "users", docId);
+        const snap = await withTimeout(getDoc(userRef), 2000).catch(() => null);
+        if (snap && snap.exists() && Array.isArray(snap.data()?.saved_items) && snap.data().saved_items.length > 0) {
+          return snap.data().saved_items;
+        }
+
+        // Fallback check in profiles/{docId}
+        const profRef = doc(db, "profiles", docId);
+        const pSnap = await withTimeout(getDoc(profRef), 1500).catch(() => null);
+        if (pSnap && pSnap.exists() && Array.isArray(pSnap.data()?.saved_items) && pSnap.data().saved_items.length > 0) {
+          return pSnap.data().saved_items;
+        }
       }
 
-      // Fallback check in profiles
-      const profRef = doc(db, "profiles", docId);
-      const pSnap = await withTimeout(getDoc(profRef), 1500);
-      if (pSnap && pSnap.exists() && Array.isArray(pSnap.data()?.saved_items)) {
-        return pSnap.data().saved_items;
+      // Query by identifier or email if contains '@'
+      for (const docId of docIds) {
+        if (docId.includes('@')) {
+          try {
+            const q = query(collection(db, "users"), where("identifier", "==", docId));
+            const snap = await withTimeout(getDocs(q), 2000).catch(() => null);
+            if (snap && !snap.empty) {
+              const d = snap.docs[0].data();
+              if (Array.isArray(d.saved_items) && d.saved_items.length > 0) return d.saved_items;
+            }
+          } catch (e) {}
+        }
       }
 
       return [];
@@ -278,7 +366,7 @@ export const AkalbodhonFirebase = {
   async savePlan(planData) {
     if (!db || !planData?.id) return false;
     const planId = String(planData.id);
-    const creatorId = String(planData.creator_id || "").toLowerCase();
+    const creatorIds = getPossibleUserDocIds(planData.creator_id || planData.user_id);
     const payload = {
       ...planData,
       saved_at: new Date().toISOString()
@@ -289,8 +377,8 @@ export const AkalbodhonFirebase = {
       const planRef = doc(db, "plans", planId);
       await withTimeout(setDoc(planRef, payload, { merge: true }), 2500);
 
-      // 2. Save specifically under the creator's credentials in 'users/{creatorId}/plans/{planId}'
-      if (creatorId) {
+      // 2. Save specifically under creator's credentials
+      for (const creatorId of creatorIds) {
         const userPlanRef = doc(db, "users", creatorId, "plans", planId);
         await withTimeout(setDoc(userPlanRef, payload, { merge: true }), 2000).catch(() => {});
 
@@ -319,34 +407,36 @@ export const AkalbodhonFirebase = {
   },
 
   // 7. Fetch User Custom Plans specifically under their own credentials
-  async fetchUserPlans(userId) {
-    if (!db || !userId) return [];
-    const creatorId = String(userId).trim().toLowerCase();
+  async fetchUserPlans(userOrId) {
+    if (!db || !userOrId) return [];
+    const creatorIds = getPossibleUserDocIds(userOrId);
     try {
       const plansMap = new Map();
 
-      // Check users/{creatorId} doc's custom_plans
-      try {
-        const userRef = doc(db, "users", creatorId);
-        const uSnap = await withTimeout(getDoc(userRef), 2000);
-        if (uSnap && uSnap.exists() && Array.isArray(uSnap.data()?.custom_plans)) {
-          uSnap.data().custom_plans.forEach(p => {
-            if (p && p.id) plansMap.set(p.id, p);
-          });
-        }
-      } catch (e) {}
+      for (const creatorId of creatorIds) {
+        // Check users/{creatorId} doc's custom_plans
+        try {
+          const userRef = doc(db, "users", creatorId);
+          const uSnap = await withTimeout(getDoc(userRef), 2000);
+          if (uSnap && uSnap.exists() && Array.isArray(uSnap.data()?.custom_plans)) {
+            uSnap.data().custom_plans.forEach(p => {
+              if (p && p.id) plansMap.set(p.id, p);
+            });
+          }
+        } catch (e) {}
 
-      // Check users/{creatorId}/plans subcollection
-      try {
-        const userPlansRef = collection(db, "users", creatorId, "plans");
-        const userPlansSnap = await withTimeout(getDocs(userPlansRef), 2000);
-        if (userPlansSnap) {
-          userPlansSnap.forEach(d => {
-            const p = d.data();
-            if (p && p.id) plansMap.set(p.id, p);
-          });
-        }
-      } catch (e) {}
+        // Check users/{creatorId}/plans subcollection
+        try {
+          const userPlansRef = collection(db, "users", creatorId, "plans");
+          const userPlansSnap = await withTimeout(getDocs(userPlansRef), 2000);
+          if (userPlansSnap) {
+            userPlansSnap.forEach(d => {
+              const p = d.data();
+              if (p && p.id) plansMap.set(p.id, p);
+            });
+          }
+        } catch (e) {}
+      }
 
       return Array.from(plansMap.values());
     } catch (err) {
@@ -448,4 +538,20 @@ if (typeof window !== "undefined") {
   // Set a flag BEFORE dispatching so app.js can detect the event even if it loads late
   window.__akalbodhonFirebaseReady = true;
   window.dispatchEvent(new CustomEvent('akalbodhon:firebase-ready', { detail: AkalbodhonFirebase }));
+
+  // Automatically check if user is returning from a Google Redirect Sign-In
+  if (auth) {
+    getRedirectResult(auth).then(async (result) => {
+      if (result && result.user) {
+        sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
+        const profile = await AkalbodhonFirebase.buildAndStoreProfile(result.user);
+        window.__akalbodhonRedirectProfile = profile;
+        window.dispatchEvent(new CustomEvent('akalbodhon:auth-redirect-success', { detail: profile }));
+        console.log("🕉️ Google redirect sign-in restored for:", profile.username);
+      }
+    }).catch((err) => {
+      sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
+      console.warn("Auto redirect result notice:", err);
+    });
+  }
 }

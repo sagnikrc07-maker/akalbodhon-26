@@ -1954,9 +1954,11 @@
           const isSaved = Storage.toggleBookmark({
             id: food.id,
             name: food.name,
-            category: 'Food Destination',
+            category: 'Food & Shopping',
+            sub_category: food.category || 'Famous Food Joints',
+            type: 'food',
             location: food.location,
-            zone: 'Culinary Landmark',
+            zone: food.zone || 'Culinary Landmark',
             link: food.locationUrl,
             image: food.image
           });
@@ -2012,7 +2014,9 @@
           const isSaved = Storage.toggleBookmark({
             id: shop.id,
             name: shop.name,
-            category: 'Shopping Bazaar',
+            category: 'Food & Shopping',
+            sub_category: shop.category || 'Shopping Bazaar',
+            type: 'shop',
             location: shop.location,
             zone: 'Festive Shopping',
             link: shop.locationUrl,
@@ -2280,8 +2284,23 @@
     const bookmarks = Storage.getBookmarks();
     
     // Split into categories strictly based on saved bookmarks and user custom plans
-    let pandalBookmarks = bookmarks.filter(b => b.category === 'Pandal');
-    let foodBookmarks = bookmarks.filter(b => b.category === 'Food' || b.category === 'Shop' || b.category === 'food' || b.category === 'shop');
+    let pandalBookmarks = bookmarks.filter(b => {
+      const isFoodOrShop = b.type === 'food' || b.type === 'shop' || 
+        b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
+        b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
+        FOOD_DATA.some(f => f.id === b.id || f.name.toLowerCase() === (b.name || '').toLowerCase()) ||
+        SHOPPING_DATA.some(s => s.id === b.id || s.name.toLowerCase() === (b.name || '').toLowerCase());
+      return !isFoodOrShop;
+    });
+
+    let foodBookmarks = bookmarks.filter(b => {
+      return b.type === 'food' || b.type === 'shop' ||
+        b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
+        b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
+        FOOD_DATA.some(f => f.id === b.id || f.name.toLowerCase() === (b.name || '').toLowerCase()) ||
+        SHOPPING_DATA.some(s => s.id === b.id || s.name.toLowerCase() === (b.name || '').toLowerCase());
+    });
+
     let myPlans = (customPlans && customPlans.length > 0) ? [...customPlans] : [];
 
     let displayPandals = [...pandalBookmarks];
@@ -2311,7 +2330,7 @@
       if (optAll) optAll.textContent = `✨ All Saved (${totalCount})`;
       if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${displayPandals.length})`;
       if (optFood) optFood.textContent = `🍽️ Food & Shopping (${displayFood.length})`;
-      if (optPlans) optPlans.textContent = `📋 Custom Plans (${displayPlans.length})`;
+      if (optPlans) optPlans.textContent = `📋 Saved Plans (${displayPlans.length})`;
     }
 
     // Update active tab styling
@@ -2500,36 +2519,44 @@
             <div class="flex items-center justify-between border-b border-outline-variant/20 dark:border-amber-400/20 pb-2">
               <h3 class="font-display text-base sm:text-xl font-bold text-on-surface dark:text-white flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[18px] sm:text-[22px]">event_note</span>
-                <span>Custom Festival Plans (${displayPlans.length})</span>
+                <span>Saved Puja Plans (${displayPlans.length})</span>
               </h3>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
-              ${displayPlans.map((p) => `
+              ${displayPlans.map((p) => {
+                const pandalList = p.pandals || [];
+                const foodList = p.food_stops || [];
+                return `
                 <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
                   <div>
                     <div class="flex items-center justify-between gap-1 mb-1">
-                      <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Custom Plan'}</span>
+                      <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Puja Plan'}</span>
                       <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
                     </div>
                     <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
+                    <p class="text-[9.5px] sm:text-xs text-on-surface-variant/80 dark:text-[#ded5c7]/80 flex items-center gap-1 font-medium truncate mt-0.5">
+                      <span class="material-symbols-outlined text-[13px] text-primary dark:text-amber-300 shrink-0">temple_hindu</span>
+                      <span>${pandalList.length} Pandals</span>
+                      ${foodList.length > 0 ? `<span>• 🍽️ ${foodList.length} Food</span>` : ''}
+                    </p>
                     ${p.route_summary ? `<p class="text-[9.5px] sm:text-xs text-primary dark:text-amber-300 truncate mt-1 flex items-center gap-1">
                       <span class="material-symbols-outlined text-[12px] sm:text-[14px] shrink-0">near_me</span>
                       <span class="truncate">${p.route_summary}</span>
                     </p>` : ''}
                   </div>
                   <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
-                    <a href="#plans" onclick="renderFestivalPlans('${p.is_template ? 'all' : 'custom'}'); setTimeout(() => openViewPlanModal('${p.id}'), 80);" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5 cursor-pointer">
+                    <button onclick="window.openViewPlanModal('${p.id}')" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5 cursor-pointer">
                       <span>View Plan</span>
                       <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
-                    </a>
-                    ${p.is_template ? `
-                      <span class="text-[8.5px] sm:text-[10px] font-semibold text-on-surface-variant/70 dark:text-[#ded5c7]/60">Curated</span>
-                    ` : `
-                      <button onclick="deleteCustomPlan('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer">Delete</button>
-                    `}
+                    </button>
+                    <button onclick="window.removePlanFromItinerary('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Remove from Itinerary">
+                      <span class="material-symbols-outlined text-[14px]">delete</span>
+                      <span>Remove</span>
+                    </button>
                   </div>
                 </div>
-              `).join('')}
+              `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -2539,8 +2566,8 @@
             <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto">
               <span class="material-symbols-outlined text-[28px]">event_note</span>
             </div>
-            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Custom Plans Created</h4>
-            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Design day-by-day festival routes with friends or save custom plans under Puja Plans.</p>
+            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Puja Plans Saved</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Explore curated routes or build your own custom festival plan under Puja Plans, then save it to your personal itinerary.</p>
             <a href="#plans" onclick="document.querySelector('nav a[href=\\'#plans\\']')?.click();" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
               <span class="material-symbols-outlined text-[15px]">event_note</span> Puja Plans
             </a>
@@ -3945,10 +3972,9 @@
   // Background sync for user credentials & saved items from Firestore
   async function syncRemoteUserSession() {
     if (!currentUser) return;
-    const targetUid = currentUser.id || currentUser.user_id;
-    if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
       try {
-        const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
+        const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(currentUser);
         if (Array.isArray(fbSaved) && fbSaved.length > 0) {
           Storage.setBookmarks(fbSaved);
           currentUser.saved_items = fbSaved;
@@ -3956,7 +3982,7 @@
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
           if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
         }
-        const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
+        const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(currentUser);
         if (Array.isArray(fbPlans) && fbPlans.length > 0) {
           const planMap = new Map();
           (customPlans || []).forEach(p => planMap.set(p.id, p));
@@ -3964,6 +3990,7 @@
           customPlans = Array.from(planMap.values());
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
           if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter || 'all');
+          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
         }
       } catch (e) {
         console.warn('Firestore user data background restore notice:', e);
@@ -3978,12 +4005,12 @@
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
 
       // Restore user-specific saved items immediately if present
-      if (Array.isArray(user.saved_items)) {
+      if (Array.isArray(user.saved_items) && user.saved_items.length > 0) {
         Storage.setBookmarks(user.saved_items);
       }
 
       // Restore user-specific custom plans immediately if present
-      if (Array.isArray(user.custom_plans)) {
+      if (Array.isArray(user.custom_plans) && user.custom_plans.length > 0) {
         const planMap = new Map();
         (customPlans || []).forEach(p => planMap.set(p.id, p));
         user.custom_plans.forEach(p => planMap.set(p.id, p));
@@ -3992,22 +4019,44 @@
       }
 
       // Dual-sync from Firestore database to ensure freshest user credentials and saved items
-      const targetUid = user.id || user.user_id;
-      if (targetUid && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         try {
-          const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(targetUid);
-          if (Array.isArray(fbSaved)) {
-            Storage.setBookmarks(fbSaved);
-            currentUser.saved_items = fbSaved;
+          const currentLocalBookmarks = Storage.getBookmarks() || [];
+          const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(user);
+          if (Array.isArray(fbSaved) && fbSaved.length > 0) {
+            // Restore from remote database, merging any freshly saved local items
+            const mergedMap = new Map();
+            fbSaved.forEach(b => { if (b && b.id) mergedMap.set(b.id, b); });
+            currentLocalBookmarks.forEach(b => { if (b && b.id) mergedMap.set(b.id, b); });
+            const finalSaved = Array.from(mergedMap.values());
+            Storage.setBookmarks(finalSaved);
+            currentUser.saved_items = finalSaved;
             localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            window.AkalbodhonFirebase.saveBookmarks(currentUser, finalSaved).catch(() => {});
+          } else if (currentLocalBookmarks.length > 0) {
+            // Firestore has no items yet for this user: persist local bookmarks to Firestore
+            currentUser.saved_items = currentLocalBookmarks;
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            window.AkalbodhonFirebase.saveBookmarks(currentUser, currentLocalBookmarks).catch(() => {});
           }
-          const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(targetUid);
+
+          const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(user);
           if (Array.isArray(fbPlans) && fbPlans.length > 0) {
             const planMap = new Map();
             (customPlans || []).forEach(p => planMap.set(p.id, p));
             fbPlans.forEach(p => planMap.set(p.id, p));
             customPlans = Array.from(planMap.values());
+            currentUser.custom_plans = customPlans;
             localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          } else if (customPlans && customPlans.length > 0) {
+            currentUser.custom_plans = customPlans;
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            const targetUid = user.id || user.user_id;
+            window.AkalbodhonFirebase.syncProfile({
+              id: targetUid,
+              custom_plans: customPlans
+            }).catch(() => {});
           }
         } catch (fbErr) {
           console.warn('Firestore session sync notice:', fbErr);
@@ -4158,14 +4207,14 @@
       const alertEl = document.getElementById('page-error-alert');
       const msgEl = document.getElementById('page-error-msg');
       if (alertEl && msgEl) {
-        msgEl.textContent = msg;
+        msgEl.innerHTML = msg;
         alertEl.classList.remove('hidden');
       }
     } else {
       const alertEl = document.getElementById('auth-error-alert');
       const msgEl = document.getElementById('auth-error-msg');
       if (alertEl && msgEl) {
-        msgEl.textContent = msg;
+        msgEl.innerHTML = msg;
         alertEl.classList.remove('hidden');
       }
     }
@@ -4350,10 +4399,10 @@
       const targetId = (currentUser.id || '').toLowerCase();
       const targetUid = currentUser.user_id || currentUser.id;
 
-      // Sync to Firebase Firestore Database ('profiles' collection)
+      // Sync to Firebase Firestore Database ('profiles' and 'users' collections)
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         try {
-          await window.AkalbodhonFirebase.saveBookmarks(targetId || targetUid, savedItems);
+          await window.AkalbodhonFirebase.saveBookmarks(currentUser, savedItems);
         } catch (fbErr) {
           console.warn('Firebase bookmark sync notice:', fbErr);
         }
@@ -4642,8 +4691,13 @@
 
 
 
-  // Sign in with Google Handler (Direct Firebase Google OAuth Popup)
+  // Sign in with Google Handler (Popup with Seamless Redirect Fallback)
+  let isGoogleAuthInProgress = false;
+
   async function handleGoogleSignIn() {
+    if (isGoogleAuthInProgress) return;
+    isGoogleAuthInProgress = true;
+
     const errorAlert = document.getElementById('auth-error-alert');
     const btn = document.getElementById('google-auth-btn');
     const label = document.getElementById('google-auth-btn-label');
@@ -4651,6 +4705,7 @@
     const saveLabel = document.getElementById('save-auth-google-btn-label');
 
     function resetGoogleButtons() {
+      isGoogleAuthInProgress = false;
       if (btn) btn.disabled = false;
       if (label) label.textContent = 'Sign in with Google';
       if (saveBtn) saveBtn.disabled = false;
@@ -4663,56 +4718,89 @@
     if (saveBtn) saveBtn.disabled = true;
     if (saveLabel) saveLabel.textContent = 'Initiating Google Sign-In...';
 
-    // 1. Wait for Firebase SDK to be ready if needed
+    // 1. If Firebase SDK is not yet ready, wait briefly
     if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
       await new Promise(resolve => {
         if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
         const handler = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', handler); };
         window.addEventListener('akalbodhon:firebase-ready', handler);
-        setTimeout(resolve, 2200);
+        setTimeout(resolve, 1000);
       });
     }
 
-    // 2. Primary: Real Firebase Google OAuth Popup Authentication
-    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-      try {
-        const profile = await window.AkalbodhonFirebase.signInWithGoogle();
-        if (profile) {
-          // Account created from user's Google account (Name from Google, Identifier = Gmail ID)
-          saveUserSession(profile);
-          closeAuthModal();
-          closeSaveAuthPromptModal();
+    if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+      showAuthError('Firebase Authentication is connecting. Please try again in a few moments.', false);
+      resetGoogleButtons();
+      return;
+    }
 
-          if (typeof renderSavedSection === 'function') renderSavedSection();
-          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
-          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+    // 2. Primary: Firebase Google OAuth Popup
+    try {
+      const profile = await window.AkalbodhonFirebase.signInWithGoogle();
+      if (profile) {
+        saveUserSession(profile);
+        closeAuthModal();
+        closeSaveAuthPromptModal();
 
-          // Bring user straight to home page and top
-          window.location.hash = '';
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (typeof renderSavedSection === 'function') renderSavedSection();
+        if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+        if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
 
-          showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
-          resetGoogleButtons();
-          return;
-        }
-      } catch (fbErr) {
-        console.warn('Firebase Google Sign-In notice:', fbErr);
-        if (fbErr.code === 'auth/popup-closed-by-user') {
-          resetGoogleButtons();
-          return;
-        }
-        if (fbErr.code === 'auth/popup-blocked') {
-          showAuthError('Google sign-in popup was blocked by browser. Please allow popups for this site and try again.', false);
-          resetGoogleButtons();
-          return;
-        }
-        showAuthError(fbErr.message || 'Google sign-in could not be initiated. Please try again or use email/phone.', false);
+        // Bring devotee to home page & top
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
         resetGoogleButtons();
         return;
       }
-    } else {
-      showAuthError('Firebase Authentication is currently connecting. Please wait a moment and try again.', false);
+    } catch (fbErr) {
+      console.warn('Firebase Google Sign-In notice:', fbErr);
+
+      if (fbErr.code === 'auth/popup-closed-by-user') {
+        // Devotee dismissed the popup window voluntarily
+        resetGoogleButtons();
+        return;
+      }
+
+      if (fbErr.code === 'auth/popup-blocked') {
+        // Browser popup blocker prevented window.open — fall back immediately to redirect
+        showAuthError(
+          `<div class="space-y-1.5">
+            <p class="font-medium">Popup was blocked by your browser. Redirecting directly to Google Sign-In...</p>
+            <div class="pt-1">
+              <button type="button" id="auth-force-redirect-btn" class="px-3 py-1 bg-amber-400 text-black font-bold rounded-lg text-xs hover:bg-amber-300 transition-all cursor-pointer shadow-sm">
+                Continue to Google Sign-In ↗
+              </button>
+            </div>
+          </div>`,
+          false
+        );
+
+        const forceBtn = document.getElementById('auth-force-redirect-btn');
+        if (forceBtn) {
+          forceBtn.onclick = () => {
+            window.AkalbodhonFirebase.signInWithGoogleRedirect();
+          };
+        }
+
+        try {
+          await window.AkalbodhonFirebase.signInWithGoogleRedirect();
+          return;
+        } catch (redirErr) {
+          console.error('Redirect sign-in error:', redirErr);
+          showAuthError(
+            'Unable to start Google sign-in redirect. Please allow popups for this site or sign in using email / phone.',
+            false
+          );
+          resetGoogleButtons();
+          return;
+        }
+      }
+
+      showAuthError(fbErr.message || 'Google sign-in could not be completed. Please try again or use email/phone.', false);
       resetGoogleButtons();
+      return;
     }
   }
   window.handleGoogleSignIn = handleGoogleSignIn;
@@ -4980,11 +5068,14 @@
             </div>
           </div>
 
-          <!-- Action: View Plan Button & Share Plan Button -->
+          <!-- Action: View Plan Button & Share Plan Button & Quick Save to Itinerary -->
           <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
             <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
               <span>View Plan</span>
+            </button>
+            <button onclick="event.stopPropagation(); window.savePlanToItinerary('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border ${customPlans.some(p => p.id === plan.id) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500 dark:text-emerald-400' : 'border-outline-variant/40 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:bg-primary/10'} text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="${customPlans.some(p => p.id === plan.id) ? 'Saved in Itinerary (Click to Remove)' : 'Save entire plan to Itinerary'}">
+              <span class="material-symbols-outlined text-[17px]">${customPlans.some(p => p.id === plan.id) ? 'bookmark_added' : 'bookmark_add'}</span>
             </button>
             <button onclick="event.stopPropagation(); window.openSharePlanModal('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-secondary-container dark:border-amber-400/40 text-primary dark:text-amber-300 hover:bg-secondary-container/20 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Share Plan with Friends">
               <span class="material-symbols-outlined text-[17px]">share</span>
@@ -5154,13 +5245,15 @@
     // Save button (adapts for personal itinerary vs shared plan)
     const saveBtn = document.getElementById('vp-save-btn');
     if (saveBtn) {
-      const isMyPlan = currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id);
-      if (!isMyPlan && !plan.is_template) {
-        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_add</span> <span>Save to My Account</span>`;
-        saveBtn.title = `Save plan by ${plan.creator_name || 'Devotee'} to your account`;
+      const isSaved = customPlans.some(p => p.id === plan.id);
+      if (isSaved) {
+        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_added</span> <span>Saved in Itinerary</span>`;
+        saveBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        saveBtn.title = "Click to remove this plan from your Itinerary";
       } else {
         saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark</span> <span>Save to Itinerary</span>`;
-        saveBtn.title = "Save plan pandals to itinerary";
+        saveBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        saveBtn.title = "Save entire plan to your Itinerary";
       }
       saveBtn.onclick = () => {
         window.savePlanToItinerary(plan.id);
@@ -5861,26 +5954,28 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   // Delete Custom Plan
   window.deleteCustomPlan = function (planId) {
     if (!confirm('Are you sure you want to delete this custom Puja plan?')) return;
+    const plan = customPlans.find(p => p.id === planId);
+    const planTitle = plan ? plan.title : 'Plan';
     customPlans = customPlans.filter(p => p.id !== planId);
     localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
 
-    // Delete from Firebase Firestore Database
-    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-      const creatorUid = currentUser ? (currentUser.id || currentUser.user_id) : null;
-      window.AkalbodhonFirebase.deletePlan(planId, creatorUid).catch(() => {});
-      if (currentUser) {
+    if (currentUser) {
+      currentUser.custom_plans = customPlans;
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+      const targetUid = currentUser.id || currentUser.user_id;
+
+      // Delete from Firebase Firestore Database
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        window.AkalbodhonFirebase.deletePlan(planId, targetUid).catch(() => {});
         window.AkalbodhonFirebase.syncProfile({
-          id: creatorUid,
+          id: targetUid,
           custom_plans: customPlans
         }).catch(() => {});
       }
-    }
 
-    if (supabaseClient) {
-      supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
-      if (currentUser) {
+      if (supabaseClient) {
         const targetId = (currentUser.id || '').toLowerCase();
-        const targetUid = currentUser.user_id || currentUser.id;
+        supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
         supabaseClient.from('profiles').update({
           custom_plans: customPlans,
           updated_at: new Date().toISOString()
@@ -5890,57 +5985,94 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     renderFestivalPlans(activePlanFilter);
     renderSavedItinerary(activeSavedTab);
-    showToast('Plan deleted from your collection.', 'delete');
+    showToast(`Plan "${planTitle}" deleted from your collection.`, 'delete');
   };
 
-  // Save Plan to Itinerary & Collection
+  // Remove Plan from Itinerary
+  window.removePlanFromItinerary = function (planId) {
+    const plan = customPlans.find(p => p.id === planId);
+    const planTitle = plan ? plan.title : 'Plan';
+    customPlans = customPlans.filter(p => p.id !== planId);
+    localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+    if (currentUser) {
+      currentUser.custom_plans = customPlans;
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+      const targetUid = currentUser.id || currentUser.user_id;
+
+      // Delete from Firebase Firestore Database
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        window.AkalbodhonFirebase.deletePlan(planId, targetUid).catch(() => {});
+        window.AkalbodhonFirebase.syncProfile({
+          id: targetUid,
+          custom_plans: customPlans
+        }).catch(() => {});
+      }
+
+      if (supabaseClient) {
+        const targetId = (currentUser.id || '').toLowerCase();
+        supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
+        supabaseClient.from('profiles').update({
+          custom_plans: customPlans,
+          updated_at: new Date().toISOString()
+        }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+      }
+    }
+
+    renderFestivalPlans(activePlanFilter);
+    renderSavedItinerary(activeSavedTab);
+    showToast(`Removed "${planTitle}" from your Itinerary`, 'delete');
+
+    // Update modal save button if open
+    const modalSaveBtn = document.getElementById('vp-save-btn');
+    if (modalSaveBtn) {
+      modalSaveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark</span> <span>Save to Itinerary</span>`;
+      modalSaveBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+      modalSaveBtn.title = "Save entire plan to your Itinerary";
+    }
+  };
+
+  // Save Plan to Itinerary as a Whole Puja Plan
   window.savePlanToItinerary = function (planId) {
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 
     const performSave = () => {
-      if (plan.pandals) {
-        plan.pandals.forEach(pName => {
-          const rawName = typeof pName === 'string' ? pName : pName.name;
-          const pandalObj = PANDALS_DATA.find(pd => pd.name.toLowerCase() === rawName.toLowerCase());
-          if (pandalObj) {
-            const currentBookmarks = Storage.getBookmarks();
-            if (!currentBookmarks.some(b => b.id === pandalObj.id)) {
-              Storage.toggleBookmark({
-                id: pandalObj.id,
-                name: pandalObj.name,
-                category: 'Pandal',
-                location: pandalObj.transit,
-                zone: pandalObj.zone,
-                link: pandalObj.locationUrl,
-                image: pandalObj.image
-              });
-            }
-          }
-        });
+      const isAlreadySaved = customPlans.some(p => p.id === plan.id);
+      if (isAlreadySaved) {
+        // Toggle off if already saved
+        window.removePlanFromItinerary(plan.id);
+        return;
       }
 
-      // If it is a custom/shared plan, save into receiver's custom plans in Firestore & Supabase
-      if (!plan.is_template) {
-        if (!customPlans.some(p => p.id === plan.id)) {
-          customPlans.unshift(plan);
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-        }
+      // Save plan as a WHOLE entity in customPlans (do NOT decompose into pandals)
+      const planToSave = {
+        ...plan,
+        saved_to_itinerary: true,
+        saved_at: new Date().toISOString(),
+        creator_id: plan.creator_id || (currentUser ? (currentUser.id || currentUser.user_id) : 'devotee')
+      };
+
+      customPlans.unshift(planToSave);
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+      if (currentUser) {
+        currentUser.custom_plans = customPlans;
+        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+        const targetUid = currentUser.id || currentUser.user_id;
 
         // Firebase Firestore dual-sync
-        if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          const targetUid = currentUser.id || currentUser.user_id;
-          window.AkalbodhonFirebase.savePlan(plan).catch(() => {});
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          window.AkalbodhonFirebase.savePlan(planToSave).catch(() => {});
           window.AkalbodhonFirebase.syncProfile({
             id: targetUid,
             custom_plans: customPlans
           }).catch(() => {});
         }
 
-        if (currentUser && supabaseClient) {
+        if (supabaseClient) {
           const targetId = (currentUser.id || '').toLowerCase();
-          const targetUid = currentUser.user_id || currentUser.id;
           supabaseClient.from('profiles').update({
             custom_plans: customPlans,
             updated_at: new Date().toISOString()
@@ -5948,22 +6080,23 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
       }
 
-      // Sync updated bookmarks to Firebase Firestore
-      if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        const targetUid = currentUser.id || currentUser.user_id;
-        window.AkalbodhonFirebase.saveBookmarks(targetUid, Storage.getBookmarks()).catch(() => {});
-      }
-
-      showToast(`Plan "${plan.title}" (by ${plan.creator_name || 'Devotee'}) saved to your account!`, 'bookmark_added');
+      showToast(`Puja Plan "${plan.title}" saved to your Itinerary!`, 'bookmark_added');
       renderFestivalPlans(activePlanFilter);
       renderSavedItinerary();
-      renderPandals();
+
+      // Update modal save button if open
+      const modalSaveBtn = document.getElementById('vp-save-btn');
+      if (modalSaveBtn) {
+        modalSaveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_added</span> <span>Saved in Itinerary</span>`;
+        modalSaveBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        modalSaveBtn.title = "Click to remove this plan from your Itinerary";
+      }
     };
 
     if (!isUserLoggedIn()) {
       promptAuthBeforeSave({
         title: 'Sign In to Save Plan',
-        message: `Please <strong>log in</strong> or <strong>create an account</strong> to save this plan by <strong>${escapeHtml(plan.creator_name || 'Devotee')}</strong> to your festival collection.`,
+        message: `Please <strong>log in</strong> or <strong>create an account</strong> to save the plan <strong>${escapeHtml(plan.title)}</strong> to your personal itinerary.`,
         categoryName: 'Puja Plans',
         defaultMode: 'login',
         onAuthenticatedSave: performSave
@@ -6868,6 +7001,26 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();
     initScrollReveal();
+
+    // Google Redirect Sign-In Session Recovery
+    function handleRedirectAuthSuccess(profile) {
+      if (!profile) return;
+      saveUserSession(profile);
+      closeAuthModal();
+      closeSaveAuthPromptModal();
+      if (typeof renderSavedSection === 'function') renderSavedSection();
+      if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+      if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+      showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
+    }
+
+    window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
+      handleRedirectAuthSuccess(e.detail);
+    });
+
+    if (window.__akalbodhonRedirectProfile) {
+      handleRedirectAuthSuccess(window.__akalbodhonRedirectProfile);
+    }
 
     // Trigger background remote data synchronizer (Firestore + Supabase)
     setTimeout(syncAllRemoteData, 50);
