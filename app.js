@@ -7078,6 +7078,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         checkFeedbackCooldown();
         showToast('Feedback email delivered! We appreciate your suggestions. 🙏', 'check_circle');
       });
+    }
+
     // Initial check on load
     checkFeedbackCooldown();
 
