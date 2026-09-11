@@ -154,6 +154,7 @@ export const AkalbodhonFirebase = {
       custom_avatar_url: existingData.custom_avatar_url || user.photoURL || null,
       saved_items: restoredSavedItems,
       custom_plans: restoredPlans,
+      feedback_cooldown_until: existingData.feedback_cooldown_until || null,
       created_at: existingData.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
@@ -273,6 +274,7 @@ export const AkalbodhonFirebase = {
         avatar: extraData.avatar || '🪔',
         saved_items: Array.isArray(extraData.saved_items) ? extraData.saved_items : [],
         custom_plans: Array.isArray(extraData.custom_plans) ? extraData.custom_plans : [],
+        feedback_cooldown_until: extraData.feedback_cooldown_until || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       };
@@ -336,6 +338,7 @@ export const AkalbodhonFirebase = {
         avatar: existingProfile?.avatar || '🪔',
         saved_items: existingProfile?.saved_items || [],
         custom_plans: existingProfile?.custom_plans || [],
+        feedback_cooldown_until: existingProfile?.feedback_cooldown_until || null,
         created_at: existingProfile?.created_at || new Date().toISOString(),
         updated_at: new Date().toISOString()
       };

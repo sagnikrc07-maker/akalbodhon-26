@@ -913,8 +913,20 @@
             custom_avatar_url: null,
             saved_items: restoredSavedItems,
             custom_plans: restoredCustomPlans,
+            feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
             created_at: foundProfile.created_at || new Date().toISOString()
           };
+
+          // Synchronize account-specific feedback cooldown timer immediately
+          if (foundProfile.feedback_cooldown_until) {
+            const exp = parseInt(foundProfile.feedback_cooldown_until, 10);
+            const uid = String(authenticatedUser.id || authenticatedUser.user_id || authenticatedUser.identifier).toLowerCase().replace(/[^a-z0-9]/g, '_');
+            if (!isNaN(exp) && exp > Date.now()) {
+              localStorage.setItem('akalbodhon_feedback_cooldown_' + uid, exp.toString());
+            } else {
+              localStorage.removeItem('akalbodhon_feedback_cooldown_' + uid);
+            }
+          }
 
           if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
             window.AkalbodhonFirebase.syncProfile(authenticatedUser).catch(() => {});

@@ -4038,6 +4038,32 @@
           if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter || 'all');
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
         }
+
+        // Sync account-specific feedback cooldown timer from remote database on login
+        const userDocId = currentUser.id || currentUser.user_id || currentUser.identifier;
+        if (userDocId && typeof window.AkalbodhonFirebase.getProfile === 'function') {
+          const profile = await window.AkalbodhonFirebase.getProfile(userDocId);
+          if (profile && profile.feedback_cooldown_until !== undefined) {
+            const exp = parseInt(profile.feedback_cooldown_until, 10);
+            const key = typeof getFeedbackCooldownKey === 'function' ? getFeedbackCooldownKey(currentUser) : null;
+            if (key) {
+              if (!isNaN(exp) && exp > Date.now()) {
+                localStorage.setItem(key, exp.toString());
+                currentUser.feedback_cooldown_until = exp;
+                localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+              } else {
+                localStorage.removeItem(key);
+                if (currentUser.feedback_cooldown_until) {
+                  delete currentUser.feedback_cooldown_until;
+                  localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+                }
+              }
+            }
+            if (typeof window.checkFeedbackCooldown === 'function') {
+              window.checkFeedbackCooldown();
+            }
+          }
+        }
       } catch (e) {
         console.warn('Firestore user data background restore notice:', e);
       }
@@ -4049,6 +4075,19 @@
     currentUser = user;
     if (user) {
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+
+      // Restore account-specific feedback cooldown immediately
+      if (user.feedback_cooldown_until) {
+        const exp = parseInt(user.feedback_cooldown_until, 10);
+        const key = typeof getFeedbackCooldownKey === 'function' ? getFeedbackCooldownKey(user) : null;
+        if (key) {
+          if (!isNaN(exp) && exp > Date.now()) {
+            localStorage.setItem(key, exp.toString());
+          } else {
+            localStorage.removeItem(key);
+          }
+        }
+      }
 
       // Restore user-specific saved items immediately if present
       if (Array.isArray(user.saved_items) && user.saved_items.length > 0) {
@@ -4765,6 +4804,7 @@
           custom_avatar_url: null,
           saved_items: restoredSavedItems,
           custom_plans: customPlans,
+          feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
           created_at: foundProfile.created_at || new Date().toISOString()
         };
 
@@ -7148,11 +7188,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const SEVEN_HOURS_MS = 7 * 60 * 60 * 1000;
     let feedbackCooldownInterval = null;
 
-    function getFeedbackCooldownKey() {
-      const id = (currentUser && (currentUser.identifier || currentUser.email || currentUser.phone || currentUser.id || currentUser.user_id))
-        ? (currentUser.identifier || currentUser.email || currentUser.phone || currentUser.id)
-        : 'guest_devotee';
-      return `akalbodhon_feedback_cooldown_${id.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    function getFeedbackCooldownKey(user = currentUser) {
+      if (!user) return 'akalbodhon_feedback_cooldown_guest';
+      const id = String(user.id || user.user_id || user.identifier || user.email || user.phone || 'guest').trim().toLowerCase();
+      return `akalbodhon_feedback_cooldown_${id.replace(/[^a-z0-9]/g, '_')}`;
     }
 
     function updateFeedbackAuthBanner() {
@@ -7188,11 +7227,22 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       updateFeedbackAuthBanner();
       if (!feedbackFormArea || !feedbackThanks) return;
 
-      const key = getFeedbackCooldownKey();
+      const key = getFeedbackCooldownKey(currentUser);
       const storedExpiry = localStorage.getItem(key);
+      const userProfileExpiry = currentUser?.feedback_cooldown_until ? parseInt(currentUser.feedback_cooldown_until, 10) : 0;
 
-      if (!storedExpiry) {
-        // No active cooldown: show feedback form, hide thanks message
+      let expiry = 0;
+      if (storedExpiry) {
+        expiry = Math.max(expiry, parseInt(storedExpiry, 10) || 0);
+      }
+      if (userProfileExpiry && !isNaN(userProfileExpiry)) {
+        expiry = Math.max(expiry, userProfileExpiry);
+      }
+
+      const now = Date.now();
+      if (!expiry || expiry <= now) {
+        // No active cooldown for this devotee account
+        if (storedExpiry) localStorage.removeItem(key);
         if (feedbackCooldownInterval) {
           clearInterval(feedbackCooldownInterval);
           feedbackCooldownInterval = null;
@@ -7207,15 +7257,26 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         return;
       }
 
-      const expiry = parseInt(storedExpiry, 10);
+      // Ensure active expiry is mirrored in localStorage for this account
+      localStorage.setItem(key, expiry.toString());
 
       const updateTimer = () => {
-        const now = Date.now();
-        const diffMs = expiry - now;
+        const currentTime = Date.now();
+        const diffMs = expiry - currentTime;
 
         if (diffMs <= 0) {
-          // Timer hits zero: clear cooldown and refresh feedback section for this specific user
+          // Timer reached zero: clear cooldown & restore form for this account
           localStorage.removeItem(key);
+          if (currentUser && currentUser.feedback_cooldown_until) {
+            delete currentUser.feedback_cooldown_until;
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+              window.AkalbodhonFirebase.syncProfile({
+                id: currentUser.id || currentUser.user_id || currentUser.identifier,
+                feedback_cooldown_until: null
+              }).catch(() => {});
+            }
+          }
           if (feedbackCooldownInterval) {
             clearInterval(feedbackCooldownInterval);
             feedbackCooldownInterval = null;
@@ -7234,25 +7295,28 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         feedbackFormArea.classList.add('hidden');
         feedbackThanks.classList.remove('hidden');
 
-        if (diffMs >= 60 * 60 * 1000) {
-          // 1 hour or more remaining: display in hours (e.g., 7h, 6h, ..., 1h)
-          const hoursLeft = Math.ceil(diffMs / (60 * 60 * 1000));
-          if (feedbackCooldownTimer) {
-            feedbackCooldownTimer.textContent = `${hoursLeft}h`;
-          }
-        } else {
-          // Less than one hour left: adjust into minutes from 60 minute to 0
-          const minsLeft = Math.max(0, Math.ceil(diffMs / (60 * 1000)));
-          if (feedbackCooldownTimer) {
-            feedbackCooldownTimer.textContent = `${minsLeft}m`;
+        // Live precision countdown: displays hours, minutes, and ticking seconds
+        const totalSecs = Math.max(0, Math.floor(diffMs / 1000));
+        const hours = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+
+        if (feedbackCooldownTimer) {
+          if (hours > 0) {
+            feedbackCooldownTimer.textContent = `${hours}h ${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`;
+          } else if (mins > 0) {
+            feedbackCooldownTimer.textContent = `${mins}m ${secs.toString().padStart(2, '0')}s`;
+          } else {
+            feedbackCooldownTimer.textContent = `${secs}s`;
           }
         }
       };
 
       updateTimer();
-      if (!feedbackCooldownInterval) {
-        feedbackCooldownInterval = setInterval(updateTimer, 1000);
+      if (feedbackCooldownInterval) {
+        clearInterval(feedbackCooldownInterval);
       }
+      feedbackCooldownInterval = setInterval(updateTimer, 1000);
     }
 
     // Expose checkFeedbackCooldown globally so account changes can trigger it
@@ -7402,14 +7466,34 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           localStorage.setItem('akalbodhon_feedback', JSON.stringify(feedbackList));
         } catch (e) {}
 
-        // Set 7-hour cooldown timer for this specific user
-        const key = getFeedbackCooldownKey();
+        // Set 7-hour cooldown timer linked specifically to this user's account
+        const key = getFeedbackCooldownKey(currentUser);
         const expiryTime = Date.now() + SEVEN_HOURS_MS;
         localStorage.setItem(key, expiryTime.toString());
 
+        currentUser.feedback_cooldown_until = expiryTime;
+        localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+
+        // Sync cooldown to Firebase Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          window.AkalbodhonFirebase.syncProfile({
+            id: currentUser.id || currentUser.user_id || currentUser.identifier,
+            feedback_cooldown_until: expiryTime
+          }).catch(() => {});
+        }
+
+        // Sync cooldown to Supabase
+        if (supabaseClient) {
+          const targetId = (currentUser.id || currentUser.user_id || '').toLowerCase();
+          supabaseClient.from('profiles').update({
+            feedback_cooldown_until: expiryTime,
+            updated_at: new Date().toISOString()
+          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetId}`).then(() => {});
+        }
+
         // Update UI with cooldown state
         checkFeedbackCooldown();
-        showToast('Feedback email delivered! We appreciate your suggestions. 🙏', 'check_circle');
+        showToast('Feedback email delivered! We appreciate your valuable suggestions. 🙏', 'check_circle');
       });
     }
 
