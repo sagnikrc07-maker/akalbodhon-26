@@ -4131,6 +4131,14 @@
         console.warn('Pending save action error:', e);
       }
     }
+
+    if (user && pendingPlanJoinId) {
+      const targetJoinId = pendingPlanJoinId;
+      pendingPlanJoinId = null;
+      setTimeout(() => {
+        joinPlanAsMember(targetJoinId, user);
+      }, 250);
+    }
   }
 
   // Update Header Account Button & Avatar
@@ -4595,7 +4603,30 @@
         }
 
         const initialSaved = Storage.getBookmarks() || [];
-        const newProfile = {
+
+        // 1. Include devotee in Firebase Database's official Authentication section (auth.users)
+        let fbProfile = null;
+        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
+          try {
+            fbProfile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
+              avatar: '🪔',
+              saved_items: initialSaved,
+              custom_plans: customPlans || []
+            });
+          } catch (fbAuthErr) {
+            console.warn('Firebase Auth registration notice:', fbAuthErr);
+            if (fbAuthErr.code === 'auth/email-already-in-use') {
+              showAuthError('An account with this email or phone number already exists in Firebase. Please sign in instead.', isPage);
+              setTimeout(() => {
+                if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
+                else if (isPage) document.getElementById('page-tab-login')?.click();
+              }, 2200);
+              return;
+            }
+          }
+        }
+
+        const newProfile = fbProfile || {
           id: safeDocId,
           user_id: rawIdentifier,
           identifier: rawIdentifier,
@@ -4611,6 +4642,7 @@
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
+        newProfile.password_hash = passwordHash;
 
         // Save to Firebase Firestore Database ('users' collection)
         if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
@@ -4641,8 +4673,28 @@
         // --- SIGN IN ---
         let foundProfile = null;
 
-        // 1. Try Firebase Firestore
-        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+        // 1. Sign in via Firebase Authentication or automatically include first-time manual logins in Authentication section
+        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
+          try {
+            const fbLoginUser = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
+              avatar: '🪔',
+              saved_items: Storage.getBookmarks() || [],
+              custom_plans: customPlans || []
+            });
+            if (fbLoginUser) {
+              foundProfile = fbLoginUser;
+            }
+          } catch (fbErr) {
+            console.warn('Firebase signInWithEmailPassword notice:', fbErr);
+            if (fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
+              showAuthError('Incorrect password. Please verify your password and try again.', isPage);
+              return;
+            }
+          }
+        }
+
+        // 2. Try Firebase Firestore profile lookup if not resolved
+        if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
           try {
             foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
           } catch (e) {
@@ -4656,7 +4708,7 @@
           } catch (e) {}
         }
 
-        // 2. Supabase fallback
+        // 3. Supabase fallback
         if (!foundProfile && supabaseClient) {
           try {
             const { data } = await supabaseClient
@@ -4670,7 +4722,7 @@
           }
         }
 
-        // 3. Cached profile fallback
+        // 4. Cached profile fallback
         if (!foundProfile) {
           const cached = localStorage.getItem('akalbodhon_user_profile');
           if (cached) {
@@ -5186,6 +5238,88 @@
     return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
   }
 
+  // Active listener unsubscribe handle for real-time plan members sync
+  let activePlanListenerUnsub = null;
+
+  // Join a shared Puja plan as a devotee hopping together
+  async function joinPlanAsMember(planId, userProfile) {
+    if (!planId) return;
+    const profile = userProfile || currentUser;
+    if (!profile) {
+      pendingPlanJoinId = planId;
+      promptAuthBeforeSave({
+        title: 'Join Friends Hopping Together',
+        message: 'Please <strong>log in</strong> or <strong>create an account</strong> to add your devotee name under Friends Hopping Together for this Puja plan.',
+        categoryName: 'Puja Plans',
+        defaultMode: 'signup',
+        onAuthenticatedSave: () => {
+          if (currentUser) {
+            joinPlanAsMember(planId, currentUser);
+          }
+        }
+      });
+      return;
+    }
+
+    const cleanPlanId = String(planId).trim();
+    const memberId = profile.id || profile.user_id || profile.uid;
+    const memberName = profile.username || profile.user_id || 'Devotee';
+    const memberAvatar = profile.avatar || '🪔';
+
+    const newMember = {
+      plan_id: cleanPlanId,
+      user_id: memberId,
+      user_name: memberName,
+      user_avatar: memberAvatar,
+      role: 'member',
+      joined_at: new Date().toISOString()
+    };
+
+    let updatedMembers = null;
+    if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.addPlanMember === 'function') {
+      try {
+        updatedMembers = await window.AkalbodhonFirebase.addPlanMember(cleanPlanId, newMember);
+      } catch (e) {
+        console.warn('Firebase addPlanMember error:', e);
+      }
+    }
+
+    // Sync to Supabase if available
+    if (supabaseClient) {
+      try {
+        supabaseClient.from('plan_members').upsert(newMember).then(() => {});
+      } catch (e) {}
+    }
+
+    // Update local plans cache & localStorage
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    let plan = allPlans.find(p => p.id === cleanPlanId);
+    if (plan) {
+      if (updatedMembers && Array.isArray(updatedMembers)) {
+        plan.members = updatedMembers;
+      } else {
+        plan.members = Array.isArray(plan.members) ? plan.members : [];
+        const exists = plan.members.some(m => m.user_id === memberId || m.user_name === memberName);
+        if (!exists) plan.members.push(newMember);
+      }
+      if (!customPlans.some(p => p.id === plan.id) && !plan.is_template) {
+        customPlans.unshift(plan);
+      }
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+    }
+
+    if (typeof renderFestivalPlans === 'function') {
+      renderFestivalPlans(activePlanFilter);
+    }
+
+    const modal = document.getElementById('view-plan-modal');
+    if (modal && !modal.classList.contains('hidden') && typeof window.openViewPlanModal === 'function') {
+      window.openViewPlanModal(cleanPlanId);
+    }
+    showToast(`🪔 You are now hopping together on "${plan?.title || 'Puja Plan'}"!`, 'celebration');
+  }
+  window.joinPlanAsMember = joinPlanAsMember;
+
   // ========================================================
   // VIEW FULL PUJA PLAN OVERLAY MODAL ENGINE
   // ========================================================
@@ -5307,19 +5441,86 @@
     // Friends hopping together
     const membersSec = document.getElementById('vp-members-section');
     const membersList = document.getElementById('vp-members-list');
-    const members = plan.members || [];
-    if (membersSec && membersList) {
-      if (members.length > 0) {
+
+    function renderPlanMembersList(membersArray) {
+      if (!membersSec || !membersList) return;
+      let list = Array.isArray(membersArray) ? [...membersArray] : [];
+
+      // If members array is empty, include creator as host
+      if (list.length === 0 && (plan.creator_name || plan.creator_id)) {
+        list = [{
+          user_id: plan.creator_id || 'creator',
+          user_name: plan.creator_name || 'Host',
+          user_avatar: plan.creator_avatar || '🌺',
+          role: 'creator'
+        }];
+      }
+
+      if (list.length > 0 || !plan.is_template) {
         membersSec.classList.remove('hidden');
-        membersList.innerHTML = members.map(m => `
-          <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container dark:bg-[#2c261b] border border-outline-variant/30 dark:border-amber-400/20 text-xs shadow-sm">
-            <span>${m.user_avatar || '🪔'}</span>
-            <span class="font-medium text-on-surface dark:text-white text-[11px]">${m.user_name || 'Member'}</span>
-          </div>
-        `).join('');
+
+        let html = list.map(m => {
+          const isCreator = m.role === 'creator' || (plan.creator_id && (m.user_id === plan.creator_id || m.id === plan.creator_id));
+          const isMe = currentUser && (m.user_id === currentUser.id || m.user_id === currentUser.user_id || (currentUser.username && m.user_name === currentUser.username));
+          const avatar = m.user_avatar || (isCreator ? (plan.creator_avatar || '🌺') : '🪔');
+          const name = m.user_name || (isCreator ? (plan.creator_name || 'Host') : 'Devotee');
+
+          return `
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isCreator ? 'bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-200' : 'bg-surface-container-high dark:bg-[#2c261b] border-outline-variant/30 dark:border-amber-400/20 text-on-surface dark:text-white'} border text-xs shadow-sm transition-all hover:scale-105">
+              <span class="text-sm">${avatar}</span>
+              <span class="font-bold text-xs truncate max-w-[130px]">${name}${isMe ? ' (You)' : ''}</span>
+              ${isCreator 
+                ? '<span class="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-400 text-black font-extrabold uppercase tracking-wider ml-0.5">Host</span>' 
+                : '<span class="text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold ml-0.5">Hopping</span>'
+              }
+            </div>
+          `;
+        }).join('');
+
+        // If current user is not yet in members list and it is not a fixed template, show Join button
+        const isUserAlreadyIn = currentUser && list.some(m => 
+          (m.user_id && (m.user_id === currentUser.id || m.user_id === currentUser.user_id)) || 
+          (currentUser.username && m.user_name === currentUser.username)
+        );
+        if (!isUserAlreadyIn && !plan.is_template) {
+          html += `
+            <button type="button" onclick="window.joinPlanAsMember('${plan.id}', window.currentUser)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 dark:bg-amber-400/20 dark:hover:bg-amber-400/30 text-primary dark:text-amber-300 border border-primary/30 dark:border-amber-400/40 text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer" title="Add your devotee name to this shared plan">
+              <span class="material-symbols-outlined text-[14px]">person_add</span>
+              <span>Join Hopping Group</span>
+            </button>
+          `;
+        }
+
+        membersList.innerHTML = html;
       } else {
         membersSec.classList.add('hidden');
       }
+    }
+
+    renderPlanMembersList(plan.members || []);
+
+    // Fetch freshest plan from Firebase Firestore so creator & all receivers see everyone who joined
+    if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
+      window.AkalbodhonFirebase.fetchPlanById(plan.id).then(fresh => {
+        if (fresh && Array.isArray(fresh.members)) {
+          plan.members = fresh.members;
+          renderPlanMembersList(fresh.members);
+        }
+      }).catch(() => {});
+    }
+
+    // Set up real-time listener so changes from any receiver appear immediately without refresh
+    if (activePlanListenerUnsub) {
+      try { activePlanListenerUnsub(); } catch (e) {}
+      activePlanListenerUnsub = null;
+    }
+    if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.listenToPlan === 'function') {
+      activePlanListenerUnsub = window.AkalbodhonFirebase.listenToPlan(plan.id, (fresh) => {
+        if (fresh && Array.isArray(fresh.members)) {
+          plan.members = fresh.members;
+          renderPlanMembersList(fresh.members);
+        }
+      });
     }
 
     // Share button
@@ -5369,6 +5570,10 @@
   };
 
   window.closeViewPlanModal = function () {
+    if (activePlanListenerUnsub) {
+      try { activePlanListenerUnsub(); } catch (e) {}
+      activePlanListenerUnsub = null;
+    }
     const modal = document.getElementById('view-plan-modal');
     if (modal) {
       document.body.classList.remove('modal-open');
@@ -6007,37 +6212,9 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
         showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
 
-        // If user is logged in, attach this shared plan to receiver's logged in account
+        // If receiver is logged in, attach this shared plan to receiver's account & add to Friends Hopping Together in Firestore
         if (currentUser) {
-          plan.members = plan.members || [];
-          const isAlreadyMember = plan.members.some(m => m.user_id === currentUser.id || m.user_id === currentUser.user_id);
-          if (!isAlreadyMember) {
-            const newMember = {
-              plan_id: plan.id,
-              user_id: currentUser.id || currentUser.user_id,
-              user_name: currentUser.username || currentUser.user_id || 'Devotee',
-              user_avatar: currentUser.avatar || '🪔',
-              role: plan.creator_id === currentUser.id ? 'creator' : 'member'
-            };
-            plan.members.push(newMember);
-            if (supabaseClient) {
-              try {
-                supabaseClient.from('plan_members').upsert(newMember).then(() => {});
-              } catch (e) {
-                console.warn('Member sync notice:', e);
-              }
-            }
-          }
-          // Save to receiver's profile in Supabase so it appears on all devices
-          if (supabaseClient) {
-            const targetId = (currentUser.id || '').toLowerCase();
-            const targetUid = currentUser.user_id || currentUser.id;
-            supabaseClient.from('profiles').update({
-              custom_plans: customPlans,
-              updated_at: new Date().toISOString()
-            }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
-          }
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          joinPlanAsMember(plan.id, currentUser);
         } else {
           pendingPlanJoinId = plan.id;
         }

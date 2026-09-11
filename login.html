@@ -737,7 +737,31 @@
             if (p) initialPlans = JSON.parse(p);
           } catch (e) {}
 
-          const newProfile = {
+          // 1. Include devotee in Firebase Authentication section (auth.users)
+          let fbProfile = null;
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
+            try {
+              const regResult = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
+                avatar: '🪔',
+                saved_items: initialSaved,
+                custom_plans: initialPlans
+              });
+              if (regResult) {
+                fbProfile = regResult.profile || regResult;
+              }
+            } catch (fbAuthErr) {
+              console.warn('Firebase Auth registration notice:', fbAuthErr);
+              if (fbAuthErr.code === 'auth/email-already-in-use') {
+                showAlert('An account with this email or phone number already exists in Firebase. Please sign in instead.');
+                setTimeout(() => {
+                  setAuthMode('login');
+                }, 2200);
+                return;
+              }
+            }
+          }
+
+          const newProfile = fbProfile || {
             id: safeDocId,
             user_id: rawIdentifier,
             identifier: rawIdentifier,
@@ -753,6 +777,7 @@
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
+          newProfile.password_hash = passwordHash;
 
           // Save to Firebase Firestore ('users' collection)
           if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
@@ -778,8 +803,26 @@
           // --- SIGN IN ---
           let foundProfile = null;
 
-          // 1. Try Firebase Firestore
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+          // 1. Sign in via Firebase Authentication or automatically include first-time manual logins in Authentication section
+          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
+            try {
+              const fbLoginRes = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
+                avatar: '🪔'
+              });
+              if (fbLoginRes) {
+                foundProfile = fbLoginRes.profile || fbLoginRes.user || fbLoginRes;
+              }
+            } catch (fbErr) {
+              console.warn('Firebase signInWithEmailPassword notice:', fbErr);
+              if (fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
+                showAlert('Incorrect password. Please verify your password and try again.');
+                return;
+              }
+            }
+          }
+
+          // 2. Try Firebase Firestore
+          if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
             try {
               foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
             } catch (e) {
@@ -793,7 +836,7 @@
             } catch (e) {}
           }
 
-          // 2. Supabase fallback
+          // 3. Supabase fallback
           if (!foundProfile && supabaseClient) {
             try {
               const { data, error: fetchErr } = await supabaseClient

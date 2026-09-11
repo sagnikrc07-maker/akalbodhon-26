@@ -8,21 +8,29 @@ import {
   getAuth, 
   GoogleAuthProvider, 
   signInWithPopup, 
-  signInWithRedirect,
-  getRedirectResult,
+  signInWithRedirect, 
+  getRedirectResult, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
   getFirestore, 
+  initializeFirestore,
   doc, 
   setDoc, 
   getDoc, 
+  getDocFromCache,
   collection, 
   getDocs, 
   query, 
-  where,
-  deleteDoc 
+  where, 
+  deleteDoc,
+  onSnapshot,
+  updateDoc,
+  arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Official Firebase Web Client Config for akalbodhon-6a71a
@@ -44,7 +52,13 @@ let googleProvider = null;
 try {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
-  db = getFirestore(app);
+  try {
+    db = initializeFirestore(app, {
+      experimentalAutoDetectLongPolling: true
+    });
+  } catch (e) {
+    db = getFirestore(app);
+  }
   googleProvider = new GoogleAuthProvider();
   googleProvider.setCustomParameters({ prompt: 'select_account' });
   console.log("🕉️ Firebase initialized for akalbodhon-6a71a");
@@ -53,7 +67,7 @@ try {
 }
 
 // Timeout helper so Firestore never hangs the main thread or promises
-const DEFAULT_TIMEOUT_MS = 2500;
+const DEFAULT_TIMEOUT_MS = 6000;
 function withTimeout(promise, ms = DEFAULT_TIMEOUT_MS) {
   return Promise.race([
     promise,
@@ -195,6 +209,140 @@ export const AkalbodhonFirebase = {
       sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
       console.warn("Redirect authentication check notice:", err);
       throw err;
+    }
+    return null;
+  },
+
+  // 1d. Convert raw email or phone number into valid Firebase Authentication email
+  formatAuthEmail(identifier) {
+    if (!identifier) return '';
+    const clean = String(identifier).trim().toLowerCase();
+    if (clean.includes('@') && clean.includes('.')) {
+      return clean;
+    }
+    // Phone numbers or custom IDs: format deterministic valid email for Firebase Authentication
+    const digitsOnly = clean.replace(/[^0-9]/g, '');
+    if (digitsOnly.length >= 7) {
+      return `${digitsOnly}@akalbodhon.com`;
+    }
+    const safeStr = clean.replace(/[^a-z0-9]/g, '_');
+    return `${safeStr || 'devotee'}@akalbodhon.com`;
+  },
+
+  // 1e. Register devotee with manual email/phone into Firebase Authentication section & Firestore
+  async registerWithEmailPassword(identifier, password, displayName = '', extraData = {}) {
+    if (!auth) throw new Error("Firebase Auth is not initialized.");
+    const authEmail = this.formatAuthEmail(identifier);
+    if (!authEmail) throw new Error("Invalid email or phone number provided.");
+
+    let userCredential = null;
+    try {
+      userCredential = await createUserWithEmailAndPassword(auth, authEmail, password);
+    } catch (err) {
+      if (err.code === 'auth/email-already-in-use') {
+        try {
+          userCredential = await signInWithEmailAndPassword(auth, authEmail, password);
+        } catch (signInErr) {
+          throw err;
+        }
+      } else {
+        throw err;
+      }
+    }
+
+    if (userCredential && userCredential.user) {
+      const fbUser = userCredential.user;
+      if (displayName) {
+        try {
+          await updateProfile(fbUser, { displayName });
+        } catch (e) {}
+      }
+
+      const cleanUid = String(fbUser.uid);
+      const isEmail = identifier.includes('@') && identifier.includes('.');
+      const profile = {
+        id: cleanUid,
+        user_id: String(identifier).trim(),
+        uid: cleanUid,
+        firebase_uid: cleanUid,
+        identifier: String(identifier).trim(),
+        identifier_type: isEmail ? 'email' : 'phone',
+        email: isEmail ? String(identifier).trim() : authEmail,
+        phone: !isEmail ? String(identifier).trim() : null,
+        username: displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
+        avatar: extraData.avatar || '🪔',
+        saved_items: Array.isArray(extraData.saved_items) ? extraData.saved_items : [],
+        custom_plans: Array.isArray(extraData.custom_plans) ? extraData.custom_plans : [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      // Sync with Firestore database under both UID and safeDocId
+      await this.syncProfile(profile);
+      const safeDocId = String(identifier).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+      if (safeDocId && safeDocId !== cleanUid.toLowerCase()) {
+        try {
+          const aliasRef = doc(db, "users", safeDocId);
+          await withTimeout(setDoc(aliasRef, profile, { merge: true }), 2000);
+        } catch (e) {}
+      }
+
+      localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
+      return profile;
+    }
+    return null;
+  },
+
+  // 1f. Sign in devotee via Firebase Authentication, with automatic account creation on first manual login
+  async signInWithEmailPassword(identifier, password, autoCreateIfNew = true, displayName = '', extraData = {}) {
+    if (!auth) throw new Error("Firebase Auth is not initialized.");
+    const authEmail = this.formatAuthEmail(identifier);
+    if (!authEmail) throw new Error("Invalid email or phone number.");
+
+    let fbUser = null;
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, authEmail, password);
+      fbUser = userCred.user;
+    } catch (err) {
+      // First-time manual login: automatically register user in Firebase Authentication!
+      if (autoCreateIfNew && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
+        try {
+          return await this.registerWithEmailPassword(identifier, password, displayName, extraData);
+        } catch (createErr) {
+          throw err;
+        }
+      }
+      throw err;
+    }
+
+    if (fbUser) {
+      let existingProfile = await this.getProfile(fbUser.uid);
+      if (!existingProfile) {
+        const safeDocId = String(identifier).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+        existingProfile = await this.getProfile(safeDocId) || await this.getProfileByIdentifier(identifier);
+      }
+
+      const isEmail = identifier.includes('@') && identifier.includes('.');
+      const profile = {
+        id: fbUser.uid,
+        user_id: existingProfile?.user_id || String(identifier).trim(),
+        uid: fbUser.uid,
+        firebase_uid: fbUser.uid,
+        identifier: existingProfile?.identifier || String(identifier).trim(),
+        identifier_type: existingProfile?.identifier_type || (isEmail ? 'email' : 'phone'),
+        email: isEmail ? String(identifier).trim() : (existingProfile?.email || authEmail),
+        phone: !isEmail ? String(identifier).trim() : (existingProfile?.phone || null),
+        username: existingProfile?.username || fbUser.displayName || displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
+        avatar: existingProfile?.avatar || '🪔',
+        saved_items: existingProfile?.saved_items || [],
+        custom_plans: existingProfile?.custom_plans || [],
+        created_at: existingProfile?.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+
+      await this.syncProfile(profile);
+      localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
+      return profile;
     }
     return null;
   },
@@ -375,33 +523,37 @@ export const AkalbodhonFirebase = {
     try {
       // 1. Save to global 'plans/{planId}' so shared links open properly for recipients
       const planRef = doc(db, "plans", planId);
-      await withTimeout(setDoc(planRef, payload, { merge: true }), 2500);
+      await setDoc(planRef, payload, { merge: true });
 
-      // 2. Save specifically under creator's credentials
-      for (const creatorId of creatorIds) {
-        const userPlanRef = doc(db, "users", creatorId, "plans", planId);
-        await withTimeout(setDoc(userPlanRef, payload, { merge: true }), 2000).catch(() => {});
+      // 2. Non-blocking update under creator's credentials & profile
+      if (creatorIds.length > 0) {
+        (async () => {
+          for (const creatorId of creatorIds) {
+            try {
+              const userPlanRef = doc(db, "users", creatorId, "plans", planId);
+              setDoc(userPlanRef, payload, { merge: true }).catch(() => {});
 
-        // 3. Update user document's custom_plans list
-        try {
-          const userRef = doc(db, "users", creatorId);
-          const userSnap = await withTimeout(getDoc(userRef), 1500);
-          let userPlans = [];
-          if (userSnap && userSnap.exists()) {
-            userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
+              const userRef = doc(db, "users", creatorId);
+              const userSnap = await withTimeout(getDoc(userRef), 2000).catch(() => null);
+              let userPlans = [];
+              if (userSnap && userSnap.exists()) {
+                userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
+              }
+              const filtered = userPlans.filter(p => p.id !== planId);
+              filtered.unshift(payload);
+              setDoc(userRef, {
+                custom_plans: filtered,
+                updated_at: new Date().toISOString()
+              }, { merge: true }).catch(() => {});
+            } catch (e) {}
           }
-          const filtered = userPlans.filter(p => p.id !== planId);
-          filtered.unshift(payload);
-          await withTimeout(setDoc(userRef, {
-            custom_plans: filtered,
-            updated_at: new Date().toISOString()
-          }, { merge: true }), 2000).catch(() => {});
-        } catch (e) {}
+        })().catch(() => {});
       }
 
       return true;
     } catch (err) {
       console.warn("Firestore save plan notice:", err.message || err);
+      this.lastError = err.message || String(err);
       return false;
     }
   },
@@ -428,10 +580,24 @@ export const AkalbodhonFirebase = {
         // Check users/{creatorId}/plans subcollection
         try {
           const userPlansRef = collection(db, "users", creatorId, "plans");
-          const userPlansSnap = await withTimeout(getDocs(userPlansRef), 2000);
-          if (userPlansSnap) {
-            userPlansSnap.forEach(d => {
-              const p = d.data();
+          const qSnap = await withTimeout(getDocs(userPlansRef), 2000);
+          if (qSnap && !qSnap.empty) {
+            qSnap.forEach(docSnap => {
+              const p = docSnap.data();
+              if (p && p.id) plansMap.set(p.id, p);
+            });
+          }
+        } catch (e) {}
+      }
+
+      // Also check top-level plans created by this user
+      for (const creatorId of creatorIds) {
+        try {
+          const q = query(collection(db, "plans"), where("creator_id", "==", creatorId));
+          const snap = await withTimeout(getDocs(q), 2000);
+          if (snap && !snap.empty) {
+            snap.forEach(docSnap => {
+              const p = docSnap.data();
               if (p && p.id) plansMap.set(p.id, p);
             });
           }
@@ -451,8 +617,10 @@ export const AkalbodhonFirebase = {
     const cleanId = String(planId).trim();
     try {
       const planRef = doc(db, "plans", cleanId);
-      const snap = await withTimeout(getDoc(planRef), 2500);
-      if (snap && snap.exists()) {
+      const snap = await withTimeout(getDoc(planRef), 3500).catch(async () => {
+        try { return await getDocFromCache(planRef); } catch (e) { return null; }
+      });
+      if (snap && snap.exists && snap.exists()) {
         return snap.data();
       }
       return null;
@@ -466,7 +634,7 @@ export const AkalbodhonFirebase = {
   async fetchAllPlans() {
     if (!db) return [];
     try {
-      const snap = await withTimeout(getDocs(collection(db, "plans")), 2500);
+      const snap = await withTimeout(getDocs(collection(db, "plans")), 4000).catch(() => null);
       const plans = [];
       if (snap) {
         snap.forEach(docSnap => {
@@ -477,6 +645,102 @@ export const AkalbodhonFirebase = {
     } catch (err) {
       console.warn("Firestore fetch all plans notice:", err.message || err);
       return [];
+    }
+  },
+
+  // 9b. Add Receiver to Friends Hopping Together for a Shared Plan in Firestore
+  async addPlanMember(planId, member) {
+    if (!db || !planId || !member) return null;
+    const cleanPlanId = String(planId).trim();
+    try {
+      const planRef = doc(db, "plans", cleanPlanId);
+      const planSnap = await withTimeout(getDoc(planRef), 3500).catch(async () => {
+        try { return await getDocFromCache(planRef); } catch (e) { return null; }
+      });
+      const planData = (planSnap && planSnap.exists && planSnap.exists()) ? (planSnap.data() || {}) : {};
+      let members = Array.isArray(planData.members) ? [...planData.members] : [];
+
+      // Check if already in members list by user_id or user_name
+      const memberId = member.user_id || member.id;
+      const memberName = (member.user_name || member.username || member.name || '').trim();
+      const alreadyIndex = members.findIndex(m => 
+        (memberId && (m.user_id === memberId || m.id === memberId)) || 
+        (memberName && (m.user_name === memberName || (m.user_name && m.user_name.toLowerCase() === memberName.toLowerCase())))
+      );
+
+      const memberPayload = {
+        user_id: memberId || ('member_' + Date.now().toString(36)),
+        user_name: memberName || 'Devotee',
+        name: memberName || 'Devotee',
+        user_avatar: member.user_avatar || member.avatar || '🪔',
+        role: member.role || (planData.creator_id === memberId ? 'creator' : 'member'),
+        joined_at: member.joined_at || member.joinedAt || new Date().toISOString()
+      };
+
+      if (alreadyIndex >= 0) {
+        members[alreadyIndex] = { ...members[alreadyIndex], ...memberPayload };
+      } else {
+        members.push(memberPayload);
+      }
+
+      const updatedPayload = {
+        id: cleanPlanId,
+        members: members,
+        updated_at: new Date().toISOString()
+      };
+
+      // 1. Update global plans/{planId} (non-blocking server wait if timeout)
+      await withTimeout(setDoc(planRef, updatedPayload, { merge: true }), 3500).catch(() => {});
+
+      // 2. Non-blocking update under creator's user document & plans subcollection
+      if (planData.creator_id) {
+        const creatorIds = getPossibleUserDocIds(planData.creator_id);
+        (async () => {
+          for (const cId of creatorIds) {
+            try {
+              const userPlanRef = doc(db, "users", cId, "plans", cleanPlanId);
+              setDoc(userPlanRef, updatedPayload, { merge: true }).catch(() => {});
+
+              const uRef = doc(db, "users", cId);
+              const uSnap = await withTimeout(getDoc(uRef), 2000).catch(() => null);
+              if (uSnap && uSnap.exists() && Array.isArray(uSnap.data()?.custom_plans)) {
+                const uPlans = uSnap.data().custom_plans.map(p => {
+                  if (p && p.id === cleanPlanId) {
+                    return { ...p, members };
+                  }
+                  return p;
+                });
+                setDoc(uRef, { custom_plans: uPlans, updated_at: new Date().toISOString() }, { merge: true }).catch(() => {});
+              }
+            } catch (e) {}
+          }
+        })().catch(() => {});
+      }
+
+      return members;
+    } catch (err) {
+      console.warn("Firestore addPlanMember notice:", err.message || err);
+      this.lastError = err.message || String(err);
+      return null;
+    }
+  },
+
+  // 9c. Real-time Listener for Friends Hopping Together in a Shared Plan
+  listenToPlan(planId, callback) {
+    if (!db || !planId || typeof callback !== 'function') return () => {};
+    const cleanId = String(planId).trim();
+    try {
+      const planRef = doc(db, "plans", cleanId);
+      return onSnapshot(planRef, (snap) => {
+        if (snap && snap.exists()) {
+          callback(snap.data());
+        }
+      }, (err) => {
+        console.warn("Real-time plan listener notice:", err);
+      });
+    } catch (e) {
+      console.warn("listenToPlan error:", e);
+      return () => {};
     }
   },
 
@@ -529,6 +793,118 @@ export const AkalbodhonFirebase = {
   onAuthChange(callback) {
     if (!auth) return () => {};
     return onAuthStateChanged(auth, callback);
+  },
+
+  // 13. Format identifier (email or phone) into an official Firebase Auth email
+  formatAuthEmail(identifier) {
+    if (!identifier) return "devotee_" + Date.now() + "@akalbodhon.com";
+    const clean = String(identifier).trim().toLowerCase();
+    if (clean.includes('@')) {
+      return clean;
+    }
+    const digitsOnly = clean.replace(/[^0-9]/g, '');
+    if (digitsOnly.length > 0) {
+      return `phone_${digitsOnly}@akalbodhon.com`;
+    }
+    const safeStr = clean.replace(/[^a-z0-9]/g, '');
+    return `user_${safeStr || Date.now()}@akalbodhon.com`;
+  },
+
+  // 14. Register manual user in Firebase Authentication and sync devotee profile
+  async registerWithEmailPassword(identifier, password, displayName = "", extraData = {}) {
+    if (!auth) throw new Error("Firebase Authentication is not available.");
+    const authEmail = this.formatAuthEmail(identifier);
+    const safePassword = (password && String(password).length >= 6) 
+      ? String(password) 
+      : `Akal_${authEmail.split('@')[0].slice(-5)}_2026!`;
+
+    try {
+      console.log("🕉️ Registering user in Firebase Authentication with:", authEmail);
+      const userCredential = await withTimeout(
+        createUserWithEmailAndPassword(auth, authEmail, safePassword),
+        10000
+      );
+      const user = userCredential.user;
+
+      // Update Firebase Auth profile display name
+      const name = displayName || (identifier.includes('@') ? identifier.split('@')[0] : `Devotee ${identifier.slice(-4)}`);
+      try {
+        await withTimeout(updateProfile(user, { displayName: name }), 3000);
+      } catch (profileErr) {
+        console.warn("Notice updating user auth profile name:", profileErr);
+      }
+
+      // Build devotee profile
+      const cleanUid = String(user.uid);
+      const profile = {
+        id: cleanUid,
+        user_id: cleanUid,
+        uid: cleanUid,
+        identifier: identifier,
+        identifier_type: identifier.includes('@') ? 'email' : 'phone',
+        username: name,
+        email: user.email || (identifier.includes('@') ? identifier : ''),
+        phone: identifier.includes('@') ? (extraData.phone || '') : identifier,
+        avatar: extraData.avatar || "🪔",
+        custom_avatar_url: null,
+        saved_items: [],
+        custom_plans: [],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        ...extraData
+      };
+
+      // Sync user profile to Firestore
+      await this.syncProfile(profile).catch((e) => console.warn("Notice syncing profile:", e));
+      localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
+
+      return { success: true, user, profile };
+    } catch (err) {
+      console.error("Firebase Auth registration error:", err);
+      // If user already exists in Authentication, attempt sign in
+      if (err.code === 'auth/email-already-in-use') {
+        console.log("Account already exists in Firebase Auth, signing in instead...");
+        return this.signInWithEmailPassword(identifier, password, false, displayName, extraData);
+      }
+      throw err;
+    }
+  },
+
+  // 15. Sign in manual user with email or phone in Firebase Authentication
+  async signInWithEmailPassword(identifier, password, autoCreateIfNew = true, displayName = "", extraData = {}) {
+    if (!auth) throw new Error("Firebase Authentication is not available.");
+    const authEmail = this.formatAuthEmail(identifier);
+    const safePassword = (password && String(password).length >= 6)
+      ? String(password)
+      : `Akal_${authEmail.split('@')[0].slice(-5)}_2026!`;
+
+    try {
+      console.log("🕉️ Signing in user in Firebase Authentication with:", authEmail);
+      const userCredential = await withTimeout(
+        signInWithEmailAndPassword(auth, authEmail, safePassword),
+        10000
+      );
+      const user = userCredential.user;
+      const profile = await this.buildAndStoreProfile(user);
+      return { success: true, user, profile };
+    } catch (err) {
+      console.warn("Firebase Auth sign in notice:", err.code, err.message);
+      if (autoCreateIfNew && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
+        console.log("User not found in Firebase Auth, creating new user in Authentication...");
+        return this.registerWithEmailPassword(identifier, password, displayName, extraData);
+      }
+      throw err;
+    }
+  },
+
+  // Convenient aliases for backward and forward compatibility
+  async saveUserPlan(userId, planData) {
+    const payload = { ...planData, creator_id: userId || planData.creator_id || planData.userId };
+    return this.savePlan(payload);
+  },
+
+  async getUserPlan(planId) {
+    return this.fetchPlanById(planId);
   }
 };
 
