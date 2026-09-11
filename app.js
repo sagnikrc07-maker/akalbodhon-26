@@ -3488,16 +3488,38 @@
 
     if (playAllBtn) {
       playAllBtn.onclick = () => {
-        playRadioPlaylist(playlistKey);
+        // 1. Close playlist detail modal immediately
         closePlaylistDetailModal();
-        showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, '');
+
+        // 2. Ensure Puja Radio tab is visible
+        const audioSec = document.getElementById('section-audio');
+        if (audioSec && audioSec.classList.contains('hidden')) {
+          window.location.hash = 'audio';
+        }
+
+        // 3. Play playlist on player
+        playRadioPlaylist(playlistKey);
+
+        // 4. Smoothly focus on and pulse player box so user sees it actively playing
+        const activeBox = document.getElementById('radio-active-player-box');
+        if (activeBox) {
+          setTimeout(() => {
+            activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            activeBox.classList.add('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+            setTimeout(() => {
+              activeBox.classList.remove('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+            }, 2000);
+          }, 150);
+        }
+
+        showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, 'celebration');
       };
     }
 
     const tracklistEl = document.getElementById('playlist-modal-tracklist');
     if (tracklistEl) {
       tracklistEl.innerHTML = songs.map((song, idx) => `
-        <div class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md">
+        <div onclick="window.playSongFromPlaylistModal('${song.id}')" class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md cursor-pointer">
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">${idx + 1}</span>
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
@@ -3511,7 +3533,7 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0">
+          <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
             <!-- Spotify Track Link -->
             <a 
               href="${song.spotifyUrl}" 
@@ -3536,7 +3558,8 @@
 
             <!-- Stream on Website Player -->
             <button 
-              onclick="window.playSongFromPlaylistModal('${song.id}')" 
+              type="button"
+              onclick="event.stopPropagation(); window.playSongFromPlaylistModal('${song.id}')" 
               class="px-2.5 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
               title="Play on Website"
             >
@@ -3564,9 +3587,32 @@
 
   window.playSongFromPlaylistModal = function(songId) {
     const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
-    if (song) {
-      playRadioSong(song);
-      showToast(`🎶 Playing "${song.title}"`, '');
+    if (!song) return;
+
+    // 1. Close playlist detail modal immediately so user returns to the page
+    if (typeof window.closePlaylistDetailModal === 'function') {
+      window.closePlaylistDetailModal();
+    }
+
+    // 2. Ensure user is on the Puja Radio section
+    const audioSec = document.getElementById('section-audio');
+    if (audioSec && audioSec.classList.contains('hidden')) {
+      window.location.hash = 'audio';
+    }
+
+    // 3. Play chosen song on website player
+    playRadioSong(song);
+
+    // 4. Return to and smoothly center on active player with visual pulse
+    const activeBox = document.getElementById('radio-active-player-box');
+    if (activeBox) {
+      setTimeout(() => {
+        activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        activeBox.classList.add('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+        setTimeout(() => {
+          activeBox.classList.remove('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+        }, 2000);
+      }, 150);
     }
   };
 

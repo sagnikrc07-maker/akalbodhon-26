@@ -695,6 +695,11 @@ body.modal-open {
   border-color: #f59e0b !important;
 }
 
+.player-active-pulse {
+  animation: planHighlightPulse 1.8s ease-in-out;
+  border-color: #f59e0b !important;
+}
+
 /* ======================================================== */
 /* KINETIC SACRED LOADING INTERFACE & SPINNERS             */
 /* ======================================================== */
