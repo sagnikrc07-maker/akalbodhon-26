@@ -10,7 +10,7 @@
 
 - **🔐 Supabase Devotee Authentication & Profiles**: Email/Mobile + alphanumeric password login and Google OAuth integration with custom Puja-themed avatar customizer (🪔, 🌺, 🔱, 🪘, 🪷, 👑).
 - **📅 Date-Wise Master Puja Plans & Custom Itinerary Builder**: Pre-curated schedules for Mahalaya, Shasthi, Saptami, Ashtami, Navami, and Dashami with route navigation, food stops, and rituals.
-- **👥 Collaborative Plan Sharing & Member Stack**: Share itineraries across WhatsApp, Gmail, Instagram, Snapchat, and Discord with protected login gates and live member avatar rings.
+- **👥 Collaborative Plan Sharing & Member Stack**: Share itineraries directly via WhatsApp and direct links with protected login gates and live member avatar rings.
 - **⏱️ Sacred Device Timers & Audio Synthesizer**: Countdown timers and ritual alerts with traditional temple chime/Dhak sounds.
 - **⏳ Countdown to Akalbodhon**: Dynamic real-time ticker calculating exact days, hours, minutes, and seconds to 16th October 2026, 6:30 PM.
 - **🥁 Web Audio Ceremonial Dhak Resonator**: Synthesized rhythmic Dhak drum tempo engine that runs natively in the browser with soundwave ripple micro-animations.

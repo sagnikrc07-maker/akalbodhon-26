@@ -6184,18 +6184,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       waBtn.onclick = () => shareToWhatsApp(message, shareUrl);
     }
 
-    // Snapchat Button
-    const snapBtn = document.getElementById('share-snap-btn');
-    if (snapBtn) {
-      snapBtn.onclick = () => shareToSnapchat(message, shareUrl);
-    }
-
-    // Instagram Button
-    const igBtn = document.getElementById('share-ig-btn');
-    if (igBtn) {
-      igBtn.onclick = () => shareToInstagram(message, shareUrl);
-    }
-
     // Copy Link Buttons
     const copyBtn = document.getElementById('share-copy-btn');
     if (copyBtn) {
@@ -7482,16 +7470,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('about-share-wa')?.addEventListener('click', (e) => {
       e.preventDefault();
       shareToWhatsApp('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
-    });
-
-    document.getElementById('about-share-ig')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      shareToInstagram('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
-    });
-
-    document.getElementById('about-share-snap')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      shareToSnapchat('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
     });
 
     // Share Modal Close
