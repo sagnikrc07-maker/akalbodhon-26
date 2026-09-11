@@ -784,7 +784,7 @@
       location: 'Rashbehari Avenue & Gariahat Crossing',
       metro: 'Kalighat Metro / Ballygunge Station (Auto link)',
       desc: 'Kolkata\'s undisputed festive fashion hub: bustling street stalls packed with dokra jewelry, and flagship heritage saree showrooms.',
-      bestTime: 'Post-afternoon (3:00 PM - 9:30 PM)',
+      bestTime: 'Post-afternoon (3:00 PM IST - 9:30 PM IST)',
       highlight: 'Dhakai Jamdani, Baluchari, Tussar Silks & terracotta necklaces.',
       image: 'food/Gariahat Market & Triangular Park.avif',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Gariahat+Market+Kolkata'
@@ -797,7 +797,7 @@
       location: 'Bidhan Sarani / Shyambazar',
       metro: 'Shyambazar Metro (2 min walk)',
       desc: 'Historic North Kolkata shopping paradise known for authentic Shantipur & Phulia Taant sarees, festive kurtas, dhotis, and vintage charm.',
-      bestTime: 'Morning or late evening (11 AM - 9 PM)',
+      bestTime: 'Morning or late evening (11:00 AM IST - 9:00 PM IST)',
       highlight: 'Unbeatable festive deals on Taant cotton sarees and kids\' festive wear.',
       image: 'food/Hatibagan Market & Shyambazar.webp',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Market+Kolkata'
@@ -810,7 +810,7 @@
       location: 'Lindsay Street / Esplanade',
       metro: 'Esplanade Metro (3 min walk)',
       desc: 'Built in 1874 with red brick Gothic architecture, housing over 2,000 stalls offering shoes, jewelry, brassware, and festive gifts.',
-      bestTime: '11:00 AM - 8:30 PM (Closed Sundays normally, Open during Puja)',
+      bestTime: '11:00 AM IST - 8:30 PM IST (Closed Sundays normally, Open during Puja)',
       highlight: 'Nahoum & Sons plum cakes, Kashmiri shawls, silver jewelry & brassware.',
       image: 'food/New Market (Sir Stuart Hogg Market).jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=New+Market+Kolkata'
@@ -836,7 +836,7 @@
       location: 'MG Road / Barabazar',
       metro: 'Mahatma Gandhi Road Metro (3 min walk)',
       desc: 'One of India\'s oldest and largest commercial markets: direct-from-weaver wholesale prices for Banarasi silk, dhotis, and Puja puja-samagri.',
-      bestTime: '11:00 AM - 7:00 PM',
+      bestTime: '11:00 AM IST - 7:00 PM IST',
       highlight: 'Pure Banarasi silk sarees, puja brassware lamps, incense & festive gift hampers.',
       image: 'food/Burrabazar Traditional Wholesale Market.jpg',
       locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Burrabazar+Kolkata'
@@ -884,7 +884,7 @@
       ceremonies: [
         {
           name: 'Birendra Krishna Bhadra Chandi Path',
-          desc: 'The historic 4:00 AM All India Radio broadcast of Mahishasuramardini, chanting the sacred verses of Sri Sri Chandi depicting Devi Durga\'s invocation to defeat the demon king Mahishasura.'
+          desc: 'The historic 4:00 AM IST All India Radio broadcast of Mahishasuramardini, chanting the sacred verses of Sri Sri Chandi depicting Devi Durga\'s invocation to defeat the demon king Mahishasura.'
         },
         {
           name: 'Ganga Tarpan for Ancestors',
@@ -1471,8 +1471,8 @@
     const secsEl = document.getElementById('cd-secs');
     const zeroMsg = document.getElementById('countdown-zero-message');
 
-    // Mahalaya Dawn Awakening target: 10 October 2026, 4:00 AM
-    const targetDate = new Date(2026, 9, 10, 4, 0, 0);
+    // Mahalaya Dawn Awakening target: 10 October 2026, 4:00 AM IST
+    const targetDate = new Date('2026-10-10T04:00:00+05:30');
 
     function update() {
       const current = new Date();
