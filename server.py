@@ -4,6 +4,9 @@ import os
 import json
 import urllib.request
 import sys
+import random
+
+PUJA_ICONS = ['🪔', '🪘', '🌺', '🔱', '📿', '🪷', '💃', '🦚', '🏺', '🔥', '🐚', '🥁', '☀️', '🌾']
 
 # Configure UTF-8 output
 if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
@@ -59,7 +62,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 data = json.loads(body)
                 identifier = data.get('identifier', '').strip()
                 username = data.get('username', '').strip() or 'Devotee'
-                avatar = data.get('avatar', '🪔')
+                avatar = data.get('avatar') or random.choice(PUJA_ICONS)
                 user_id = data.get('id') or ('user_' + btoa_py(identifier))
 
                 # Proxy/Sync to Supabase Profiles

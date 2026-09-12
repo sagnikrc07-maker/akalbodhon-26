@@ -1546,6 +1546,8 @@
       if (typeof syncUserSavedItemsToSupabase === 'function') {
         syncUserSavedItemsToSupabase([]);
       }
+      if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+      if (typeof renderSavedSection === 'function') renderSavedSection();
     }
   };
 
@@ -2472,6 +2474,159 @@
   // --- 10. RENDER SAVED ITINERARY ---
   let activeSavedTab = 'all';
 
+  function updateBookmarkCount() {
+    try {
+      const bookmarks = Storage.getBookmarks() || [];
+      const plans = (typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : [];
+      const total = bookmarks.length + plans.length;
+
+      // Update Navigation Badge in Header/Navbar
+      const navBadge = document.getElementById('saved-count-badge');
+      if (navBadge) {
+        navBadge.textContent = total;
+        if (total > 0) {
+          navBadge.classList.remove('hidden');
+        } else {
+          navBadge.classList.add('hidden');
+        }
+      }
+
+      // Update Itinerary Section Tab Badges
+      const badgeAll = document.getElementById('saved-badge-all');
+      if (badgeAll) badgeAll.textContent = total;
+
+      const pandalCount = bookmarks.filter(b => {
+        const isFoodOrShop = b.type === 'food' || b.type === 'shop' || 
+          b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
+          b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
+          FOOD_DATA.some(f => f.id === b.id || ((f.name || '').toLowerCase() === (b.name || '').toLowerCase())) ||
+          SHOPPING_DATA.some(s => s.id === b.id || ((s.name || '').toLowerCase() === (b.name || '').toLowerCase()));
+        return !isFoodOrShop;
+      }).length;
+
+      const foodCount = bookmarks.length - pandalCount;
+
+      const badgePandals = document.getElementById('saved-badge-pandals');
+      if (badgePandals) badgePandals.textContent = pandalCount;
+
+      const badgeFood = document.getElementById('saved-badge-food');
+      if (badgeFood) badgeFood.textContent = foodCount;
+
+      const badgePlans = document.getElementById('saved-badge-plans');
+      if (badgePlans) badgePlans.textContent = plans.length;
+
+      // Update Dropdown Options text
+      const savedDropdown = document.getElementById('saved-filter-dropdown');
+      if (savedDropdown) {
+        const optAll = savedDropdown.querySelector('option[value="all"]');
+        const optPandals = savedDropdown.querySelector('option[value="pandals"]');
+        const optFood = savedDropdown.querySelector('option[value="food-shopping"]');
+        const optPlans = savedDropdown.querySelector('option[value="plans"]');
+        if (optAll) optAll.textContent = `✨ All Saved (${total})`;
+        if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${pandalCount})`;
+        if (optFood) optFood.textContent = `🍽️ Food & Shopping (${foodCount})`;
+        if (optPlans) optPlans.textContent = `📋 Saved Plans (${plans.length})`;
+      }
+    } catch (e) {
+      console.warn('updateBookmarkCount warning:', e);
+    }
+  }
+  window.updateBookmarkCount = updateBookmarkCount;
+
+  function openClearItineraryModal() {
+    const bookmarks = Storage.getBookmarks() || [];
+    const plans = (typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : [];
+    if (bookmarks.length === 0 && plans.length === 0) {
+      showToast('Your Puja itinerary is already empty', 'info');
+      return;
+    }
+    const modal = document.getElementById('clear-itinerary-modal');
+    if (modal) {
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.classList.add('modal-open');
+    } else {
+      // Fallback if modal is somehow not found
+      if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
+        clearEntireItinerary();
+      }
+    }
+  }
+  window.openClearItineraryModal = openClearItineraryModal;
+
+  function closeClearItineraryModal() {
+    const modal = document.getElementById('clear-itinerary-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('modal-open');
+    }
+  }
+  window.closeClearItineraryModal = closeClearItineraryModal;
+
+  function clearEntireItinerary() {
+    closeClearItineraryModal();
+    try {
+      Storage.clearBookmarks();
+      if (typeof customPlans !== 'undefined') {
+        customPlans = [];
+      }
+      try {
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify([]));
+      } catch (_) {}
+
+      if (currentUser) {
+        currentUser.saved_items = [];
+        currentUser.custom_plans = [];
+        try {
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+        } catch (_) {}
+        if (typeof saveUserSpecificItinerary === 'function') {
+          saveUserSpecificItinerary(currentUser, [], []);
+        }
+        if (typeof syncUserSavedItemsToSupabase === 'function') {
+          syncUserSavedItemsToSupabase([]);
+        }
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            window.AkalbodhonFirebase.saveBookmarks(currentUser, []).catch(() => {});
+            const targetUid = currentUser.id || currentUser.user_id;
+            window.AkalbodhonFirebase.syncProfile({ id: targetUid, custom_plans: [] }).catch(() => {});
+          } catch (_) {}
+        }
+      }
+
+      // Also sanitize any cached user data entries in localStorage
+      try {
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && (key.startsWith('akalbodhon_user_data_') || key === 'akalbodhon_bookmarks')) {
+            try {
+              const item = JSON.parse(localStorage.getItem(key));
+              if (item && typeof item === 'object') {
+                item.bookmarks = [];
+                item.custom_plans = [];
+                localStorage.setItem(key, JSON.stringify(item));
+              }
+            } catch (_) {}
+          }
+        }
+      } catch (_) {}
+
+      updateBookmarkCount();
+      renderSavedItinerary();
+      if (typeof renderPandals === 'function') renderPandals();
+      if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
+      if (typeof renderFestivalPlans === 'function') renderFestivalPlans();
+      showToast('Your Puja itinerary has been cleared', 'delete');
+    } catch (err) {
+      console.error('Error clearing itinerary:', err);
+      showToast('Itinerary cleared', 'delete');
+    }
+  }
+  window.clearEntireItinerary = clearEntireItinerary;
+  window.renderSavedSection = renderSavedItinerary;
+
   function attachSavedItineraryTabEvents() {
     document.querySelectorAll('.saved-tab-btn').forEach(btn => {
       btn.onclick = () => {
@@ -2489,30 +2644,9 @@
 
     const clearAllBtn = document.getElementById('clear-all-bookmarks-btn');
     if (clearAllBtn) {
-      clearAllBtn.onclick = () => {
-        if (confirm('Clear all saved pandals, food spots, and custom items from your itinerary?')) {
-          Storage.clearBookmarks();
-          customPlans = [];
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify([]));
-          if (currentUser) {
-            currentUser.saved_items = [];
-            currentUser.custom_plans = [];
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-            saveUserSpecificItinerary(currentUser, [], []);
-            if (supabaseClient) {
-              syncUserSavedItemsToSupabase([]);
-            }
-            if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-              window.AkalbodhonFirebase.saveBookmarks(currentUser, []).catch(() => {});
-              const targetUid = currentUser.id || currentUser.user_id;
-              window.AkalbodhonFirebase.syncProfile({ id: targetUid, custom_plans: [] }).catch(() => {});
-            }
-          }
-          renderSavedItinerary();
-          renderPandals();
-          renderFoodAndShopping();
-          showToast('Itinerary cleared', 'delete');
-        }
+      clearAllBtn.onclick = (e) => {
+        e.preventDefault();
+        openClearItineraryModal();
       };
     }
   }
@@ -2648,7 +2782,7 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
               ${displayPandals.map((b) => {
-                const pandalData = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
+                const pandalData = PANDALS_DATA.find(p => p.id === b.id || ((p.name || '').toLowerCase() === (b.name || '').toLowerCase()));
                 const pandalImg = (pandalData && pandalData.image) 
                   ? pandalData.image 
                   : (b.image && !b.image.includes('unsplash.com') ? b.image : 'pandals/maniktala chaltabagan lohapatty.jpg');
@@ -2715,8 +2849,8 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
               ${displayFood.map((b) => {
-                const foodData = FOOD_DATA.find(f => f.id === b.id || f.name.toLowerCase() === b.name.toLowerCase());
-                const shopData = SHOPPING_DATA.find(s => s.id === b.id || s.name.toLowerCase() === b.name.toLowerCase());
+                const foodData = FOOD_DATA.find(f => f.id === b.id || ((f.name || '').toLowerCase() === (b.name || '').toLowerCase()));
+                const shopData = SHOPPING_DATA.find(s => s.id === b.id || ((s.name || '').toLowerCase() === (b.name || '').toLowerCase()));
                 const spotImg = (foodData && foodData.image) || (shopData && shopData.image) || (b.image && !b.image.includes('unsplash.com') ? b.image : 'food/arsalan.avif');
                 const spotCat = (foodData && foodData.category) || (shopData && shopData.category) || b.category || 'Food & Shopping';
                 const spotLoc = (foodData && foodData.location) || (shopData && shopData.location) || b.location || 'Kolkata';
@@ -4130,12 +4264,9 @@
             if (existingProf) {
               if (existingProf.avatar) googleUser.avatar = existingProf.avatar;
               if (existingProf.username) googleUser.username = existingProf.username;
-              if (existingProf.google_photo_url) googleUser.google_photo_url = existingProf.google_photo_url;
-              if (existingProf.custom_avatar_url !== undefined) {
-                googleUser.custom_avatar_url = existingProf.custom_avatar_url;
-              } else if (existingProf.avatar && existingProf.avatar !== '🪔') {
-                googleUser.custom_avatar_url = null;
-              }
+              const photo = user.user_metadata?.avatar_url || user.user_metadata?.picture || existingProf.google_photo_url || existingProf.custom_avatar_url || null;
+              googleUser.google_photo_url = photo;
+              googleUser.custom_avatar_url = photo;
               if (Array.isArray(existingProf.saved_items) && existingProf.saved_items.length > 0) {
                 googleUser.saved_items = existingProf.saved_items;
               }
@@ -4188,6 +4319,7 @@
   let userTimers = [];
   let pendingPlanJoinId = null;
   let activePlanFilter = 'all';
+  window.activeViewingPlanId = null;
 
   // 14 Authentic Puja-Themed Avatars with Bengali Sacred Meaning
   const PUJA_AVATARS = [
@@ -4206,6 +4338,11 @@
     { id: 'surya', icon: '☀️', name: 'Sharad Surya (Autumn Sun)', meaning: 'The auspicious golden autumn dawn breaking on Mahalaya as Chandi Path echoes across Bengal.' },
     { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken white wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
   ];
+
+  const PUJA_AVATAR_ICONS = ['🪔', '🪘', '🌺', '🔱', '📿', '🪷', '💃', '🦚', '🏺', '🔥', '🐚', '🥁', '☀️', '🌾'];
+  function getRandomPujaIcon() {
+    return PUJA_AVATAR_ICONS[Math.floor(Math.random() * PUJA_AVATAR_ICONS.length)];
+  }
 
   // 6 Pandal-Hopping Festival Master Reference Plans
   const MASTER_PUJA_PLANS = [
@@ -4337,6 +4474,18 @@
       const raw = localStorage.getItem('akalbodhon_user_profile');
       if (raw) {
         currentUser = JSON.parse(raw);
+        if (currentUser.identifier_type === 'google') {
+          if (currentUser.google_photo_url && !currentUser.custom_avatar_url) {
+            currentUser.custom_avatar_url = currentUser.google_photo_url;
+          }
+        } else if (currentUser.identifier_type === 'phone' || currentUser.identifier_type === 'email') {
+          if (!currentUser.avatar || !currentUser.avatar_assigned) {
+            currentUser.avatar = getRandomPujaIcon();
+            currentUser.avatar_assigned = true;
+            currentUser.custom_avatar_url = null;
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          }
+        }
         // Ensure user-specific itinerary items are restored if active store was empty
         const specificData = loadUserSpecificItinerary(currentUser);
         if (specificData) {
@@ -4410,17 +4559,23 @@
           const profile = await window.AkalbodhonFirebase.getProfile(userDocId);
           if (profile) {
             let updated = false;
-            if (profile.avatar && profile.avatar !== currentUser.avatar) {
-              currentUser.avatar = profile.avatar;
-              updated = true;
-            }
-            if (profile.custom_avatar_url !== undefined && profile.custom_avatar_url !== currentUser.custom_avatar_url) {
-              currentUser.custom_avatar_url = profile.custom_avatar_url;
-              updated = true;
-            }
-            if (profile.google_photo_url && !currentUser.google_photo_url) {
-              currentUser.google_photo_url = profile.google_photo_url;
-              updated = true;
+            if (currentUser.identifier_type === 'google') {
+              const gPhoto = currentUser.google_photo_url || profile.google_photo_url || profile.custom_avatar_url || currentUser.custom_avatar_url;
+              if (gPhoto && currentUser.custom_avatar_url !== gPhoto) {
+                currentUser.custom_avatar_url = gPhoto;
+                currentUser.google_photo_url = gPhoto;
+                updated = true;
+              }
+            } else {
+              if (profile.avatar && profile.avatar !== currentUser.avatar) {
+                currentUser.avatar = profile.avatar;
+                currentUser.avatar_assigned = true;
+                updated = true;
+              }
+              if (currentUser.custom_avatar_url) {
+                currentUser.custom_avatar_url = null;
+                updated = true;
+              }
             }
             if (profile.username && profile.username !== currentUser.username) {
               currentUser.username = profile.username;
@@ -4575,11 +4730,7 @@
     }
 
     if (user && pendingPlanJoinId) {
-      const targetJoinId = pendingPlanJoinId;
       pendingPlanJoinId = null;
-      setTimeout(() => {
-        joinPlanAsMember(targetJoinId, user);
-      }, 250);
     }
   }
 
@@ -4612,8 +4763,9 @@
 
     if (currentUser) {
       if (avatarPreview) {
-        if (currentUser.custom_avatar_url) {
-          avatarPreview.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-full" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
+        if (currentUser.custom_avatar_url || (currentUser.identifier_type === 'google' && currentUser.google_photo_url)) {
+          const photoSrc = currentUser.custom_avatar_url || currentUser.google_photo_url;
+          avatarPreview.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-full" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
         } else {
           avatarPreview.textContent = currentUser.avatar || '🪔';
         }
@@ -4622,8 +4774,9 @@
         btnLabel.textContent = currentUser.username || currentUser.identifier?.split('@')[0] || 'Account';
       }
       if (heroCta) {
-        const iconHtml = currentUser.custom_avatar_url 
-          ? `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" onerror="this.outerHTML='<span class=\\'text-base\\'>${currentUser.avatar || '🪔'}</span>'" />`
+        const photoSrc = currentUser.custom_avatar_url || (currentUser.identifier_type === 'google' ? currentUser.google_photo_url : null);
+        const iconHtml = photoSrc 
+          ? `<img src="${photoSrc}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" onerror="this.outerHTML='<span class=\\'text-base\\'>${currentUser.avatar || '🪔'}</span>'" />`
           : `<span class="text-base">${currentUser.avatar || '🪔'}</span>`;
         heroCta.innerHTML = `${iconHtml} <span class="font-bold">${currentUser.username}</span>`;
       }
@@ -4758,7 +4911,6 @@
     if (nameInput) nameInput.value = currentUser.username || '';
 
     updateProfileAvatarDisplay();
-    renderPujaAvatarsGrid();
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -4774,90 +4926,15 @@
     }
   }
 
-  let selectedAvatarPending = null;
-
   function updateProfileAvatarDisplay() {
     const el = document.getElementById('current-profile-avatar-display');
-    const toggleGoogleBtn = document.getElementById('toggle-google-avatar-btn');
     if (!el || !currentUser) return;
 
-    if (currentUser.custom_avatar_url) {
-      el.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
+    if (currentUser.custom_avatar_url || (currentUser.identifier_type === 'google' && currentUser.google_photo_url)) {
+      const photoSrc = currentUser.custom_avatar_url || currentUser.google_photo_url;
+      el.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
     } else {
       el.textContent = currentUser.avatar || '🪔';
-    }
-
-    if (toggleGoogleBtn) {
-      const googlePhoto = currentUser.google_photo_url || (currentUser.identifier_type === 'google' && currentUser.custom_avatar_url ? currentUser.custom_avatar_url : null);
-      if (googlePhoto) {
-        currentUser.google_photo_url = googlePhoto;
-        toggleGoogleBtn.classList.remove('hidden');
-        if (currentUser.custom_avatar_url) {
-          toggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">palette</span> Use Festival Icon`;
-          toggleGoogleBtn.title = "Switch to your selected sacred festival icon";
-        } else {
-          toggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">account_circle</span> Use Google Photo`;
-          toggleGoogleBtn.title = "Switch back to your Google profile picture";
-        }
-      } else {
-        toggleGoogleBtn.classList.add('hidden');
-      }
-    }
-  }
-
-  function renderPujaAvatarsGrid() {
-    const grid = document.getElementById('puja-avatars-grid');
-    if (!grid) return;
-
-    grid.innerHTML = PUJA_AVATARS.map(item => {
-      const isSelected = !currentUser?.custom_avatar_url && (currentUser?.avatar === item.icon);
-      return `
-        <button 
-          type="button" 
-          class="avatar-option flex flex-col items-center justify-center p-2.5 rounded-2xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 shadow-md scale-105 ring-2 ring-primary/40 dark:ring-amber-400/40' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer relative group"
-          data-id="${item.id}"
-          title="${item.name}: ${item.meaning}"
-        >
-          <span class="text-2xl sm:text-3xl select-none">${item.icon}</span>
-          <span class="text-[9px] sm:text-[10px] font-medium text-on-surface-variant dark:text-amber-200/80 truncate max-w-[55px] sm:max-w-[65px] mt-1 text-center">${item.name.split(' ')[0]}</span>
-          ${isSelected ? '<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary dark:bg-amber-400 text-white dark:text-black rounded-full text-[9px] flex items-center justify-center font-bold shadow">✓</span>' : ''}
-        </button>
-      `;
-    }).join('');
-
-    grid.querySelectorAll('.avatar-option').forEach(btn => {
-      btn.onclick = () => {
-        const id = btn.dataset.id;
-        const avatarObj = PUJA_AVATARS.find(a => a.id === id);
-        if (avatarObj) {
-          openAvatarDetailModal(avatarObj);
-        }
-      };
-    });
-  }
-
-  function openAvatarDetailModal(avatarObj) {
-    selectedAvatarPending = avatarObj;
-    const modal = document.getElementById('avatar-detail-modal');
-    const iconEl = document.getElementById('detail-avatar-icon');
-    const nameEl = document.getElementById('detail-avatar-name');
-    const descEl = document.getElementById('detail-avatar-desc');
-
-    if (iconEl) iconEl.textContent = avatarObj.icon;
-    if (nameEl) nameEl.textContent = avatarObj.name;
-    if (descEl) descEl.textContent = avatarObj.meaning;
-
-    if (modal) {
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    }
-  }
-
-  function closeAvatarDetailModal() {
-    const modal = document.getElementById('avatar-detail-modal');
-    if (modal) {
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
     }
   }
 
@@ -4907,7 +4984,7 @@
       updateAccountUI();
       closeProfileModal();
       renderFestivalPlans(activePlanFilter);
-      showToast(`Profile & Avatar updated for ${currentUser.username}!`, 'check_circle');
+      showToast(`Profile updated for ${currentUser.username}!`, 'check_circle');
     } finally {
       hideTopProgressBar();
     }
@@ -5121,6 +5198,7 @@
 
         const initialSaved = Storage.getBookmarks() || [];
         let supabaseAuthUser = null;
+        const randomAvatar = getRandomPujaIcon();
 
         // Register in Supabase Authentication section
         if (supabaseClient) {
@@ -5133,7 +5211,7 @@
                 options: {
                   data: {
                     username: displayName,
-                    avatar: '🪔',
+                    avatar: randomAvatar,
                     identifier: formattedPhone,
                     identifier_type: 'phone'
                   }
@@ -5160,7 +5238,7 @@
                 options: {
                   data: {
                     username: displayName,
-                    avatar: '🪔',
+                    avatar: randomAvatar,
                     identifier: cleanIdentifier,
                     identifier_type: 'email'
                   }
@@ -5190,7 +5268,7 @@
         if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
           try {
             fbProfile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
-              avatar: '🪔',
+              avatar: randomAvatar,
               saved_items: initialSaved,
               custom_plans: customPlans || []
             });
@@ -5220,8 +5298,11 @@
           phone: isPhone ? formattedPhone : null,
           provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
           username: displayName,
-          avatar: '🪔',
+          avatar: randomAvatar,
+          avatar_assigned: true,
           avatar_type: 'puja',
+          custom_avatar_url: null,
+          google_photo_url: null,
           password_hash: passwordHash,
           saved_items: initialSaved,
           custom_plans: customPlans || [],
@@ -5498,6 +5579,27 @@
         const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
         const restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
 
+        let devoteeAvatar = foundProfile.avatar;
+        if (!devoteeAvatar || !foundProfile.avatar_assigned) {
+          devoteeAvatar = getRandomPujaIcon();
+          foundProfile.avatar = devoteeAvatar;
+          foundProfile.avatar_assigned = true;
+          if (supabaseClient) {
+            supabaseClient.from('profiles').update({
+              avatar: devoteeAvatar,
+              custom_avatar_url: null,
+              updated_at: new Date().toISOString()
+            }).eq('id', foundProfile.id || foundProfile.user_id).catch(() => {});
+          }
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            window.AkalbodhonFirebase.syncProfile({
+              id: foundProfile.id || foundProfile.user_id,
+              avatar: devoteeAvatar,
+              custom_avatar_url: null
+            }).catch(() => {});
+          }
+        }
+
         const authenticatedUser = {
           id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
           user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
@@ -5507,9 +5609,10 @@
           email: isEmail ? (foundProfile.email || rawIdentifier) : null,
           provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
           username: foundProfile.username || 'Devotee',
-          avatar: foundProfile.avatar || '🪔',
-          custom_avatar_url: foundProfile.custom_avatar_url || null,
-          google_photo_url: foundProfile.google_photo_url || null,
+          avatar: devoteeAvatar,
+          avatar_assigned: true,
+          custom_avatar_url: null,
+          google_photo_url: null,
           saved_items: restoredSavedItems,
           custom_plans: restoredCustomPlans,
           feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
@@ -5734,7 +5837,17 @@
       customPlans = (customPlans || []).filter(p => {
         if (!p || typeof p !== 'object') return false;
         const t = (p.title || '').trim().toLowerCase();
-        return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+        if (t === 'x' || t === 'bnfhm' || t === 'test') return false;
+        // Strict user scoping: keep only plans created by this user or explicitly shared with / saved by this user
+        if (currentUser) {
+          const isMine = isCurrentUserPlan(p, currentUser);
+          const isExplicitlySaved = p.saved_to_itinerary || p.is_shared || 
+            (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.some(cp => cp && cp.id === p.id));
+          return isMine || isExplicitlySaved;
+        } else {
+          const isGuestMine = isCurrentUserPlan(p, null);
+          return isGuestMine || p.is_shared || p.saved_to_itinerary;
+        }
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
     } catch (e) {
@@ -5745,108 +5858,170 @@
     }
   }
 
-  // Asynchronous remote sync for plans (runs non-blockingly in background)
+  // Asynchronous remote sync for plans (Scoped strictly to current user's created plans and shared plans)
   async function syncRemotePlans() {
-    let hasNewPlans = false;
+    let hasPlanChanges = false;
+    const initialPlanCount = (customPlans || []).length;
 
-    // Firebase Firestore remote sync
-    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-      try {
-        const fbPlans = await window.AkalbodhonFirebase.fetchAllPlans();
-        if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-          const planMap = new Map();
-          fbPlans
-            .filter(p => {
+    // 1. User-specific created plans sync
+    if (currentUser) {
+      const candidateIds = [
+        currentUser.id,
+        currentUser.user_id,
+        currentUser.uid,
+        currentUser.firebase_uid,
+        currentUser.identifier,
+        currentUser.email,
+        currentUser.phone
+      ].filter(Boolean).map(s => String(s).trim());
+
+      // A. Firebase Firestore sync: fetch only plans created by this user
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(currentUser);
+          if (Array.isArray(fbPlans)) {
+            const validFbPlans = fbPlans.filter(p => {
               const t = (p.title || '').trim().toLowerCase();
               return t !== 'x' && t !== 'bnfhm' && t !== 'test';
-            })
-            .forEach(p => planMap.set(p.id, p));
-
-          (customPlans || []).forEach(p => {
-            if (!planMap.has(p.id)) planMap.set(p.id, p);
-          });
-          customPlans = Array.from(planMap.values());
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          hasNewPlans = true;
-        }
-      } catch (fbErr) {
-        console.warn('Firebase plans load notice:', fbErr);
-      }
-    }
-
-    // Supabase remote sync
-    if (supabaseClient) {
-      try {
-        supabaseClient.from('puja_plans').delete().in('title', ['x', 'bnfhm', 'X', 'Bnfhm']).then(() => {});
-      } catch (e) {}
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('puja_plans')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        let membersByPlan = {};
-        try {
-          const { data: mData } = await supabaseClient.from('plan_members').select('*');
-          if (Array.isArray(mData)) {
-            mData.forEach(m => {
-              if (m && m.plan_id) {
-                if (!membersByPlan[m.plan_id]) membersByPlan[m.plan_id] = [];
-                membersByPlan[m.plan_id].push(m);
+            });
+            validFbPlans.forEach(p => {
+              const idx = customPlans.findIndex(cp => cp.id === p.id);
+              if (idx >= 0) {
+                customPlans[idx] = { ...customPlans[idx], ...p };
+              } else {
+                customPlans.push(p);
+                hasPlanChanges = true;
               }
             });
           }
-        } catch (_) {}
-
-        if (!error && Array.isArray(data)) {
-          const remotePlans = data
-            .filter(p => {
-              const t = (p.title || '').trim().toLowerCase();
-              return t !== 'x' && t !== 'bnfhm' && t !== 'test';
-            })
-            .map(p => {
-              let parsedPandals = [];
-              try { parsedPandals = typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []); } catch (_) { parsedPandals = []; }
-              let parsedFood = [];
-              try { parsedFood = typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []); } catch (_) { parsedFood = []; }
-              let parsedRituals = [];
-              try { parsedRituals = typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []); } catch (_) { parsedRituals = []; }
-
-              return {
-                id: p.id,
-                title: p.title,
-                day_tag: p.day_tag,
-                day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
-                date_str: p.date_str,
-                creator_name: p.creator_name,
-                creator_avatar: p.creator_avatar || '🌺',
-                creator_id: p.creator_id,
-                route_summary: p.route_summary,
-                pandals: parsedPandals,
-                food_stops: parsedFood,
-                rituals: parsedRituals,
-                members: membersByPlan[p.id] || [],
-                custom_notes: p.custom_notes
-              };
-            });
-
-          const planMap = new Map();
-          remotePlans.forEach(p => planMap.set(p.id, p));
-          (customPlans || []).forEach(p => {
-            if (!planMap.has(p.id)) planMap.set(p.id, p);
-          });
-          customPlans = Array.from(planMap.values());
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          hasNewPlans = true;
+        } catch (fbErr) {
+          console.warn('Firebase user plans load notice:', fbErr);
         }
-      } catch (supaErr) {
-        console.warn('Supabase plans load notice:', supaErr);
+      }
+
+      // B. Supabase sync: fetch only plans where creator_id belongs to current user
+      if (supabaseClient && candidateIds.length > 0) {
+        try {
+          const { data, error } = await supabaseClient
+            .from('puja_plans')
+            .select('*')
+            .in('creator_id', candidateIds)
+            .order('created_at', { ascending: false });
+
+          if (!error && Array.isArray(data)) {
+            const remotePlans = data
+              .filter(p => {
+                const t = (p.title || '').trim().toLowerCase();
+                return t !== 'x' && t !== 'bnfhm' && t !== 'test';
+              })
+              .map(p => {
+                let parsedPandals = [];
+                try { parsedPandals = typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []); } catch (_) { parsedPandals = []; }
+                let parsedFood = [];
+                try { parsedFood = typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []); } catch (_) { parsedFood = []; }
+                let parsedRituals = [];
+                try { parsedRituals = typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []); } catch (_) { parsedRituals = []; }
+
+                return {
+                  id: p.id,
+                  title: p.title,
+                  day_tag: p.day_tag,
+                  day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+                  date_str: p.date_str,
+                  creator_name: p.creator_name,
+                  creator_avatar: p.creator_avatar || '🌺',
+                  creator_id: p.creator_id,
+                  route_summary: p.route_summary,
+                  pandals: parsedPandals,
+                  food_stops: parsedFood,
+                  rituals: parsedRituals,
+                  custom_notes: p.custom_notes
+                };
+              });
+
+            remotePlans.forEach(p => {
+              const idx = customPlans.findIndex(cp => cp.id === p.id);
+              if (idx >= 0) {
+                customPlans[idx] = { ...customPlans[idx], ...p };
+              } else {
+                customPlans.push(p);
+                hasPlanChanges = true;
+              }
+            });
+          }
+        } catch (supaErr) {
+          console.warn('Supabase user plans load notice:', supaErr);
+        }
       }
     }
 
-    if (hasNewPlans && typeof renderFestivalPlans === 'function') {
-      renderFestivalPlans(activePlanFilter || 'all');
+    // 2. Cascade Deletion & Verification for Shared Plans:
+    // If a plan in customPlans was created by someone else (shared with this user),
+    // verify if it STILL EXISTS in the database. If creator deleted it, delete from receiver's account!
+    const sharedPlansToCheck = (customPlans || []).filter(p => !p.is_template && !isCurrentUserPlan(p, currentUser));
+    if (sharedPlansToCheck.length > 0) {
+      const deletedPlanIds = new Set();
+
+      for (const sp of sharedPlansToCheck) {
+        let existsInFb = false;
+        let existsInSb = false;
+
+        // Check Firebase
+        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
+          try {
+            const fbDoc = await window.AkalbodhonFirebase.fetchPlanById(sp.id);
+            if (fbDoc) existsInFb = true;
+          } catch (_) {}
+        }
+
+        // Check Supabase
+        if (supabaseClient) {
+          try {
+            const { data } = await supabaseClient.from('puja_plans').select('id').eq('id', sp.id).maybeSingle();
+            if (data && data.id) existsInSb = true;
+          } catch (_) {}
+        }
+
+        // If both checks ran or either is available and neither found the plan, creator deleted it from DB!
+        const hasDb = (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) || supabaseClient;
+        if (hasDb && !existsInFb && !existsInSb) {
+          deletedPlanIds.add(sp.id);
+        }
+      }
+
+      if (deletedPlanIds.size > 0) {
+        customPlans = customPlans.filter(p => !deletedPlanIds.has(p.id));
+        hasPlanChanges = true;
+
+        if (currentUser && Array.isArray(currentUser.custom_plans)) {
+          currentUser.custom_plans = currentUser.custom_plans.filter(p => !deletedPlanIds.has(p.id));
+          try {
+            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+          } catch (_) {}
+        }
+
+        // If receiver is currently viewing a deleted plan in the modal, close modal and warn
+        if (window.activeViewingPlanId && deletedPlanIds.has(window.activeViewingPlanId)) {
+          if (typeof window.closeViewPlanModal === 'function') window.closeViewPlanModal();
+          showToast('This shared plan was deleted by its creator.', 'warning');
+        }
+      }
+    }
+
+    // 3. Persist and trigger re-render if plans changed
+    if (hasPlanChanges || customPlans.length !== initialPlanCount) {
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      if (currentUser) {
+        currentUser.custom_plans = customPlans;
+        try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
+      }
+      if (typeof renderFestivalPlans === 'function') {
+        renderFestivalPlans(activePlanFilter || 'all');
+      }
+      if (typeof renderSavedItinerary === 'function') {
+        renderSavedItinerary();
+      }
     }
   }
 
@@ -5961,8 +6136,6 @@
     container.innerHTML = allPlans.map(plan => {
       const isCustom = !plan.is_template;
       const isMyPlan = isCurrentUserPlan(plan, currentUser);
-      const members = plan.members || [];
-      const hasMembers = members.length > 0;
       const pandalCount = (plan.pandals || []).length;
       const foodCount = (plan.food_stops || []).length;
       const creatorNameDisplay = isMyPlan 
@@ -6029,11 +6202,6 @@
                   🍽️ ${foodCount} Food Stops
                 </span>
               ` : ''}
-              ${hasMembers ? `
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-primary/10 dark:bg-amber-400/10 text-primary dark:text-amber-300 border border-primary/20 dark:border-amber-400/20 font-medium">
-                  👥 ${members.length} Hopping
-                </span>
-              ` : ''}
             </div>
           </div>
 
@@ -6067,82 +6235,9 @@
   // Active listener unsubscribe handle for real-time plan members sync
   let activePlanListenerUnsub = null;
 
-  // Join a shared Puja plan as a devotee hopping together
+  // Discontinued: Friends Hopping Together feature removed per user specifications
   async function joinPlanAsMember(planId, userProfile) {
-    if (!planId) return;
-    const profile = userProfile || currentUser;
-    if (!profile) {
-      pendingPlanJoinId = planId;
-      promptAuthBeforeSave({
-        title: 'Join Friends Hopping Together',
-        message: 'Please <strong>log in</strong> or <strong>create an account</strong> to add your devotee name under Friends Hopping Together for this Puja plan.',
-        categoryName: 'Puja Plans',
-        defaultMode: 'signup',
-        onAuthenticatedSave: () => {
-          if (currentUser) {
-            joinPlanAsMember(planId, currentUser);
-          }
-        }
-      });
-      return;
-    }
-
-    const cleanPlanId = String(planId).trim();
-    const memberId = profile.id || profile.user_id || profile.uid;
-    const memberName = profile.username || profile.user_id || 'Devotee';
-    const memberAvatar = profile.avatar || '🪔';
-
-    const newMember = {
-      plan_id: cleanPlanId,
-      user_id: memberId,
-      user_name: memberName,
-      user_avatar: memberAvatar,
-      role: 'member',
-      joined_at: new Date().toISOString()
-    };
-
-    let updatedMembers = null;
-    if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.addPlanMember === 'function') {
-      try {
-        updatedMembers = await window.AkalbodhonFirebase.addPlanMember(cleanPlanId, newMember);
-      } catch (e) {
-        console.warn('Firebase addPlanMember error:', e);
-      }
-    }
-
-    // Sync to Supabase if available
-    if (supabaseClient) {
-      try {
-        supabaseClient.from('plan_members').upsert(newMember).then(() => {});
-      } catch (e) {}
-    }
-
-    // Update local plans cache & localStorage
-    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
-    let plan = allPlans.find(p => p.id === cleanPlanId);
-    if (plan) {
-      if (updatedMembers && Array.isArray(updatedMembers)) {
-        plan.members = updatedMembers;
-      } else {
-        plan.members = Array.isArray(plan.members) ? plan.members : [];
-        const exists = plan.members.some(m => m.user_id === memberId || m.user_name === memberName);
-        if (!exists) plan.members.push(newMember);
-      }
-      if (!customPlans.some(p => p.id === plan.id) && !plan.is_template) {
-        customPlans.unshift(plan);
-      }
-      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-    }
-
-    if (typeof renderFestivalPlans === 'function') {
-      renderFestivalPlans(activePlanFilter);
-    }
-
-    const modal = document.getElementById('view-plan-modal');
-    if (modal && !modal.classList.contains('hidden') && typeof window.openViewPlanModal === 'function') {
-      window.openViewPlanModal(cleanPlanId);
-    }
-    showToast(`🪔 You are now hopping together on "${plan?.title || 'Puja Plan'}"!`, 'celebration');
+    return;
   }
   window.joinPlanAsMember = joinPlanAsMember;
 
@@ -6195,6 +6290,8 @@
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
+
+    window.activeViewingPlanId = plan.id;
 
     const modal = document.getElementById('view-plan-modal');
     if (!modal) return;
@@ -6415,75 +6512,24 @@
       }
     }
 
-    // Friends hopping together
-    const membersSec = document.getElementById('vp-members-section');
-    const membersList = document.getElementById('vp-members-list');
-
-    function renderPlanMembersList(membersArray) {
-      if (!membersSec || !membersList) return;
-      let list = Array.isArray(membersArray) ? [...membersArray] : [];
-
-      // If members array is empty, include creator as host
-      if (list.length === 0 && (plan.creator_name || plan.creator_id)) {
-        list = [{
-          user_id: plan.creator_id || 'creator',
-          user_name: plan.creator_name || 'Host',
-          user_avatar: plan.creator_avatar || '🌺',
-          role: 'creator'
-        }];
-      }
-
-      if (list.length > 0 || !plan.is_template) {
-        membersSec.classList.remove('hidden');
-
-        let html = list.map(m => {
-          const isCreator = m.role === 'creator' || (plan.creator_id && (m.user_id === plan.creator_id || m.id === plan.creator_id));
-          const isMe = currentUser && (m.user_id === currentUser.id || m.user_id === currentUser.user_id || (currentUser.username && m.user_name === currentUser.username));
-          const avatar = m.user_avatar || (isCreator ? (plan.creator_avatar || '🌺') : '🪔');
-          const name = m.user_name || (isCreator ? (plan.creator_name || 'Host') : 'Devotee');
-
-          return `
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full ${isCreator ? 'bg-amber-500/15 border-amber-500/40 text-amber-900 dark:text-amber-200' : 'bg-surface-container-high dark:bg-[#2c261b] border-outline-variant/30 dark:border-amber-400/20 text-on-surface dark:text-white'} border text-xs shadow-sm transition-all hover:scale-105">
-              <span class="text-sm">${avatar}</span>
-              <span class="font-bold text-xs truncate max-w-[130px]">${name}${isMe ? ' (You)' : ''}</span>
-              ${isCreator 
-                ? '<span class="text-[9px] px-1.5 py-0.5 rounded-md bg-amber-400 text-black font-extrabold uppercase tracking-wider ml-0.5">Host</span>' 
-                : '<span class="text-[9px] px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold ml-0.5">Hopping</span>'
-              }
-            </div>
-          `;
-        }).join('');
-
-        // If current user is not yet in members list and it is not a fixed template, show Join button
-        const isUserAlreadyIn = currentUser && list.some(m => 
-          (m.user_id && (m.user_id === currentUser.id || m.user_id === currentUser.user_id)) || 
-          (currentUser.username && m.user_name === currentUser.username)
-        );
-        if (!isUserAlreadyIn && !plan.is_template) {
-          html += `
-            <button type="button" onclick="window.joinPlanAsMember('${plan.id}', window.currentUser)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 dark:bg-amber-400/20 dark:hover:bg-amber-400/30 text-primary dark:text-amber-300 border border-primary/30 dark:border-amber-400/40 text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm cursor-pointer" title="Add your devotee name to this shared plan">
-              <span class="material-symbols-outlined text-[14px]">person_add</span>
-              <span>Join Hopping Group</span>
-            </button>
-          `;
-        }
-
-        membersList.innerHTML = html;
-      } else {
-        membersSec.classList.add('hidden');
-      }
-    }
-
-    renderPlanMembersList(plan.members || []);
-
-    // Fetch freshest plan from Firebase Firestore so creator & all receivers see everyone who joined and description changes
+    // Fetch freshest plan from Firebase Firestore (and auto-detect creator deletion)
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
       window.AkalbodhonFirebase.fetchPlanById(plan.id).then(fresh => {
-        if (fresh) {
-          if (Array.isArray(fresh.members)) {
-            plan.members = fresh.members;
-            renderPlanMembersList(fresh.members);
+        if (!fresh && !plan.is_template) {
+          // The plan was deleted by its creator from database! Cascade deletion from receiver account
+          customPlans = customPlans.filter(p => p.id !== plan.id);
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          if (currentUser && Array.isArray(currentUser.custom_plans)) {
+            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
+            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
           }
+          window.closeViewPlanModal();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          showToast('This plan was deleted by its creator.', 'warning');
+          return;
+        }
+        if (fresh) {
           if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
             const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
             plan.custom_notes = freshDesc;
@@ -6494,24 +6540,32 @@
       }).catch(() => {});
     }
 
-    // Set up real-time listener so changes from any receiver or creator appear immediately without refresh
+    // Set up real-time listener: if creator updates or deletes the plan, react immediately
     if (activePlanListenerUnsub) {
       try { activePlanListenerUnsub(); } catch (e) {}
       activePlanListenerUnsub = null;
     }
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.listenToPlan === 'function') {
       activePlanListenerUnsub = window.AkalbodhonFirebase.listenToPlan(plan.id, (fresh) => {
-        if (fresh) {
-          if (Array.isArray(fresh.members)) {
-            plan.members = fresh.members;
-            renderPlanMembersList(fresh.members);
+        if (!fresh || fresh.deleted) {
+          // Creator deleted plan from database — automatically purge from receiver's account
+          customPlans = customPlans.filter(p => p.id !== plan.id);
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          if (currentUser && Array.isArray(currentUser.custom_plans)) {
+            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
+            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
           }
-          if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
-            const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
-            plan.custom_notes = freshDesc;
-            plan.description = freshDesc;
-            renderDescriptionDisplay();
-          }
+          window.closeViewPlanModal();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          showToast('This plan was deleted by its creator.', 'warning');
+          return;
+        }
+        if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
+          const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
+          plan.custom_notes = freshDesc;
+          plan.description = freshDesc;
+          renderDescriptionDisplay();
         }
       });
     }
@@ -6569,6 +6623,7 @@
   };
 
   window.closeViewPlanModal = function () {
+    window.activeViewingPlanId = null;
     if (activePlanListenerUnsub) {
       try { activePlanListenerUnsub(); } catch (e) {}
       activePlanListenerUnsub = null;
@@ -6745,14 +6800,6 @@
         rituals: ritualsList,
         custom_notes: customDescription,
         description: customDescription,
-        members: [
-          {
-            user_id: creatorUserId,
-            user_name: creatorDisplayName,
-            user_avatar: creatorAvatar,
-            role: 'creator'
-          }
-        ],
         created_at: new Date().toISOString()
       };
 
@@ -7277,11 +7324,19 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
         showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
 
-        // If receiver is logged in, attach this shared plan to receiver's account & add to Friends Hopping Together in Firestore
-        if (currentUser) {
-          joinPlanAsMember(plan.id, currentUser);
-        } else {
-          pendingPlanJoinId = plan.id;
+        // If receiver is logged in, attach this shared plan to receiver's account
+        if (!plan.is_template) {
+          plan.is_shared = true;
+          if (currentUser) {
+            if (!Array.isArray(currentUser.custom_plans)) currentUser.custom_plans = [];
+            if (!currentUser.custom_plans.some(p => p.id === plan.id)) {
+              currentUser.custom_plans.unshift(plan);
+              try {
+                localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+                saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+              } catch (_) {}
+            }
+          }
         }
 
         // Clean up the URL search params so the receiver is not trapped when navigating around
@@ -7300,15 +7355,26 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
   }
 
-  // Delete Custom Plan
+  // Delete Custom Plan (Strictly Creator Only: deletes from database permanently)
   window.deleteCustomPlan = function (planId) {
-    if (!confirm('Are you sure you want to delete this custom Puja plan?')) return;
-    showTopProgressBar();
     const plan = customPlans.find(p => p.id === planId);
+    if (!plan) return;
+
+    // Guard: Only the creator can delete the plan from the database!
+    const isCreator = isCurrentUserPlan(plan, currentUser);
+    if (!isCreator && !plan.is_template) {
+      showToast('Only the creator can delete this plan permanently. Removing from your itinerary.', 'info');
+      window.removePlanFromItinerary(planId);
+      return;
+    }
+
+    if (!confirm('Are you sure you want to delete this custom Puja plan? It will be permanently removed for you and all receivers.')) return;
+    showTopProgressBar();
     const planTitle = plan ? plan.title : 'Plan';
     customPlans = customPlans.filter(p => p.id !== planId);
     localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
 
+    // Permanent delete from Supabase database
     if (supabaseClient) {
       supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
     }
@@ -7319,7 +7385,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
       const targetUid = currentUser.id || currentUser.user_id;
 
-      // Delete from Firebase Firestore Database
+      // Permanent delete from Firebase Firestore Database (root collection and creator collection)
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         window.AkalbodhonFirebase.deletePlan(planId, targetUid).catch(() => {});
         window.AkalbodhonFirebase.syncProfile({
@@ -7339,11 +7405,11 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     renderFestivalPlans(activePlanFilter);
     renderSavedItinerary(activeSavedTab);
-    showToast(`Plan "${planTitle}" deleted from your collection.`, 'delete');
+    showToast(`Plan "${planTitle}" permanently deleted from database.`, 'delete');
     setTimeout(hideTopProgressBar, 600);
   };
 
-  // Remove Plan from Itinerary
+  // Remove Plan from Itinerary (Non-destructive: strictly removes from receiver's own itinerary without deleting from database)
   window.removePlanFromItinerary = function (planId) {
     showTopProgressBar();
     const plan = customPlans.find(p => p.id === planId);
@@ -7357,9 +7423,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
       const targetUid = currentUser.id || currentUser.user_id;
 
-      // Delete from Firebase Firestore Database
+      // Update devotee's own profile without touching the plan in the database!
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        window.AkalbodhonFirebase.deletePlan(planId, targetUid).catch(() => {});
         window.AkalbodhonFirebase.syncProfile({
           id: targetUid,
           custom_plans: customPlans
@@ -7368,7 +7433,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if (supabaseClient) {
         const targetId = (currentUser.id || '').toLowerCase();
-        supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
         supabaseClient.from('profiles').update({
           custom_plans: customPlans,
           updated_at: new Date().toISOString()
@@ -7390,7 +7454,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
   };
 
-  // Save Plan to Itinerary as a Whole Puja Plan
+  // Save Plan to Itinerary as a Whole Puja Plan (Allowed for both Creator and Receiver)
   window.savePlanToItinerary = function (planId) {
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     const plan = allPlans.find(p => p.id === planId);
@@ -7405,7 +7469,9 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         return;
       }
 
-      // Save plan as a WHOLE entity in customPlans (do NOT decompose into pandals)
+      const isCreator = isCurrentUserPlan(plan, currentUser);
+
+      // Save plan as a WHOLE entity in customPlans preserving original creator details
       const planToSave = {
         ...plan,
         saved_to_itinerary: true,
@@ -7422,9 +7488,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
         const targetUid = currentUser.id || currentUser.user_id;
 
-        // Firebase Firestore dual-sync
+        // Firebase Firestore sync:
+        // ONLY call savePlan if current user is the CREATOR.
+        // If receiver, ONLY sync user profile so it's in their personal itinerary without overwriting DB root plan!
         if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          window.AkalbodhonFirebase.savePlan(planToSave).catch(() => {});
+          if (isCreator) {
+            window.AkalbodhonFirebase.savePlan(planToSave).catch(() => {});
+          }
           window.AkalbodhonFirebase.syncProfile({
             id: targetUid,
             custom_plans: customPlans
@@ -7856,102 +7926,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       });
     }
 
-    // Avatar Detail Overlay Handlers
-    document.getElementById('close-avatar-detail-btn')?.addEventListener('click', closeAvatarDetailModal);
-    document.getElementById('confirm-select-avatar-btn')?.addEventListener('click', () => {
-      if (selectedAvatarPending && currentUser) {
-        if (currentUser.custom_avatar_url) {
-          currentUser.google_photo_url = currentUser.custom_avatar_url;
-        }
-        currentUser.avatar = selectedAvatarPending.icon;
-        currentUser.custom_avatar_url = null;
-        updateProfileAvatarDisplay();
-        updateAccountUI();
-        renderPujaAvatarsGrid();
-        saveUserSession(currentUser);
 
-        // Sync to Supabase
-        if (supabaseClient) {
-          supabaseClient.from('profiles').upsert({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            identifier: currentUser.identifier,
-            identifier_type: currentUser.identifier_type || 'email',
-            username: currentUser.username,
-            avatar: currentUser.avatar,
-            custom_avatar_url: null,
-            google_photo_url: currentUser.google_photo_url || null,
-            updated_at: new Date().toISOString()
-          }).catch(err => console.warn('Supabase avatar update notice:', err));
-        }
-
-        // Sync to Firebase Firestore
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          window.AkalbodhonFirebase.syncProfile({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            avatar: currentUser.avatar,
-            custom_avatar_url: null,
-            google_photo_url: currentUser.google_photo_url || null,
-            username: currentUser.username
-          }).catch(() => {});
-        }
-
-        showToast(`Sacred Avatar updated to ${selectedAvatarPending.name}!`, 'check_circle');
-      }
-      closeAvatarDetailModal();
-    });
-
-    // Toggle Google Profile Photo / Festival Icon
-    document.getElementById('toggle-google-avatar-btn')?.addEventListener('click', async () => {
-      if (!currentUser) return;
-      if (currentUser.custom_avatar_url) {
-        currentUser.custom_avatar_url = null;
-        showToast('Switched to Sacred Festival Avatar!', 'check_circle');
-      } else if (currentUser.google_photo_url) {
-        currentUser.custom_avatar_url = currentUser.google_photo_url;
-        showToast('Switched to Google profile photo.', 'check_circle');
-      }
-      updateProfileAvatarDisplay();
-      updateAccountUI();
-      renderPujaAvatarsGrid();
-      saveUserSession(currentUser);
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('profiles').upsert({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            identifier: currentUser.identifier,
-            identifier_type: currentUser.identifier_type || 'email',
-            username: currentUser.username,
-            avatar: currentUser.avatar || '🪔',
-            custom_avatar_url: currentUser.custom_avatar_url,
-            google_photo_url: currentUser.google_photo_url || null,
-            updated_at: new Date().toISOString()
-          });
-        } catch (e) {}
-      }
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          await window.AkalbodhonFirebase.syncProfile({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            avatar: currentUser.avatar,
-            custom_avatar_url: currentUser.custom_avatar_url,
-            google_photo_url: currentUser.google_photo_url || null,
-            username: currentUser.username
-          });
-        } catch (e) {}
-      }
-    });
-
-    const avatarDetailModal = document.getElementById('avatar-detail-modal');
-    if (avatarDetailModal) {
-      avatarDetailModal.addEventListener('click', (e) => {
-        if (e.target === avatarDetailModal) closeAvatarDetailModal();
-      });
-    }
 
     // Modal scroll reset helper
     function resetModalScroll(modalEl) {
@@ -8522,7 +8497,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       'view-plan-modal', 'create-plan-modal', 'share-plan-modal',
       'pandal-detail-modal', 'auth-modal', 'save-auth-prompt-modal',
       'profile-modal', 'playlist-detail-modal', 'about-page-modal',
-      'devotee-feedback-modal', 'avatar-detail-modal', 'gate-welcome-modal'
+      'devotee-feedback-modal', 'gate-welcome-modal', 'clear-itinerary-modal'
     ];
     
     function checkAndSyncModalScrollLock() {
@@ -8555,6 +8530,11 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // Universal Global Escape Key Handler
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        const clearModal = document.getElementById('clear-itinerary-modal');
+        if (clearModal && !clearModal.classList.contains('hidden')) {
+          if (typeof closeClearItineraryModal === 'function') closeClearItineraryModal();
+          return;
+        }
         const feedbackModal = document.getElementById('devotee-feedback-modal');
         if (feedbackModal && !feedbackModal.classList.contains('hidden')) {
           document.getElementById('close-feedback-modal-btn')?.click();
@@ -8600,11 +8580,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           if (typeof window.closePlaylistDetailModal === 'function') window.closePlaylistDetailModal();
           return;
         }
-        const avatarModal = document.getElementById('avatar-detail-modal');
-        if (avatarModal && !avatarModal.classList.contains('hidden')) {
-          document.getElementById('close-avatar-modal-btn')?.click();
-          return;
-        }
         const aboutModal = document.getElementById('about-page-modal');
         if (aboutModal && !aboutModal.classList.contains('hidden')) {
           document.getElementById('close-about-modal-btn')?.click();
@@ -8617,6 +8592,40 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
       }
     });
+
+    // Wire up Clear Itinerary Confirmation Modal actions
+    const clearItineraryModal = document.getElementById('clear-itinerary-modal');
+    if (clearItineraryModal) {
+      document.getElementById('confirm-clear-itinerary-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        clearEntireItinerary();
+      });
+      document.getElementById('cancel-clear-itinerary-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeClearItineraryModal();
+      });
+      document.getElementById('close-clear-itinerary-modal-btn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        closeClearItineraryModal();
+      });
+      clearItineraryModal.addEventListener('click', (e) => {
+        if (e.target === clearItineraryModal) {
+          closeClearItineraryModal();
+        }
+      });
+    }
+
+    // Direct binding for Clear All button in Itinerary section header
+    const clearAllItineraryBtn = document.getElementById('clear-all-bookmarks-btn');
+    if (clearAllItineraryBtn) {
+      clearAllItineraryBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        openClearItineraryModal();
+      });
+    }
+
+    // Initial bookmark count update across navigation and tabs
+    if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
 
     window.addEventListener('hashchange', handleRouting);
     handleRouting();

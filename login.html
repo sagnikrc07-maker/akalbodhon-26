@@ -175,41 +175,6 @@
             <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
               Authenticated • Supabase Synced
             </span>
-            <button id="logged-toggle-google-btn" type="button" class="hidden text-[11px] font-semibold text-primary dark:text-amber-300 hover:underline inline-flex items-center gap-1 cursor-pointer">
-              Use Google Photo
-            </button>
-          </div>
-        </div>
-
-        <!-- 14 Sacred Festival Avatars Selection -->
-        <div class="pt-3 text-left space-y-2.5 border-t border-outline-variant/30 dark:border-amber-400/20">
-          <div class="flex items-center justify-between">
-            <label class="text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300 flex items-center gap-1.5">
-              <span class="material-symbols-outlined text-[16px]">palette</span> Choose Sacred Puja Avatar
-            </label>
-            <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-medium">14 Festive Icons</span>
-          </div>
-
-          <!-- 14 Avatar Grid -->
-          <div id="logged-puja-avatars-grid" class="grid grid-cols-4 sm:grid-cols-7 gap-2 p-3 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
-            <!-- Injected via JavaScript -->
-          </div>
-
-          <!-- Active Emblem Meaning Preview Card -->
-          <div id="logged-avatar-preview-card" class="p-3 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/20 dark:border-amber-400/20 text-xs space-y-1 transition-all">
-            <div class="flex items-center gap-2">
-              <span id="logged-preview-icon" class="text-2xl">🪔</span>
-              <div class="min-w-0 flex-1">
-                <span id="logged-preview-name" class="font-bold text-on-surface dark:text-white block text-xs truncate">Pradeep (Diya)</span>
-                <span class="text-[10px] text-primary dark:text-amber-300 font-medium">Sacred Sharadotsav Emblem</span>
-              </div>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold ml-auto flex items-center gap-1 flex-shrink-0">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
-              </span>
-            </div>
-            <p id="logged-preview-desc" class="text-[11px] text-on-surface-variant dark:text-[#ded5c7] leading-relaxed pt-1">
-              The sacred brass oil lamp illuminated during Bodhon to dispel darkness and awaken divine presence.
-            </p>
           </div>
         </div>
 
@@ -346,7 +311,6 @@
     const loggedInView = document.getElementById('logged-in-view');
     const loggedAvatarContainer = document.getElementById('logged-avatar-container');
     const loggedAvatarEmoji = document.getElementById('logged-avatar-emoji');
-    const loggedToggleGoogleBtn = document.getElementById('logged-toggle-google-btn');
     const loggedName = document.getElementById('logged-name');
     const loggedIdentifier = document.getElementById('logged-identifier');
     const signoutBtn = document.getElementById('signout-btn');
@@ -619,6 +583,9 @@
     // Google Redirect Sign-In Session Recovery for login.html
     function handleRedirectSuccess(profile) {
       if (!profile) return;
+      if (profile.google_photo_url) {
+        profile.custom_avatar_url = profile.google_photo_url;
+      }
       showLoggedInState(profile);
       showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
       setTimeout(() => {
@@ -652,161 +619,23 @@
       { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
     ];
 
+    function getRandomPujaIcon() {
+      return PUJA_AVATARS[Math.floor(Math.random() * PUJA_AVATARS.length)].icon;
+    }
+
     let currentLoggedInUser = null;
 
     function updateLoggedInAvatarDisplay(user) {
       if (!user) return;
       if (loggedAvatarContainer) {
-        if (user.custom_avatar_url) {
-          loggedAvatarContainer.innerHTML = `<img src="${user.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
+        if (user.custom_avatar_url || (user.identifier_type === 'google' && user.google_photo_url)) {
+          const photoSrc = user.custom_avatar_url || user.google_photo_url;
+          loggedAvatarContainer.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
         } else {
           loggedAvatarContainer.innerHTML = `<span id="logged-avatar-emoji">${user.avatar || '🪔'}</span>`;
         }
       }
-
-      if (loggedToggleGoogleBtn) {
-        const googlePhoto = user.google_photo_url || (user.identifier_type === 'google' && user.custom_avatar_url ? user.custom_avatar_url : null);
-        if (googlePhoto) {
-          user.google_photo_url = googlePhoto;
-          loggedToggleGoogleBtn.classList.remove('hidden');
-          if (user.custom_avatar_url) {
-            loggedToggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">palette</span> Use Festival Icon`;
-            loggedToggleGoogleBtn.title = "Switch to your selected sacred festival icon";
-          } else {
-            loggedToggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">account_circle</span> Use Google Photo`;
-            loggedToggleGoogleBtn.title = "Switch back to your Google profile picture";
-          }
-        } else {
-          loggedToggleGoogleBtn.classList.add('hidden');
-        }
-      }
     }
-
-    function renderLoggedPujaAvatars(user) {
-      const grid = document.getElementById('logged-puja-avatars-grid');
-      const prevIcon = document.getElementById('logged-preview-icon');
-      const prevName = document.getElementById('logged-preview-name');
-      const prevDesc = document.getElementById('logged-preview-desc');
-      if (!grid || !user) return;
-
-      const activeIcon = user.avatar || '🪔';
-      const activeObj = PUJA_AVATARS.find(a => a.icon === activeIcon) || PUJA_AVATARS[0];
-
-      if (prevIcon) prevIcon.textContent = activeObj.icon;
-      if (prevName) prevName.textContent = activeObj.name;
-      if (prevDesc) prevDesc.textContent = activeObj.meaning;
-
-      grid.innerHTML = PUJA_AVATARS.map(item => {
-        const isSelected = !user.custom_avatar_url && (user.avatar === item.icon);
-        return `
-          <button 
-            type="button" 
-            class="avatar-option flex flex-col items-center justify-center p-2 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 shadow-md scale-105 ring-2 ring-primary/40 dark:ring-amber-400/40' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer relative group"
-            data-id="${item.id}"
-            title="${item.name}: ${item.meaning}"
-          >
-            <span class="text-2xl sm:text-3xl select-none">${item.icon}</span>
-            <span class="text-[9px] sm:text-[10px] font-medium text-on-surface-variant dark:text-amber-200/80 truncate max-w-[55px] sm:max-w-[65px] mt-1 text-center">${item.name.split(' ')[0]}</span>
-            ${isSelected ? '<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary dark:bg-amber-400 text-white dark:text-black rounded-full text-[9px] flex items-center justify-center font-bold shadow">✓</span>' : ''}
-          </button>
-        `;
-      }).join('');
-
-      grid.querySelectorAll('.avatar-option').forEach(btn => {
-        btn.onclick = async () => {
-          const id = btn.dataset.id;
-          const avatarObj = PUJA_AVATARS.find(a => a.id === id);
-          if (!avatarObj) return;
-
-          if (user.custom_avatar_url) {
-            user.google_photo_url = user.custom_avatar_url;
-          }
-          user.avatar = avatarObj.icon;
-          user.custom_avatar_url = null;
-
-          updateLoggedInAvatarDisplay(user);
-          renderLoggedPujaAvatars(user);
-          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
-
-          // Sync to Supabase
-          if (supabaseClient) {
-            try {
-              await supabaseClient.from('profiles').upsert({
-                id: user.id || user.user_id,
-                user_id: user.user_id || user.id,
-                identifier: user.identifier,
-                identifier_type: user.identifier_type || 'email',
-                username: user.username,
-                avatar: user.avatar,
-                custom_avatar_url: null,
-                google_photo_url: user.google_photo_url || null,
-                updated_at: new Date().toISOString()
-              });
-            } catch (err) {
-              console.warn('Supabase avatar update notice:', err);
-            }
-          }
-
-          // Sync to Firebase
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            try {
-              await window.AkalbodhonFirebase.syncProfile({
-                id: user.id || user.user_id,
-                user_id: user.user_id || user.id,
-                avatar: user.avatar,
-                custom_avatar_url: null,
-                google_photo_url: user.google_photo_url || null,
-                username: user.username
-              });
-            } catch (fbErr) {}
-          }
-
-          showAlert(`Sacred Avatar updated to ${avatarObj.name}! Synced across all festival pages.`, false);
-        };
-      });
-    }
-
-    loggedToggleGoogleBtn?.addEventListener('click', async () => {
-      if (!currentLoggedInUser) return;
-      if (currentLoggedInUser.custom_avatar_url) {
-        currentLoggedInUser.custom_avatar_url = null;
-        showAlert('Switched to Sacred Festival Avatar!', false);
-      } else if (currentLoggedInUser.google_photo_url) {
-        currentLoggedInUser.custom_avatar_url = currentLoggedInUser.google_photo_url;
-        showAlert('Switched to Google profile photo.', false);
-      }
-      updateLoggedInAvatarDisplay(currentLoggedInUser);
-      renderLoggedPujaAvatars(currentLoggedInUser);
-      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentLoggedInUser));
-
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('profiles').upsert({
-            id: currentLoggedInUser.id || currentLoggedInUser.user_id,
-            user_id: currentLoggedInUser.user_id || currentLoggedInUser.id,
-            identifier: currentLoggedInUser.identifier,
-            identifier_type: currentLoggedInUser.identifier_type || 'email',
-            username: currentLoggedInUser.username,
-            avatar: currentLoggedInUser.avatar || '🪔',
-            custom_avatar_url: currentLoggedInUser.custom_avatar_url,
-            google_photo_url: currentLoggedInUser.google_photo_url || null,
-            updated_at: new Date().toISOString()
-          });
-        } catch (e) {}
-      }
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          await window.AkalbodhonFirebase.syncProfile({
-            id: currentLoggedInUser.id || currentLoggedInUser.user_id,
-            user_id: currentLoggedInUser.user_id || currentLoggedInUser.id,
-            avatar: currentLoggedInUser.avatar,
-            custom_avatar_url: currentLoggedInUser.custom_avatar_url,
-            google_photo_url: currentLoggedInUser.google_photo_url || null,
-            username: currentLoggedInUser.username
-          });
-        } catch (e) {}
-      }
-    });
 
     // Check Existing Session
     async function checkCurrentSession() {
@@ -838,12 +667,18 @@
               const { data: profs } = await supabaseClient.from('profiles').select('*').or(`id.eq.${u.id},identifier.eq.${userIdentifier}`).limit(1);
               if (profs && profs.length > 0) {
                 const prof = profs[0];
-                if (prof.avatar) sessionUser.avatar = prof.avatar;
                 if (prof.username) sessionUser.username = prof.username;
-                if (prof.google_photo_url) sessionUser.google_photo_url = prof.google_photo_url;
-                if (prof.custom_avatar_url !== undefined) {
-                  sessionUser.custom_avatar_url = prof.custom_avatar_url;
-                } else if (prof.avatar && prof.avatar !== '🪔') {
+                if (sessionUser.identifier_type === 'google') {
+                  sessionUser.google_photo_url = sessionUser.google_photo_url || prof.google_photo_url || null;
+                  sessionUser.custom_avatar_url = sessionUser.google_photo_url;
+                } else {
+                  if (!prof.avatar || !prof.avatar_assigned) {
+                    sessionUser.avatar = getRandomPujaIcon();
+                    sessionUser.avatar_assigned = true;
+                  } else {
+                    sessionUser.avatar = prof.avatar;
+                    sessionUser.avatar_assigned = true;
+                  }
                   sessionUser.custom_avatar_url = null;
                 }
                 if (prof.saved_items) localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(prof.saved_items));
@@ -879,7 +714,6 @@
       loggedName.textContent = user.username || user.full_name || 'Devotee';
       loggedIdentifier.textContent = user.identifier || user.user_id || user.id || 'User ID';
       updateLoggedInAvatarDisplay(user);
-      renderLoggedPujaAvatars(user);
     }
 
     // Sign Out
@@ -1025,6 +859,7 @@
           } catch (e) {}
 
           let supabaseAuthUser = null;
+          const randomAvatar = getRandomPujaIcon();
 
           // Register in Supabase Authentication section
           if (supabaseClient) {
@@ -1037,7 +872,7 @@
                   options: {
                     data: {
                       username: displayName,
-                      avatar: '🪔',
+                      avatar: randomAvatar,
                       identifier: formattedPhone,
                       identifier_type: 'phone'
                     }
@@ -1061,7 +896,7 @@
                   options: {
                     data: {
                       username: displayName,
-                      avatar: '🪔',
+                      avatar: randomAvatar,
                       identifier: cleanIdentifier,
                       identifier_type: 'email'
                     }
@@ -1088,7 +923,7 @@
           if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
             try {
               const regResult = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
-                avatar: '🪔',
+                avatar: randomAvatar,
                 saved_items: initialSaved,
                 custom_plans: initialPlans
               });
@@ -1120,8 +955,11 @@
             phone: isPhone ? formattedPhone : null,
             provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
             username: displayName,
-            avatar: '🪔',
+            avatar: randomAvatar,
+            avatar_assigned: true,
             avatar_type: 'puja',
+            custom_avatar_url: null,
+            google_photo_url: null,
             password_hash: passwordHash,
             saved_items: initialSaved,
             custom_plans: initialPlans,
@@ -1501,6 +1339,27 @@
             }));
           }
 
+          let devoteeAvatar = foundProfile.avatar;
+          if (!devoteeAvatar || !foundProfile.avatar_assigned) {
+            devoteeAvatar = getRandomPujaIcon();
+            foundProfile.avatar = devoteeAvatar;
+            foundProfile.avatar_assigned = true;
+            if (supabaseClient) {
+              supabaseClient.from('profiles').update({
+                avatar: devoteeAvatar,
+                custom_avatar_url: null,
+                updated_at: new Date().toISOString()
+              }).eq('id', foundProfile.id || foundProfile.user_id).catch(() => {});
+            }
+            if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+              window.AkalbodhonFirebase.syncProfile({
+                id: foundProfile.id || foundProfile.user_id,
+                avatar: devoteeAvatar,
+                custom_avatar_url: null
+              }).catch(() => {});
+            }
+          }
+
           const authenticatedUser = {
             id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
             user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
@@ -1510,9 +1369,10 @@
             email: isEmail ? (foundProfile.email || rawIdentifier) : null,
             provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
             username: foundProfile.username || 'Devotee',
-            avatar: foundProfile.avatar || '🪔',
-            custom_avatar_url: foundProfile.custom_avatar_url || null,
-            google_photo_url: foundProfile.google_photo_url || null,
+            avatar: devoteeAvatar,
+            avatar_assigned: true,
+            custom_avatar_url: null,
+            google_photo_url: null,
             saved_items: restoredSavedItems,
             custom_plans: restoredCustomPlans,
             feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,

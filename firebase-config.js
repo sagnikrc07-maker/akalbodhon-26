@@ -75,6 +75,13 @@ function withTimeout(promise, ms = DEFAULT_TIMEOUT_MS) {
   ]);
 }
 
+// 14 Sacred Puja Festival Icons
+export const PUJA_AVATAR_ICONS = ['🪔', '🪘', '🌺', '🔱', '📿', '🪷', '💃', '🦚', '🏺', '🔥', '🐚', '🥁', '☀️', '🌾'];
+export function getRandomPujaIcon() {
+  return PUJA_AVATAR_ICONS[Math.floor(Math.random() * PUJA_AVATAR_ICONS.length)];
+}
+
+
 // Helper to extract all possible docId keys (raw, lowercase, safeDocId, phone digits) for a user
 function getPossibleUserDocIds(userOrId) {
   const ids = new Set();
@@ -156,7 +163,7 @@ export const AkalbodhonFirebase = {
     const restoredSavedItems = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
     const restoredPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
 
-    const isChosenFestivalAvatar = existingData.avatar && existingData.avatar !== '🪔';
+    const googlePhoto = user.photoURL || existingData.google_photo_url || existingData.custom_avatar_url || null;
     const profile = {
       id: cleanUid,
       user_id: cleanUid,
@@ -165,11 +172,9 @@ export const AkalbodhonFirebase = {
       identifier_type: "google",
       username: existingData.username || user.displayName || (user.email ? user.email.split('@')[0] : "Devotee"),
       email: user.email,
-      avatar: existingData.avatar || "🪔",
-      google_photo_url: user.photoURL || existingData.google_photo_url || null,
-      custom_avatar_url: (existingData.custom_avatar_url !== undefined && existingData.custom_avatar_url !== null)
-        ? existingData.custom_avatar_url
-        : (existingData.custom_avatar_url === null || isChosenFestivalAvatar ? null : (user.photoURL || null)),
+      avatar: existingData.avatar || getRandomPujaIcon(),
+      google_photo_url: googlePhoto,
+      custom_avatar_url: googlePhoto,
       saved_items: restoredSavedItems,
       custom_plans: restoredPlans,
       feedback_cooldown_until: existingData.feedback_cooldown_until || null,
@@ -279,6 +284,7 @@ export const AkalbodhonFirebase = {
 
       const cleanUid = String(fbUser.uid);
       const isEmail = identifier.includes('@') && identifier.includes('.');
+      const assignedAvatar = extraData.avatar || getRandomPujaIcon();
       const profile = {
         id: cleanUid,
         user_id: String(identifier).trim(),
@@ -289,7 +295,10 @@ export const AkalbodhonFirebase = {
         email: isEmail ? String(identifier).trim() : authEmail,
         phone: !isEmail ? String(identifier).trim() : null,
         username: displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
-        avatar: extraData.avatar || '🪔',
+        avatar: assignedAvatar,
+        avatar_assigned: true,
+        custom_avatar_url: null,
+        google_photo_url: null,
         saved_items: Array.isArray(extraData.saved_items) ? extraData.saved_items : [],
         custom_plans: Array.isArray(extraData.custom_plans) ? extraData.custom_plans : [],
         feedback_cooldown_until: extraData.feedback_cooldown_until || null,
@@ -343,6 +352,10 @@ export const AkalbodhonFirebase = {
       }
 
       const isEmail = identifier.includes('@') && identifier.includes('.');
+      let devoteeAvatar = existingProfile?.avatar;
+      if (!devoteeAvatar || !existingProfile?.avatar_assigned) {
+        devoteeAvatar = getRandomPujaIcon();
+      }
       const profile = {
         id: fbUser.uid,
         user_id: existingProfile?.user_id || String(identifier).trim(),
@@ -353,7 +366,10 @@ export const AkalbodhonFirebase = {
         email: isEmail ? String(identifier).trim() : (existingProfile?.email || authEmail),
         phone: !isEmail ? String(identifier).trim() : (existingProfile?.phone || null),
         username: existingProfile?.username || fbUser.displayName || displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
-        avatar: existingProfile?.avatar || '🪔',
+        avatar: devoteeAvatar,
+        avatar_assigned: true,
+        custom_avatar_url: null,
+        google_photo_url: null,
         saved_items: existingProfile?.saved_items || [],
         custom_plans: existingProfile?.custom_plans || [],
         feedback_cooldown_until: existingProfile?.feedback_cooldown_until || null,
@@ -746,15 +762,18 @@ export const AkalbodhonFirebase = {
     }
   },
 
-  // 9c. Real-time Listener for Friends Hopping Together in a Shared Plan
+  // 9c. Real-time Listener for a Shared Plan (Detects updates & creator deletions)
   listenToPlan(planId, callback) {
     if (!db || !planId || typeof callback !== 'function') return () => {};
     const cleanId = String(planId).trim();
     try {
       const planRef = doc(db, "plans", cleanId);
       return onSnapshot(planRef, (snap) => {
-        if (snap && snap.exists()) {
+        if (snap && snap.exists && snap.exists()) {
           callback(snap.data());
+        } else {
+          // Document was deleted by creator or does not exist!
+          callback({ deleted: true, id: cleanId });
         }
       }, (err) => {
         console.warn("Real-time plan listener notice:", err);
@@ -765,29 +784,31 @@ export const AkalbodhonFirebase = {
     }
   },
 
-  // 10. Delete Plan from Firestore
+  // 10. Delete Plan from Firestore (Deletes from global plans and creator's user account)
   async deletePlan(planId, userId = null) {
     if (!db || !planId) return false;
-    const cleanPlanId = String(planId);
+    const cleanPlanId = String(planId).trim();
     try {
-      // 1. Delete from top-level plans
-      await withTimeout(deleteDoc(doc(db, "plans", cleanPlanId)), 2000);
+      // 1. Delete from top-level plans (removes it for all shared recipients)
+      await withTimeout(deleteDoc(doc(db, "plans", cleanPlanId)), 2500).catch(() => {});
 
       // 2. Delete from users/{userId}/plans if userId provided
       if (userId) {
-        const creatorId = String(userId).toLowerCase();
-        await withTimeout(deleteDoc(doc(db, "users", creatorId, "plans", cleanPlanId)), 1500).catch(() => {});
-        
-        // Update user document's custom_plans
-        try {
-          const userRef = doc(db, "users", creatorId);
-          const userSnap = await withTimeout(getDoc(userRef), 1500);
-          if (userSnap && userSnap.exists()) {
-            const userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
-            const updated = userPlans.filter(p => p.id !== cleanPlanId);
-            await withTimeout(setDoc(userRef, { custom_plans: updated, updated_at: new Date().toISOString() }, { merge: true }), 1500).catch(() => {});
-          }
-        } catch (e) {}
+        const creatorIds = getPossibleUserDocIds(userId);
+        for (const creatorId of creatorIds) {
+          await withTimeout(deleteDoc(doc(db, "users", creatorId, "plans", cleanPlanId)), 1500).catch(() => {});
+          
+          // Update user document's custom_plans
+          try {
+            const userRef = doc(db, "users", creatorId);
+            const userSnap = await withTimeout(getDoc(userRef), 1500).catch(() => null);
+            if (userSnap && userSnap.exists()) {
+              const userPlans = Array.isArray(userSnap.data()?.custom_plans) ? userSnap.data().custom_plans : [];
+              const updated = userPlans.filter(p => p && p.id !== cleanPlanId);
+              await withTimeout(setDoc(userRef, { custom_plans: updated, updated_at: new Date().toISOString() }, { merge: true }), 1500).catch(() => {});
+            }
+          } catch (e) {}
+        }
       }
       return true;
     } catch (err) {
@@ -856,6 +877,7 @@ export const AkalbodhonFirebase = {
 
       // Build devotee profile
       const cleanUid = String(user.uid);
+      const randomAvatar = extraData.avatar || getRandomPujaIcon();
       const profile = {
         id: cleanUid,
         user_id: cleanUid,
@@ -865,8 +887,10 @@ export const AkalbodhonFirebase = {
         username: name,
         email: user.email || (identifier.includes('@') ? identifier : ''),
         phone: identifier.includes('@') ? (extraData.phone || '') : identifier,
-        avatar: extraData.avatar || "🪔",
+        avatar: randomAvatar,
+        avatar_assigned: true,
         custom_avatar_url: null,
+        google_photo_url: null,
         saved_items: [],
         custom_plans: [],
         created_at: new Date().toISOString(),
