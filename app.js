@@ -2672,6 +2672,34 @@
     const container = document.getElementById('saved-itinerary-container');
     if (!container) return;
 
+    // If no user is logged in, show a login-required empty state
+    if (!isUserLoggedIn() || !currentUser) {
+      container.innerHTML = `
+        <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-xl mx-auto my-6 space-y-5 reveal-on-scroll">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-400/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto shadow-inner">
+            <span class="material-symbols-outlined text-[36px] sm:text-[44px]">lock</span>
+          </div>
+          <div class="space-y-2">
+            <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Sign In to View Your Itinerary</h3>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7] leading-relaxed max-w-md mx-auto">
+              Your personal Puja itinerary — saved pandals, food spots, and custom plans — is protected and synced to your devotee account. Please log in to access it.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+            <a href="login.html" class="px-4 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">login</span> Sign In
+            </a>
+            <a href="login.html#signup" class="px-4 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs hover:bg-surface-container-highest dark:hover:bg-[#322c20] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">person_add</span> Create Account
+            </a>
+          </div>
+        </div>
+      `;
+      attachSavedItineraryTabEvents();
+      initScrollReveal();
+      return;
+    }
+
     const bookmarks = Storage.getBookmarks();
     
     // Split into categories strictly based on saved bookmarks and user custom plans
@@ -2692,7 +2720,12 @@
         SHOPPING_DATA.some(s => s.id === b.id || s.name.toLowerCase() === (b.name || '').toLowerCase());
     });
 
-    let myPlans = (customPlans && customPlans.length > 0) ? [...customPlans] : [];
+    // Include: plans created by user + shared plans explicitly saved by user (is_shared=true or saved_to_itinerary=true)
+    let myPlans = (customPlans && customPlans.length > 0) ? customPlans.filter(p => {
+      const isMine = isCurrentUserPlan(p, currentUser);
+      const isExplicitlySavedShared = (p.is_shared || p.saved_to_itinerary) && !isMine;
+      return isMine || isExplicitlySavedShared;
+    }) : [];
 
     let displayPandals = [...pandalBookmarks];
     let displayFood = [...foodBookmarks];
@@ -6220,6 +6253,7 @@
               </button>
             ` : ''}
           </div>
+          <!-- Share icon removed from plan cards per user specification -->
         </div>
       `;
     }).join('');
@@ -7213,10 +7247,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               rituals: decoded.rituals || [],
               members: []
             };
-            if (!customPlans.some(p => p.id === plan.id)) {
-              customPlans.unshift(plan);
-              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-            }
+            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (err) {
           console.warn('Error parsing shared custom plan pdata:', err);
@@ -7229,10 +7260,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           const fbPlan = await window.AkalbodhonFirebase.fetchPlanById(cleanId);
           if (fbPlan) {
             plan = fbPlan;
-            if (!customPlans.some(p => p.id === plan.id)) {
-              customPlans.unshift(plan);
-              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-            }
+            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (fbErr) {
           console.warn('Firebase deep link plan lookup error:', fbErr);
@@ -7273,10 +7301,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               members: members,
               custom_notes: data.custom_notes
             };
-            if (!customPlans.some(p => p.id === plan.id)) {
-              customPlans.push(plan);
-              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-            }
+            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (err) {
           console.warn('Deep link plan lookup error:', err);
@@ -7301,10 +7326,12 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       });
 
       if (plan) {
-        const exists = customPlans.some(p => p.id === plan.id);
-        if (!exists && !plan.is_template) customPlans.unshift(plan);
+        // Mark as shared but do NOT auto-save — receiver must explicitly save the plan themselves
+        if (!plan.is_template) {
+          plan.is_shared = true;
+        }
 
-        // Render plans
+        // Render plans (without auto-inserting into customPlans)
         renderFestivalPlans('all');
 
         // Receiver directly opens the specific shared puja plan!
@@ -7323,21 +7350,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }, 350);
 
         showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
-
-        // If receiver is logged in, attach this shared plan to receiver's account
-        if (!plan.is_template) {
-          plan.is_shared = true;
-          if (currentUser) {
-            if (!Array.isArray(currentUser.custom_plans)) currentUser.custom_plans = [];
-            if (!currentUser.custom_plans.some(p => p.id === plan.id)) {
-              currentUser.custom_plans.unshift(plan);
-              try {
-                localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-                saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
-              } catch (_) {}
-            }
-          }
-        }
 
         // Clean up the URL search params so the receiver is not trapped when navigating around
         const cleanUrl = window.location.pathname + '#plans';
