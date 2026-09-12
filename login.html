@@ -160,21 +160,67 @@
 
       <!-- ---------------- LOGGED-IN PROFILE VIEW ---------------- -->
       <div id="logged-in-view" class="hidden space-y-5 text-center">
-        <div class="w-20 h-20 mx-auto rounded-full overflow-hidden border-2 border-amber-400 shadow-md flex items-center justify-center bg-primary text-3xl text-white">
-          <span id="logged-avatar-emoji">🪔</span>
+        <!-- Devotee Current Avatar Container -->
+        <div class="relative inline-block mx-auto">
+          <div id="logged-avatar-container" class="w-20 h-20 mx-auto rounded-2xl overflow-hidden border-2 border-amber-400 shadow-xl flex items-center justify-center bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 text-4xl text-white">
+            <span id="logged-avatar-emoji">🪔</span>
+          </div>
+          <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md bg-primary dark:bg-amber-400 text-white dark:text-black text-[9px] font-bold shadow">AVATAR</span>
         </div>
+
         <div>
           <h3 id="logged-name" class="font-display text-xl font-bold text-on-surface dark:text-white">Devotee</h3>
           <p id="logged-identifier" class="text-xs text-on-surface-variant dark:text-[#ded5c7] font-mono">user_id</p>
-          <span class="inline-block mt-2 px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
-            Authenticated • Supabase Synced
-          </span>
+          <div class="flex items-center justify-center gap-2 mt-2 flex-wrap">
+            <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
+              Authenticated • Supabase Synced
+            </span>
+            <button id="logged-toggle-google-btn" type="button" class="hidden text-[11px] font-semibold text-primary dark:text-amber-300 hover:underline inline-flex items-center gap-1 cursor-pointer">
+              Use Google Photo
+            </button>
+          </div>
         </div>
-        <div class="pt-4 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
-          <a href="index.html#saved" class="flex-1 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
+
+        <!-- 14 Sacred Festival Avatars Selection -->
+        <div class="pt-3 text-left space-y-2.5 border-t border-outline-variant/30 dark:border-amber-400/20">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold uppercase tracking-wider text-primary dark:text-amber-300 flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[16px]">palette</span> Choose Sacred Puja Avatar
+            </label>
+            <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-medium">14 Festive Icons</span>
+          </div>
+
+          <!-- 14 Avatar Grid -->
+          <div id="logged-puja-avatars-grid" class="grid grid-cols-4 sm:grid-cols-7 gap-2 p-3 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
+            <!-- Injected via JavaScript -->
+          </div>
+
+          <!-- Active Emblem Meaning Preview Card -->
+          <div id="logged-avatar-preview-card" class="p-3 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/20 dark:border-amber-400/20 text-xs space-y-1 transition-all">
+            <div class="flex items-center gap-2">
+              <span id="logged-preview-icon" class="text-2xl">🪔</span>
+              <div class="min-w-0 flex-1">
+                <span id="logged-preview-name" class="font-bold text-on-surface dark:text-white block text-xs truncate">Pradeep (Diya)</span>
+                <span class="text-[10px] text-primary dark:text-amber-300 font-medium">Sacred Sharadotsav Emblem</span>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold ml-auto flex items-center gap-1 flex-shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
+              </span>
+            </div>
+            <p id="logged-preview-desc" class="text-[11px] text-on-surface-variant dark:text-[#ded5c7] leading-relaxed pt-1">
+              The sacred brass oil lamp illuminated during Bodhon to dispel darkness and awaken divine presence.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-2.5">
+          <a href="index.html" class="flex-1 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">home</span> Enter Sanctuary
+          </a>
+          <a href="index.html#saved" class="flex-1 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
             <span class="material-symbols-outlined text-[16px]">bookmark</span> Saved Itinerary
           </a>
-          <button id="signout-btn" class="flex-1 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 font-bold text-xs hover:bg-red-500/10 transition-all flex items-center justify-center gap-1 cursor-pointer">
+          <button id="signout-btn" class="sm:flex-none px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 font-bold text-xs hover:bg-red-500/10 transition-all flex items-center justify-center gap-1 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">logout</span> Sign Out
           </button>
         </div>
@@ -298,7 +344,9 @@
     const successMsg = document.getElementById('success-msg');
     const authFlowContainer = document.getElementById('auth-flow-container');
     const loggedInView = document.getElementById('logged-in-view');
+    const loggedAvatarContainer = document.getElementById('logged-avatar-container');
     const loggedAvatarEmoji = document.getElementById('logged-avatar-emoji');
+    const loggedToggleGoogleBtn = document.getElementById('logged-toggle-google-btn');
     const loggedName = document.getElementById('logged-name');
     const loggedIdentifier = document.getElementById('logged-identifier');
     const signoutBtn = document.getElementById('signout-btn');
@@ -586,6 +634,180 @@
       handleRedirectSuccess(window.__akalbodhonRedirectProfile);
     }
 
+    // 14 Authentic Puja-Themed Avatars with Bengali Sacred Meaning
+    const PUJA_AVATARS = [
+      { id: 'pradeep', icon: '🪔', name: 'Pradeep (Diya)', meaning: 'The sacred brass oil lamp illuminated during Bodhon to dispel darkness and awaken divine presence.' },
+      { id: 'dhak', icon: '🪘', name: 'Ceremonial Dhak', meaning: 'The twin-headed sacred drum whose thunderous rhythmic beats form the very heartbeat of Sharadotsav.' },
+      { id: 'raktajaba', icon: '🌺', name: 'Rakta Jaba (Red Hibiscus)', meaning: 'The holy crimson flower most cherished by Maa Durga, representing raw cosmic Shakti and devotion.' },
+      { id: 'trishul', icon: '🔱', name: 'Maa Durga\'s Trishul', meaning: 'The supreme three-pronged trident symbolizing truth, wisdom, and triumph over Mahishasura.' },
+      { id: 'japamala', icon: '📿', name: 'Japa Mala (Rudraksha)', meaning: 'The sacred 108 rosary prayer beads used for devout chanting of Sri Sri Chandi Path and Devi Suktam.' },
+      { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma (Blue Lotus)', meaning: 'The celestial blue lotuses brought from Devidaha by Hanuman for Lord Rama\'s historic autumn Akalbodhon.' },
+      { id: 'dhunuchi_naach', icon: '💃', name: 'Dhunuchi Naach', meaning: 'The ecstatic devotional Aarti dance performed to the thunderous rhythmic tempo of dhak and gong.' },
+      { id: 'mayur', icon: '🦚', name: 'Sacred Mayur (Peacock)', meaning: 'The glorious vahana mount of Lord Kartikeya, symbolizing divine majesty, vigilance, and regal beauty.' },
+      { id: 'kalash', icon: '🏺', name: 'Mangal Ghat (Kalash)', meaning: 'The consecrated sacred water vessel topped with mango leaves and coconut, invoking the Devi\'s presence.' },
+      { id: 'dhunuchi', icon: '🔥', name: 'Dhunuchi (Aarti Flame)', meaning: 'The traditional earthen incense chalice filled with burning coconut husk and camphor for the Sandhi Aarti dance.' },
+      { id: 'shankha', icon: '🐚', name: 'Sacred Shankha (Conch)', meaning: 'The holy conch shell blown during Aarti to sanctify the atmosphere with the primordial sound of Om.' },
+      { id: 'kanshi', icon: '🥁', name: 'Dhol & Kanshi', meaning: 'The resonating bell-metal gong and percussion accompanying pushpanjali prayers and ceremonial chants.' },
+      { id: 'surya', icon: '☀️', name: 'Sharad Surya (Autumn Sun)', meaning: 'The auspicious golden autumn dawn breaking on Mahalaya as Chandi Path echoes across Bengal.' },
+      { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
+    ];
+
+    let currentLoggedInUser = null;
+
+    function updateLoggedInAvatarDisplay(user) {
+      if (!user) return;
+      if (loggedAvatarContainer) {
+        if (user.custom_avatar_url) {
+          loggedAvatarContainer.innerHTML = `<img src="${user.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
+        } else {
+          loggedAvatarContainer.innerHTML = `<span id="logged-avatar-emoji">${user.avatar || '🪔'}</span>`;
+        }
+      }
+
+      if (loggedToggleGoogleBtn) {
+        const googlePhoto = user.google_photo_url || (user.identifier_type === 'google' && user.custom_avatar_url ? user.custom_avatar_url : null);
+        if (googlePhoto) {
+          user.google_photo_url = googlePhoto;
+          loggedToggleGoogleBtn.classList.remove('hidden');
+          if (user.custom_avatar_url) {
+            loggedToggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">palette</span> Use Festival Icon`;
+            loggedToggleGoogleBtn.title = "Switch to your selected sacred festival icon";
+          } else {
+            loggedToggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">account_circle</span> Use Google Photo`;
+            loggedToggleGoogleBtn.title = "Switch back to your Google profile picture";
+          }
+        } else {
+          loggedToggleGoogleBtn.classList.add('hidden');
+        }
+      }
+    }
+
+    function renderLoggedPujaAvatars(user) {
+      const grid = document.getElementById('logged-puja-avatars-grid');
+      const prevIcon = document.getElementById('logged-preview-icon');
+      const prevName = document.getElementById('logged-preview-name');
+      const prevDesc = document.getElementById('logged-preview-desc');
+      if (!grid || !user) return;
+
+      const activeIcon = user.avatar || '🪔';
+      const activeObj = PUJA_AVATARS.find(a => a.icon === activeIcon) || PUJA_AVATARS[0];
+
+      if (prevIcon) prevIcon.textContent = activeObj.icon;
+      if (prevName) prevName.textContent = activeObj.name;
+      if (prevDesc) prevDesc.textContent = activeObj.meaning;
+
+      grid.innerHTML = PUJA_AVATARS.map(item => {
+        const isSelected = !user.custom_avatar_url && (user.avatar === item.icon);
+        return `
+          <button 
+            type="button" 
+            class="avatar-option flex flex-col items-center justify-center p-2 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 shadow-md scale-105 ring-2 ring-primary/40 dark:ring-amber-400/40' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer relative group"
+            data-id="${item.id}"
+            title="${item.name}: ${item.meaning}"
+          >
+            <span class="text-2xl sm:text-3xl select-none">${item.icon}</span>
+            <span class="text-[9px] sm:text-[10px] font-medium text-on-surface-variant dark:text-amber-200/80 truncate max-w-[55px] sm:max-w-[65px] mt-1 text-center">${item.name.split(' ')[0]}</span>
+            ${isSelected ? '<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary dark:bg-amber-400 text-white dark:text-black rounded-full text-[9px] flex items-center justify-center font-bold shadow">✓</span>' : ''}
+          </button>
+        `;
+      }).join('');
+
+      grid.querySelectorAll('.avatar-option').forEach(btn => {
+        btn.onclick = async () => {
+          const id = btn.dataset.id;
+          const avatarObj = PUJA_AVATARS.find(a => a.id === id);
+          if (!avatarObj) return;
+
+          if (user.custom_avatar_url) {
+            user.google_photo_url = user.custom_avatar_url;
+          }
+          user.avatar = avatarObj.icon;
+          user.custom_avatar_url = null;
+
+          updateLoggedInAvatarDisplay(user);
+          renderLoggedPujaAvatars(user);
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+
+          // Sync to Supabase
+          if (supabaseClient) {
+            try {
+              await supabaseClient.from('profiles').upsert({
+                id: user.id || user.user_id,
+                user_id: user.user_id || user.id,
+                identifier: user.identifier,
+                identifier_type: user.identifier_type || 'email',
+                username: user.username,
+                avatar: user.avatar,
+                custom_avatar_url: null,
+                google_photo_url: user.google_photo_url || null,
+                updated_at: new Date().toISOString()
+              });
+            } catch (err) {
+              console.warn('Supabase avatar update notice:', err);
+            }
+          }
+
+          // Sync to Firebase
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              await window.AkalbodhonFirebase.syncProfile({
+                id: user.id || user.user_id,
+                user_id: user.user_id || user.id,
+                avatar: user.avatar,
+                custom_avatar_url: null,
+                google_photo_url: user.google_photo_url || null,
+                username: user.username
+              });
+            } catch (fbErr) {}
+          }
+
+          showAlert(`Sacred Avatar updated to ${avatarObj.name}! Synced across all festival pages.`, false);
+        };
+      });
+    }
+
+    loggedToggleGoogleBtn?.addEventListener('click', async () => {
+      if (!currentLoggedInUser) return;
+      if (currentLoggedInUser.custom_avatar_url) {
+        currentLoggedInUser.custom_avatar_url = null;
+        showAlert('Switched to Sacred Festival Avatar!', false);
+      } else if (currentLoggedInUser.google_photo_url) {
+        currentLoggedInUser.custom_avatar_url = currentLoggedInUser.google_photo_url;
+        showAlert('Switched to Google profile photo.', false);
+      }
+      updateLoggedInAvatarDisplay(currentLoggedInUser);
+      renderLoggedPujaAvatars(currentLoggedInUser);
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentLoggedInUser));
+
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('profiles').upsert({
+            id: currentLoggedInUser.id || currentLoggedInUser.user_id,
+            user_id: currentLoggedInUser.user_id || currentLoggedInUser.id,
+            identifier: currentLoggedInUser.identifier,
+            identifier_type: currentLoggedInUser.identifier_type || 'email',
+            username: currentLoggedInUser.username,
+            avatar: currentLoggedInUser.avatar || '🪔',
+            custom_avatar_url: currentLoggedInUser.custom_avatar_url,
+            google_photo_url: currentLoggedInUser.google_photo_url || null,
+            updated_at: new Date().toISOString()
+          });
+        } catch (e) {}
+      }
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          await window.AkalbodhonFirebase.syncProfile({
+            id: currentLoggedInUser.id || currentLoggedInUser.user_id,
+            user_id: currentLoggedInUser.user_id || currentLoggedInUser.id,
+            avatar: currentLoggedInUser.avatar,
+            custom_avatar_url: currentLoggedInUser.custom_avatar_url,
+            google_photo_url: currentLoggedInUser.google_photo_url || null,
+            username: currentLoggedInUser.username
+          });
+        } catch (e) {}
+      }
+    });
+
     // Check Existing Session
     async function checkCurrentSession() {
       showTopProgressBar();
@@ -595,27 +817,40 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session && session.user) {
               const u = session.user;
-              const googleUser = {
+              const isPhoneSession = (!u.email && !!u.phone) || u.app_metadata?.provider === 'phone';
+              const userIdentifier = u.phone ? (u.phone.startsWith('+') ? u.phone : '+' + u.phone) : (u.email || 'devotee');
+              const sessionUser = {
                 id: u.id,
                 user_id: u.id,
-                identifier: u.email || 'devotee@gmail.com',
-                identifier_type: 'google',
-                username: u.user_metadata?.full_name || u.user_metadata?.name || (u.email ? u.email.split('@')[0] : 'Devotee'),
-                avatar: '🌺',
+                identifier: userIdentifier,
+                identifier_type: isPhoneSession ? 'phone' : (u.app_metadata?.provider === 'google' ? 'google' : 'email'),
+                phone: isPhoneSession ? userIdentifier : null,
+                email: u.email || null,
+                provider: isPhoneSession ? 'phone' : (u.app_metadata?.provider === 'google' ? 'google' : 'email'),
+                username: u.user_metadata?.username || u.user_metadata?.full_name || u.user_metadata?.name || (isPhoneSession ? 'Devotee' : (u.email ? u.email.split('@')[0] : 'Devotee')),
+                avatar: u.user_metadata?.avatar || '🪔',
+                google_photo_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
                 custom_avatar_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
                 created_at: u.created_at || new Date().toISOString()
               };
               
               // Sync with profile table
-              const { data: prof } = await supabaseClient.from('profiles').select('*').eq('id', u.id).single();
-              if (prof) {
-                if (prof.avatar) googleUser.avatar = prof.avatar;
-                if (prof.username) googleUser.username = prof.username;
+              const { data: profs } = await supabaseClient.from('profiles').select('*').or(`id.eq.${u.id},identifier.eq.${userIdentifier}`).limit(1);
+              if (profs && profs.length > 0) {
+                const prof = profs[0];
+                if (prof.avatar) sessionUser.avatar = prof.avatar;
+                if (prof.username) sessionUser.username = prof.username;
+                if (prof.google_photo_url) sessionUser.google_photo_url = prof.google_photo_url;
+                if (prof.custom_avatar_url !== undefined) {
+                  sessionUser.custom_avatar_url = prof.custom_avatar_url;
+                } else if (prof.avatar && prof.avatar !== '🪔') {
+                  sessionUser.custom_avatar_url = null;
+                }
                 if (prof.saved_items) localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(prof.saved_items));
                 if (prof.custom_plans) localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(prof.custom_plans));
               }
-              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(googleUser));
-              showLoggedInState(googleUser);
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(sessionUser));
+              showLoggedInState(sessionUser);
               return;
             }
           } catch (e) {
@@ -638,18 +873,45 @@
     }
 
     function showLoggedInState(user) {
+      currentLoggedInUser = user;
       authFlowContainer.classList.add('hidden');
       loggedInView.classList.remove('hidden');
       loggedName.textContent = user.username || user.full_name || 'Devotee';
       loggedIdentifier.textContent = user.identifier || user.user_id || user.id || 'User ID';
-      loggedAvatarEmoji.textContent = user.avatar || '🪔';
+      updateLoggedInAvatarDisplay(user);
+      renderLoggedPujaAvatars(user);
     }
 
     // Sign Out
     signoutBtn.onclick = async () => {
+      const userRaw = localStorage.getItem('akalbodhon_user_profile');
+      if (userRaw) {
+        try {
+          const u = JSON.parse(userRaw);
+          const bm = JSON.parse(localStorage.getItem('akalbodhon_bookmarks') || '[]');
+          const pl = JSON.parse(localStorage.getItem('akalbodhon_custom_plans') || '[]');
+          const uid = u.phone || u.identifier || u.email || u.id;
+          if (uid) {
+            const cleanDigits = String(uid).replace(/[^0-9]/g, '');
+            const key = (!String(uid).includes('@') && cleanDigits.length >= 7)
+              ? 'phone_' + (cleanDigits.length === 10 ? '91' + cleanDigits : cleanDigits)
+              : (String(uid).includes('@') ? 'email_' + String(uid).toLowerCase().replace(/[^a-z0-9]/g, '_') : 'id_' + String(uid).toLowerCase().replace(/[^a-z0-9]/g, '_'));
+            const data = {
+              identifier: uid,
+              user_key: key,
+              bookmarks: bm,
+              custom_plans: pl,
+              updated_at: new Date().toISOString()
+            };
+            localStorage.setItem('akalbodhon_user_data_' + key, JSON.stringify(data));
+            if (key.startsWith('phone_')) {
+              localStorage.setItem('akalbodhon_user_data_' + cleanDigits, JSON.stringify(data));
+            }
+          }
+        } catch (_) {}
+      }
       localStorage.removeItem('akalbodhon_user_profile');
-      localStorage.setItem('akalbodhon_bookmarks', JSON.stringify([]));
-      localStorage.removeItem('akalbodhon_custom_plans');
+      // Devotee's saved itinerary remains safely preserved
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         try {
           await window.AkalbodhonFirebase.signOutUser();
@@ -657,8 +919,20 @@
       }
       loggedInView.classList.add('hidden');
       authFlowContainer.classList.remove('hidden');
-      showAlert('Signed out successfully.', false);
+      showAlert('Signed out successfully. Your saved itinerary remains available.', false);
     };
+
+    // Normalize devotee phone numbers to standard E.164 format (+91 default for Bengal / India)
+    function formatPhoneNumber(raw) {
+      if (!raw) return '';
+      const clean = String(raw).trim();
+      const digits = clean.replace(/[^0-9]/g, '');
+      if (clean.startsWith('+')) return '+' + digits;
+      if (digits.length === 10) return '+91' + digits; // Kolkata / India default (+91)
+      if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1);
+      if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
+      return '+' + digits;
+    }
 
     // Form Submit Handler
     async function handleAuth() {
@@ -678,9 +952,11 @@
       }
 
       const cleanIdentifier = rawIdentifier.toLowerCase();
-      const safeDocId = cleanIdentifier.replace(/[^a-z0-9]/g, '_');
+      const cleanPhoneDigits = rawIdentifier.replace(/[^0-9]/g, '');
       const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
-      const isPhone = /^(\+?\d{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s-]{7,14}$/.test(rawIdentifier.replace(/\s+/g, ''));
+      const isPhone = !isEmail && cleanPhoneDigits.length >= 7 && cleanPhoneDigits.length <= 15;
+      const formattedPhone = isPhone ? formatPhoneNumber(rawIdentifier) : null;
+      const safeDocId = isPhone ? cleanPhoneDigits : cleanIdentifier.replace(/[^a-z0-9]/g, '_');
 
       const originalLabel = submitLabel.textContent;
       submitBtn.disabled = true;
@@ -698,35 +974,38 @@
 
         if (currentMode === 'signup') {
           // --- CREATE ACCOUNT ---
-          const displayName = rawName || (isEmail ? rawIdentifier.split('@')[0] : 'Devotee');
+          const displayName = rawName || (isPhone ? 'Devotee' : (isEmail ? rawIdentifier.split('@')[0] : 'Devotee'));
 
-          // Check if identifier already exists in Firebase Firestore
+          // Check if account with this identifier already exists in Supabase or Firebase
           let existing = null;
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+          if (supabaseClient) {
             try {
-              existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-            } catch (e) {
-              console.warn('Firebase duplicate check notice:', e);
-            }
-          } else if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            try {
-              existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-            } catch (e) {}
-          }
-
-          if (!existing && supabaseClient) {
-            try {
+              const orQuery = isPhone 
+                ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
+                : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
               const { data } = await supabaseClient
                 .from('profiles')
                 .select('id, identifier')
-                .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+                .or(orQuery)
                 .limit(1);
               if (data && data.length > 0) existing = data[0];
             } catch (e) {}
           }
 
+          if (!existing && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+            try {
+              existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
+            } catch (e) {
+              console.warn('Firebase duplicate check notice:', e);
+            }
+          } else if (!existing && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            try {
+              existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+            } catch (e) {}
+          }
+
           if (existing) {
-            showAlert('An account with this email or phone number already exists. Please sign in instead with the same credentials.');
+            showAlert('An account with this ' + (isPhone ? 'phone number' : 'email') + ' already exists. Please sign in instead with the same credentials.');
             setTimeout(() => {
               setAuthMode('login');
             }, 2200);
@@ -745,9 +1024,68 @@
             if (p) initialPlans = JSON.parse(p);
           } catch (e) {}
 
-          // 1. Include devotee in Firebase Authentication section (auth.users)
+          let supabaseAuthUser = null;
+
+          // Register in Supabase Authentication section
+          if (supabaseClient) {
+            try {
+              if (isPhone) {
+                // Register under native 'phone' provider in Supabase Authentication
+                const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
+                  phone: formattedPhone,
+                  password: rawPassword,
+                  options: {
+                    data: {
+                      username: displayName,
+                      avatar: '🪔',
+                      identifier: formattedPhone,
+                      identifier_type: 'phone'
+                    }
+                  }
+                });
+                if (sbErr) {
+                  console.warn('Supabase phone signUp notice:', sbErr);
+                  if (sbErr.message && (sbErr.message.toLowerCase().includes('already') || sbErr.status === 400 || sbErr.status === 422)) {
+                    showAlert('An account with this phone number already exists in Supabase. Please sign in instead.');
+                    setTimeout(() => { setAuthMode('login'); }, 2200);
+                    return;
+                  }
+                } else if (sbData && sbData.user) {
+                  supabaseAuthUser = sbData.user;
+                }
+              } else if (isEmail) {
+                // Register under native 'email' provider in Supabase Authentication
+                const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
+                  email: cleanIdentifier,
+                  password: rawPassword,
+                  options: {
+                    data: {
+                      username: displayName,
+                      avatar: '🪔',
+                      identifier: cleanIdentifier,
+                      identifier_type: 'email'
+                    }
+                  }
+                });
+                if (sbErr) {
+                  console.warn('Supabase email signUp notice:', sbErr);
+                  if (sbErr.message && sbErr.message.toLowerCase().includes('already')) {
+                    showAlert('An account with this email already exists in Supabase. Please sign in instead.');
+                    setTimeout(() => { setAuthMode('login'); }, 2200);
+                    return;
+                  }
+                } else if (sbData && sbData.user) {
+                  supabaseAuthUser = sbData.user;
+                }
+              }
+            } catch (supAuthErr) {
+              console.warn('Supabase auth signup error:', supAuthErr);
+            }
+          }
+
+          // For email devotees, register with Firebase Auth if available
           let fbProfile = null;
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
+          if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
             try {
               const regResult = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
                 avatar: '🪔',
@@ -760,7 +1098,7 @@
             } catch (fbAuthErr) {
               console.warn('Firebase Auth registration notice:', fbAuthErr);
               if (fbAuthErr.code === 'auth/email-already-in-use') {
-                showAlert('An account with this email or phone number already exists in Firebase. Please sign in instead.');
+                showAlert('An account with this email already exists in Firebase. Please sign in instead.');
                 setTimeout(() => {
                   setAuthMode('login');
                 }, 2200);
@@ -769,13 +1107,18 @@
             }
           }
 
-          const newProfile = fbProfile || {
-            id: safeDocId,
-            user_id: rawIdentifier,
-            identifier: rawIdentifier,
-            identifier_type: isEmail ? 'email' : (isPhone ? 'phone' : 'identifier'),
+          const profileId = (supabaseAuthUser && supabaseAuthUser.id)
+            ? supabaseAuthUser.id
+            : (fbProfile && fbProfile.id ? fbProfile.id : (isPhone ? cleanPhoneDigits : safeDocId));
+
+          const newProfile = {
+            id: profileId,
+            user_id: isPhone ? formattedPhone : (profileId || rawIdentifier),
+            identifier: isPhone ? formattedPhone : (cleanIdentifier || rawIdentifier),
+            identifier_type: isPhone ? 'phone' : (isEmail ? 'email' : 'identifier'),
             email: isEmail ? rawIdentifier : null,
-            phone: isPhone ? rawIdentifier : null,
+            phone: isPhone ? formattedPhone : null,
+            provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
             username: displayName,
             avatar: '🪔',
             avatar_type: 'puja',
@@ -785,7 +1128,6 @@
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
-          newProfile.password_hash = passwordHash;
 
           // Save to Firebase Firestore ('users' collection)
           if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
@@ -796,11 +1138,13 @@
             }
           }
 
-          // Backup to Supabase
+          // Save to Supabase public.profiles table
           if (supabaseClient) {
             try {
-              await supabaseClient.from('profiles').insert(newProfile);
-            } catch (e) {}
+              await supabaseClient.from('profiles').upsert(newProfile);
+            } catch (e) {
+              console.warn('Supabase profile upsert notice:', e);
+            }
           }
 
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(newProfile));
@@ -810,9 +1154,112 @@
         } else {
           // --- SIGN IN ---
           let foundProfile = null;
+          let authenticatedBySupabase = false;
 
-          // 1. Sign in via Firebase Authentication or automatically include first-time manual logins in Authentication section
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
+          // 1. If phone number: authenticate directly against Supabase Phone Auth!
+          if (isPhone && supabaseClient) {
+            try {
+              // First try with formattedPhone (+91...)
+              let { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
+                phone: formattedPhone,
+                password: rawPassword
+              });
+              // If failed, try with clean digits (e.g. 919876543210)
+              if (sbErr && cleanPhoneDigits && cleanPhoneDigits !== formattedPhone) {
+                const { data: sbRes2, error: sbErr2 } = await supabaseClient.auth.signInWithPassword({
+                  phone: cleanPhoneDigits,
+                  password: rawPassword
+                });
+                if (!sbErr2 && sbRes2 && sbRes2.user) {
+                  sbRes = sbRes2;
+                  sbErr = null;
+                }
+              }
+
+              if (!sbErr && sbRes && sbRes.user) {
+                authenticatedBySupabase = true;
+                const u = sbRes.user;
+                try {
+                  const { data: profs } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .or(`id.eq.${u.id},identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone}`)
+                    .limit(1);
+                  if (profs && profs.length > 0) {
+                    foundProfile = profs[0];
+                  }
+                } catch (e) {}
+
+                if (!foundProfile) {
+                  foundProfile = {
+                    id: u.id,
+                    user_id: formattedPhone,
+                    identifier: formattedPhone,
+                    identifier_type: 'phone',
+                    phone: formattedPhone,
+                    email: null,
+                    provider: 'phone',
+                    username: u.user_metadata?.username || u.user_metadata?.full_name || 'Devotee',
+                    avatar: u.user_metadata?.avatar || '🪔',
+                    avatar_type: 'puja',
+                    saved_items: [],
+                    custom_plans: [],
+                    created_at: u.created_at || new Date().toISOString()
+                  };
+                }
+              } else if (sbErr) {
+                console.warn('Supabase phone signInWithPassword notice:', sbErr.message);
+              }
+            } catch (err) {
+              console.warn('Supabase phone auth error:', err);
+            }
+          }
+
+          // 2. If email: try Supabase email sign in
+          if (isEmail && supabaseClient && !foundProfile) {
+            try {
+              const { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
+                email: cleanIdentifier,
+                password: rawPassword
+              });
+              if (!sbErr && sbRes && sbRes.user) {
+                authenticatedBySupabase = true;
+                const u = sbRes.user;
+                try {
+                  const { data: profs } = await supabaseClient
+                    .from('profiles')
+                    .select('*')
+                    .or(`id.eq.${u.id},identifier.eq.${cleanIdentifier},email.eq.${cleanIdentifier}`)
+                    .limit(1);
+                  if (profs && profs.length > 0) {
+                    foundProfile = profs[0];
+                  }
+                } catch (e) {}
+                if (!foundProfile) {
+                  foundProfile = {
+                    id: u.id,
+                    user_id: u.id,
+                    identifier: cleanIdentifier,
+                    identifier_type: 'email',
+                    email: cleanIdentifier,
+                    phone: null,
+                    provider: 'email',
+                    username: u.user_metadata?.username || u.user_metadata?.full_name || cleanIdentifier.split('@')[0],
+                    avatar: u.user_metadata?.avatar || '🪔',
+                    avatar_type: 'puja',
+                    saved_items: [],
+                    custom_plans: [],
+                    created_at: u.created_at || new Date().toISOString()
+                  };
+                }
+              }
+            } catch (err) {
+              console.warn('Supabase email auth notice:', err);
+            }
+          }
+
+          // 3. If email: try Firebase Authentication
+          if (isEmail && !foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
             try {
               const fbLoginRes = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
                 avatar: '🪔'
@@ -829,7 +1276,25 @@
             }
           }
 
-          // 2. Try Firebase Firestore
+          // 4. Try Supabase profiles table lookup
+          if (!foundProfile && supabaseClient) {
+            try {
+              const orQuery = isPhone
+                ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
+                : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
+              const { data, error: fetchErr } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .or(orQuery)
+                .limit(1);
+
+              if (!fetchErr && data && data.length > 0) {
+                foundProfile = data[0];
+              }
+            } catch (e) {}
+          }
+
+          // 5. Try Firebase Firestore
           if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
             try {
               foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
@@ -844,27 +1309,18 @@
             } catch (e) {}
           }
 
-          // 3. Supabase fallback
-          if (!foundProfile && supabaseClient) {
-            try {
-              const { data, error: fetchErr } = await supabaseClient
-                .from('profiles')
-                .select('*')
-                .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
-                .limit(1);
-
-              if (!fetchErr && data && data.length > 0) {
-                foundProfile = data[0];
-              }
-            } catch (e) {}
-          }
-
+          // 6. Cached profile fallback
           if (!foundProfile) {
             const cached = localStorage.getItem('akalbodhon_user_profile');
             if (cached) {
               try {
                 const p = JSON.parse(cached);
-                if (p.identifier?.toLowerCase() === cleanIdentifier || p.user_id?.toLowerCase() === cleanIdentifier || p.id === safeDocId) {
+                if (
+                  p.identifier?.toLowerCase() === cleanIdentifier ||
+                  p.user_id?.toLowerCase() === cleanIdentifier ||
+                  p.id === safeDocId ||
+                  (isPhone && (p.phone === formattedPhone || p.phone === cleanPhoneDigits || p.identifier === formattedPhone))
+                ) {
                   foundProfile = p;
                 }
               } catch (e) {}
@@ -872,30 +1328,139 @@
           }
 
           if (!foundProfile) {
-            showAlert('No devotee account found with this email or phone number. Please create an account.');
+            showAlert('No devotee account found with this ' + (isPhone ? 'phone number' : 'email') + '. Please create an account.');
             return;
           }
 
-          if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
-            showAlert('Incorrect password. Please try again.');
-            return;
+          // If not already authenticated by Supabase Auth session, verify password hash
+          if (!authenticatedBySupabase) {
+            if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
+              showAlert('Incorrect password. Please try again.');
+              return;
+            }
+
+            // Password verified! Auto-enroll / link user into Supabase Native Auth if missing
+            if (supabaseClient) {
+              try {
+                if (isPhone) {
+                  // Auto-create in Supabase phone authentication so their Sign-in provider is phone!
+                  const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
+                    phone: formattedPhone,
+                    password: rawPassword,
+                    options: {
+                      data: {
+                        username: foundProfile.username || 'Devotee',
+                        avatar: foundProfile.avatar || '🪔',
+                        identifier: formattedPhone,
+                        identifier_type: 'phone'
+                      }
+                    }
+                  });
+                  if (!upErr) {
+                    await supabaseClient.auth.signInWithPassword({
+                      phone: formattedPhone,
+                      password: rawPassword
+                    });
+                  }
+                } else if (isEmail) {
+                  const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
+                    email: cleanIdentifier,
+                    password: rawPassword,
+                    options: {
+                      data: {
+                        username: foundProfile.username || 'Devotee',
+                        avatar: foundProfile.avatar || '🪔',
+                        identifier: cleanIdentifier,
+                        identifier_type: 'email'
+                      }
+                    }
+                  });
+                  if (!upErr) {
+                    await supabaseClient.auth.signInWithPassword({
+                      email: cleanIdentifier,
+                      password: rawPassword
+                    });
+                  }
+                }
+              } catch (autoEnrollErr) {
+                console.warn('Auto-enroll in Supabase notice:', autoEnrollErr);
+              }
+            }
           }
 
-          // Fetch & restore saved details stored in Database
+          // Fetch & restore saved details stored under devotee's specific identifier
+          const userStorageKey = isPhone
+            ? 'phone_' + (cleanPhoneDigits.length === 10 ? '91' + cleanPhoneDigits : cleanPhoneDigits)
+            : (isEmail ? 'email_' + cleanIdentifier.replace(/[^a-z0-9]/g, '_') : 'id_' + safeDocId);
+
+          let localBm = [];
+          try { localBm = JSON.parse(localStorage.getItem('akalbodhon_bookmarks') || '[]'); } catch (_) {}
           let restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
+
+          // Load from user-specific persistent store if present
+          const userKeyCandidates = [
+            `akalbodhon_user_data_${userStorageKey}`,
+            `akalbodhon_user_data_${cleanPhoneDigits}`,
+            `akalbodhon_user_data_id_${safeDocId}`
+          ];
+          for (const cand of userKeyCandidates) {
+            const raw = localStorage.getItem(cand);
+            if (raw) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed.bookmarks) && parsed.bookmarks.length > 0) {
+                  const m = new Map();
+                  restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+                  parsed.bookmarks.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+                  restoredSavedItems = Array.from(m.values());
+                  break;
+                }
+              } catch (_) {}
+            }
+          }
+
           if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserSavedItems === 'function') {
             try {
               const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(foundProfile);
               if (Array.isArray(fbSaved) && fbSaved.length > 0) {
-                restoredSavedItems = fbSaved;
+                const m = new Map();
+                restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+                fbSaved.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+                restoredSavedItems = Array.from(m.values());
               }
             } catch (e) {
               console.warn('Firebase saved items fetch notice:', e);
             }
           }
+
+          // Merge any current local bookmarks from guest session
+          if (localBm.length > 0) {
+            const m = new Map();
+            restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+            localBm.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
+            restoredSavedItems = Array.from(m.values());
+          }
           localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
 
+          let localPlans = [];
+          try { localPlans = JSON.parse(localStorage.getItem('akalbodhon_custom_plans') || '[]'); } catch (_) {}
           let restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
+          for (const cand of userKeyCandidates) {
+            const raw = localStorage.getItem(cand);
+            if (raw) {
+              try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed.custom_plans) && parsed.custom_plans.length > 0) {
+                  const m = new Map();
+                  restoredCustomPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
+                  parsed.custom_plans.forEach(p => { if (p && p.id) m.set(p.id, p); });
+                  restoredCustomPlans = Array.from(m.values());
+                  break;
+                }
+              } catch (_) {}
+            }
+          }
+
           if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserPlans === 'function') {
             try {
               const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(foundProfile);
@@ -909,16 +1474,45 @@
               console.warn('Firebase plans fetch notice:', e);
             }
           }
+
+          if (localPlans.length > 0) {
+            const m = new Map();
+            restoredCustomPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
+            localPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
+            restoredCustomPlans = Array.from(m.values());
+          }
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(restoredCustomPlans));
 
+          // Save under devotee's specific identifier store
+          localStorage.setItem(`akalbodhon_user_data_${userStorageKey}`, JSON.stringify({
+            identifier: isPhone ? formattedPhone : cleanIdentifier,
+            user_key: userStorageKey,
+            bookmarks: restoredSavedItems,
+            custom_plans: restoredCustomPlans,
+            updated_at: new Date().toISOString()
+          }));
+          if (userStorageKey.startsWith('phone_')) {
+            localStorage.setItem(`akalbodhon_user_data_${cleanPhoneDigits}`, JSON.stringify({
+              identifier: formattedPhone,
+              user_key: userStorageKey,
+              bookmarks: restoredSavedItems,
+              custom_plans: restoredCustomPlans,
+              updated_at: new Date().toISOString()
+            }));
+          }
+
           const authenticatedUser = {
-            id: foundProfile.id || safeDocId,
-            user_id: foundProfile.user_id || rawIdentifier,
-            identifier: foundProfile.identifier || rawIdentifier,
-            identifier_type: foundProfile.identifier_type || (isEmail ? 'email' : 'phone'),
+            id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
+            user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
+            identifier: isPhone ? (foundProfile.identifier || formattedPhone) : (foundProfile.identifier || rawIdentifier),
+            identifier_type: isPhone ? 'phone' : (foundProfile.identifier_type || (isEmail ? 'email' : 'phone')),
+            phone: isPhone ? (foundProfile.phone || formattedPhone) : null,
+            email: isEmail ? (foundProfile.email || rawIdentifier) : null,
+            provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
             username: foundProfile.username || 'Devotee',
             avatar: foundProfile.avatar || '🪔',
-            custom_avatar_url: null,
+            custom_avatar_url: foundProfile.custom_avatar_url || null,
+            google_photo_url: foundProfile.google_photo_url || null,
             saved_items: restoredSavedItems,
             custom_plans: restoredCustomPlans,
             feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,

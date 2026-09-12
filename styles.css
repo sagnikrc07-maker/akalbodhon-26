@@ -871,3 +871,14 @@ body.modal-open {
   }
 }
 
+/* Rituals Timeline Mobile Safety & Alignment */
+#rituals-timeline-container {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  #rituals-timeline-container {
+    padding-left: 0.5rem;
+    padding-right: 0.25rem;
+  }
+}

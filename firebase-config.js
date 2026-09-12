@@ -75,18 +75,25 @@ function withTimeout(promise, ms = DEFAULT_TIMEOUT_MS) {
   ]);
 }
 
-// Helper to extract all possible docId keys (raw, lowercase, and safeDocId) for a user
+// Helper to extract all possible docId keys (raw, lowercase, safeDocId, phone digits) for a user
 function getPossibleUserDocIds(userOrId) {
   const ids = new Set();
   if (!userOrId) return [];
   if (typeof userOrId === 'object') {
-    ['id', 'user_id', 'uid', 'identifier', 'email'].forEach(k => {
+    ['id', 'user_id', 'uid', 'identifier', 'email', 'phone'].forEach(k => {
       const val = userOrId[k];
       if (val && typeof val === 'string') {
         const clean = val.trim().toLowerCase();
         if (clean) {
           ids.add(clean);
           ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+          const digits = clean.replace(/[^0-9]/g, '');
+          if (digits.length >= 7) {
+            ids.add(digits);
+            ids.add('+' + digits);
+            if (digits.length === 10) ids.add('91' + digits);
+            if (digits.startsWith('91') && digits.length === 12) ids.add(digits.slice(2));
+          }
           if (clean.startsWith('user_')) {
             ids.add(clean.replace(/^user_/, ''));
           }
@@ -98,6 +105,13 @@ function getPossibleUserDocIds(userOrId) {
     if (clean) {
       ids.add(clean);
       ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+      const digits = clean.replace(/[^0-9]/g, '');
+      if (digits.length >= 7) {
+        ids.add(digits);
+        ids.add('+' + digits);
+        if (digits.length === 10) ids.add('91' + digits);
+        if (digits.startsWith('91') && digits.length === 12) ids.add(digits.slice(2));
+      }
       if (clean.startsWith('user_')) {
         ids.add(clean.replace(/^user_/, ''));
       }
@@ -142,6 +156,7 @@ export const AkalbodhonFirebase = {
     const restoredSavedItems = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
     const restoredPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
 
+    const isChosenFestivalAvatar = existingData.avatar && existingData.avatar !== '🪔';
     const profile = {
       id: cleanUid,
       user_id: cleanUid,
@@ -151,7 +166,10 @@ export const AkalbodhonFirebase = {
       username: existingData.username || user.displayName || (user.email ? user.email.split('@')[0] : "Devotee"),
       email: user.email,
       avatar: existingData.avatar || "🪔",
-      custom_avatar_url: existingData.custom_avatar_url || user.photoURL || null,
+      google_photo_url: user.photoURL || existingData.google_photo_url || null,
+      custom_avatar_url: (existingData.custom_avatar_url !== undefined && existingData.custom_avatar_url !== null)
+        ? existingData.custom_avatar_url
+        : (existingData.custom_avatar_url === null || isChosenFestivalAvatar ? null : (user.photoURL || null)),
       saved_items: restoredSavedItems,
       custom_plans: restoredPlans,
       feedback_cooldown_until: existingData.feedback_cooldown_until || null,
@@ -788,8 +806,7 @@ export const AkalbodhonFirebase = {
       }
     }
     localStorage.removeItem("akalbodhon_user_profile");
-    localStorage.removeItem("akalbodhon_bookmarks");
-    localStorage.removeItem("akalbodhon_custom_plans");
+    // Saved itinerary bookmarks and custom plans are permanently preserved on device and under user identifier
   },
 
   // 12. Listen to Auth State Changes

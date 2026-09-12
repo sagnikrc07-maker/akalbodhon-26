@@ -472,9 +472,7 @@
             </button>
           </div>
 
-          <div id="active-song-external-links" class="flex items-center gap-1.5">
-            <!-- Populated via JS with active direct external links -->
-          </div>
+          <div id="active-song-external-links" class="hidden"></div>
         </div>
 
         <!-- Embedded Interactive Player Frame -->
@@ -565,7 +563,7 @@
                   class="w-full py-2 px-2 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black text-[10px] sm:text-xs font-bold flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
                 >
                   <span class="material-symbols-outlined text-[15px] sm:text-[17px]">queue_music</span>
-                  <span class="truncate">View Songs (17)</span>
+                  <span class="truncate">View Songs (23)</span>
                 </button>
               </div>
             </div>
@@ -821,7 +819,7 @@
         <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Sacred festival dates, Vedic mantras, and ceremonial rituals of Akalbodhon 2026.</p>
       </div>
 
-      <div id="rituals-timeline-container" class="max-w-3xl mx-auto pt-4"></div>
+      <div id="rituals-timeline-container" class="max-w-3xl mx-auto pt-4 px-2 sm:px-4 md:px-0"></div>
     </section>
 
     <!-- ======================================================== -->
@@ -1142,7 +1140,7 @@
       <!-- Profile Header / Current Avatar -->
       <div class="flex items-center gap-4 border-b border-outline-variant/30 dark:border-amber-400/20 pb-4">
         <div class="relative group">
-          <div id="current-profile-avatar-display" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center text-3xl shadow-xl">
+          <div id="current-profile-avatar-display" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center text-3xl shadow-xl overflow-hidden">
             🪔
           </div>
           <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md bg-primary dark:bg-amber-400 text-white dark:text-black text-[9px] font-bold shadow">AVATAR</span>
@@ -1150,9 +1148,14 @@
         <div class="min-w-0 flex-1">
           <h3 id="profile-display-name" class="font-display text-xl font-bold text-on-surface dark:text-white truncate">Devotee</h3>
           <p id="profile-display-identifier" class="text-xs text-on-surface-variant dark:text-amber-300 font-medium truncate">devotee@akalbodhon.com</p>
-          <span class="inline-flex items-center gap-1 mt-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Logged In Account
-          </span>
+          <div class="flex items-center gap-2 mt-1 flex-wrap">
+            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Logged In Account
+            </span>
+            <button id="toggle-google-avatar-btn" type="button" class="hidden text-[11px] font-semibold text-primary dark:text-amber-300 hover:underline inline-flex items-center gap-1 cursor-pointer">
+              Use Google Photo
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1205,7 +1208,7 @@
         <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Build your custom pandal hopping trail, dining spots, and sacred rituals.</p>
       </div>
 
-      <form id="create-plan-form" class="space-y-4" onsubmit="return false;">
+      <form id="create-plan-form" class="space-y-4">
         <!-- Plan Title (Defaults to 'Plan', non-mandatory) -->
         <div class="space-y-1">
           <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Name / Title <span class="text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-normal">(Default: Plan)</span></label>
@@ -1238,11 +1241,11 @@
           <textarea id="plan-description-input" rows="2" placeholder="e.g. Join our festive pandal trail! Morning Pushpanjali, followed by authentic street food and late-night illumination walks." class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white resize-none"></textarea>
         </div>
 
-        <!-- Pandals Selection (At least 1 pandal mandatory) -->
+        <!-- Pandals Selection -->
         <div class="space-y-1.5">
           <label class="text-xs font-semibold text-on-surface dark:text-amber-200 flex items-center justify-between">
-            <span>Select Pandals to Visit <span class="text-red-500 font-bold">*</span></span>
-            <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(At least 1 pandal required)</span>
+            <span>Select Pandals to Visit</span>
+            <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(Optional • 3 iconic pandals auto-selected if blank)</span>
           </label>
           <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
             <!-- Injected dynamically -->
@@ -1573,9 +1576,9 @@
         </div>
 
         <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex gap-3">
-          <a id="modal-pandal-nav-btn" href="#" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3 rounded-xl font-bold text-center text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <a id="modal-pandal-nav-btn" href="#" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black py-3 rounded-xl font-bold text-center text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer" title="Search Location in Google Maps">
             <!-- Directions Pin Icon -->
-            <img src="maps-pin.png" alt="Directions" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
+            <img src="maps-pin.png" alt="Open in Maps" class="w-4 h-4 shrink-0 drop-shadow-sm object-contain" />
             <span>Open in Google Maps</span>
           </a>
           <button id="modal-pandal-share-btn" type="button" class="py-3 px-4 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 text-on-surface dark:text-amber-300 hover:bg-primary/10 dark:hover:bg-amber-400/10 font-bold text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="Share Pandal">

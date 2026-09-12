@@ -5,6 +5,25 @@
 
 (function () {
   'use strict';
+  // --- GOOGLE MAPS SEARCH URL CONVERTER ---
+  function toMapsSearchUrl(url, fallbackQuery = '') {
+    if (!url || url === '#' || url === 'undefined') {
+      return fallbackQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackQuery)}` : '#';
+    }
+    if (typeof url === 'string') {
+      if (url.includes('/maps/dir/')) {
+        return url.replace('/maps/dir/?api=1&destination=', '/maps/search/?api=1&query=')
+                  .replace('/maps/dir/?destination=', '/maps/search/?query=')
+                  .replace('/maps/dir/', '/maps/search/')
+                  .replace('destination=', 'query=');
+      }
+      if (url.includes('destination=')) {
+        return url.replace('destination=', 'query=').replace('/dir/', '/search/');
+      }
+    }
+    return url;
+  }
+
 
   // --- 1. DATA COLLECTIONS ---
 
@@ -20,7 +39,7 @@
       transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Crossing Bus',
       transitType: 'metro',
       highlights: 'World-renowned crystal, brass, and glass art installations with glowing night illumination.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Maniktala+Chaltabagan+Lohapatty+Durga+Puja+Kolkata'
     },
     {
       id: 'chorbagan-sarbojanin',
@@ -31,7 +50,7 @@
       transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Rammohan Roy Sarani Bus',
       transitType: 'metro',
       highlights: 'Poetic cultural narratives crafted through organic terracotta and rustic traditional craftsmanship.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Chorbagan+Sarbojanin+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Chorbagan+Sarbojanin+Durga+Puja+Kolkata'
     },
     {
       id: 'kashi-bose-lane',
@@ -42,7 +61,7 @@
       transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Manicktala Bus Stop',
       transitType: 'metro',
       highlights: 'Award-winning conceptual pandal blending touching social messages with Vedic sculpting.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kashi+Bose+Lane+Durga+Puja+Samity+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kashi+Bose+Lane+Durga+Puja+Samity+Kolkata'
     },
     {
       id: 'ahiritola-sarbojanin',
@@ -53,7 +72,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Ahiritola Ferry Ghat',
       transitType: 'metro',
       highlights: 'Historic North Kolkata century-old puja renowned for monumental riverfront gates and exquisite clay idol.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Sarbojanin+Durgotsab+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Ahiritola+Sarbojanin+Durgotsab+Kolkata'
     },
     {
       id: 'beniatola-sarbojanin',
@@ -64,7 +83,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (4 min walk) • 🚌 BK Paul Avenue Bus',
       transitType: 'metro',
       highlights: 'Rare brass Dokra relief sculptures and classical heritage ambience in North Kolkata.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Beniatola+Sarbojanin+Durgotsav+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Beniatola+Sarbojanin+Durgotsav+Kolkata'
     },
     {
       id: 'jagat-mukherjee-park',
@@ -75,7 +94,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • 🚌 JM Avenue Bus',
       transitType: 'metro',
       highlights: 'Famed for out-of-the-box conceptual themes including underwater submarines and optical glass tunnels.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Jagat+Mukherjee+Park+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Jagat+Mukherjee+Park+Durga+Puja+Kolkata'
     },
     {
       id: 'kumartuli-park',
@@ -86,7 +105,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (5 min walk) • ⛴️ Sovabazar Launch Ghat',
       transitType: 'metro',
       highlights: 'Nestled in the legendary idol-makers quarter, showcasing world-class clay mastery and grand palace domes.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kumartuli+Park+Durga+Puja+Kolkata'
     },
     {
       id: 'pathuriaghata-rajbari',
@@ -97,7 +116,7 @@
       transit: '🚇 Girish Park Metro (5 min walk) • 🚌 Nimtala Ghat Street Bus',
       transitType: 'metro',
       highlights: 'Ghosh family heritage Thakurdalan, traditional Ekchala idol with real silver ornaments and family rituals.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Pathuriaghata+Rajbari+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Pathuriaghata+Rajbari+Durga+Puja+Kolkata'
     },
     {
       id: 'hatibagan-sarbojanin',
@@ -108,7 +127,7 @@
       transit: '🚇 Shyambazar Metro (4 min walk) • 🚌 Hatibagan 5-Point Bus',
       transitType: 'metro',
       highlights: 'Over a century of celebration with majestic thematic facades and authentic community culture.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Hatibagan+Sarbojanin+Durgotsav+Kolkata'
     },
 
     {
@@ -120,7 +139,7 @@
       transit: '🚇 Shyambazar Metro (3 min walk) • 🚌 Bidhan Sarani Bus',
       transitType: 'metro',
       highlights: 'Masterful transformations of bamboo, pottery, and jute into breathtaking spatial sculptures.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Nalin+Sarkar+Street+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Nalin+Sarkar+Street+Durga+Puja+Kolkata'
     },
     {
       id: 'bagbazar-sarbojanin',
@@ -131,7 +150,7 @@
       transit: '🚇 Shyambazar Metro (6 min walk) • ⛴️ Bagbazar Launch Ghat',
       transitType: 'metro',
       highlights: 'Pure Bengali tradition with iconic snow-white Daaker Saaj idol, classic Sindoor Khela, and carnival adda.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durgotsav+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bagbazar+Sarbojanin+Durgotsav+Kolkata'
     },
     {
       id: 'sovabazar-rajbari',
@@ -142,7 +161,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (2 min walk) • 🚌 Rabindra Sarani Bus',
       transitType: 'metro',
       highlights: 'Raja Nabakrishna Deb historical Natmandir courtyard, canonical Vedic ceremonies, and solemn grace.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sovabazar+Rajbari+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Sovabazar+Rajbari+Kolkata'
     },
     {
       id: 'darjipara-mitra-bari',
@@ -153,7 +172,7 @@
       transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Beadon Street Bus',
       transitType: 'metro',
       highlights: 'Historic 1807 Bonedi courtyard puja featuring an ornate wooden Thakurdalan, majestic Ekchala idol, and century-old aristocratic rituals.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Darjipara+Mitra+Bari+Durga+Puja+Beadon+Street+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Darjipara+Mitra+Bari+Durga+Puja+Beadon+Street+Kolkata'
     },
     {
       id: 'jorasanko-shib-krishna-daw-rajbari',
@@ -164,7 +183,7 @@
       transit: '🚇 Girish Park Metro (4 min walk) • 🚌 Vivekananda Road Bus',
       transitType: 'metro',
       highlights: 'Celebrated 1840 Bonedi Bari puja famed for its majestic arches, Goddess Durga adorned in pure gold and diamond jewellery, and royal courtyard heritage.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Jorasanko+Shib+Krishna+Daw+Rajbari+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Jorasanko+Shib+Krishna+Daw+Rajbari+Durga+Puja+Kolkata'
     },
     {
       id: 'sikdar-bagan',
@@ -175,7 +194,7 @@
       transit: '🚇 Shyambazar Metro (3 min walk) • 🚌 Hatibagan Crossing Bus',
       transitType: 'metro',
       highlights: 'Centenary North Kolkata jewel established in 1913, renowned for pure artistic idols, compact exquisite themes, and intimate heritage warmth.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sikdar+Bagan+Sadharan+Durgotsav+Shyambazar+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Sikdar+Bagan+Sadharan+Durgotsav+Shyambazar+Kolkata'
     },
     {
       id: 'hatibagan-nabin-pally',
@@ -186,7 +205,7 @@
       transit: '🚇 Shyambazar Metro (4 min walk) • 🚌 Shyambazar 5-Point Bus',
       transitType: 'metro',
       highlights: 'Lively North Kolkata landmark recognized for innovative thematic craftsmanship, colorful illumination, and vibrant neighborhood adda.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata'
     },
     {
       id: 'ahiritola-jubak-brinda',
@@ -197,7 +216,7 @@
       transit: '🚇 Sovabazar Sutanuti Metro (4 min walk) • ⛴️ Ahiritola Ferry Ghat',
       transitType: 'metro',
       highlights: 'Vibrant youth-led riverside celebration known for creative modern concepts, lively cultural events, and energetic community participation.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata'
     },
     {
       id: 'tala-prattoy',
@@ -208,7 +227,7 @@
       transit: '🚇 Belgachia Metro (5 min walk) • 🚆 Kolkata Chitpur Station',
       transitType: 'metro',
       highlights: 'Internationally acclaimed conceptual benchmark created by maestro artists, featuring groundbreaking experimental architecture and thought-provoking sculptures.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Tala+Prattoy+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Tala+Prattoy+Durga+Puja+Kolkata'
     },
 
     // --- SOUTH KOLKATA ZONE ---
@@ -221,7 +240,7 @@
       transit: '🚇 Kalighat Metro (Auto-link) • 🚌 Gariahat Phari Bus Stop',
       transitType: 'metro',
       highlights: 'Grand temple replicas paired with legendary lighting by Chandannagar electrical artists.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Singhi+Park+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Singhi+Park+Durga+Puja+Kolkata'
     },
     {
       id: 'badamtala-ashar-sangha',
@@ -232,7 +251,7 @@
       transit: '🚇 Kalighat Metro (3 min walk) • 🚌 Rashbehari Crossing Bus',
       transitType: 'metro',
       highlights: 'South Kolkata theme-puja benchmark with award-winning creative soundscapes and innovative idol craft.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Badamtala+Ashar+Sangha+Kalighat+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Badamtala+Ashar+Sangha+Kalighat+Kolkata'
     },
 
     {
@@ -244,7 +263,7 @@
       transit: '🚇 Kalighat Metro (6 min walk) • 🚌 Sarat Bose Road Bus',
       transitType: 'metro',
       highlights: 'Lavish architectural designs with brilliant brass embellishments and peaceful devotion.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hindustan+Club+Durga+Puja+Sarat+Bose+Road+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Hindustan+Club+Durga+Puja+Sarat+Bose+Road+Kolkata'
     },
     {
       id: 'ballygunge-cultural',
@@ -255,7 +274,7 @@
       transit: '🚇 Kalighat Metro (7 min walk) • 🚌 Lake Temple Road Bus',
       transitType: 'metro',
       highlights: 'Beloved South Kolkata legacy puja known for aristocratic restraint, classical morning chants, and warm adda.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Ballygunge+Cultural+Association+Durga+Puja+Kolkata'
     },
 
     {
@@ -267,7 +286,7 @@
       transit: '🚇 Behala Chowrasta Metro (5 min walk) • 🚌 DH Road Barisha Bus',
       transitType: 'metro',
       highlights: 'Celebrated across India for deeply moving emotional sculptures honoring maternal resilience and humanity.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Barisha+Club+Durga+Puja+Sakherbazar+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Barisha+Club+Durga+Puja+Sakherbazar+Kolkata'
     },
     {
       id: 'behala-nutan-dal',
@@ -278,7 +297,7 @@
       transit: '🚇 Taratala Metro (6 min walk) • 🚌 Taratala Crossing Bus',
       transitType: 'metro',
       highlights: 'Architectural marvel combining textured metallic acoustics, ambient chimes, and thought-provoking modern art.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Behala+Nutan+Dal+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Behala+Nutan+Dal+Durga+Puja+Kolkata'
     },
     {
       id: 'rajdanga-naba-uday',
@@ -289,7 +308,7 @@
       transit: '🚇 Ruby Crossing Metro (6 min walk) • 🚌 Kasba Connector Bus',
       transitType: 'metro',
       highlights: 'Spectacular large-scale installations utilizing earthen clay, bell metal, and handmade rural artifacts.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Rajdanga+Naba+Uday+Sangha+Kasba+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Rajdanga+Naba+Uday+Sangha+Kasba+Kolkata'
     },
     {
       id: 'ekdalia-evergreen',
@@ -300,7 +319,7 @@
       transit: '🚇 Kalighat Metro (Auto) • 🚌 Gariahat Crossing Bus Stop',
       transitType: 'metro',
       highlights: 'Glorious illuminated chandeliers, authentic South Indian temple art style with traditional idol.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Ekdalia+Evergreen+Club+Gariahat+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Ekdalia+Evergreen+Club+Gariahat+Kolkata'
     },
     {
       id: 'suruchi-sangha',
@@ -311,7 +330,7 @@
       transit: '🚇 Taratala Metro (6 min walk) • 🚆 Majerhat Local Train',
       transitType: 'metro',
       highlights: 'Different Indian state craftsmanship themes annually, sustainable eco-friendly materials and soulful folk music.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Suruchi+Sangha+New+Alipore+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Suruchi+Sangha+New+Alipore+Kolkata'
     },
     {
       id: 'tridhara-sammilani',
@@ -322,7 +341,7 @@
       transit: '🚇 Kalighat Metro (5 min walk) • 🚌 Rashbehari Crossing Bus',
       transitType: 'metro',
       highlights: 'Iconic street installation featuring indigenous art traditions, mesmerizing soundscapes, and expressive idols.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata'
     },
     {
       id: 'mudiali-club',
@@ -333,7 +352,7 @@
       transit: '🚇 Rabindra Sarobar Metro (4 min walk) • 🚌 Southern Avenue Bus',
       transitType: 'metro',
       highlights: 'Decades of classical beauty with nature-inspired hand-painted murals and dazzling golden Goddess ornaments.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mudiali+Club+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Mudiali+Club+Durga+Puja+Kolkata'
     },
     {
       id: 'bosepukur-talbagan',
@@ -344,7 +363,7 @@
       transit: '🚆 Ballygunge Local Train • 🚌 Kasba Bosepukur Bus Stop',
       transitType: 'bus',
       highlights: 'Celebrated Kasba landmark famed for heritage environmental installations, rural Bengal crafts, and lively festive atmosphere.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bosepukur+Talbagan+Durga+Puja+Kasba+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bosepukur+Talbagan+Durga+Puja+Kasba+Kolkata'
     },
     {
       id: 'shivmandir',
@@ -355,7 +374,7 @@
       transit: '🚇 Rabindra Sarobar Metro (4 min walk) • 🚌 Lake Kalibari Bus',
       transitType: 'metro',
       highlights: 'Nestled by Rabindra Sarobar Lake, renowned for serene spiritual themes, soul-stirring lighting, and creative idol artistry.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Shiv+Mandir+Sarbojanin+Durga+Puja+Lake+Temple+Road+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Shiv+Mandir+Sarbojanin+Durga+Puja+Lake+Temple+Road+Kolkata'
     },
     {
       id: 'bosepukur-sitalamandir',
@@ -366,7 +385,7 @@
       transit: '🚆 Ballygunge Local Train • 🚌 Bosepukur Connector Bus',
       transitType: 'bus',
       highlights: 'Historic trail-blazer of Kolkata theme puja movement with iconic artistic materials, terracotta motifs, and classical deity.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bosepukur+Sitalamandir+Durga+Puja+Kasba+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bosepukur+Sitalamandir+Durga+Puja+Kasba+Kolkata'
     },
     {
       id: 'deshapriya-park',
@@ -377,7 +396,7 @@
       transit: '🚇 Kalighat Metro (5 min walk) • 🚌 Deshapriya Park Bus Stop',
       transitType: 'metro',
       highlights: 'One of South Kolkatas most iconic expansive park pujas, known for record-breaking monumental concepts, vast food carnival, and vibrant energy.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Rashbehari+Avenue+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Deshapriya+Park+Durga+Puja+Rashbehari+Avenue+Kolkata'
     },
     {
       id: 'chetla-agrani',
@@ -388,7 +407,7 @@
       transit: '🚇 Kalighat Metro (6 min walk) • 🚌 Chetla Central Road Bus',
       transitType: 'metro',
       highlights: 'Annual masterpiece conceptualized by renowned artists, featuring breathtaking organic architectural pavilions and soulful lighting.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Chetla+Agrani+Club+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Chetla+Agrani+Club+Durga+Puja+Kolkata'
     },
     {
       id: 'haridevpur-41-pally',
@@ -399,7 +418,7 @@
       transit: '🚇 Tollygunge Metro (Auto) • 🚌 Haridevpur Bus Stand',
       transitType: 'metro',
       highlights: 'Famed for deep philosophical storytelling, organic sustainable materials, and award-winning creative idol design.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Haridevpur+41+Pally+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Haridevpur+41+Pally+Durga+Puja+Kolkata'
     },
     {
       id: 'kendua-shanti-shangha',
@@ -410,7 +429,7 @@
       transit: '🚇 Kavi Subhash Metro (Auto) • 🚆 Garia Local Train',
       transitType: 'metro',
       highlights: 'Prominent South suburban cultural hub recognized for exquisite rural artisan work, sustainable eco-friendly themes, and warm community bonding.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kendua+Shanti+Sangha+Durga+Puja+Garia+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kendua+Shanti+Sangha+Durga+Puja+Garia+Kolkata'
     },
     {
       id: 'naktala-udayan-sangha',
@@ -421,7 +440,7 @@
       transit: '🚇 Gitanjali Metro (3 min walk) • 🚌 NSC Bose Road Bus',
       transitType: 'metro',
       highlights: 'South Kolkatas ultimate crowd magnet featuring revolutionary avant-garde conceptual art, mammoth sculptures, and award-winning idols.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Naktala+Udayan+Sangha+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Naktala+Udayan+Sangha+Durga+Puja+Kolkata'
     },
     {
       id: 'maddox-square',
@@ -432,7 +451,7 @@
       transit: '🚇 Netaji Bhavan Metro (6 min walk) • 🚌 Lansdowne Ritchie Rd Bus',
       transitType: 'metro',
       highlights: 'The ultimate open-air festive adda hub of Kolkata, featuring a grand open courtyard pandal and breathtaking golden Sabeki Ekchala idol.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Ballygunge+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Maddox+Square+Durga+Puja+Ballygunge+Kolkata'
     },
 
     // --- CENTRAL KOLKATA ZONE ---
@@ -445,7 +464,7 @@
       transit: '🚇 Central Metro (4 min walk) • 🚌 College Street Bus Stop',
       transitType: 'metro',
       highlights: 'Huge illuminated lake reflecting thousands of synchronized bulbs, traditional idol by Sanatan Rudra Pal.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=College+Square+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=College+Square+Durga+Puja+Kolkata'
     },
     {
       id: 'mohammad-ali-park',
@@ -456,7 +475,7 @@
       transit: '🚇 MG Road Metro (2 min walk) • 🚌 Central Avenue Bus',
       transitType: 'metro',
       highlights: 'Sprawling park grounds dominated by towering architectural fort replicas and heritage lighting.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Mohammad+Ali+Park+Durga+Puja+Kolkata'
     },
     {
       id: 'santosh-mitra-square',
@@ -467,7 +486,7 @@
       transit: '🚇 Central Metro (5 min walk) • 🚆 Sealdah Local Train',
       transitType: 'metro',
       highlights: 'Legendary mega-scale architectural marvels (such as Ram Mandir replica and Sphere), grand lighting, and massive citywide crowds.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Santosh+Mitra+Square+Durga+Puja+Lebutala+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Santosh+Mitra+Square+Durga+Puja+Lebutala+Kolkata'
     },
     {
       id: 'badan-chand-roy-rajbari',
@@ -478,7 +497,7 @@
       transit: '🚇 MG Road Metro (4 min walk) • 🚌 Colootola Bus Stop',
       transitType: 'metro',
       highlights: 'Historical Bonedi Bari Durga Puja celebrated since 1857 at the ancestral Thakurdalan with traditional Ekchala Pratima and legacy Vaishnava customs.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Badan+Chand+Roy+Rajbari+Durga+Puja+Colootola+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Badan+Chand+Roy+Rajbari+Durga+Puja+Colootola+Kolkata'
     },
 
 
@@ -492,7 +511,7 @@
       transit: '🚌 VIP Road Lake Town Bus • 🚇 Ultadanga / Dum Dum Metro',
       transitType: 'bus',
       highlights: 'Diamond and pure gold ornamented Goddess idol, breathtaking architectural replica with dynamic laser light show.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Sreebhumi+Sporting+Club+VIP+Road+Kolkata'
     },
 
     {
@@ -504,7 +523,7 @@
       transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Bidhan Nagar Road Train',
       transitType: 'bus',
       highlights: 'Striking artistic experiments with innovative materials, modern aesthetics, and ambient lights.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Yubak+Brinda+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Yubak+Brinda+Durga+Puja+Kolkata'
     },
     {
       id: 'dum-dum-park-sarbojanin',
@@ -515,7 +534,7 @@
       transit: '🚌 VIP Road Dum Dum Park Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Pioneer of the famous Dum Dum Park puja hub, delivering timeless thematic beauty year after year.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Sarbojanin+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Sarbojanin+Durga+Puja+Kolkata'
     },
     {
       id: 'dum-dum-park-bharat-chakra',
@@ -526,7 +545,7 @@
       transit: '🚌 VIP Road Footbridge Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Profound societal messages translated through master clay and wood sculptures with moving soundtracks.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Bharat+Chakra+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Bharat+Chakra+Kolkata'
     },
     {
       id: 'dum-dum-park-tarun-dal',
@@ -537,7 +556,7 @@
       transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Dum Dum Cantt Train',
       transitType: 'bus',
       highlights: 'Mind-bending geometric forms, kinetic wind sculptures, and immersive illuminated pathways.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Tarun+Dal+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Tarun+Dal+Durga+Puja+Kolkata'
     },
     {
       id: 'dum-dum-park-tarun-sangha',
@@ -548,7 +567,7 @@
       transit: '🚌 VIP Road Crossing Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Multiple Asian Paints Sharod Samman winner celebrating intricate craft, poignant themes, and divine artistry.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dum+Dum+Park+Tarun+Sangha+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Tarun+Sangha+Kolkata'
     },
     {
       id: 'dakshindari-youth',
@@ -559,7 +578,7 @@
       transit: '🚌 VIP Road Ultadanga Bus • 🚆 Bidhan Nagar Road Train',
       transitType: 'bus',
       highlights: 'Giant temple architectural setups along the VIP Road corridor with spectacular night illuminations.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Dakshindari+Youth+Club+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dakshindari+Youth+Club+Durga+Puja+Kolkata'
     },
     {
       id: 'arjunpur-amra-sabai',
@@ -570,7 +589,7 @@
       transit: '🚌 Baguiati VIP Road Bus • 🚇 Dum Dum Metro (Auto)',
       transitType: 'bus',
       highlights: 'Renowned for courageous modern concepts, environmental messages, and masterly artistic idols.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Arjunpur+Amra+Sabai+Club+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Arjunpur+Amra+Sabai+Club+Durga+Puja+Kolkata'
     },
     {
       id: 'salt-lake-bj-block',
@@ -581,7 +600,7 @@
       transit: '🚇 Karunamoyee Metro (6 min walk) • 🚌 Salt Lake Tank 9 Bus',
       transitType: 'metro',
       highlights: 'Extensive fairground with festive food stalls, royal palace replicas, and traditional community adda.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+BJ+Block+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Salt+Lake+BJ+Block+Durga+Puja+Kolkata'
     },
 
     {
@@ -593,7 +612,7 @@
       transit: '🚇 Karunamoyee Metro (6 min walk) • 🚌 Salt Lake FD Block Bus',
       transitType: 'metro',
       highlights: 'Salt Lakes largest crowd-puller featuring colossal architectural replicas and bustling festive melas.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+FD+Block+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Salt+Lake+FD+Block+Durga+Puja+Kolkata'
     },
     {
       id: 'salt-lake-ib-block',
@@ -604,7 +623,7 @@
       transit: '🚇 Salt Lake Stadium Metro (5 min walk) • 🚌 EM Bypass Bus',
       transitType: 'metro',
       highlights: 'Prominent Salt Lake township celebration known for beautiful conceptual pandals, grand community gatherings, and festive cultural functions.',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Salt+Lake+IB+Block+Durga+Puja+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Salt+Lake+IB+Block+Durga+Puja+Kolkata'
     }
   ];
 
@@ -621,11 +640,11 @@
       mustTry: 'Mutton Special Biryani, Chicken Chaap & Shahi Firni',
       timings: 'All-Night Puja Service',
       image: 'food/arsalan.avif',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Arsalan+Restaurant+Park+Circus+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Arsalan+Restaurant+Park+Circus+Kolkata',
       nearbyPandals: [
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Ekdalia Evergreen Club', url: 'https://www.google.com/maps/dir/?api=1&destination=Ekdalia+Evergreen+Club+Durga+Puja+Kolkata' },
-        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' }
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Ekdalia Evergreen Club', url: 'https://www.google.com/maps/search/?api=1&query=Ekdalia+Evergreen+Club+Durga+Puja+Kolkata' },
+        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/search/?api=1&query=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -639,11 +658,11 @@
       mustTry: 'Kosha Mangsho with Layered Luchi & Tamarind Chutney',
       timings: 'All-Day & Late Evening',
       image: 'food/golbari.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Golbari+Shyambazar+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Golbari+Shyambazar+Kolkata',
       nearbyPandals: [
-        { name: 'Bagbazar Sarbojanin', url: 'https://www.google.com/maps/dir/?api=1&destination=Bagbazar+Sarbojanin+Durga+Puja+Kolkata' },
-        { name: 'Hatibagan Sarbojanin', url: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Sarbojanin+Durga+Puja+Kolkata' },
-        { name: 'Hatibagan Nabin Pally', url: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata' }
+        { name: 'Bagbazar Sarbojanin', url: 'https://www.google.com/maps/search/?api=1&query=Bagbazar+Sarbojanin+Durga+Puja+Kolkata' },
+        { name: 'Hatibagan Sarbojanin', url: 'https://www.google.com/maps/search/?api=1&query=Hatibagan+Sarbojanin+Durga+Puja+Kolkata' },
+        { name: 'Hatibagan Nabin Pally', url: 'https://www.google.com/maps/search/?api=1&query=Hatibagan+Nabin+Pally+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -657,11 +676,11 @@
       mustTry: 'Diamond Fish Fry, Fish Kabiraji & Mutton Brain Cutlet',
       timings: 'Afternoon & Evening',
       image: 'food/Mitra Cafe.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Mitra+Cafe+Shyambazar+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Mitra+Cafe+Shyambazar+Kolkata',
       nearbyPandals: [
-        { name: 'Ahiritola Jubak Brinda', url: 'https://www.google.com/maps/dir/?api=1&destination=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata' },
-        { name: 'Sovabazar Rajbari', url: 'https://www.google.com/maps/dir/?api=1&destination=Sovabazar+Rajbari+Kolkata' },
-        { name: 'Kumartuli Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Park+Durga+Puja+Kolkata' }
+        { name: 'Ahiritola Jubak Brinda', url: 'https://www.google.com/maps/search/?api=1&query=Ahiritola+Jubak+Brinda+Durga+Puja+Kolkata' },
+        { name: 'Sovabazar Rajbari', url: 'https://www.google.com/maps/search/?api=1&query=Sovabazar+Rajbari+Kolkata' },
+        { name: 'Kumartuli Park', url: 'https://www.google.com/maps/search/?api=1&query=Kumartuli+Park+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -675,11 +694,11 @@
       mustTry: 'Kochu Pata Diye Chingri Bhapa, Bhetki Paturi & Dhakai Morog Polao',
       timings: 'Lunch & Dinner (Puja Special Hours)',
       image: 'food/Kasturi Restaurant.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kasturi+Restaurant+Free+School+Street+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kasturi+Restaurant+Free+School+Street+Kolkata',
       nearbyPandals: [
-        { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
+        { name: 'Maddox Square', url: 'https://www.google.com/maps/search/?api=1&query=Maddox+Square+Durga+Puja+Kolkata' },
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/search/?api=1&query=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -693,11 +712,11 @@
       mustTry: 'Awadhi Handi Biryani, Galawati Kebab with Ulta Tawa Paratha & Murgh Pardah Biryani',
       timings: 'Lunch to Midnight',
       image: 'food/Oudh 1590.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Oudh+1590+Deshapriya+Park+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Oudh+1590+Deshapriya+Park+Kolkata',
       nearbyPandals: [
-        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' }
+        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/search/?api=1&query=Deshapriya+Park+Durga+Puja+Kolkata' },
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/search/?api=1&query=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -711,11 +730,11 @@
       mustTry: 'Royal Mutton Chaap, Shahi Mutton Biryani & Mutton Pasinda',
       timings: 'Lunch to Late Night',
       image: 'food/Royal Indian Hotel.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Royal+Indian+Hotel+Chitpur+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Royal+Indian+Hotel+Chitpur+Kolkata',
       nearbyPandals: [
-        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' },
-        { name: 'College Square', url: 'https://www.google.com/maps/dir/?api=1&destination=College+Square+Durga+Puja+Kolkata' },
-        { name: 'Santosh Mitra Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Santosh+Mitra+Square+Durga+Puja+Kolkata' }
+        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/search/?api=1&query=Mohammad+Ali+Park+Durga+Puja+Kolkata' },
+        { name: 'College Square', url: 'https://www.google.com/maps/search/?api=1&query=College+Square+Durga+Puja+Kolkata' },
+        { name: 'Santosh Mitra Square', url: 'https://www.google.com/maps/search/?api=1&query=Santosh+Mitra+Square+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -729,11 +748,11 @@
       mustTry: 'Daab Chingri, Kacha Lonka Mangsho & Chhanar Paturi',
       timings: 'Lunch & Dinner',
       image: 'food/6 Ballygunge Place.avif',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=6+Ballygunge+Place+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=6+Ballygunge+Place+Kolkata',
       nearbyPandals: [
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/dir/?api=1&destination=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' },
-        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' }
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Ballygunge Cultural Association', url: 'https://www.google.com/maps/search/?api=1&query=Ballygunge+Cultural+Association+Durga+Puja+Kolkata' },
+        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/search/?api=1&query=Deshapriya+Park+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -747,11 +766,11 @@
       mustTry: 'Ilish Barishali, Bhetki Paturi & Nolen Gurer Ice Cream',
       timings: 'All-Day Dining',
       image: 'food/Bhojohori Manna.avif',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Bhojohori+Manna+Gariahat+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bhojohori+Manna+Gariahat+Kolkata',
       nearbyPandals: [
-        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/dir/?api=1&destination=Tridhara+Sammilani+Durga+Puja+Kolkata' },
-        { name: 'Chetla Agrani', url: 'https://www.google.com/maps/dir/?api=1&destination=Chetla+Agrani+Durga+Puja+Kolkata' },
-        { name: 'Mudiali Club', url: 'https://www.google.com/maps/dir/?api=1&destination=Mudiali+Club+Durga+Puja+Kolkata' }
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' },
+        { name: 'Chetla Agrani', url: 'https://www.google.com/maps/search/?api=1&query=Chetla+Agrani+Durga+Puja+Kolkata' },
+        { name: 'Mudiali Club', url: 'https://www.google.com/maps/search/?api=1&query=Mudiali+Club+Durga+Puja+Kolkata' }
       ]
     },
     {
@@ -765,11 +784,11 @@
       mustTry: 'Double Egg Double Chicken Roll, Cheese Mutton Roll',
       timings: 'Open Late Night during Puja',
       image: 'food/kusum rolls.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kusum+Rolls+Park+Street+Kolkata',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kusum+Rolls+Park+Street+Kolkata',
       nearbyPandals: [
-        { name: 'Maddox Square', url: 'https://www.google.com/maps/dir/?api=1&destination=Maddox+Square+Durga+Puja+Kolkata' },
-        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Deshapriya+Park+Durga+Puja+Kolkata' },
-        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/dir/?api=1&destination=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
+        { name: 'Maddox Square', url: 'https://www.google.com/maps/search/?api=1&query=Maddox+Square+Durga+Puja+Kolkata' },
+        { name: 'Deshapriya Park', url: 'https://www.google.com/maps/search/?api=1&query=Deshapriya+Park+Durga+Puja+Kolkata' },
+        { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/search/?api=1&query=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
       ]
     }
   ];
@@ -787,7 +806,7 @@
       bestTime: 'Post-afternoon (3:00 PM IST - 9:30 PM IST)',
       highlight: 'Dhakai Jamdani, Baluchari, Tussar Silks & terracotta necklaces.',
       image: 'food/Gariahat Market & Triangular Park.avif',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Gariahat+Market+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Gariahat+Market+Kolkata'
     },
     {
       id: 'shop-2',
@@ -800,7 +819,7 @@
       bestTime: 'Morning or late evening (11:00 AM IST - 9:00 PM IST)',
       highlight: 'Unbeatable festive deals on Taant cotton sarees and kids\' festive wear.',
       image: 'food/Hatibagan Market & Shyambazar.webp',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Hatibagan+Market+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Hatibagan+Market+Kolkata'
     },
     {
       id: 'shop-3',
@@ -813,7 +832,7 @@
       bestTime: '11:00 AM IST - 8:30 PM IST (Closed Sundays normally, Open during Puja)',
       highlight: 'Nahoum & Sons plum cakes, Kashmiri shawls, silver jewelry & brassware.',
       image: 'food/New Market (Sir Stuart Hogg Market).jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=New+Market+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=New+Market+Kolkata'
     },
     {
       id: 'shop-6',
@@ -826,7 +845,7 @@
       bestTime: 'Early morning or late dusk (Golden hour photography)',
       highlight: 'Miniature terracotta clay idols, painted decorative masks, raw fiber straw crafts.',
       image: 'food/Kumartuli Artisan Colony.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Kumartuli+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Kumartuli+Kolkata'
     },
     {
       id: 'shop-8',
@@ -839,7 +858,7 @@
       bestTime: '11:00 AM IST - 7:00 PM IST',
       highlight: 'Pure Banarasi silk sarees, puja brassware lamps, incense & festive gift hampers.',
       image: 'food/Burrabazar Traditional Wholesale Market.jpg',
-      locationUrl: 'https://www.google.com/maps/dir/?api=1&destination=Burrabazar+Kolkata'
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Burrabazar+Kolkata'
     }
   ];
 
@@ -1204,14 +1223,156 @@
 
   const soundEngine = new SacredSoundEngine();
 
-  // One-time reset to ensure "My Puja Itinerary" starts completely empty
+  // Safe storage initialization (Never wipes existing devotee itinerary items)
   try {
-    if (localStorage.getItem('akalbodhon_itinerary_cleared_v5') !== 'true') {
+    if (localStorage.getItem('akalbodhon_bookmarks') === null) {
       localStorage.setItem('akalbodhon_bookmarks', JSON.stringify([]));
+    }
+    if (localStorage.getItem('akalbodhon_custom_plans') === null) {
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify([]));
-      localStorage.setItem('akalbodhon_itinerary_cleared_v5', 'true');
     }
   } catch (e) {}
+
+  // ========================================================
+  // PERSISTENT PER-IDENTIFIER ITINERARY STORE & MERGE ENGINE
+  // ========================================================
+  function getUserStorageIdentifier(user) {
+    if (!user) return null;
+    if (typeof user === 'string') {
+      const clean = user.trim().toLowerCase();
+      const digits = clean.replace(/[^0-9]/g, '');
+      if (!clean.includes('@') && digits.length >= 7) {
+        return 'phone_' + (digits.length === 10 ? '91' + digits : (digits.startsWith('0') && digits.length === 11 ? '91' + digits.slice(1) : digits));
+      }
+      if (clean.includes('@')) {
+        return 'email_' + clean.replace(/[^a-z0-9]/g, '_');
+      }
+      return 'id_' + clean.replace(/[^a-z0-9]/g, '_');
+    }
+
+    const rawPhone = user.phone || (user.identifier_type === 'phone' ? user.identifier : null) || (user.provider === 'phone' ? user.identifier : null);
+    if (rawPhone) {
+      const digits = String(rawPhone).replace(/[^0-9]/g, '');
+      if (digits.length >= 7) {
+        return 'phone_' + (digits.length === 10 ? '91' + digits : (digits.startsWith('0') && digits.length === 11 ? '91' + digits.slice(1) : digits));
+      }
+    }
+
+    if (user.identifier) {
+      const idStr = String(user.identifier).trim().toLowerCase();
+      const digits = idStr.replace(/[^0-9]/g, '');
+      if (!idStr.includes('@') && digits.length >= 7) {
+        return 'phone_' + (digits.length === 10 ? '91' + digits : (digits.startsWith('0') && digits.length === 11 ? '91' + digits.slice(1) : digits));
+      }
+      if (idStr.includes('@')) {
+        return 'email_' + idStr.replace(/[^a-z0-9]/g, '_');
+      }
+    }
+
+    if (user.email) {
+      return 'email_' + String(user.email).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    }
+
+    const uid = user.id || user.user_id || user.uid;
+    if (uid) {
+      const cleanUid = String(uid).trim().toLowerCase();
+      const digits = cleanUid.replace(/[^0-9]/g, '');
+      if (!cleanUid.includes('@') && digits.length >= 10 && !cleanUid.includes('-')) {
+        return 'phone_' + digits;
+      }
+      return 'uid_' + cleanUid.replace(/[^a-z0-9]/g, '_');
+    }
+
+    return null;
+  }
+  window.getUserStorageIdentifier = getUserStorageIdentifier;
+
+  function saveUserSpecificItinerary(user, bookmarks, plans) {
+    const key = getUserStorageIdentifier(user);
+    if (!key) return;
+    try {
+      const bm = Array.isArray(bookmarks) ? bookmarks : (Storage.getBookmarks() || []);
+      const pl = Array.isArray(plans) ? plans : ((typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : []);
+      const data = {
+        identifier: user.identifier || user.phone || user.email || user.id,
+        user_key: key,
+        updated_at: new Date().toISOString(),
+        bookmarks: bm,
+        custom_plans: pl
+      };
+      localStorage.setItem(`akalbodhon_user_data_${key}`, JSON.stringify(data));
+      if (key.startsWith('phone_')) {
+        const digits = key.replace('phone_', '');
+        localStorage.setItem(`akalbodhon_user_data_${digits}`, JSON.stringify(data));
+        if (digits.startsWith('91') && digits.length === 12) {
+          localStorage.setItem(`akalbodhon_user_data_${digits.slice(2)}`, JSON.stringify(data));
+        }
+      }
+    } catch (e) {
+      console.warn('saveUserSpecificItinerary error:', e);
+    }
+  }
+  window.saveUserSpecificItinerary = saveUserSpecificItinerary;
+
+  function loadUserSpecificItinerary(user) {
+    const key = getUserStorageIdentifier(user);
+    if (!key) return null;
+    try {
+      const candidates = [`akalbodhon_user_data_${key}`];
+      if (key.startsWith('phone_')) {
+        const digits = key.replace('phone_', '');
+        candidates.push(`akalbodhon_user_data_${digits}`);
+        if (digits.startsWith('91') && digits.length === 12) {
+          candidates.push(`akalbodhon_user_data_${digits.slice(2)}`);
+        }
+      }
+      if (user && typeof user === 'object') {
+        if (user.id) candidates.push(`akalbodhon_user_data_uid_${String(user.id).replace(/[^a-z0-9]/g, '_')}`);
+        if (user.email) candidates.push(`akalbodhon_user_data_email_${String(user.email).toLowerCase().replace(/[^a-z0-9]/g, '_')}`);
+      }
+
+      for (const c of candidates) {
+        const raw = localStorage.getItem(c);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && (Array.isArray(parsed.bookmarks) || Array.isArray(parsed.custom_plans))) {
+            return {
+              bookmarks: Array.isArray(parsed.bookmarks) ? parsed.bookmarks : [],
+              custom_plans: Array.isArray(parsed.custom_plans) ? parsed.custom_plans : []
+            };
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('loadUserSpecificItinerary error:', e);
+    }
+    return null;
+  }
+  window.loadUserSpecificItinerary = loadUserSpecificItinerary;
+
+  function mergeBookmarks(existingList, newList) {
+    const map = new Map();
+    (existingList || []).forEach(b => {
+      if (b && (b.id || b.name)) map.set(b.id || b.name, b);
+    });
+    (newList || []).forEach(b => {
+      if (b && (b.id || b.name)) map.set(b.id || b.name, b);
+    });
+    return Array.from(map.values());
+  }
+  window.mergeBookmarks = mergeBookmarks;
+
+  function mergePlans(existingPlans, newPlans) {
+    const map = new Map();
+    (existingPlans || []).forEach(p => {
+      if (p && p.id) map.set(p.id, p);
+    });
+    (newPlans || []).forEach(p => {
+      if (p && p.id) map.set(p.id, p);
+    });
+    return Array.from(map.values());
+  }
+  window.mergePlans = mergePlans;
 
   // --- 3. LOCAL STORAGE BOOKMARK STORE ---
   const Storage = {
@@ -1240,6 +1401,14 @@
         // Auto-heal and sync bookmarks with the latest authentic photos and transit details
         let modified = false;
         list = list.map(b => {
+          // Auto-migrate any old direction-based Google Maps links to search-based links
+          if (b.link && (b.link.includes('/maps/dir/') || b.link.includes('destination='))) {
+            const migrated = toMapsSearchUrl(b.link, b.name ? b.name + ' Kolkata' : '');
+            if (b.link !== migrated) {
+              b.link = migrated;
+              modified = true;
+            }
+          }
           // Check if matches PANDALS_DATA
           const pandal = PANDALS_DATA.find(p => p.id === b.id || p.name.toLowerCase() === b.name.toLowerCase());
           if (pandal) {
@@ -1313,6 +1482,14 @@
     setBookmarks(items) {
       const list = Array.isArray(items) ? items : [];
       localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
+      const user = (typeof currentUser !== 'undefined') ? currentUser : null;
+      if (user) {
+        user.saved_items = list;
+        try {
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+        } catch (_) {}
+        saveUserSpecificItinerary(user, list, (typeof customPlans !== 'undefined' ? customPlans : []));
+      }
       if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
       if (typeof renderSavedSection === 'function') renderSavedSection();
       return list;
@@ -1333,6 +1510,15 @@
 
       localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify(list));
 
+      const user = (typeof currentUser !== 'undefined') ? currentUser : null;
+      if (user) {
+        user.saved_items = list;
+        try {
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+        } catch (_) {}
+        saveUserSpecificItinerary(user, list, (typeof customPlans !== 'undefined' ? customPlans : []));
+      }
+
       // Sync with Supabase under user account
       if (typeof syncUserSavedItemsToSupabase === 'function') {
         syncUserSavedItemsToSupabase(list);
@@ -1349,6 +1535,14 @@
     clearBookmarks() {
       localStorage.removeItem(this.KEY_BOOKMARKS);
       localStorage.setItem(this.KEY_BOOKMARKS, JSON.stringify([]));
+      const user = (typeof currentUser !== 'undefined') ? currentUser : null;
+      if (user) {
+        user.saved_items = [];
+        try {
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
+        } catch (_) {}
+        saveUserSpecificItinerary(user, [], (typeof customPlans !== 'undefined' ? customPlans : []));
+      }
       if (typeof syncUserSavedItemsToSupabase === 'function') {
         syncUserSavedItemsToSupabase([]);
       }
@@ -1628,15 +1822,15 @@
 
             <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
               <a 
-                href="${pandal.locationUrl}" 
+                href="${toMapsSearchUrl(pandal.locationUrl, pandal.name + ' Durga Puja Kolkata')}" 
                 target="_blank" 
                 rel="noopener"
                 class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
-                title="Get Exact Directions in Google Maps"
+                title="Search Location in Google Maps"
               >
                 <!-- Directions Pin Icon -->
-                <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
-                <span class="truncate">Directions</span>
+                <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
+                <span class="truncate">Open in Maps</span>
               </a>
               <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                 <button 
@@ -1879,15 +2073,15 @@
 
                 <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                   <a 
-                    href="${food.locationUrl}" 
+                    href="${toMapsSearchUrl(food.locationUrl, food.name + ' Kolkata')}" 
                     target="_blank" 
                     rel="noopener"
                     class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
-                    title="Get Exact Directions in Google Maps"
+                    title="Search Location in Google Maps"
                   >
                     <!-- Directions Pin Icon -->
-                    <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
-                    <span class="truncate">Directions</span>
+                    <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
+                    <span class="truncate">Open in Maps</span>
                   </a>
                   <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                     <button 
@@ -1958,15 +2152,15 @@
 
                 <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-1.5 sm:gap-2">
                   <a 
-                    href="${shop.locationUrl}" 
+                    href="${toMapsSearchUrl(shop.locationUrl, shop.name + ' Kolkata')}" 
                     target="_blank" 
                     rel="noopener"
                     class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
-                    title="Get Exact Directions in Google Maps"
+                    title="Search Location in Google Maps"
                   >
                     <!-- Directions Pin Icon -->
-                    <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
-                    <span class="truncate">Directions</span>
+                    <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
+                    <span class="truncate">Open in Maps</span>
                   </a>
                   <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
                     <button 
@@ -2178,7 +2372,7 @@
             💡 ${trail.foodTip}
           </div>
           <button 
-            onclick="window.open('https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(trail.stops.join(' to '))}', '_blank')"
+            onclick="window.open('https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(trail.stops.join(' to '))}', '_blank')"
             class="bg-surface-container-highest dark:bg-[#282217] text-primary dark:text-amber-300 hover:bg-primary dark:hover:bg-amber-400 hover:text-on-primary dark:hover:text-black px-4 py-2 rounded-xl font-label-sm text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 border border-outline-variant/30 dark:border-amber-400/30"
           >
             <span class="material-symbols-outlined text-[16px]">map</span> Open Route
@@ -2206,11 +2400,11 @@
     }
 
     container.innerHTML = RITUALS_DATA.map((rit, idx) => `
-      <div class="relative pl-8 md:pl-10 pb-8 last:pb-0 border-l-2 border-primary/20 dark:border-amber-400/40 group reveal-on-scroll reveal-delay-${(idx % 4) + 1}">
+      <div class="relative pl-6 sm:pl-8 md:pl-10 pb-8 last:pb-0 border-l-2 border-primary/30 dark:border-amber-400/40 ml-4 sm:ml-6 md:ml-4 group reveal-on-scroll reveal-delay-${(idx % 4) + 1}">
         <div class="absolute -left-3 top-0 w-6 h-6 rounded-full bg-primary dark:bg-amber-400 text-on-primary dark:text-black flex items-center justify-center ring-4 ring-surface dark:ring-[#12100a] font-bold text-xs shadow-md">
           ${idx + 1}
         </div>
-        <div class="glass-panel p-6 sm:p-7 rounded-2xl border border-outline-variant/30 dark:border-amber-400/25 hover:shadow-lg transition-all space-y-4">
+        <div class="glass-panel p-4 sm:p-6 md:p-7 rounded-2xl border border-outline-variant/30 dark:border-amber-400/25 hover:shadow-lg transition-all space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 dark:border-amber-400/15 pb-3">
             <div>
               <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">${rit.tithi}</span>
@@ -2304,8 +2498,14 @@
             currentUser.saved_items = [];
             currentUser.custom_plans = [];
             localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            saveUserSpecificItinerary(currentUser, [], []);
             if (supabaseClient) {
               syncUserSavedItemsToSupabase([]);
+            }
+            if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+              window.AkalbodhonFirebase.saveBookmarks(currentUser, []).catch(() => {});
+              const targetUid = currentUser.id || currentUser.user_id;
+              window.AkalbodhonFirebase.syncProfile({ id: targetUid, custom_plans: [] }).catch(() => {});
             }
           }
           renderSavedItinerary();
@@ -2472,9 +2672,9 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                    <a href="${pandalLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
-                      <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
-                      <span class="truncate">Directions</span>
+                    <a href="${toMapsSearchUrl(pandalLink, b.name + ' Durga Puja Kolkata')}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
+                      <img src="maps-pin.png" alt="Open in Maps" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                      <span class="truncate">Open in Maps</span>
                     </a>
                     <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
                       <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
@@ -2538,9 +2738,9 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                    <a href="${spotLink}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Get Directions in Google Maps">
-                      <img src="maps-pin.png" alt="Directions" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
-                      <span class="truncate">Directions</span>
+                    <a href="${toMapsSearchUrl(spotLink, b.name + ' Kolkata')}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
+                      <img src="maps-pin.png" alt="Open in Maps" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
+                      <span class="truncate">Open in Maps</span>
                     </a>
                     <button class="remove-single-bookmark p-1 sm:p-1.5 rounded-lg border border-outline-variant/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" data-id="${b.id}" title="Remove">
                       <span class="material-symbols-outlined text-[16px] sm:text-[18px]">delete</span>
@@ -2684,10 +2884,11 @@
       if (type === 'food' && item.nearbyPandals && item.nearbyPandals.length > 0) {
         nearbyList.innerHTML = item.nearbyPandals.map(p => `
           <a
-            href="${p.url}"
+            href="${toMapsSearchUrl(p.url, p.name + ' Durga Puja Kolkata')}"
             target="_blank"
             rel="noopener noreferrer"
             class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary/8 dark:bg-amber-400/10 border border-primary/20 dark:border-amber-400/25 text-[10px] sm:text-xs font-semibold text-primary dark:text-amber-300 hover:bg-primary/15 dark:hover:bg-amber-400/20 transition-all"
+            title="Search ${escapeHtml(p.name)} on Google Maps"
           >
             <span class="material-symbols-outlined text-[12px]">location_on</span>
             ${p.name}
@@ -2700,7 +2901,8 @@
       }
     }
 
-    modal.querySelector('#modal-pandal-nav-btn').href = item.locationUrl;
+    modal.querySelector('#modal-pandal-nav-btn').href = toMapsSearchUrl(item.locationUrl, (item.name || '') + ' Kolkata');
+    modal.querySelector('#modal-pandal-nav-btn').title = `Search ${escapeHtml(item.name || '')} on Google Maps`;
     window.currentDetailModalItem = item;
     window.currentDetailModalType = type;
     modal.classList.remove('hidden');
@@ -2795,7 +2997,7 @@
     sharodiya: {
       id: '7EFTbXOZuUZEqdt5cMwaH5',
       name: 'Sharodiya hits',
-      songCount: 17,
+      songCount: 23,
       spotifyUrl: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
       youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC',
@@ -3023,6 +3225,78 @@
       previewUrl: 'https://p.scdn.co/mp3-preview/4df79a1b618d428b19dd1c4ee7b113d411ead14e'
     },
     {
+      id: '5uOOUslPTmopqWmfxHwTYS',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Gold Priter Sari',
+      duration: '5:46',
+      spotifyTrackId: '5uOOUslPTmopqWmfxHwTYS',
+      spotifyUrl: 'https://open.spotify.com/track/5uOOUslPTmopqWmfxHwTYS',
+      embedUrl: 'https://open.spotify.com/embed/track/5uOOUslPTmopqWmfxHwTYS?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734084058303be1a2542d3f556',
+      previewUrl: 'https://p.scdn.co/mp3-preview/296135659b75ed4a148db45e5bc3a421933522de'
+    },
+    {
+      id: '3xZ0zNtVRhWY4ukiMC3bRh',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Ashtami Te Tomar Paray',
+      duration: '3:53',
+      spotifyTrackId: '3xZ0zNtVRhWY4ukiMC3bRh',
+      spotifyUrl: 'https://open.spotify.com/track/3xZ0zNtVRhWY4ukiMC3bRh',
+      embedUrl: 'https://open.spotify.com/embed/track/3xZ0zNtVRhWY4ukiMC3bRh?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27336c009c80b6fe5ea98a6a2ec',
+      previewUrl: 'https://p.scdn.co/mp3-preview/15a22038b8741f10a851314f4ad68dac3292a4de'
+    },
+    {
+      id: '38HoPYFgz9RbYWItrKxsVo',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Sei Raate Raat Chhilo Purnima',
+      duration: '4:05',
+      spotifyTrackId: '38HoPYFgz9RbYWItrKxsVo',
+      spotifyUrl: 'https://open.spotify.com/track/38HoPYFgz9RbYWItrKxsVo',
+      embedUrl: 'https://open.spotify.com/embed/track/38HoPYFgz9RbYWItrKxsVo?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27306f8db75dac07d9bbb5cbb79',
+      previewUrl: 'https://p.scdn.co/mp3-preview/fcc14808a5ce92c2ed2097b6eaacbd336e6f8f49'
+    },
+    {
+      id: '1sTggjsam1Q59GYhLmtmLp',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Nilanjana - I - Se Pratham Prem Lal Phite Sada Moja',
+      duration: '5:35',
+      spotifyTrackId: '1sTggjsam1Q59GYhLmtmLp',
+      spotifyUrl: 'https://open.spotify.com/track/1sTggjsam1Q59GYhLmtmLp',
+      embedUrl: 'https://open.spotify.com/embed/track/1sTggjsam1Q59GYhLmtmLp?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735b5399e2b75b3d21550949db',
+      previewUrl: 'https://p.scdn.co/mp3-preview/2b3e27915b3af65d2383937be8e0ff37ca0b4185'
+    },
+    {
+      id: '3in4LAp0Tcq9NRfpr7EKjm',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Bolo Dugga Elo',
+      duration: '3:19',
+      spotifyTrackId: '3in4LAp0Tcq9NRfpr7EKjm',
+      spotifyUrl: 'https://open.spotify.com/track/3in4LAp0Tcq9NRfpr7EKjm',
+      embedUrl: 'https://open.spotify.com/embed/track/3in4LAp0Tcq9NRfpr7EKjm?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735eeab3e4aab3f8bec5f40493',
+      previewUrl: 'https://p.scdn.co/mp3-preview/8a8e482e5a789d399fe2ad4bdb7135f41c38be99'
+    },
+    {
+      id: '0aRQXJ47S3iHISW8LnfFRS',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Durge Durge Durgatinashini',
+      duration: '5:09',
+      spotifyTrackId: '0aRQXJ47S3iHISW8LnfFRS',
+      spotifyUrl: 'https://open.spotify.com/track/0aRQXJ47S3iHISW8LnfFRS',
+      embedUrl: 'https://open.spotify.com/embed/track/0aRQXJ47S3iHISW8LnfFRS?utm_source=generator&theme=0',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27343afeb4c19583ccb2848cc95',
+      previewUrl: 'https://p.scdn.co/mp3-preview/c57f40c5e0b7465257c1635c9b857a974468373b'
+    },
+    {
       id: '0BAwwUhO60U01O9c1OxHfe',
       playlist: 'mahalaya',
       playlistName: 'Mahalaya',
@@ -3241,14 +3515,7 @@
       if (badgeEl) badgeEl.textContent = `• ${song.playlistName}`;
 
       if (extLinksEl) {
-        extLinksEl.innerHTML = `
-          <a href="${song.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer" title="Open Song on Spotify">
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-          </a>
-          <a href="${song.youtubeUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer" title="Watch on YouTube">
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-        `;
+        extLinksEl.innerHTML = '';
       }
 
       if (activeRadioEngine === 'spotify') {
@@ -3289,14 +3556,7 @@
       if (badgeEl) badgeEl.textContent = `• Official Playlist`;
 
       if (extLinksEl) {
-        extLinksEl.innerHTML = `
-          <a href="${pl.spotifyUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer" title="Open Playlist on Spotify">
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-          </a>
-          <a href="${pl.youtubeUrl}" target="_blank" rel="noopener noreferrer" class="w-7 h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer" title="Open Playlist on YouTube">
-            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-          </a>
-        `;
+        extLinksEl.innerHTML = '';
       }
 
       if (activeRadioEngine === 'spotify') {
@@ -3859,6 +4119,7 @@
             identifier_type: 'google',
             username: user.user_metadata?.full_name || user.user_metadata?.name || (user.email ? user.email.split('@')[0] : 'Devotee'),
             avatar: '🪔',
+            google_photo_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
             custom_avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
             created_at: user.created_at || new Date().toISOString()
           };
@@ -3869,14 +4130,17 @@
             if (existingProf) {
               if (existingProf.avatar) googleUser.avatar = existingProf.avatar;
               if (existingProf.username) googleUser.username = existingProf.username;
+              if (existingProf.google_photo_url) googleUser.google_photo_url = existingProf.google_photo_url;
+              if (existingProf.custom_avatar_url !== undefined) {
+                googleUser.custom_avatar_url = existingProf.custom_avatar_url;
+              } else if (existingProf.avatar && existingProf.avatar !== '🪔') {
+                googleUser.custom_avatar_url = null;
+              }
               if (Array.isArray(existingProf.saved_items) && existingProf.saved_items.length > 0) {
                 googleUser.saved_items = existingProf.saved_items;
-                Storage.setBookmarks(existingProf.saved_items);
               }
               if (Array.isArray(existingProf.custom_plans) && existingProf.custom_plans.length > 0) {
                 googleUser.custom_plans = existingProf.custom_plans;
-                customPlans = existingProf.custom_plans;
-                localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
               }
             } else {
               // Upsert newly signed in Google devotee
@@ -3889,6 +4153,7 @@
                 email: user.email,
                 avatar: googleUser.avatar,
                 custom_avatar_url: googleUser.custom_avatar_url,
+                google_photo_url: googleUser.google_photo_url,
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
               });
@@ -4072,6 +4337,18 @@
       const raw = localStorage.getItem('akalbodhon_user_profile');
       if (raw) {
         currentUser = JSON.parse(raw);
+        // Ensure user-specific itinerary items are restored if active store was empty
+        const specificData = loadUserSpecificItinerary(currentUser);
+        if (specificData) {
+          const curBm = Storage.getBookmarks() || [];
+          if (curBm.length === 0 && Array.isArray(specificData.bookmarks) && specificData.bookmarks.length > 0) {
+            Storage.setBookmarks(specificData.bookmarks);
+          }
+          if ((!customPlans || customPlans.length === 0) && Array.isArray(specificData.custom_plans) && specificData.custom_plans.length > 0) {
+            customPlans = specificData.custom_plans;
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          }
+        }
         setTimeout(() => {
           updateAccountUI();
         }, 350);
@@ -4086,6 +4363,8 @@
       updateAccountUI();
     }
   }
+  window.loadLocalUserSession = loadLocalUserSession;
+  window.getCurrentUser = () => currentUser;
 
   // Background sync for user credentials & saved items from Firestore
   async function syncRemoteUserSession() {
@@ -4094,43 +4373,84 @@
       try {
         const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(currentUser);
         if (Array.isArray(fbSaved) && fbSaved.length > 0) {
-          Storage.setBookmarks(fbSaved);
-          currentUser.saved_items = fbSaved;
+          const curBm = Storage.getBookmarks() || [];
+          const mergedBm = mergeBookmarks(curBm, fbSaved);
+          Storage.setBookmarks(mergedBm);
+          currentUser.saved_items = mergedBm;
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          saveUserSpecificItinerary(currentUser, mergedBm, customPlans);
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
           if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+        } else if ((Storage.getBookmarks() || []).length > 0) {
+          // If remote is empty, push local bookmarks to remote
+          window.AkalbodhonFirebase.saveBookmarks(currentUser, Storage.getBookmarks()).catch(() => {});
         }
+
         const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(currentUser);
         if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-          const planMap = new Map();
-          (customPlans || []).forEach(p => planMap.set(p.id, p));
-          fbPlans.forEach(p => planMap.set(p.id, p));
-          customPlans = Array.from(planMap.values());
+          const mergedPlans = mergePlans(customPlans, fbPlans);
+          customPlans = mergedPlans;
+          currentUser.custom_plans = mergedPlans;
           localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
           if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter || 'all');
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+        } else if (customPlans && customPlans.length > 0) {
+          const targetUid = currentUser.id || currentUser.user_id;
+          window.AkalbodhonFirebase.syncProfile({
+            id: targetUid,
+            custom_plans: customPlans
+          }).catch(() => {});
         }
 
         // Sync account-specific feedback cooldown timer from remote database on login
         const userDocId = currentUser.id || currentUser.user_id || currentUser.identifier;
         if (userDocId && typeof window.AkalbodhonFirebase.getProfile === 'function') {
           const profile = await window.AkalbodhonFirebase.getProfile(userDocId);
-          if (profile && profile.feedback_cooldown_until !== undefined) {
-            const exp = parseInt(profile.feedback_cooldown_until, 10);
-            const key = typeof getFeedbackCooldownKey === 'function' ? getFeedbackCooldownKey(currentUser) : null;
-            if (key) {
-              if (!isNaN(exp) && exp > Date.now()) {
-                localStorage.setItem(key, exp.toString());
-                currentUser.feedback_cooldown_until = exp;
-                localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-              } else {
-                localStorage.removeItem(key);
-                if (currentUser.feedback_cooldown_until) {
-                  delete currentUser.feedback_cooldown_until;
-                  localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+          if (profile) {
+            let updated = false;
+            if (profile.avatar && profile.avatar !== currentUser.avatar) {
+              currentUser.avatar = profile.avatar;
+              updated = true;
+            }
+            if (profile.custom_avatar_url !== undefined && profile.custom_avatar_url !== currentUser.custom_avatar_url) {
+              currentUser.custom_avatar_url = profile.custom_avatar_url;
+              updated = true;
+            }
+            if (profile.google_photo_url && !currentUser.google_photo_url) {
+              currentUser.google_photo_url = profile.google_photo_url;
+              updated = true;
+            }
+            if (profile.username && profile.username !== currentUser.username) {
+              currentUser.username = profile.username;
+              updated = true;
+            }
+
+            if (profile.feedback_cooldown_until !== undefined) {
+              const exp = parseInt(profile.feedback_cooldown_until, 10);
+              const key = typeof getFeedbackCooldownKey === 'function' ? getFeedbackCooldownKey(currentUser) : null;
+              if (key) {
+                if (!isNaN(exp) && exp > Date.now()) {
+                  localStorage.setItem(key, exp.toString());
+                  currentUser.feedback_cooldown_until = exp;
+                  updated = true;
+                } else {
+                  localStorage.removeItem(key);
+                  if (currentUser.feedback_cooldown_until) {
+                    delete currentUser.feedback_cooldown_until;
+                    updated = true;
+                  }
                 }
               }
             }
+
+            if (updated) {
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+              updateAccountUI();
+              updateProfileAvatarDisplay();
+            }
+
             if (typeof window.checkFeedbackCooldown === 'function') {
               window.checkFeedbackCooldown();
             }
@@ -4144,8 +4464,8 @@
 
   // Save User State & apply user-specific data isolation
   async function saveUserSession(user) {
-    currentUser = user;
     if (user) {
+      currentUser = user;
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(user));
 
       // Restore account-specific feedback cooldown immediately
@@ -4161,54 +4481,64 @@
         }
       }
 
-      // Restore user-specific saved items immediately if present
-      if (Array.isArray(user.saved_items) && user.saved_items.length > 0) {
-        Storage.setBookmarks(user.saved_items);
-      }
+      // 1. Retrieve user-specific itinerary saved previously under devotee's specific identifier
+      const specificData = loadUserSpecificItinerary(user);
+      const specificBookmarks = specificData ? specificData.bookmarks : [];
+      const specificPlans = specificData ? specificData.custom_plans : [];
 
-      // Restore user-specific custom plans immediately if present
-      if (Array.isArray(user.custom_plans) && user.custom_plans.length > 0) {
-        const planMap = new Map();
-        (customPlans || []).forEach(p => planMap.set(p.id, p));
-        user.custom_plans.forEach(p => planMap.set(p.id, p));
-        customPlans = Array.from(planMap.values());
-        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-      }
+      // 2. Retrieve current local device bookmarks & custom plans
+      const currentLocalBookmarks = Storage.getBookmarks() || [];
+      const currentLocalPlans = (customPlans && customPlans.length > 0) ? customPlans : (loadLocalCustomPlans() || []);
+
+      // 3. User profile saved items & custom plans
+      const userProfileBookmarks = Array.isArray(user.saved_items) ? user.saved_items : [];
+      const userProfilePlans = Array.isArray(user.custom_plans) ? user.custom_plans : [];
+
+      // Seamlessly merge all sources so no devotee item is ever lost:
+      // specific identifier store + profile cloud items + current local session
+      let mergedBookmarks = mergeBookmarks(specificBookmarks, userProfileBookmarks);
+      mergedBookmarks = mergeBookmarks(mergedBookmarks, currentLocalBookmarks);
+
+      let mergedPlans = mergePlans(specificPlans, userProfilePlans);
+      mergedPlans = mergePlans(mergedPlans, currentLocalPlans);
+
+      // Set active bookmarks & plans
+      Storage.setBookmarks(mergedBookmarks);
+      customPlans = mergedPlans;
+      localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+
+      user.saved_items = mergedBookmarks;
+      user.custom_plans = mergedPlans;
+      currentUser = user;
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+
+      // Persist permanently under devotee's specific identifier
+      saveUserSpecificItinerary(user, mergedBookmarks, mergedPlans);
 
       // Dual-sync from Firestore database to ensure freshest user credentials and saved items
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         try {
-          const currentLocalBookmarks = Storage.getBookmarks() || [];
           const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(user);
           if (Array.isArray(fbSaved) && fbSaved.length > 0) {
-            // Restore from remote database, merging any freshly saved local items
-            const mergedMap = new Map();
-            fbSaved.forEach(b => { if (b && b.id) mergedMap.set(b.id, b); });
-            currentLocalBookmarks.forEach(b => { if (b && b.id) mergedMap.set(b.id, b); });
-            const finalSaved = Array.from(mergedMap.values());
+            const finalSaved = mergeBookmarks(mergedBookmarks, fbSaved);
             Storage.setBookmarks(finalSaved);
             currentUser.saved_items = finalSaved;
             localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            saveUserSpecificItinerary(currentUser, finalSaved, customPlans);
             window.AkalbodhonFirebase.saveBookmarks(currentUser, finalSaved).catch(() => {});
-          } else if (currentLocalBookmarks.length > 0) {
-            // Firestore has no items yet for this user: persist local bookmarks to Firestore
-            currentUser.saved_items = currentLocalBookmarks;
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-            window.AkalbodhonFirebase.saveBookmarks(currentUser, currentLocalBookmarks).catch(() => {});
+          } else if (mergedBookmarks.length > 0) {
+            window.AkalbodhonFirebase.saveBookmarks(currentUser, mergedBookmarks).catch(() => {});
           }
 
           const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(user);
           if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-            const planMap = new Map();
-            (customPlans || []).forEach(p => planMap.set(p.id, p));
-            fbPlans.forEach(p => planMap.set(p.id, p));
-            customPlans = Array.from(planMap.values());
-            currentUser.custom_plans = customPlans;
-            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+            const finalPlans = mergePlans(customPlans, fbPlans);
+            customPlans = finalPlans;
+            currentUser.custom_plans = finalPlans;
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(finalPlans));
             localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+            saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), finalPlans);
           } else if (customPlans && customPlans.length > 0) {
-            currentUser.custom_plans = customPlans;
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
             const targetUid = user.id || user.user_id;
             window.AkalbodhonFirebase.syncProfile({
               id: targetUid,
@@ -4220,11 +4550,12 @@
         }
       }
     } else {
+      if (currentUser) {
+        saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+      }
+      currentUser = null;
       localStorage.removeItem('akalbodhon_user_profile');
-      Storage.setBookmarks([]);
-      customPlans = [];
-      localStorage.removeItem('akalbodhon_bookmarks');
-      localStorage.removeItem('akalbodhon_custom_plans');
+      // Devotee's saved itinerary remains safely preserved in local storage & customPlans
     }
 
     updateAccountUI();
@@ -4432,6 +4763,7 @@
     modal.classList.remove('hidden');
     modal.classList.add('flex');
   }
+  window.openProfileModal = openProfileModal;
 
   function closeProfileModal() {
     document.body.classList.remove('modal-open');
@@ -4446,14 +4778,30 @@
 
   function updateProfileAvatarDisplay() {
     const el = document.getElementById('current-profile-avatar-display');
-    const removeBtn = document.getElementById('remove-custom-avatar-btn');
+    const toggleGoogleBtn = document.getElementById('toggle-google-avatar-btn');
     if (!el || !currentUser) return;
+
     if (currentUser.custom_avatar_url) {
       el.innerHTML = `<img src="${currentUser.custom_avatar_url}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.textContent='${currentUser.avatar || '🪔'}'" />`;
-      removeBtn?.classList.remove('hidden');
     } else {
       el.textContent = currentUser.avatar || '🪔';
-      removeBtn?.classList.add('hidden');
+    }
+
+    if (toggleGoogleBtn) {
+      const googlePhoto = currentUser.google_photo_url || (currentUser.identifier_type === 'google' && currentUser.custom_avatar_url ? currentUser.custom_avatar_url : null);
+      if (googlePhoto) {
+        currentUser.google_photo_url = googlePhoto;
+        toggleGoogleBtn.classList.remove('hidden');
+        if (currentUser.custom_avatar_url) {
+          toggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">palette</span> Use Festival Icon`;
+          toggleGoogleBtn.title = "Switch to your selected sacred festival icon";
+        } else {
+          toggleGoogleBtn.innerHTML = `<span class="material-symbols-outlined text-[13px]">account_circle</span> Use Google Photo`;
+          toggleGoogleBtn.title = "Switch back to your Google profile picture";
+        }
+      } else {
+        toggleGoogleBtn.classList.add('hidden');
+      }
     }
   }
 
@@ -4462,15 +4810,17 @@
     if (!grid) return;
 
     grid.innerHTML = PUJA_AVATARS.map(item => {
-      const isSelected = currentUser?.avatar === item.icon;
+      const isSelected = !currentUser?.custom_avatar_url && (currentUser?.avatar === item.icon);
       return `
         <button 
           type="button" 
-          class="avatar-option flex items-center justify-center p-3 rounded-2xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 is-selected shadow-md scale-105' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          class="avatar-option flex flex-col items-center justify-center p-2.5 rounded-2xl bg-surface-container-high dark:bg-[#1a160f] border ${isSelected ? 'border-primary dark:border-amber-400 shadow-md scale-105 ring-2 ring-primary/40 dark:ring-amber-400/40' : 'border-outline-variant/30 dark:border-amber-400/20'} hover:scale-105 active:scale-95 transition-all cursor-pointer relative group"
           data-id="${item.id}"
-          title="${item.name}"
+          title="${item.name}: ${item.meaning}"
         >
-          <span class="text-3xl">${item.icon}</span>
+          <span class="text-2xl sm:text-3xl select-none">${item.icon}</span>
+          <span class="text-[9px] sm:text-[10px] font-medium text-on-surface-variant dark:text-amber-200/80 truncate max-w-[55px] sm:max-w-[65px] mt-1 text-center">${item.name.split(' ')[0]}</span>
+          ${isSelected ? '<span class="absolute -top-1 -right-1 w-4 h-4 bg-primary dark:bg-amber-400 text-white dark:text-black rounded-full text-[9px] flex items-center justify-center font-bold shadow">✓</span>' : ''}
         </button>
       `;
     }).join('');
@@ -4524,12 +4874,14 @@
       if (supabaseClient) {
         try {
           await supabaseClient.from('profiles').upsert({
-            id: currentUser.id,
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
             identifier: currentUser.identifier,
             identifier_type: currentUser.identifier_type || 'email',
             username: currentUser.username,
             avatar: currentUser.avatar || '🪔',
             custom_avatar_url: currentUser.custom_avatar_url || null,
+            google_photo_url: currentUser.google_photo_url || null,
             updated_at: new Date().toISOString()
           });
         } catch (err) {
@@ -4537,7 +4889,22 @@
         }
       }
 
+      // Sync to Firebase Firestore
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          await window.AkalbodhonFirebase.syncProfile({
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
+            username: currentUser.username,
+            avatar: currentUser.avatar || '🪔',
+            custom_avatar_url: currentUser.custom_avatar_url || null,
+            google_photo_url: currentUser.google_photo_url || null
+          });
+        } catch (fbErr) {}
+      }
+
       saveUserSession(currentUser);
+      updateAccountUI();
       closeProfileModal();
       renderFestivalPlans(activePlanFilter);
       showToast(`Profile & Avatar updated for ${currentUser.username}!`, 'check_circle');
@@ -4643,6 +5010,19 @@
     }
   }
 
+  // Normalize devotee phone numbers to standard E.164 format (+91 default for Bengal / India)
+  function formatPhoneNumber(raw) {
+    if (!raw) return '';
+    const clean = String(raw).trim();
+    const digits = clean.replace(/[^0-9]/g, '');
+    if (clean.startsWith('+')) return '+' + digits;
+    if (digits.length === 10) return '+91' + digits; // Kolkata / India default (+91)
+    if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1);
+    if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
+    return '+' + digits;
+  }
+  window.formatPhoneNumber = formatPhoneNumber;
+
   // Core User ID & Password Authentication Handler (Sign In / Account Creation)
   async function handleAuthSubmit(isPage = false) {
     const errorAlert = document.getElementById(isPage ? 'page-error-alert' : 'auth-error-alert');
@@ -4675,9 +5055,11 @@
     }
 
     const cleanIdentifier = rawIdentifier.toLowerCase();
-    const safeDocId = cleanIdentifier.replace(/[^a-z0-9]/g, '_');
+    const cleanPhoneDigits = rawIdentifier.replace(/[^0-9]/g, '');
     const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
-    const isPhone = /^(\+?\d{1,4}[-.\s]?)?(\(?\d{3}\)?[-.\s]?)?[\d\s-]{7,14}$/.test(rawIdentifier.replace(/\s+/g, ''));
+    const isPhone = !isEmail && cleanPhoneDigits.length >= 7 && cleanPhoneDigits.length <= 15;
+    const formattedPhone = isPhone ? formatPhoneNumber(rawIdentifier) : null;
+    const safeDocId = isPhone ? cleanPhoneDigits : cleanIdentifier.replace(/[^a-z0-9]/g, '_');
 
     const originalLabel = submitLabel ? submitLabel.textContent : (isSignUp ? 'Create Account' : 'Sign In');
     if (submitBtn) submitBtn.disabled = true;
@@ -4695,36 +5077,38 @@
 
       if (isSignUp) {
         // --- CREATE ACCOUNT ---
-        const displayName = rawName || (isEmail ? rawIdentifier.split('@')[0] : 'Devotee');
+        const displayName = rawName || (isPhone ? 'Devotee' : (isEmail ? rawIdentifier.split('@')[0] : 'Devotee'));
 
-        // Check if account with this identifier already exists in Firebase Firestore
+        // Check if account with this identifier already exists in Supabase or Firebase
         let existing = null;
-        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+        if (supabaseClient) {
           try {
-            existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-          } catch (e) {
-            console.warn('Firebase duplicate check notice:', e);
-          }
-        } else if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-          } catch (e) {}
-        }
-
-        if (!existing && supabaseClient) {
-          try {
+            const orQuery = isPhone 
+              ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
+              : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
             const { data } = await supabaseClient
               .from('profiles')
               .select('id, identifier')
-              .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
+              .or(orQuery)
               .limit(1);
             if (data && data.length > 0) existing = data[0];
           } catch (e) {}
         }
 
+        if (!existing && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+          try {
+            existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
+          } catch (e) {
+            console.warn('Firebase duplicate check notice:', e);
+          }
+        } else if (!existing && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
+          } catch (e) {}
+        }
+
         if (existing) {
-          showAuthError('An account with this email or phone number already exists. Please sign in instead with the same credentials.', isPage);
-          // Auto switch tab or invite user to Sign In
+          showAuthError('An account with this ' + (isPhone ? 'phone number' : 'email') + ' already exists. Please sign in instead with the same credentials.', isPage);
           setTimeout(() => {
             if (!isPage && typeof setAuthMode === 'function') {
               setAuthMode('login');
@@ -4736,10 +5120,74 @@
         }
 
         const initialSaved = Storage.getBookmarks() || [];
+        let supabaseAuthUser = null;
 
-        // 1. Include devotee in Firebase Database's official Authentication section (auth.users)
+        // Register in Supabase Authentication section
+        if (supabaseClient) {
+          try {
+            if (isPhone) {
+              // Register under native 'phone' provider in Supabase Authentication
+              const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
+                phone: formattedPhone,
+                password: rawPassword,
+                options: {
+                  data: {
+                    username: displayName,
+                    avatar: '🪔',
+                    identifier: formattedPhone,
+                    identifier_type: 'phone'
+                  }
+                }
+              });
+              if (sbErr) {
+                console.warn('Supabase phone signUp notice:', sbErr);
+                if (sbErr.message && (sbErr.message.toLowerCase().includes('already') || sbErr.status === 400 || sbErr.status === 422)) {
+                  showAuthError('An account with this phone number already exists in Supabase. Please sign in instead.', isPage);
+                  setTimeout(() => {
+                    if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
+                    else if (isPage) document.getElementById('page-tab-login')?.click();
+                  }, 2200);
+                  return;
+                }
+              } else if (sbData && sbData.user) {
+                supabaseAuthUser = sbData.user;
+              }
+            } else if (isEmail) {
+              // Register under native 'email' provider in Supabase Authentication
+              const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
+                email: cleanIdentifier,
+                password: rawPassword,
+                options: {
+                  data: {
+                    username: displayName,
+                    avatar: '🪔',
+                    identifier: cleanIdentifier,
+                    identifier_type: 'email'
+                  }
+                }
+              });
+              if (sbErr) {
+                console.warn('Supabase email signUp notice:', sbErr);
+                if (sbErr.message && sbErr.message.toLowerCase().includes('already')) {
+                  showAuthError('An account with this email already exists in Supabase. Please sign in instead.', isPage);
+                  setTimeout(() => {
+                    if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
+                    else if (isPage) document.getElementById('page-tab-login')?.click();
+                  }, 2200);
+                  return;
+                }
+              } else if (sbData && sbData.user) {
+                supabaseAuthUser = sbData.user;
+              }
+            }
+          } catch (supAuthErr) {
+            console.warn('Supabase auth signup error:', supAuthErr);
+          }
+        }
+
+        // For email devotees, register with Firebase Auth if available
         let fbProfile = null;
-        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
+        if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
           try {
             fbProfile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
               avatar: '🪔',
@@ -4749,7 +5197,7 @@
           } catch (fbAuthErr) {
             console.warn('Firebase Auth registration notice:', fbAuthErr);
             if (fbAuthErr.code === 'auth/email-already-in-use') {
-              showAuthError('An account with this email or phone number already exists in Firebase. Please sign in instead.', isPage);
+              showAuthError('An account with this email already exists in Firebase. Please sign in instead.', isPage);
               setTimeout(() => {
                 if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
                 else if (isPage) document.getElementById('page-tab-login')?.click();
@@ -4759,13 +5207,18 @@
           }
         }
 
-        const newProfile = fbProfile || {
-          id: safeDocId,
-          user_id: rawIdentifier,
-          identifier: rawIdentifier,
-          identifier_type: isEmail ? 'email' : (isPhone ? 'phone' : 'identifier'),
+        const profileId = (supabaseAuthUser && supabaseAuthUser.id)
+          ? supabaseAuthUser.id
+          : (fbProfile && fbProfile.id ? fbProfile.id : (isPhone ? cleanPhoneDigits : safeDocId));
+
+        const newProfile = {
+          id: profileId,
+          user_id: isPhone ? formattedPhone : (profileId || rawIdentifier),
+          identifier: isPhone ? formattedPhone : (cleanIdentifier || rawIdentifier),
+          identifier_type: isPhone ? 'phone' : (isEmail ? 'email' : 'identifier'),
           email: isEmail ? rawIdentifier : null,
-          phone: isPhone ? rawIdentifier : null,
+          phone: isPhone ? formattedPhone : null,
+          provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
           username: displayName,
           avatar: '🪔',
           avatar_type: 'puja',
@@ -4775,7 +5228,6 @@
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()
         };
-        newProfile.password_hash = passwordHash;
 
         // Save to Firebase Firestore Database ('users' collection)
         if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
@@ -4786,11 +5238,12 @@
           }
         }
 
+        // Save to Supabase public.profiles table
         if (supabaseClient) {
           try {
-            await supabaseClient.from('profiles').insert(newProfile);
+            await supabaseClient.from('profiles').upsert(newProfile);
           } catch (supErr) {
-            console.warn('Supabase profile insert notice:', supErr);
+            console.warn('Supabase profile upsert notice:', supErr);
           }
         }
 
@@ -4805,9 +5258,113 @@
       } else {
         // --- SIGN IN ---
         let foundProfile = null;
+        let authenticatedBySupabase = false;
 
-        // 1. Sign in via Firebase Authentication or automatically include first-time manual logins in Authentication section
-        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
+        // 1. If phone number: authenticate directly against Supabase Phone Auth!
+        if (isPhone && supabaseClient) {
+          try {
+            // First try with formattedPhone (+91...)
+            let { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
+              phone: formattedPhone,
+              password: rawPassword
+            });
+            // If failed, try with clean digits (e.g. 919876543210)
+            if (sbErr && cleanPhoneDigits && cleanPhoneDigits !== formattedPhone) {
+              const { data: sbRes2, error: sbErr2 } = await supabaseClient.auth.signInWithPassword({
+                phone: cleanPhoneDigits,
+                password: rawPassword
+              });
+              if (!sbErr2 && sbRes2 && sbRes2.user) {
+                sbRes = sbRes2;
+                sbErr = null;
+              }
+            }
+
+            if (!sbErr && sbRes && sbRes.user) {
+              authenticatedBySupabase = true;
+              const u = sbRes.user;
+              // Fetch user profile from profiles table
+              try {
+                const { data: profs } = await supabaseClient
+                  .from('profiles')
+                  .select('*')
+                  .or(`id.eq.${u.id},identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone}`)
+                  .limit(1);
+                if (profs && profs.length > 0) {
+                  foundProfile = profs[0];
+                }
+              } catch (e) {}
+
+              if (!foundProfile) {
+                foundProfile = {
+                  id: u.id,
+                  user_id: formattedPhone,
+                  identifier: formattedPhone,
+                  identifier_type: 'phone',
+                  phone: formattedPhone,
+                  email: null,
+                  provider: 'phone',
+                  username: u.user_metadata?.username || u.user_metadata?.full_name || 'Devotee',
+                  avatar: u.user_metadata?.avatar || '🪔',
+                  avatar_type: 'puja',
+                  saved_items: [],
+                  custom_plans: [],
+                  created_at: u.created_at || new Date().toISOString()
+                };
+              }
+            } else if (sbErr) {
+              console.warn('Supabase phone signInWithPassword notice:', sbErr.message);
+            }
+          } catch (err) {
+            console.warn('Supabase phone auth error:', err);
+          }
+        }
+
+        // 2. If email: try Supabase email sign in
+        if (isEmail && supabaseClient && !foundProfile) {
+          try {
+            const { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
+              email: cleanIdentifier,
+              password: rawPassword
+            });
+            if (!sbErr && sbRes && sbRes.user) {
+              authenticatedBySupabase = true;
+              const u = sbRes.user;
+              try {
+                const { data: profs } = await supabaseClient
+                  .from('profiles')
+                  .select('*')
+                  .or(`id.eq.${u.id},identifier.eq.${cleanIdentifier},email.eq.${cleanIdentifier}`)
+                  .limit(1);
+                if (profs && profs.length > 0) {
+                  foundProfile = profs[0];
+                }
+              } catch (e) {}
+              if (!foundProfile) {
+                foundProfile = {
+                  id: u.id,
+                  user_id: u.id,
+                  identifier: cleanIdentifier,
+                  identifier_type: 'email',
+                  email: cleanIdentifier,
+                  phone: null,
+                  provider: 'email',
+                  username: u.user_metadata?.username || u.user_metadata?.full_name || cleanIdentifier.split('@')[0],
+                  avatar: u.user_metadata?.avatar || '🪔',
+                  avatar_type: 'puja',
+                  saved_items: [],
+                  custom_plans: [],
+                  created_at: u.created_at || new Date().toISOString()
+                };
+              }
+            }
+          } catch (err) {
+            console.warn('Supabase email auth notice:', err);
+          }
+        }
+
+        // 3. If email: try Firebase Authentication
+        if (isEmail && !foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
           try {
             const fbLoginUser = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
               avatar: '🪔',
@@ -4826,7 +5383,24 @@
           }
         }
 
-        // 2. Try Firebase Firestore profile lookup if not resolved
+        // 4. Try profile lookup in Supabase profiles if not yet resolved
+        if (!foundProfile && supabaseClient) {
+          try {
+            const orQuery = isPhone
+              ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
+              : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
+            const { data } = await supabaseClient
+              .from('profiles')
+              .select('*')
+              .or(orQuery)
+              .limit(1);
+            if (data && data.length > 0) foundProfile = data[0];
+          } catch (fetchErr) {
+            console.warn('Supabase profile query notice:', fetchErr);
+          }
+        }
+
+        // 5. Try Firebase Firestore profile lookup if not resolved
         if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
           try {
             foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
@@ -4841,27 +5415,18 @@
           } catch (e) {}
         }
 
-        // 3. Supabase fallback
-        if (!foundProfile && supabaseClient) {
-          try {
-            const { data } = await supabaseClient
-              .from('profiles')
-              .select('*')
-              .or(`identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`)
-              .limit(1);
-            if (data && data.length > 0) foundProfile = data[0];
-          } catch (fetchErr) {
-            console.warn('Supabase profile query notice:', fetchErr);
-          }
-        }
-
-        // 4. Cached profile fallback
+        // 6. Cached profile fallback
         if (!foundProfile) {
           const cached = localStorage.getItem('akalbodhon_user_profile');
           if (cached) {
             try {
               const p = JSON.parse(cached);
-              if (p.identifier?.toLowerCase() === cleanIdentifier || p.user_id?.toLowerCase() === cleanIdentifier || p.id === safeDocId) {
+              if (
+                p.identifier?.toLowerCase() === cleanIdentifier ||
+                p.user_id?.toLowerCase() === cleanIdentifier ||
+                p.id === safeDocId ||
+                (isPhone && (p.phone === formattedPhone || p.phone === cleanPhoneDigits || p.identifier === formattedPhone))
+              ) {
                 foundProfile = p;
               }
             } catch (e) {}
@@ -4869,35 +5434,84 @@
         }
 
         if (!foundProfile) {
-          showAuthError('No devotee account found with this email or phone number. Please check or create an account.', isPage);
+          showAuthError('No devotee account found with this ' + (isPhone ? 'phone number' : 'email') + '. Please check or create an account.', isPage);
           return;
         }
 
-        // Verify password
-        if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
-          showAuthError('Incorrect password. Please try again.', isPage);
-          return;
+        // If not already authenticated by Supabase Auth session, verify password hash
+        if (!authenticatedBySupabase) {
+          if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
+            showAuthError('Incorrect password. Please try again.', isPage);
+            return;
+          }
+
+          // Password verified! Auto-enroll / link user into Supabase Native Auth if missing
+          if (supabaseClient) {
+            try {
+              if (isPhone) {
+                // Auto-create in Supabase phone authentication so their Sign-in provider is phone!
+                const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
+                  phone: formattedPhone,
+                  password: rawPassword,
+                  options: {
+                    data: {
+                      username: foundProfile.username || 'Devotee',
+                      avatar: foundProfile.avatar || '🪔',
+                      identifier: formattedPhone,
+                      identifier_type: 'phone'
+                    }
+                  }
+                });
+                if (!upErr) {
+                  await supabaseClient.auth.signInWithPassword({
+                    phone: formattedPhone,
+                    password: rawPassword
+                  });
+                }
+              } else if (isEmail) {
+                const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
+                  email: cleanIdentifier,
+                  password: rawPassword,
+                  options: {
+                    data: {
+                      username: foundProfile.username || 'Devotee',
+                      avatar: foundProfile.avatar || '🪔',
+                      identifier: cleanIdentifier,
+                      identifier_type: 'email'
+                    }
+                  }
+                });
+                if (!upErr) {
+                  await supabaseClient.auth.signInWithPassword({
+                    email: cleanIdentifier,
+                    password: rawPassword
+                  });
+                }
+              }
+            } catch (autoEnrollErr) {
+              console.warn('Auto-enroll in Supabase notice:', autoEnrollErr);
+            }
+          }
         }
 
-        // Restore saved details from Firestore
+        // Devotee profile saved details from remote profile
         const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
-        Storage.setBookmarks(restoredSavedItems);
-
-        if (Array.isArray(foundProfile.custom_plans)) {
-          customPlans = foundProfile.custom_plans;
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-        }
+        const restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
 
         const authenticatedUser = {
-          id: foundProfile.id || safeDocId,
-          user_id: foundProfile.user_id || rawIdentifier,
-          identifier: foundProfile.identifier || rawIdentifier,
-          identifier_type: foundProfile.identifier_type || (isEmail ? 'email' : 'phone'),
+          id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
+          user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
+          identifier: isPhone ? (foundProfile.identifier || formattedPhone) : (foundProfile.identifier || rawIdentifier),
+          identifier_type: isPhone ? 'phone' : (foundProfile.identifier_type || (isEmail ? 'email' : 'phone')),
+          phone: isPhone ? (foundProfile.phone || formattedPhone) : null,
+          email: isEmail ? (foundProfile.email || rawIdentifier) : null,
+          provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
           username: foundProfile.username || 'Devotee',
           avatar: foundProfile.avatar || '🪔',
-          custom_avatar_url: null,
+          custom_avatar_url: foundProfile.custom_avatar_url || null,
+          google_photo_url: foundProfile.google_photo_url || null,
           saved_items: restoredSavedItems,
-          custom_plans: customPlans,
+          custom_plans: restoredCustomPlans,
           feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
           created_at: foundProfile.created_at || new Date().toISOString()
         };
@@ -5077,11 +5691,19 @@
   window.handleGoogleSignIn = handleGoogleSignIn;
 
   function handleLogout() {
+    if (currentUser) {
+      saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+      if (typeof syncUserSavedItemsToSupabase === 'function') {
+        syncUserSavedItemsToSupabase(Storage.getBookmarks());
+      }
+    }
     currentUser = null;
     localStorage.removeItem('akalbodhon_user_profile');
-    Storage.setBookmarks([]);
-    customPlans = [];
-    localStorage.removeItem('akalbodhon_custom_plans');
+
+    // CRITICAL FIX: DO NOT wipe saved bookmarks or custom plans from localStorage or memory!
+    // Devotee's saved itinerary items remain safely preserved so they stay visible when logged out.
+    // Items stay until the devotee explicitly deletes them from their itinerary.
+
     if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
       window.AkalbodhonFirebase.signOutUser().catch(() => {});
     }
@@ -5092,8 +5714,9 @@
     closeProfileModal();
     if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
     if (typeof renderSavedSection === 'function') renderSavedSection();
+    if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
     if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-    showToast('Signed out of Akalbodhon.', 'logout');
+    showToast('Signed out of Akalbodhon. Your saved itinerary remains available.', 'logout');
   }
 
   // ========================================================
@@ -5160,31 +5783,53 @@
       try {
         const { data, error } = await supabaseClient
           .from('puja_plans')
-          .select('*, plan_members(*)')
+          .select('*')
           .order('created_at', { ascending: false });
 
-        if (!error && data) {
+        let membersByPlan = {};
+        try {
+          const { data: mData } = await supabaseClient.from('plan_members').select('*');
+          if (Array.isArray(mData)) {
+            mData.forEach(m => {
+              if (m && m.plan_id) {
+                if (!membersByPlan[m.plan_id]) membersByPlan[m.plan_id] = [];
+                membersByPlan[m.plan_id].push(m);
+              }
+            });
+          }
+        } catch (_) {}
+
+        if (!error && Array.isArray(data)) {
           const remotePlans = data
             .filter(p => {
               const t = (p.title || '').trim().toLowerCase();
               return t !== 'x' && t !== 'bnfhm' && t !== 'test';
             })
-            .map(p => ({
-              id: p.id,
-              title: p.title,
-              day_tag: p.day_tag,
-              day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
-              date_str: p.date_str,
-              creator_name: p.creator_name,
-              creator_avatar: p.creator_avatar || '🌺',
-              creator_id: p.creator_id,
-              route_summary: p.route_summary,
-              pandals: typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []),
-              food_stops: typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []),
-              rituals: typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []),
-              members: p.plan_members || [],
-              custom_notes: p.custom_notes
-            }));
+            .map(p => {
+              let parsedPandals = [];
+              try { parsedPandals = typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []); } catch (_) { parsedPandals = []; }
+              let parsedFood = [];
+              try { parsedFood = typeof p.food_stops === 'string' ? JSON.parse(p.food_stops) : (p.food_stops || []); } catch (_) { parsedFood = []; }
+              let parsedRituals = [];
+              try { parsedRituals = typeof p.rituals === 'string' ? JSON.parse(p.rituals) : (p.rituals || []); } catch (_) { parsedRituals = []; }
+
+              return {
+                id: p.id,
+                title: p.title,
+                day_tag: p.day_tag,
+                day_key: (p.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
+                date_str: p.date_str,
+                creator_name: p.creator_name,
+                creator_avatar: p.creator_avatar || '🌺',
+                creator_id: p.creator_id,
+                route_summary: p.route_summary,
+                pandals: parsedPandals,
+                food_stops: parsedFood,
+                rituals: parsedRituals,
+                members: membersByPlan[p.id] || [],
+                custom_notes: p.custom_notes
+              };
+            });
 
           const planMap = new Map();
           remotePlans.forEach(p => planMap.set(p.id, p));
@@ -5218,6 +5863,46 @@
     }
   }
 
+  // Robust check if a custom plan belongs to the current devotee across all auth providers
+  function isCurrentUserPlan(plan, user) {
+    if (!plan) return false;
+    const creatorId = String(plan.creator_id || '').trim().toLowerCase();
+    if (!creatorId) return false;
+
+    if (user) {
+      const candidateIds = [
+        user.id,
+        user.user_id,
+        user.uid,
+        user.firebase_uid,
+        user.identifier,
+        user.email,
+        user.phone
+      ].filter(Boolean).map(s => String(s).trim().toLowerCase());
+
+      if (candidateIds.includes(creatorId)) return true;
+
+      // Digits match for phone numbers (e.g. +919876543210 vs 9876543210)
+      const creatorDigits = creatorId.replace(/[^0-9]/g, '');
+      if (creatorDigits.length >= 7) {
+        for (const cid of candidateIds) {
+          const uDigits = cid.replace(/[^0-9]/g, '');
+          if (uDigits.length >= 7 && (uDigits.endsWith(creatorDigits) || creatorDigits.endsWith(uDigits))) {
+            return true;
+          }
+        }
+      }
+    }
+
+    // Guest creator identification check
+    try {
+      const guestId = localStorage.getItem('akalbodhon_guest_devotee_id');
+      if (guestId && guestId.toLowerCase() === creatorId) return true;
+    } catch (_) {}
+
+    return false;
+  }
+
   function renderFestivalPlans(dayFilter = 'all') {
     activePlanFilter = dayFilter;
     const planDropdown = document.getElementById('plan-filter-dropdown');
@@ -5232,13 +5917,13 @@
 
     if (dayFilter === 'my-plans') {
       if (currentUser) {
-        allPlans = customPlans.filter(p => p.creator_id === currentUser.id || p.creator_id === currentUser.user_id);
+        allPlans = customPlans.filter(p => isCurrentUserPlan(p, currentUser));
       } else {
-        allPlans = [];
+        allPlans = customPlans.filter(p => isCurrentUserPlan(p, null));
       }
     } else if (dayFilter === 'shared') {
       if (currentUser) {
-        allPlans = customPlans.filter(p => p.creator_id !== currentUser.id && p.creator_id !== currentUser.user_id);
+        allPlans = customPlans.filter(p => !isCurrentUserPlan(p, currentUser));
       } else {
         allPlans = customPlans;
       }
@@ -5258,15 +5943,15 @@
         <div class="col-span-full text-center py-16 px-4 rounded-3xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 space-y-3">
           <span class="text-4xl">🪔</span>
           <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">
-            ${isMyPlansFilter && !currentUser ? 'Sign in to view your created plans' : 'No plans found for this selection'}
+            ${isMyPlansFilter && !currentUser ? 'No Custom Plans Saved Yet' : 'No plans found for this selection'}
           </h3>
           <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-sm mx-auto">
             ${isMyPlansFilter && !currentUser 
-              ? 'Log in to your devotee account to view, edit, and share your personal Puja itineraries.' 
+              ? 'You have not created any custom plans yet in this session. Click below to craft your dream itinerary!' 
               : 'Create your customized festival itinerary to hop pandals, follow canonical rituals, and share with your friends.'}
           </p>
-          <button onclick="${isMyPlansFilter && !currentUser ? "openAuthModal('login')" : "document.getElementById('open-create-plan-btn').click()"}" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
-            ${isMyPlansFilter && !currentUser ? 'Sign In Now' : '+ Create Plan Now'}
+          <button onclick="document.getElementById('open-create-plan-btn').click()" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
+            + Create Plan Now
           </button>
         </div>
       `;
@@ -5275,13 +5960,13 @@
 
     container.innerHTML = allPlans.map(plan => {
       const isCustom = !plan.is_template;
-      const isMyPlan = currentUser && (plan.creator_id === currentUser.id || plan.creator_id === currentUser.user_id);
+      const isMyPlan = isCurrentUserPlan(plan, currentUser);
       const members = plan.members || [];
       const hasMembers = members.length > 0;
       const pandalCount = (plan.pandals || []).length;
       const foodCount = (plan.food_stops || []).length;
       const creatorNameDisplay = isMyPlan 
-        ? `You (${plan.creator_name || currentUser.username || 'Devotee'})` 
+        ? `You (${plan.creator_name || (currentUser && currentUser.username) || 'Devotee'})` 
         : (plan.creator_name || 'Community Devotee');
 
       return `
@@ -5691,9 +6376,9 @@
                 </div>
               ` : ''}
             </div>
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="py-1 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-bold shadow-sm hover:scale-105 transition-all flex items-center gap-1 shrink-0 cursor-pointer" title="Get Directions in Google Maps">
-              <img src="maps-pin.png" alt="Directions" class="w-3.5 h-3.5 shrink-0 object-contain" />
-              <span>Directions</span>
+            <a href="${toMapsSearchUrl(mapsUrl, pName + ' Durga Puja Kolkata')}" target="_blank" rel="noopener noreferrer" class="py-1 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-bold shadow-sm hover:scale-105 transition-all flex items-center gap-1 shrink-0 cursor-pointer" title="Search Location in Google Maps">
+              <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 shrink-0 object-contain" />
+              <span>Open in Maps</span>
             </a>
           </div>
         `;
@@ -5710,13 +6395,18 @@
         foodList.innerHTML = foodStops.map(f => {
           const fName = typeof f === 'string' ? f : f.name;
           const dish = typeof f === 'object' && f.dish ? f.dish : null;
+          const matchedFood = FOOD_DATA.find(fd => fd.name.toLowerCase() === fName.toLowerCase());
+          const foodMapsUrl = toMapsSearchUrl(matchedFood && matchedFood.locationUrl ? matchedFood.locationUrl : null, fName + ' Kolkata');
           return `
-            <div class="flex items-start gap-2 text-xs py-1 px-1 rounded-lg">
-              <span class="text-primary dark:text-amber-300 font-bold text-sm leading-none mt-0.5">•</span>
-              <div class="flex-1 min-w-0">
-                <span class="font-semibold text-on-surface dark:text-white">${fName}</span>
-                ${dish ? `<span class="text-on-surface-variant dark:text-[#ded5c7] block text-[11px] mt-0.5">${dish}</span>` : ''}
+            <div class="p-2 sm:p-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm hover:border-primary/40 dark:hover:border-amber-400/40 transition-all">
+              <div class="min-w-0 flex-1">
+                <span class="font-semibold text-xs text-on-surface dark:text-white block truncate">🍽️ ${fName}</span>
+                ${dish ? `<span class="text-on-surface-variant dark:text-[#ded5c7] block text-[11px] truncate">${dish}</span>` : ''}
               </div>
+              <a href="${foodMapsUrl}" target="_blank" rel="noopener noreferrer" class="py-1 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-bold shadow-sm hover:scale-105 transition-all flex items-center gap-1 shrink-0 cursor-pointer" title="Search Location in Google Maps">
+                <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 shrink-0 object-contain" />
+                <span>Open in Maps</span>
+              </a>
             </div>
           `;
         }).join('');
@@ -5922,6 +6612,7 @@
     const modal = document.getElementById('create-plan-modal');
     const closeBtn = document.getElementById('close-create-plan-modal-btn');
     const form = document.getElementById('create-plan-form');
+    const saveBtn = document.getElementById('save-new-plan-btn');
     const pandalsPicker = document.getElementById('plan-pandals-picker');
 
     if (pandalsPicker) {
@@ -5933,144 +6624,188 @@
       `).join('');
     }
 
+    function openModal() {
+      const titleInput = document.getElementById('plan-title-input');
+      if (titleInput && (!titleInput.value || !titleInput.value.trim())) {
+        titleInput.value = 'Plan';
+      }
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
     if (openBtn && modal) {
-      openBtn.onclick = () => {
-        if (!isUserLoggedIn()) {
-          promptAuthBeforeSave({
-            title: 'Sign In to Build Custom Plan',
-            message: 'Please <strong>log in</strong> to your account, or <strong>create an account</strong> if you do not have one, to design and save custom festival plans.',
-            categoryName: 'Puja Plans',
-            defaultMode: 'signup',
-            onAuthenticatedSave: () => {
-              const titleInput = document.getElementById('plan-title-input');
-              if (titleInput && !titleInput.value.trim()) {
-                titleInput.value = 'Plan';
-              }
-              modal.classList.remove('hidden');
-              modal.classList.add('flex');
-            }
-          });
-          return;
-        }
-        const titleInput = document.getElementById('plan-title-input');
-        if (titleInput && !titleInput.value.trim()) {
-          titleInput.value = 'Plan';
-        }
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
+      openBtn.onclick = (e) => {
+        if (e) e.preventDefault();
+        openModal();
       };
     }
 
     if (closeBtn && modal) {
-      closeBtn.onclick = () => {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+      closeBtn.onclick = (e) => {
+        if (e) e.preventDefault();
+        closeModal();
       };
     }
 
-    if (form) {
-      form.onsubmit = async (e) => {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
         }
+      });
+    }
 
-        if (!isUserLoggedIn()) {
-          promptAuthBeforeSave({
-            title: 'Sign In to Save Custom Plan',
-            message: 'Please <strong>log in</strong> to your account, or <strong>create an account</strong> if you do not have one, to save this custom festival plan.',
-            categoryName: 'Puja Plans',
-            defaultMode: 'login'
-          });
-          return false;
+    async function handleSaveNewPlan(e) {
+      if (e) {
+        if (typeof e.preventDefault === 'function') e.preventDefault();
+        if (typeof e.stopPropagation === 'function') e.stopPropagation();
+      }
+
+      let title = document.getElementById('plan-title-input')?.value.trim();
+      if (!title) {
+        title = 'Plan';
+      }
+
+      const day = document.getElementById('plan-day-select')?.value || 'Maha Ashtami';
+      const route = document.getElementById('plan-route-input')?.value.trim() || '';
+      const customPandals = document.getElementById('plan-custom-pandals-input')?.value.trim();
+      const food = document.getElementById('plan-food-input')?.value.trim() || '';
+      const rituals = document.getElementById('plan-rituals-input')?.value.trim() || '';
+      const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
+
+      // Collect checked pandals
+      let checkedPandals = Array.from(pandalsPicker?.querySelectorAll('input[type="checkbox"]:checked') || []).map(cb => cb.value);
+      if (customPandals) {
+        customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => checkedPandals.push(p));
+      }
+
+      // Auto-fallback: if no pandal selected, automatically include top 3 canonical pandals
+      if (checkedPandals.length === 0) {
+        if (Array.isArray(PANDALS_DATA) && PANDALS_DATA.length > 0) {
+          checkedPandals = PANDALS_DATA.slice(0, 3).map(p => p.name);
+        } else {
+          checkedPandals = ['Bagbazar Sarbojanin', 'College Square', 'Ekdalia Evergreen'];
         }
+      }
 
-        let title = document.getElementById('plan-title-input')?.value.trim();
-        if (!title) {
-          title = 'Plan';
+      const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
+      const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
+
+      // Determine creator identity
+      let creatorUserId;
+      let creatorDisplayName;
+      let creatorAvatar;
+
+      if (currentUser && (currentUser.id || currentUser.user_id || currentUser.identifier)) {
+        creatorUserId = currentUser.id || currentUser.user_id || currentUser.identifier;
+        creatorDisplayName = currentUser.username || currentUser.name || currentUser.identifier || 'Devotee';
+        creatorAvatar = currentUser.avatar || '🌺';
+      } else {
+        let guestId = null;
+        try { guestId = localStorage.getItem('akalbodhon_guest_devotee_id'); } catch (_) {}
+        if (!guestId) {
+          guestId = 'devotee_' + Date.now().toString(36);
+          try { localStorage.setItem('akalbodhon_guest_devotee_id', guestId); } catch (_) {}
         }
-
-        const day = document.getElementById('plan-day-select')?.value || 'Maha Ashtami';
-        const route = document.getElementById('plan-route-input')?.value.trim();
-        const customPandals = document.getElementById('plan-custom-pandals-input')?.value.trim();
-        const food = document.getElementById('plan-food-input')?.value.trim();
-        const rituals = document.getElementById('plan-rituals-input')?.value.trim();
-
-        // Collect checked pandals (at least 1 pandal is mandatory)
-        const checkedPandals = Array.from(pandalsPicker?.querySelectorAll('input[type="checkbox"]:checked') || []).map(cb => cb.value);
-        if (customPandals) {
-          customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => checkedPandals.push(p));
-        }
-
-        if (checkedPandals.length === 0) {
-          showToast('Please select or add at least one pandal for your plan.', 'error');
-          return false;
-        }
-
-        const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
-        const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
-
-        // Keep the devotee name they logged in with
-        const creatorDisplayName = (currentUser && currentUser.username) ? currentUser.username : (currentUser?.name || currentUser?.user_id || 'Devotee');
-        const creatorUserId = (currentUser && currentUser.id) ? currentUser.id : (currentUser?.user_id || 'user_devotee');
-
-        // Pick a random festive icon out of the 14 authentic Puja avatars for every new plan created
-        const randomFestiveIcon = (Array.isArray(PUJA_AVATARS) && PUJA_AVATARS.length > 0)
+        creatorUserId = guestId;
+        creatorDisplayName = 'Devotee';
+        creatorAvatar = (Array.isArray(PUJA_AVATARS) && PUJA_AVATARS.length > 0)
           ? PUJA_AVATARS[Math.floor(Math.random() * PUJA_AVATARS.length)].icon
           : '🌺';
+      }
 
-        // Creator custom description for the Puja plan
-        const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
+      const PUJA_DAY_DATES = {
+        'Mahalaya': '10 October 2026',
+        'Maha Shasthi': '17 October 2026',
+        'Maha Saptami': '18 October 2026',
+        'Maha Ashtami': '19 October 2026',
+        'Maha Navami': '20 October 2026',
+        'Bijoya Dashami': '21 October 2026',
+        'Custom Festival Day': 'Durga Puja 2026'
+      };
+      const resolvedDateStr = PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`);
 
-        const PUJA_DAY_DATES = {
-          'Mahalaya': '10 October 2026',
-          'Maha Shasthi': '17 October 2026',
-          'Maha Saptami': '18 October 2026',
-          'Maha Ashtami': '19 October 2026',
-          'Maha Navami': '20 October 2026',
-          'Bijoya Dashami': '21 October 2026',
-          'Custom Festival Day': 'Durga Puja 2026'
-        };
-        const resolvedDateStr = PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`);
-
-        const newPlan = {
-          id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
-          creator_id: creatorUserId,
-          creator_name: creatorDisplayName,
-          creator_avatar: randomFestiveIcon,
-          title: title,
-          day_tag: day,
-          day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
-          date_str: resolvedDateStr,
-          route_summary: route,
-          pandals: checkedPandals,
-          food_stops: foodStopsList,
-          rituals: ritualsList,
-          custom_notes: customDescription,
-          description: customDescription,
-          members: [
-            {
-              user_id: creatorUserId,
-              user_name: creatorDisplayName,
-              user_avatar: randomFestiveIcon,
-              role: 'creator'
-            }
-          ],
-          created_at: new Date().toISOString()
-        };
-
-        showTopProgressBar();
-
-        // Save to Firebase Firestore Database ('plans' collection)
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            await window.AkalbodhonFirebase.savePlan(newPlan);
-          } catch (fbErr) {
-            console.warn('Firebase custom plan save notice:', fbErr);
+      const newPlan = {
+        id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
+        creator_id: creatorUserId,
+        creator_name: creatorDisplayName,
+        creator_avatar: creatorAvatar,
+        title: title,
+        day_tag: day,
+        day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
+        date_str: resolvedDateStr,
+        route_summary: route,
+        pandals: checkedPandals,
+        food_stops: foodStopsList,
+        rituals: ritualsList,
+        custom_notes: customDescription,
+        description: customDescription,
+        members: [
+          {
+            user_id: creatorUserId,
+            user_name: creatorDisplayName,
+            user_avatar: creatorAvatar,
+            role: 'creator'
           }
-        }
+        ],
+        created_at: new Date().toISOString()
+      };
 
-        // Save to Supabase
+      showTopProgressBar();
+
+      // OPTIMISTIC LOCAL SAVE (Instant UI response)
+      customPlans.unshift(newPlan);
+      try {
+        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+      } catch (err) {
+        console.warn('LocalStorage save error:', err);
+      }
+
+      if (currentUser) {
+        currentUser.custom_plans = customPlans;
+        try {
+          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+        } catch (_) {}
+        saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+      }
+
+      // Close modal and reset form
+      closeModal();
+      if (form) form.reset();
+      const titleInput = document.getElementById('plan-title-input');
+      if (titleInput) titleInput.value = 'Plan';
+      const descInputEl = document.getElementById('plan-description-input');
+      if (descInputEl) descInputEl.value = '';
+
+      // Set filter to 'all' so new plan is immediately visible
+      activePlanFilter = 'all';
+      const planFilterSelect = document.getElementById('plan-filter-dropdown');
+      if (planFilterSelect) planFilterSelect.value = 'all';
+
+      // Re-render festival plans
+      renderFestivalPlans(activePlanFilter);
+
+      // Smoothly highlight new plan card
+      setTimeout(() => {
+        const newCard = document.getElementById(`plan-card-${newPlan.id}`);
+        if (newCard) {
+          newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          newCard.classList.add('ring-2', 'ring-primary', 'dark:ring-amber-400');
+          setTimeout(() => newCard.classList.remove('ring-2', 'ring-primary', 'dark:ring-amber-400'), 2500);
+        }
+      }, 150);
+
+      showToast(`🎉 "${title}" created successfully! You can now share it with friends.`, 'celebration');
+      setTimeout(hideTopProgressBar, 500);
+
+      // NON-BLOCKING REMOTE SYNC (Cloud persistence in background)
+      (async () => {
+        // 1. Supabase insert
         if (supabaseClient) {
           try {
             await supabaseClient.from('puja_plans').insert([{
@@ -6082,62 +6817,54 @@
               day_tag: newPlan.day_tag,
               date_str: newPlan.date_str,
               route_summary: newPlan.route_summary,
-              pandals: JSON.stringify(newPlan.pandals),
-              food_stops: JSON.stringify(newPlan.food_stops),
-              rituals: JSON.stringify(newPlan.rituals),
+              pandals: newPlan.pandals,
+              food_stops: newPlan.food_stops,
+              rituals: newPlan.rituals,
               custom_notes: newPlan.custom_notes || ''
             }]);
+          } catch (sbErr) {
+            console.warn('Supabase custom plan insert notice:', sbErr);
+          }
 
-            // Cloud backup in Supabase Storage (puja-plans bucket)
+          if (currentUser) {
             try {
-              const planBlob = new Blob([JSON.stringify(newPlan, null, 2)], { type: 'application/json' });
-              await supabaseClient.storage
-                .from('puja-plans')
-                .upload(`${newPlan.id}.json`, planBlob, {
-                  contentType: 'application/json',
-                  upsert: true
-                });
-            } catch (storageErr) {
-              console.warn('Storage plan backup notice:', storageErr);
-            }
-          } catch (err) {
-            console.warn('Supabase custom plan insert notice:', err);
+              const targetId = (currentUser.id || '').toLowerCase();
+              const targetUid = currentUser.user_id || currentUser.id;
+              await supabaseClient.from('profiles').update({
+                custom_plans: customPlans,
+                updated_at: new Date().toISOString()
+              }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+            } catch (_) {}
           }
         }
 
-        customPlans.unshift(newPlan);
-        localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+        // 2. Firebase Firestore insert
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            await window.AkalbodhonFirebase.savePlan(newPlan);
+          } catch (fbErr) {
+            console.warn('Firebase custom plan save notice:', fbErr);
+          }
 
-        // Sync custom plans to Firebase devotee profile
-        if (currentUser && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          window.AkalbodhonFirebase.syncProfile({
-            id: currentUser.id || currentUser.user_id,
-            custom_plans: customPlans
-          }).catch(() => {});
+          if (currentUser) {
+            try {
+              await window.AkalbodhonFirebase.syncProfile({
+                id: currentUser.id || currentUser.user_id,
+                custom_plans: customPlans
+              });
+            } catch (_) {}
+          }
         }
+      })().catch(bgErr => console.warn('Background sync notice:', bgErr));
 
-        if (currentUser && supabaseClient) {
-          const targetId = (currentUser.id || '').toLowerCase();
-          const targetUid = currentUser.user_id || currentUser.id;
-          supabaseClient.from('profiles').update({
-            custom_plans: customPlans,
-            updated_at: new Date().toISOString()
-          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
-        }
+      return false;
+    }
 
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        form.reset();
-        const titleInput = document.getElementById('plan-title-input');
-        if (titleInput) titleInput.value = 'Plan';
-        const descInputEl = document.getElementById('plan-description-input');
-        if (descInputEl) descInputEl.value = '';
-
-        renderFestivalPlans(activePlanFilter);
-        showToast(`🎉 "${title}" created successfully! You can now share it with friends.`, 'celebration');
-        setTimeout(hideTopProgressBar, 600);
-        return false;
-      };
+    if (form) {
+      form.onsubmit = handleSaveNewPlan;
+    }
+    if (saveBtn) {
+      saveBtn.onclick = handleSaveNewPlan;
     }
   }
 
@@ -6468,8 +7195,21 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       // 2. Supabase fallback
       if (!plan && supabaseClient) {
         try {
-          const { data } = await supabaseClient.from('puja_plans').select('*, plan_members(*)').eq('id', cleanId).single();
+          const { data } = await supabaseClient.from('puja_plans').select('*').eq('id', cleanId).single();
           if (data) {
+            let members = [];
+            try {
+              const { data: mData } = await supabaseClient.from('plan_members').select('*').eq('plan_id', cleanId);
+              if (Array.isArray(mData)) members = mData;
+            } catch (_) {}
+
+            let parsedPandals = [];
+            try { parsedPandals = typeof data.pandals === 'string' ? JSON.parse(data.pandals) : (data.pandals || []); } catch (_) { parsedPandals = []; }
+            let parsedFood = [];
+            try { parsedFood = typeof data.food_stops === 'string' ? JSON.parse(data.food_stops) : (data.food_stops || []); } catch (_) { parsedFood = []; }
+            let parsedRituals = [];
+            try { parsedRituals = typeof data.rituals === 'string' ? JSON.parse(data.rituals) : (data.rituals || []); } catch (_) { parsedRituals = []; }
+
             plan = {
               id: data.id,
               title: data.title,
@@ -6480,12 +7220,16 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               creator_avatar: data.creator_avatar || '🌺',
               creator_id: data.creator_id,
               route_summary: data.route_summary,
-              pandals: typeof data.pandals === 'string' ? JSON.parse(data.pandals) : (data.pandals || []),
-              food_stops: typeof data.food_stops === 'string' ? JSON.parse(data.food_stops) : (data.food_stops || []),
-              rituals: typeof data.rituals === 'string' ? JSON.parse(data.rituals) : (data.rituals || []),
-              members: data.plan_members || []
+              pandals: parsedPandals,
+              food_stops: parsedFood,
+              rituals: parsedRituals,
+              members: members,
+              custom_notes: data.custom_notes
             };
-            customPlans.push(plan);
+            if (!customPlans.some(p => p.id === plan.id)) {
+              customPlans.push(plan);
+              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+            }
           }
         } catch (err) {
           console.warn('Deep link plan lookup error:', err);
@@ -6565,9 +7309,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     customPlans = customPlans.filter(p => p.id !== planId);
     localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
 
+    if (supabaseClient) {
+      supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
+    }
+
     if (currentUser) {
       currentUser.custom_plans = customPlans;
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+      saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
       const targetUid = currentUser.id || currentUser.user_id;
 
       // Delete from Firebase Firestore Database
@@ -6581,7 +7330,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if (supabaseClient) {
         const targetId = (currentUser.id || '').toLowerCase();
-        supabaseClient.from('puja_plans').delete().eq('id', planId).then(() => {});
         supabaseClient.from('profiles').update({
           custom_plans: customPlans,
           updated_at: new Date().toISOString()
@@ -6606,6 +7354,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (currentUser) {
       currentUser.custom_plans = customPlans;
       localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+      saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
       const targetUid = currentUser.id || currentUser.user_id;
 
       // Delete from Firebase Firestore Database
@@ -6670,6 +7419,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (currentUser) {
         currentUser.custom_plans = customPlans;
         localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+        saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
         const targetUid = currentUser.id || currentUser.user_id;
 
         // Firebase Firestore dual-sync
@@ -7110,12 +7860,90 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('close-avatar-detail-btn')?.addEventListener('click', closeAvatarDetailModal);
     document.getElementById('confirm-select-avatar-btn')?.addEventListener('click', () => {
       if (selectedAvatarPending && currentUser) {
+        if (currentUser.custom_avatar_url) {
+          currentUser.google_photo_url = currentUser.custom_avatar_url;
+        }
         currentUser.avatar = selectedAvatarPending.icon;
+        currentUser.custom_avatar_url = null;
         updateProfileAvatarDisplay();
+        updateAccountUI();
         renderPujaAvatarsGrid();
-        showToast(`Avatar selected: ${selectedAvatarPending.name}`, 'check_circle');
+        saveUserSession(currentUser);
+
+        // Sync to Supabase
+        if (supabaseClient) {
+          supabaseClient.from('profiles').upsert({
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
+            identifier: currentUser.identifier,
+            identifier_type: currentUser.identifier_type || 'email',
+            username: currentUser.username,
+            avatar: currentUser.avatar,
+            custom_avatar_url: null,
+            google_photo_url: currentUser.google_photo_url || null,
+            updated_at: new Date().toISOString()
+          }).catch(err => console.warn('Supabase avatar update notice:', err));
+        }
+
+        // Sync to Firebase Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          window.AkalbodhonFirebase.syncProfile({
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
+            avatar: currentUser.avatar,
+            custom_avatar_url: null,
+            google_photo_url: currentUser.google_photo_url || null,
+            username: currentUser.username
+          }).catch(() => {});
+        }
+
+        showToast(`Sacred Avatar updated to ${selectedAvatarPending.name}!`, 'check_circle');
       }
       closeAvatarDetailModal();
+    });
+
+    // Toggle Google Profile Photo / Festival Icon
+    document.getElementById('toggle-google-avatar-btn')?.addEventListener('click', async () => {
+      if (!currentUser) return;
+      if (currentUser.custom_avatar_url) {
+        currentUser.custom_avatar_url = null;
+        showToast('Switched to Sacred Festival Avatar!', 'check_circle');
+      } else if (currentUser.google_photo_url) {
+        currentUser.custom_avatar_url = currentUser.google_photo_url;
+        showToast('Switched to Google profile photo.', 'check_circle');
+      }
+      updateProfileAvatarDisplay();
+      updateAccountUI();
+      renderPujaAvatarsGrid();
+      saveUserSession(currentUser);
+
+      if (supabaseClient) {
+        try {
+          await supabaseClient.from('profiles').upsert({
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
+            identifier: currentUser.identifier,
+            identifier_type: currentUser.identifier_type || 'email',
+            username: currentUser.username,
+            avatar: currentUser.avatar || '🪔',
+            custom_avatar_url: currentUser.custom_avatar_url,
+            google_photo_url: currentUser.google_photo_url || null,
+            updated_at: new Date().toISOString()
+          });
+        } catch (e) {}
+      }
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          await window.AkalbodhonFirebase.syncProfile({
+            id: currentUser.id || currentUser.user_id,
+            user_id: currentUser.user_id || currentUser.id,
+            avatar: currentUser.avatar,
+            custom_avatar_url: currentUser.custom_avatar_url,
+            google_photo_url: currentUser.google_photo_url || null,
+            username: currentUser.username
+          });
+        } catch (e) {}
+      }
     });
 
     const avatarDetailModal = document.getElementById('avatar-detail-modal');
