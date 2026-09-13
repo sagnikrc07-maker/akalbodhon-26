@@ -862,6 +862,27 @@
     }
   ];
 
+  // --- PRE-BUILT O(1) LOOKUP SETS for food/shop classification ---
+  // Used instead of FOOD_DATA.some() / SHOPPING_DATA.some() in filter hot-paths.
+  const FOOD_ID_SET = new Set(FOOD_DATA.map(f => f.id));
+  const FOOD_NAME_SET = new Set(FOOD_DATA.map(f => (f.name || '').toLowerCase()));
+  const SHOP_ID_SET = new Set(SHOPPING_DATA.map(s => s.id));
+  const SHOP_NAME_SET = new Set(SHOPPING_DATA.map(s => (s.name || '').toLowerCase()));
+
+  /** Returns true if bookmark b belongs to the food/shopping category */
+  function isFoodOrShopBookmark(b) {
+    if (b.type === 'food' || b.type === 'shop') return true;
+    const cat = b.category || '';
+    if (
+      cat === 'Food & Shopping' || cat === 'Food' || cat === 'Shop' ||
+      cat === 'Famous Food Joints' || cat === 'Food Destination' || cat === 'Shopping Bazaar'
+    ) return true;
+    const bId = b.id || '';
+    const bName = (b.name || '').toLowerCase();
+    return FOOD_ID_SET.has(bId) || FOOD_NAME_SET.has(bName) ||
+           SHOP_ID_SET.has(bId) || SHOP_NAME_SET.has(bName);
+  }
+
   const TRAILS_DATA = [
     {
       id: 'north-heritage',
@@ -2512,14 +2533,7 @@
       const badgeAll = document.getElementById('saved-badge-all');
       if (badgeAll) badgeAll.textContent = loggedIn ? total : 0;
 
-      const pandalCount = loggedIn ? bookmarks.filter(b => {
-        const isFoodOrShop = b.type === 'food' || b.type === 'shop' || 
-          b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
-          b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
-          FOOD_DATA.some(f => f.id === b.id || ((f.name || '').toLowerCase() === (b.name || '').toLowerCase())) ||
-          SHOPPING_DATA.some(s => s.id === b.id || ((s.name || '').toLowerCase() === (b.name || '').toLowerCase()));
-        return !isFoodOrShop;
-      }).length : 0;
+      const pandalCount = loggedIn ? bookmarks.filter(b => !isFoodOrShopBookmark(b)).length : 0;
 
       const foodCount = loggedIn ? (bookmarks.length - pandalCount) : 0;
 
@@ -2748,23 +2762,9 @@
 
     const bookmarks = Storage.getBookmarks();
     
-    // Split into categories strictly based on saved bookmarks and user custom plans
-    let pandalBookmarks = bookmarks.filter(b => {
-      const isFoodOrShop = b.type === 'food' || b.type === 'shop' || 
-        b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
-        b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
-        FOOD_DATA.some(f => f.id === b.id || f.name.toLowerCase() === (b.name || '').toLowerCase()) ||
-        SHOPPING_DATA.some(s => s.id === b.id || s.name.toLowerCase() === (b.name || '').toLowerCase());
-      return !isFoodOrShop;
-    });
-
-    let foodBookmarks = bookmarks.filter(b => {
-      return b.type === 'food' || b.type === 'shop' ||
-        b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
-        b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
-        FOOD_DATA.some(f => f.id === b.id || f.name.toLowerCase() === (b.name || '').toLowerCase()) ||
-        SHOPPING_DATA.some(s => s.id === b.id || s.name.toLowerCase() === (b.name || '').toLowerCase());
-    });
+    // Split into categories using O(1) lookup sets (avoids O(n×m) .some() on every render)
+    let pandalBookmarks = bookmarks.filter(b => !isFoodOrShopBookmark(b));
+    let foodBookmarks = bookmarks.filter(b => isFoodOrShopBookmark(b));
 
     // Include: plans created by user + shared plans explicitly saved by user (is_shared=true or saved_to_itinerary=true)
     let myPlans = (customPlans && customPlans.length > 0) ? customPlans.filter(p => {
@@ -2997,6 +2997,7 @@
                 const pandalList = p.pandals || [];
                 const foodList = p.food_stops || [];
                 const isMine = isCurrentUserPlan(p, currentUser);
+                const isMasterPlan = p.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === p.id);
                 const creatorNameText = isMine 
                   ? `You (${p.creator_name || (currentUser && currentUser.username) || 'Devotee'})` 
                   : (p.creator_name || 'Devotee');
@@ -3036,10 +3037,12 @@
                       <span>View Plan</span>
                     </button>
                     <div class="flex items-center gap-2">
-                      <button onclick="event.stopPropagation(); window.openSharePlanModal('${p.id}')" class="text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 text-[10px] sm:text-xs font-bold cursor-pointer flex items-center gap-0.5" title="Share Plan">
-                        <span class="material-symbols-outlined text-[14px]">share</span>
-                        <span>Share</span>
-                      </button>
+                      ${isMasterPlan ? `
+                        <button onclick="event.stopPropagation(); window.openSharePlanModal('${p.id}')" class="text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 text-[10px] sm:text-xs font-bold cursor-pointer flex items-center gap-0.5" title="Share Plan">
+                          <span class="material-symbols-outlined text-[14px]">share</span>
+                          <span>Share</span>
+                        </button>
+                      ` : ''}
                       ${isMine ? `
                         <button onclick="event.stopPropagation(); window.deleteCustomPlan('${p.id}')" class="text-red-500 hover:text-red-600 dark:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Delete Plan (Removes from Database & Receivers)">
                           <span class="material-symbols-outlined text-[14px]">delete</span>
@@ -6198,13 +6201,17 @@
             <button onclick="event.stopPropagation(); window.savePlanToItinerary('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border ${customPlans.some(p => p.id === plan.id) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500 dark:text-emerald-400' : 'border-outline-variant/40 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:bg-primary/10'} text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="${customPlans.some(p => p.id === plan.id) ? 'Saved in Itinerary (Click to Remove)' : 'Save entire plan to Itinerary'}">
               <span class="material-symbols-outlined text-[17px]">${customPlans.some(p => p.id === plan.id) ? 'bookmark_added' : 'bookmark_add'}</span>
             </button>
+            ${!isCustom ? `
+              <button onclick="event.stopPropagation(); window.openSharePlanModal('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 hover:bg-amber-400/10 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Share Festival Plan">
+                <span class="material-symbols-outlined text-[17px]">share</span>
+              </button>
+            ` : ''}
             ${isCustom && isMyPlan ? `
               <button onclick="event.stopPropagation(); window.deleteCustomPlan('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" title="Delete Plan">
                 <span class="material-symbols-outlined text-[18px]">delete</span>
               </button>
             ` : ''}
           </div>
-          <!-- Share icon removed from plan cards per user specification -->
         </div>
       `;
     }).join('');
@@ -6576,18 +6583,31 @@
       });
     }
 
-    // Share buttons (Header quick share & Bottom action bar)
+    // Share buttons (Header quick share & Bottom action bar) - ONLY available for listed master plans
+    const isMasterPlan = plan.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
     const shareBtn = document.getElementById('vp-share-btn');
     if (shareBtn) {
-      shareBtn.onclick = () => {
-        window.openSharePlanModal(plan.id);
-      };
+      if (isMasterPlan) {
+        shareBtn.classList.remove('hidden');
+        shareBtn.onclick = () => {
+          window.openSharePlanModal(plan.id);
+        };
+      } else {
+        shareBtn.classList.add('hidden');
+        shareBtn.onclick = null;
+      }
     }
     const headerShareBtn = document.getElementById('vp-header-share-btn');
     if (headerShareBtn) {
-      headerShareBtn.onclick = () => {
-        window.openSharePlanModal(plan.id);
-      };
+      if (isMasterPlan) {
+        headerShareBtn.classList.remove('hidden');
+        headerShareBtn.onclick = () => {
+          window.openSharePlanModal(plan.id);
+        };
+      } else {
+        headerShareBtn.classList.add('hidden');
+        headerShareBtn.onclick = null;
+      }
     }
 
     // Save button (adapts for personal itinerary vs shared plan)
@@ -7051,40 +7071,22 @@
       const plan = item || allPlans.find(p => p.id === id);
       if (!plan) return;
 
-      heading = 'Share Puja Plan';
-      subTitle = `${plan.title} • Created by ${plan.creator_name || 'Devotee'}`;
-      label = 'Direct Plan Link';
-
-      const isCustom = customPlans.some(p => p.id === plan.id) || (typeof plan.id === 'string' && (plan.id.startsWith('custom-') || plan.id.startsWith('plan_')));
+      const isCustom = !plan.is_template && !MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
       if (isCustom) {
-        try {
-          const compactData = {
-            id: plan.id,
-            title: plan.title,
-            day_tag: plan.day_tag,
-            date_str: plan.date_str,
-            creator_name: plan.creator_name || 'Devotee',
-            creator_avatar: plan.creator_avatar || '🌺',
-            creator_id: plan.creator_id,
-            route_summary: plan.route_summary,
-            pandals: plan.pandals,
-            food_stops: plan.food_stops,
-            rituals: plan.rituals
-          };
-          const pdataStr = btoa(unescape(encodeURIComponent(JSON.stringify(compactData))));
-          shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}&pdata=${encodeURIComponent(pdataStr)}`;
-        } catch (e) {
-          shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
-        }
-      } else {
-        shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
+        showToast('Custom plans cannot be shared.', 'info');
+        return;
       }
+
+      heading = 'Share Puja Plan';
+      subTitle = `${plan.title} • Listed Festival Plan`;
+      label = 'Direct Plan Link';
+      shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
 
       const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
       const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
 
       message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
-✨ Created by: ${plan.creator_name || 'Akalbodhon Devotee'}
+✨ Curated Festival Plan: Akalbodhon
 🏛️ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
 🪔 View the full itinerary, map directions & food pit-stops on Akalbodhon:`;
 
@@ -7189,7 +7191,21 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
   // Aliases for convenient caller usage
   window.openSharePlanModal = function (planId) {
-    window.openShareModal({ type: 'plan', id: planId });
+    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    if (window.__sharedPlansMap && window.__sharedPlansMap.has(planId)) {
+      allPlans.push(window.__sharedPlansMap.get(planId));
+    }
+    const plan = allPlans.find(p => p.id === planId);
+    if (!plan) return;
+
+    // Disallow sharing custom plans of user
+    const isMaster = plan.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
+    if (!isMaster) {
+      showToast('Custom plans cannot be shared.', 'info');
+      return;
+    }
+
+    window.openShareModal({ type: 'plan', id: planId, item: plan });
   };
 
   window.openShareWebsiteModal = function () {
@@ -7456,28 +7472,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         return;
       }
 
-      // 3. For Custom Plans: require receiver to log in or create an account first!
-      if (!isMasterPlan) {
-        if (!isUserLoggedIn() || !currentUser) {
-          window.__pendingSharedPlanId = plan.id;
-          window.__pendingSharedPlanData = plan;
-          promptAuthBeforeSave({
-            title: 'Sign In to View Shared Plan',
-            message: `<strong>${escapeHtml(plan.creator_name || 'A Devotee')}</strong> shared the custom Puja plan <em>"${escapeHtml(plan.title || 'Plan')}"</em> with you.<br/><br/>Please <strong>sign in</strong> or <strong>create an account</strong> to view this plan on Akalbodhon and save it to your personal itinerary.`,
-            categoryName: 'Shared Custom Plan',
-            defaultMode: 'login',
-            onAuthenticatedSave: () => {
-              if (typeof window.openViewPlanModal === 'function') {
-                window.openViewPlanModal(plan.id);
-              }
-            }
-          });
-          const cleanUrl = window.location.pathname + '#saved';
-          window.history.replaceState({}, document.title, cleanUrl);
-          return;
-        }
-      }
-
       // Mark as shared in temporary memory map
       window.__sharedPlansMap = window.__sharedPlansMap || new Map();
       window.__sharedPlansMap.set(plan.id, plan);
@@ -7618,6 +7612,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   // Save Plan to Itinerary as a Whole Puja Plan (Allowed for both Creator and Receiver)
   window.savePlanToItinerary = function (planId) {
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    // Also check in shared plans map (receiver viewing a plan shared via link)
+    if (window.__sharedPlansMap && window.__sharedPlansMap.has(planId)) {
+      allPlans.push(window.__sharedPlansMap.get(planId));
+    }
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 

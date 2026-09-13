@@ -63,7 +63,7 @@ try {
   }
   googleProvider = new GoogleAuthProvider();
   googleProvider.setCustomParameters({ prompt: 'select_account' });
-  console.log("🕉️ Firebase initialized for akalbodhon-6a71a");
+  console.debug("Firebase initialized for akalbodhon-6a71a");
 } catch (err) {
   console.error("Firebase init error:", err);
 }
@@ -1099,7 +1099,7 @@ export const AkalbodhonFirebase = {
       : `Akal_${authEmail.split('@')[0].slice(-5)}_2026!`;
 
     try {
-      console.log("🕉️ Registering user in Firebase Authentication with:", authEmail);
+      console.debug("Registering user in Firebase Authentication with:", authEmail);
       const userCredential = await withTimeout(
         createUserWithEmailAndPassword(auth, authEmail, safePassword),
         10000
@@ -1146,7 +1146,7 @@ export const AkalbodhonFirebase = {
       console.error("Firebase Auth registration error:", err);
       // If user already exists in Authentication, attempt sign in
       if (err.code === 'auth/email-already-in-use') {
-        console.log("Account already exists in Firebase Auth, signing in instead...");
+        console.debug("Account already exists in Firebase Auth, signing in instead...");
         return this.signInWithEmailPassword(identifier, password, false, displayName, extraData);
       }
       throw err;
@@ -1162,7 +1162,7 @@ export const AkalbodhonFirebase = {
       : `Akal_${authEmail.split('@')[0].slice(-5)}_2026!`;
 
     try {
-      console.log("🕉️ Signing in user in Firebase Authentication with:", authEmail);
+      console.debug("Signing in user in Firebase Authentication with:", authEmail);
       const userCredential = await withTimeout(
         signInWithEmailAndPassword(auth, authEmail, safePassword),
         10000
@@ -1173,7 +1173,7 @@ export const AkalbodhonFirebase = {
     } catch (err) {
       console.warn("Firebase Auth sign in notice:", err.code, err.message);
       if (autoCreateIfNew && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
-        console.log("User not found in Firebase Auth, creating new user in Authentication...");
+        console.debug("User not found in Firebase Auth, creating new user in Authentication...");
         return this.registerWithEmailPassword(identifier, password, displayName, extraData);
       }
       throw err;
@@ -1206,7 +1206,7 @@ if (typeof window !== "undefined") {
         const profile = await AkalbodhonFirebase.buildAndStoreProfile(result.user);
         window.__akalbodhonRedirectProfile = profile;
         window.dispatchEvent(new CustomEvent('akalbodhon:auth-redirect-success', { detail: profile }));
-        console.log("🕉️ Google redirect sign-in restored for:", profile.username);
+        console.debug("Google redirect sign-in restored for:", profile.username);
       }
     }).catch((err) => {
       sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
