@@ -14,7 +14,9 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  updateProfile
+  updateProfile,
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import { 
   getFirestore, 
@@ -253,25 +255,155 @@ export const AkalbodhonFirebase = {
     return `${safeStr || 'devotee'}@akalbodhon.com`;
   },
 
-  // 1e. Register devotee with manual email/phone into Firebase Authentication section & Firestore
+  // 1e. Phone Auth: Setup reCAPTCHA Verifier
+  setupRecaptcha(containerId = 'recaptcha-container') {
+    if (!auth) throw new Error("Firebase Auth is not initialized.");
+    if (!window.recaptchaVerifier) {
+      let targetEl = document.getElementById(containerId);
+      if (!targetEl) {
+        targetEl = document.createElement('div');
+        targetEl.id = containerId;
+        document.body.appendChild(targetEl);
+      }
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+        size: 'invisible',
+        callback: () => {},
+        'expired-callback': () => {
+          if (window.recaptchaVerifier) {
+            try { window.recaptchaVerifier.clear(); } catch (_) {}
+            window.recaptchaVerifier = null;
+          }
+        }
+      });
+    }
+    return window.recaptchaVerifier;
+  },
+
+  // 1f. Phone Auth: Send SMS OTP
+  async sendPhoneOtp(rawPhoneNumber, containerId = 'recaptcha-container') {
+    if (!auth) throw new Error("Firebase Auth is not initialized.");
+    const cleanDigits = String(rawPhoneNumber).replace(/[^0-9]/g, '');
+    if (cleanDigits.length < 10) {
+      throw new Error("Please enter a valid 10-digit mobile number.");
+    }
+    
+    // Normalize to international E.164 format (+91 by default for India)
+    let formattedPhone = String(rawPhoneNumber).trim();
+    if (!formattedPhone.startsWith('+')) {
+      if (cleanDigits.length === 10) {
+        formattedPhone = '+91' + cleanDigits;
+      } else if (cleanDigits.startsWith('91') && cleanDigits.length === 12) {
+        formattedPhone = '+' + cleanDigits;
+      } else {
+        formattedPhone = '+' + cleanDigits;
+      }
+    }
+
+    try {
+      const appVerifier = this.setupRecaptcha(containerId);
+      const confirmationResult = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
+      window.confirmationResult = confirmationResult;
+      return {
+        success: true,
+        confirmationResult,
+        formattedPhone
+      };
+    } catch (err) {
+      console.error("Firebase sendPhoneOtp error:", err);
+      if (window.recaptchaVerifier) {
+        try { window.recaptchaVerifier.clear(); } catch (_) {}
+        window.recaptchaVerifier = null;
+      }
+      throw err;
+    }
+  },
+
+  // 1g. Phone Auth: Verify SMS OTP & Create/Restore Devotee Profile
+  async verifyPhoneOtp(confirmationResult, otpCode, isSignUp = false, displayName = '', extraData = {}) {
+    if (!confirmationResult || typeof confirmationResult.confirm !== 'function') {
+      if (window.confirmationResult) {
+        confirmationResult = window.confirmationResult;
+      } else {
+        throw new Error("No active OTP verification session found. Please request a new SMS OTP.");
+      }
+    }
+    const cleanOtp = String(otpCode).trim().replace(/[^0-9]/g, '');
+    if (cleanOtp.length < 6) {
+      throw new Error("Please enter the complete 6-digit OTP code.");
+    }
+
+    const result = await confirmationResult.confirm(cleanOtp);
+    if (!result || !result.user) {
+      throw new Error("Invalid verification code. Please try again.");
+    }
+
+    const fbUser = result.user;
+    const cleanUid = String(fbUser.uid);
+    const phoneNumber = fbUser.phoneNumber || extraData.phoneNumber || '';
+    const digits = phoneNumber.replace(/[^0-9]/g, '');
+
+    // Check existing profile in Firestore
+    let existingProfile = await this.getProfile(cleanUid);
+    if (!existingProfile && phoneNumber) {
+      existingProfile = await this.getProfile(phoneNumber) || await this.getProfile(digits) || await this.getProfileByIdentifier(phoneNumber);
+    }
+
+    const assignedAvatar = existingProfile?.avatar || extraData.avatar || getRandomPujaIcon();
+    const finalUsername = displayName || existingProfile?.username || (digits ? `Devotee ${digits.slice(-4)}` : 'Devotee');
+
+    const profile = {
+      id: cleanUid,
+      user_id: phoneNumber || cleanUid,
+      uid: cleanUid,
+      firebase_uid: cleanUid,
+      identifier: phoneNumber || cleanUid,
+      identifier_type: 'phone',
+      phone: phoneNumber,
+      email: existingProfile?.email || null,
+      username: finalUsername,
+      avatar: assignedAvatar,
+      avatar_assigned: true,
+      custom_avatar_url: existingProfile?.custom_avatar_url || null,
+      google_photo_url: null,
+      saved_items: existingProfile?.saved_items || (Array.isArray(extraData.saved_items) ? extraData.saved_items : []),
+      custom_plans: existingProfile?.custom_plans || (Array.isArray(extraData.custom_plans) ? extraData.custom_plans : []),
+      feedback_cooldown_until: existingProfile?.feedback_cooldown_until || null,
+      created_at: existingProfile?.created_at || new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    await this.syncProfile(profile);
+    if (digits) {
+      try {
+        const phoneDoc = doc(db, "users", `phone_${digits}`);
+        await withTimeout(setDoc(phoneDoc, profile, { merge: true }), 1500);
+      } catch (_) {}
+    }
+
+    localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
+    if (profile.saved_items && profile.saved_items.length > 0) {
+      localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(profile.saved_items));
+    }
+    if (profile.custom_plans && profile.custom_plans.length > 0) {
+      localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(profile.custom_plans));
+    }
+
+    return profile;
+  },
+
+  // 1h. Register devotee with manual email/password into Firebase Authentication & Firestore
   async registerWithEmailPassword(identifier, password, displayName = '', extraData = {}) {
     if (!auth) throw new Error("Firebase Auth is not initialized.");
-    const authEmail = this.formatAuthEmail(identifier);
-    if (!authEmail) throw new Error("Invalid email or phone number provided.");
+    const cleanEmail = String(identifier).trim().toLowerCase();
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      throw new Error("Please enter a valid email address.");
+    }
 
     let userCredential = null;
     try {
-      userCredential = await createUserWithEmailAndPassword(auth, authEmail, password);
+      userCredential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
     } catch (err) {
-      if (err.code === 'auth/email-already-in-use') {
-        try {
-          userCredential = await signInWithEmailAndPassword(auth, authEmail, password);
-        } catch (signInErr) {
-          throw err;
-        }
-      } else {
-        throw err;
-      }
+      throw err;
     }
 
     if (userCredential && userCredential.user) {
@@ -283,18 +415,17 @@ export const AkalbodhonFirebase = {
       }
 
       const cleanUid = String(fbUser.uid);
-      const isEmail = identifier.includes('@') && identifier.includes('.');
       const assignedAvatar = extraData.avatar || getRandomPujaIcon();
       const profile = {
         id: cleanUid,
-        user_id: String(identifier).trim(),
+        user_id: cleanEmail,
         uid: cleanUid,
         firebase_uid: cleanUid,
-        identifier: String(identifier).trim(),
-        identifier_type: isEmail ? 'email' : 'phone',
-        email: isEmail ? String(identifier).trim() : authEmail,
-        phone: !isEmail ? String(identifier).trim() : null,
-        username: displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
+        identifier: cleanEmail,
+        identifier_type: 'email',
+        email: cleanEmail,
+        phone: null,
+        username: displayName || cleanEmail.split('@')[0],
         avatar: assignedAvatar,
         avatar_assigned: true,
         custom_avatar_url: null,
@@ -308,7 +439,7 @@ export const AkalbodhonFirebase = {
 
       // Sync with Firestore database under both UID and safeDocId
       await this.syncProfile(profile);
-      const safeDocId = String(identifier).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+      const safeDocId = cleanEmail.replace(/[^a-z0-9]/g, '_');
       if (safeDocId && safeDocId !== cleanUid.toLowerCase()) {
         try {
           const aliasRef = doc(db, "users", safeDocId);
@@ -322,50 +453,44 @@ export const AkalbodhonFirebase = {
     return null;
   },
 
-  // 1f. Sign in devotee via Firebase Authentication, with automatic account creation on first manual login
-  async signInWithEmailPassword(identifier, password, autoCreateIfNew = true, displayName = '', extraData = {}) {
+  // 1i. Sign in devotee via Email & Password (NEVER auto-creates account on sign in)
+  async signInWithEmailPassword(identifier, password) {
     if (!auth) throw new Error("Firebase Auth is not initialized.");
-    const authEmail = this.formatAuthEmail(identifier);
-    if (!authEmail) throw new Error("Invalid email or phone number.");
+    const cleanEmail = String(identifier).trim().toLowerCase();
+    if (!cleanEmail.includes('@') || !cleanEmail.includes('.')) {
+      throw new Error("Please enter a valid email address.");
+    }
 
     let fbUser = null;
     try {
-      const userCred = await signInWithEmailAndPassword(auth, authEmail, password);
+      const userCred = await signInWithEmailAndPassword(auth, cleanEmail, password);
       fbUser = userCred.user;
     } catch (err) {
-      // First-time manual login: automatically register user in Firebase Authentication!
-      if (autoCreateIfNew && (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential')) {
-        try {
-          return await this.registerWithEmailPassword(identifier, password, displayName, extraData);
-        } catch (createErr) {
-          throw err;
-        }
-      }
+      // Do NOT auto-create account on sign in! Throw error directly.
       throw err;
     }
 
     if (fbUser) {
       let existingProfile = await this.getProfile(fbUser.uid);
       if (!existingProfile) {
-        const safeDocId = String(identifier).trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
-        existingProfile = await this.getProfile(safeDocId) || await this.getProfileByIdentifier(identifier);
+        const safeDocId = cleanEmail.replace(/[^a-z0-9]/g, '_');
+        existingProfile = await this.getProfile(safeDocId) || await this.getProfileByIdentifier(cleanEmail);
       }
 
-      const isEmail = identifier.includes('@') && identifier.includes('.');
       let devoteeAvatar = existingProfile?.avatar;
       if (!devoteeAvatar || !existingProfile?.avatar_assigned) {
         devoteeAvatar = getRandomPujaIcon();
       }
       const profile = {
         id: fbUser.uid,
-        user_id: existingProfile?.user_id || String(identifier).trim(),
+        user_id: existingProfile?.user_id || cleanEmail,
         uid: fbUser.uid,
         firebase_uid: fbUser.uid,
-        identifier: existingProfile?.identifier || String(identifier).trim(),
-        identifier_type: existingProfile?.identifier_type || (isEmail ? 'email' : 'phone'),
-        email: isEmail ? String(identifier).trim() : (existingProfile?.email || authEmail),
-        phone: !isEmail ? String(identifier).trim() : (existingProfile?.phone || null),
-        username: existingProfile?.username || fbUser.displayName || displayName || (isEmail ? identifier.split('@')[0] : 'Devotee'),
+        identifier: existingProfile?.identifier || cleanEmail,
+        identifier_type: 'email',
+        email: cleanEmail,
+        phone: null,
+        username: existingProfile?.username || fbUser.displayName || cleanEmail.split('@')[0],
         avatar: devoteeAvatar,
         avatar_assigned: true,
         custom_avatar_url: null,
@@ -379,6 +504,12 @@ export const AkalbodhonFirebase = {
 
       await this.syncProfile(profile);
       localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
+      if (profile.saved_items && profile.saved_items.length > 0) {
+        localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(profile.saved_items));
+      }
+      if (profile.custom_plans && profile.custom_plans.length > 0) {
+        localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(profile.custom_plans));
+      }
       return profile;
     }
     return null;
@@ -471,6 +602,21 @@ export const AkalbodhonFirebase = {
           return snapEmail.docs[0].data();
         }
       } catch (e) {}
+    }
+
+    // 4. Query by phone field if digits >= 7
+    const digits = cleanId.replace(/[^0-9]/g, '');
+    if (digits.length >= 7) {
+      const phoneCandidates = [digits, '+' + digits, rawClean];
+      if (digits.length === 10) phoneCandidates.push('+91' + digits, '91' + digits);
+      if (digits.startsWith('91') && digits.length === 12) phoneCandidates.push(digits.slice(2), '+' + digits);
+      for (const p of phoneCandidates) {
+        try {
+          const qPhone = query(collection(db, "users"), where("phone", "==", p));
+          const snapPhone = await withTimeout(getDocs(qPhone), 1500);
+          if (snapPhone && !snapPhone.empty) return snapPhone.docs[0].data();
+        } catch (_) {}
+      }
     }
 
     return null;

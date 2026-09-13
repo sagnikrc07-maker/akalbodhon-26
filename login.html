@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In & Register | Akalbodhon - Kolkata Durga Puja 2026</title>
-  <meta name="description" content="Sign in or create your Akalbodhon devotee account with User ID and Password to save your Puja itineraries, pandals, and sacred plans." />
+  <meta name="description" content="Sign in or create your Akalbodhon devotee account with Google, Mobile Number (SMS OTP), or Email to save your Puja itineraries, pandals, and sacred plans." />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -147,14 +147,17 @@
       </div>
 
       <!-- Error Alert Box -->
-      <div id="error-alert" class="hidden p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">error</span>
-        <span id="error-msg">Error occurred</span>
+      <div id="error-alert" class="hidden p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs space-y-2">
+        <div class="flex items-start gap-2">
+          <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+          <div id="error-msg" class="flex-1 leading-relaxed">Error occurred</div>
+        </div>
+        <div id="error-action-container" class="hidden pt-1 border-t border-red-500/20"></div>
       </div>
 
       <!-- Success Alert Box -->
-      <div id="success-alert" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+      <div id="success-alert" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] shrink-0">check_circle</span>
         <span id="success-msg">Success</span>
       </div>
 
@@ -173,7 +176,7 @@
           <p id="logged-identifier" class="text-xs text-on-surface-variant dark:text-[#ded5c7] font-mono">user_id</p>
           <div class="flex items-center justify-center gap-2 mt-2 flex-wrap">
             <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
-              Authenticated • Supabase Synced
+              Authenticated • Cloud Synced
             </span>
           </div>
         </div>
@@ -204,7 +207,7 @@
           </button>
         </div>
 
-        <!-- Sign In with Google Option -->
+        <!-- 1. Google Sign In -->
         <div class="space-y-3">
           <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -213,59 +216,140 @@
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
             </svg>
-            <span id="google-auth-btn-label">Sign in with Google</span>
+            <span id="google-auth-btn-label">Continue with Google</span>
           </button>
 
           <div class="flex items-center gap-3">
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with Email / Phone</span>
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or choose an option</span>
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
           </div>
         </div>
 
-        <!-- Unified Form -->
-        <form id="auth-form" class="space-y-4" onsubmit="return false;">
-          <!-- Name Field (Visible during Create Account) -->
-          <div id="name-field" class="space-y-1 hidden">
-            <label for="name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Name</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
-              <input type="text" id="name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-          </div>
-
-          <!-- Email or Phone Number Input -->
-          <div class="space-y-1">
-            <label for="userid-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email or Phone Number</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">contact_mail</span>
-              <input type="text" id="userid-input" autocomplete="username" placeholder="e.g. devotee@example.com or +91 9876543210" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Example: devotee@example.com or +91 9876543210</p>
-          </div>
-
-          <!-- Password Input with Conditions & Show Button under field on right side -->
-          <div class="space-y-1">
-            <label for="password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
-              <input type="password" id="password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <div class="flex items-center justify-between pt-0.5">
-              <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Condition: Min 6 characters (letters & numbers)</span>
-              <button type="button" id="toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                <span class="material-symbols-outlined text-[15px]" id="toggle-pwd-icon">visibility</span>
-                <span id="toggle-pwd-text">Show</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button id="submit-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">login</span>
-            <span id="submit-label">Sign In</span>
+        <!-- Method Selector Tabs: Mobile Number (SMS OTP) vs Email & Password -->
+        <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
+          <button type="button" id="method-phone-btn" class="py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">smartphone</span>
+            <span>Mobile OTP</span>
           </button>
-        </form>
+          <button type="button" id="method-email-btn" class="py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">mail</span>
+            <span>Email & Password</span>
+          </button>
+        </div>
+
+        <!-- 2. MOBILE NUMBER (SMS OTP) SECTION -->
+        <div id="phone-auth-section" class="space-y-4">
+          <!-- Step 1: Phone & Name Input Form -->
+          <form id="phone-entry-form" class="space-y-4" onsubmit="return false;">
+            <!-- Name (Only in Create Account mode) -->
+            <div id="phone-name-field" class="space-y-1 hidden">
+              <label for="phone-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
+                <input type="text" id="phone-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Mobile Number -->
+            <div class="space-y-1">
+              <label for="phone-number-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Mobile Number</label>
+              <div class="relative flex items-center">
+                <div class="absolute left-3 flex items-center gap-1 text-xs font-bold text-on-surface-variant dark:text-amber-300 pointer-events-none select-none">
+                  <span>🇮🇳 +91</span>
+                  <span class="text-outline-variant/50 dark:text-amber-400/40">|</span>
+                </div>
+                <input type="tel" id="phone-number-input" maxlength="15" autocomplete="tel" placeholder="98765 43210" required class="w-full pl-20 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50 font-medium tracking-wide" />
+              </div>
+              <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">We will send a 6-digit SMS verification code to verify this number.</p>
+            </div>
+
+            <!-- Send OTP Button -->
+            <button id="send-otp-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">sms</span>
+              <span id="send-otp-btn-label">Send SMS OTP</span>
+            </button>
+          </form>
+
+          <!-- Step 2: OTP Verification Form (Hidden initially) -->
+          <div id="otp-verify-section" class="hidden space-y-4 animate-scale-up">
+            <div class="p-3.5 rounded-2xl bg-amber-400/10 dark:bg-amber-400/15 border border-amber-400/30 text-center space-y-1">
+              <span class="text-[10px] uppercase font-bold tracking-wider text-primary dark:text-amber-300">OTP Sent via SMS</span>
+              <p class="text-xs text-on-surface dark:text-[#ded5c7]">
+                Enter the 6-digit code sent to <strong id="otp-target-display" class="text-primary dark:text-amber-300 font-mono">+91 ...</strong>
+              </p>
+            </div>
+
+            <form id="otp-verify-form" class="space-y-4" onsubmit="return false;">
+              <div class="space-y-1">
+                <label for="otp-code-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block text-center">6-Digit Verification Code</label>
+                <input type="text" id="otp-code-input" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="• • • • • •" required class="w-full py-3 px-4 text-center text-xl font-mono font-bold tracking-[0.35em] rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-on-surface dark:text-amber-300 focus:outline-none focus:border-primary dark:focus:border-amber-400" />
+              </div>
+
+              <button id="verify-otp-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">verified</span>
+                <span id="verify-otp-btn-label">Verify & Continue</span>
+              </button>
+
+              <div class="flex items-center justify-between text-xs pt-1">
+                <button type="button" id="change-phone-btn" class="font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-[14px]">arrow_back</span> Change Number
+                </button>
+                <button type="button" id="resend-otp-btn" class="font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-[14px]">refresh</span> <span id="resend-otp-text">Resend Code</span>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Hidden container for Firebase invisible reCAPTCHA -->
+          <div id="recaptcha-container" class="flex justify-center"></div>
+        </div>
+
+        <!-- 3. EMAIL & PASSWORD SECTION -->
+        <div id="email-auth-section" class="hidden space-y-4">
+          <form id="email-auth-form" class="space-y-4" onsubmit="return false;">
+            <!-- Name (Only in Create Account mode) -->
+            <div id="email-name-field" class="space-y-1 hidden">
+              <label for="email-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
+                <input type="text" id="email-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Email Address Input -->
+            <div class="space-y-1">
+              <label for="email-address-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">mail</span>
+                <input type="email" id="email-address-input" autocomplete="email" placeholder="e.g. devotee@example.com" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-1">
+              <label for="email-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
+                <input type="password" id="email-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+              <div class="flex items-center justify-between pt-0.5">
+                <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Condition: Min 6 characters (letters & numbers)</span>
+                <button type="button" id="email-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-[15px]" id="email-toggle-pwd-icon">visibility</span>
+                  <span id="email-toggle-pwd-text">Show</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="email-submit-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">login</span>
+              <span id="email-submit-label">Sign In with Email</span>
+            </button>
+          </form>
+        </div>
 
       </div>
 
@@ -273,7 +357,7 @@
         Your saved pandals, sacred food stops, and itineraries sync across all devices with your devotee account.
       </p>
     </div>
-
+  </main>
 
   <footer class="text-center py-4 text-xs text-on-surface-variant/60 dark:text-[#ded5c7]/50">
     Akalbodhon Sharodiya Durga Puja 2026 • Kolkata
@@ -305,12 +389,12 @@
     // Elements
     const errorAlert = document.getElementById('error-alert');
     const errorMsg = document.getElementById('error-msg');
+    const errorActionContainer = document.getElementById('error-action-container');
     const successAlert = document.getElementById('success-alert');
     const successMsg = document.getElementById('success-msg');
     const authFlowContainer = document.getElementById('auth-flow-container');
     const loggedInView = document.getElementById('logged-in-view');
     const loggedAvatarContainer = document.getElementById('logged-avatar-container');
-    const loggedAvatarEmoji = document.getElementById('logged-avatar-emoji');
     const loggedName = document.getElementById('logged-name');
     const loggedIdentifier = document.getElementById('logged-identifier');
     const signoutBtn = document.getElementById('signout-btn');
@@ -319,22 +403,58 @@
     const authSubheading = document.getElementById('auth-subheading');
     const tabLogin = document.getElementById('tab-login');
     const tabSignup = document.getElementById('tab-signup');
-    const nameField = document.getElementById('name-field');
-    const nameInput = document.getElementById('name-input');
-    const useridInput = document.getElementById('userid-input');
-    const useridCounter = document.getElementById('userid-counter');
-    const pwdInput = document.getElementById('password-input');
-    const pwdCounter = document.getElementById('password-counter');
-    const togglePwdBtn = document.getElementById('toggle-pwd-btn');
-    const submitBtn = document.getElementById('submit-btn');
-    const submitLabel = document.getElementById('submit-label');
-    const authForm = document.getElementById('auth-form');
 
-    let currentMode = 'login';
+    // Method buttons
+    const methodPhoneBtn = document.getElementById('method-phone-btn');
+    const methodEmailBtn = document.getElementById('method-email-btn');
+    const phoneAuthSection = document.getElementById('phone-auth-section');
+    const emailAuthSection = document.getElementById('email-auth-section');
 
-    function showAlert(msg, isError = true) {
+    // Phone elements
+    const phoneEntryForm = document.getElementById('phone-entry-form');
+    const phoneNameField = document.getElementById('phone-name-field');
+    const phoneNameInput = document.getElementById('phone-name-input');
+    const phoneNumberInput = document.getElementById('phone-number-input');
+    const sendOtpBtn = document.getElementById('send-otp-btn');
+    const sendOtpBtnLabel = document.getElementById('send-otp-btn-label');
+    const otpVerifySection = document.getElementById('otp-verify-section');
+    const otpVerifyForm = document.getElementById('otp-verify-form');
+    const otpCodeInput = document.getElementById('otp-code-input');
+    const otpTargetDisplay = document.getElementById('otp-target-display');
+    const verifyOtpBtn = document.getElementById('verify-otp-btn');
+    const verifyOtpBtnLabel = document.getElementById('verify-otp-btn-label');
+    const changePhoneBtn = document.getElementById('change-phone-btn');
+    const resendOtpBtn = document.getElementById('resend-otp-btn');
+    const resendOtpText = document.getElementById('resend-otp-text');
+
+    // Email elements
+    const emailAuthForm = document.getElementById('email-auth-form');
+    const emailNameField = document.getElementById('email-name-field');
+    const emailNameInput = document.getElementById('email-name-input');
+    const emailAddressInput = document.getElementById('email-address-input');
+    const emailPasswordInput = document.getElementById('email-password-input');
+    const emailTogglePwdBtn = document.getElementById('email-toggle-pwd-btn');
+    const emailTogglePwdIcon = document.getElementById('email-toggle-pwd-icon');
+    const emailTogglePwdText = document.getElementById('email-toggle-pwd-text');
+    const emailSubmitBtn = document.getElementById('email-submit-btn');
+    const emailSubmitLabel = document.getElementById('email-submit-label');
+
+    let currentMode = 'login'; // 'login' | 'signup'
+    let currentMethod = 'phone'; // 'phone' | 'email'
+    let activeConfirmationResult = null;
+    let lastSentPhoneNumber = '';
+    let resendCooldownTimer = null;
+
+    function showAlert(msg, isError = true, actionBtn = null) {
       if (isError) {
         errorMsg.innerHTML = msg;
+        if (actionBtn && errorActionContainer) {
+          errorActionContainer.innerHTML = '';
+          errorActionContainer.appendChild(actionBtn);
+          errorActionContainer.classList.remove('hidden');
+        } else if (errorActionContainer) {
+          errorActionContainer.classList.add('hidden');
+        }
         errorAlert.classList.remove('hidden');
         successAlert.classList.add('hidden');
       } else {
@@ -346,94 +466,96 @@
 
     function clearAlerts() {
       errorAlert.classList.add('hidden');
+      if (errorActionContainer) errorActionContainer.classList.add('hidden');
       successAlert.classList.add('hidden');
     }
 
-    // Dynamic Counter Functionality
-    function updateDynamicCounter(inputEl, counterEl, limit, mode = 'length') {
-      if (!counterEl || !inputEl) return;
-      const val = inputEl.value || '';
-      if (mode === 'length') {
-        const len = Math.min(val.length, limit);
-        counterEl.textContent = `(${len}/${limit})`;
-      } else if (mode === 'alphanumeric') {
-        const matches = val.match(/[a-zA-Z0-9]/g) || [];
-        const count = matches.length;
-        counterEl.textContent = `(${count}/${limit})`;
-        if (count >= limit) {
-          counterEl.classList.add('text-emerald-500', 'dark:text-emerald-400');
-          counterEl.classList.remove('text-primary', 'dark:text-amber-300');
-        } else {
-          counterEl.classList.remove('text-emerald-500', 'dark:text-emerald-400');
-          counterEl.classList.add('text-primary', 'dark:text-amber-300');
-        }
+    // Toggle Password Visibility
+    emailTogglePwdBtn?.addEventListener('click', () => {
+      const isPwd = emailPasswordInput.type === 'password';
+      emailPasswordInput.type = isPwd ? 'text' : 'password';
+      if (emailTogglePwdIcon) emailTogglePwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
+      if (emailTogglePwdText) emailTogglePwdText.textContent = isPwd ? 'Hide' : 'Show';
+    });
+
+    // Switch Method
+    function setAuthMethod(method) {
+      currentMethod = method;
+      clearAlerts();
+      if (method === 'phone') {
+        methodPhoneBtn.className = "py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer";
+        methodEmailBtn.className = "py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer";
+        phoneAuthSection.classList.remove('hidden');
+        emailAuthSection.classList.add('hidden');
+      } else {
+        methodEmailBtn.className = "py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer";
+        methodPhoneBtn.className = "py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer";
+        emailAuthSection.classList.remove('hidden');
+        phoneAuthSection.classList.add('hidden');
       }
     }
 
-    // Toggle Password Visibility
-    const togglePwdIcon = document.getElementById('toggle-pwd-icon');
-    const togglePwdText = document.getElementById('toggle-pwd-text');
-    togglePwdBtn?.addEventListener('click', () => {
-      const isPwd = pwdInput.type === 'password';
-      pwdInput.type = isPwd ? 'text' : 'password';
-      if (togglePwdIcon) togglePwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
-      if (togglePwdText) togglePwdText.textContent = isPwd ? 'Hide' : 'Show';
-    });
+    methodPhoneBtn.addEventListener('click', () => setAuthMethod('phone'));
+    methodEmailBtn.addEventListener('click', () => setAuthMethod('email'));
 
-    // Switch Auth Mode
-    function setAuthMode(mode) {
+    // Switch Mode (Sign In vs Create Account)
+    function setAuthMode(mode, presetValue = '', targetMethod = null) {
       currentMode = mode;
       clearAlerts();
+
+      if (targetMethod) {
+        setAuthMethod(targetMethod);
+      }
+
       if (mode === 'signup') {
         tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
         tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        nameField.classList.remove('hidden');
+        phoneNameField.classList.remove('hidden');
+        emailNameField.classList.remove('hidden');
         authHeading.textContent = 'Create Devotee Account';
-        authSubheading.textContent = 'Join the Akalbodhon festival community to design and save custom Puja itineraries.';
-        submitLabel.textContent = 'Create Account';
+        authSubheading.textContent = 'Join Akalbodhon to save custom Puja itineraries, pandal trails, and sacred bookmarks.';
+        sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
+        emailSubmitLabel.textContent = 'Create Account with Email';
       } else {
         tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
         tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        nameField.classList.add('hidden');
+        phoneNameField.classList.add('hidden');
+        emailNameField.classList.add('hidden');
         authHeading.textContent = 'Devotee Sign In';
         authSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
-        submitLabel.textContent = 'Sign In';
+        sendOtpBtnLabel.textContent = 'Send SMS OTP';
+        emailSubmitLabel.textContent = 'Sign In with Email';
+      }
+
+      if (presetValue) {
+        if (currentMethod === 'phone' || presetValue.replace(/[^0-9]/g, '').length >= 7) {
+          setAuthMethod('phone');
+          phoneNumberInput.value = presetValue.replace(/^\+91/, '').trim();
+          if (mode === 'signup') phoneNameInput.focus();
+        } else if (presetValue.includes('@')) {
+          setAuthMethod('email');
+          emailAddressInput.value = presetValue.trim();
+          if (mode === 'signup') emailNameInput.focus();
+        }
       }
     }
 
     tabLogin.addEventListener('click', () => setAuthMode('login'));
     tabSignup.addEventListener('click', () => setAuthMode('signup'));
 
-    // SHA-256 password hashing
-    async function hashPassword(str) {
-      if (!str) return '';
-      try {
-        const enc = new TextEncoder().encode(str + '_akalbodhon_salt_2026');
-        const buf = await crypto.subtle.digest('SHA-256', enc);
-        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-      } catch (e) {
-        let hash = 0;
-        for (let i = 0; i < str.length; i++) {
-          hash = ((hash << 5) - hash) + str.charCodeAt(i);
-          hash |= 0;
-        }
-        return 'fb_' + Math.abs(hash);
-      }
+    // Check if hash requested signup
+    if (window.location.hash === '#signup') {
+      setAuthMode('signup');
     }
 
     // Kinetic Loading & Top Progress Bar Helpers
-    let activeProgressBarCount = 0;
     function showTopProgressBar() {
-      activeProgressBarCount++;
       const bar = document.getElementById('top-sync-progress-bar');
       if (bar) bar.classList.remove('hidden-progress');
     }
     function hideTopProgressBar() {
-      activeProgressBarCount = Math.max(0, activeProgressBarCount - 1);
-      if (activeProgressBarCount === 0) {
-        const bar = document.getElementById('top-sync-progress-bar');
-        if (bar) bar.classList.add('hidden-progress');
-      }
+      const bar = document.getElementById('top-sync-progress-bar');
+      if (bar) bar.classList.add('hidden-progress');
     }
     function showGlobalLoader(title, desc, emoji = '🪔', status = 'Securing Cloud Session...') {
       const overlay = document.getElementById('global-loading-overlay');
@@ -461,13 +583,9 @@
     }
     function hideGlobalLoader() {
       const overlay = document.getElementById('global-loading-overlay');
-      if (overlay) {
-        overlay.classList.add('hidden-loader');
-      }
+      if (overlay) overlay.classList.add('hidden-loader');
       hideTopProgressBar();
     }
-    window.showGlobalLoader = showGlobalLoader;
-    window.hideGlobalLoader = hideGlobalLoader;
 
     // Google Auth Button
     const googleAuthBtn = document.getElementById('google-auth-btn');
@@ -477,17 +595,10 @@
     async function handleGoogleSignIn() {
       if (isGoogleAuthInProgress) return;
       isGoogleAuthInProgress = true;
-
       clearAlerts();
-      if (googleAuthBtn) googleAuthBtn.disabled = true;
-      if (googleAuthBtnLabel) googleAuthBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Initiating Google Sign-In...';
 
-      function resetGoogleBtn() {
-        isGoogleAuthInProgress = false;
-        hideGlobalLoader();
-        if (googleAuthBtn) googleAuthBtn.disabled = false;
-        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Sign in with Google';
-      }
+      if (googleAuthBtn) googleAuthBtn.disabled = true;
+      if (googleAuthBtnLabel) googleAuthBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Connecting to Google...';
 
       showGlobalLoader(
         'Connecting to Google...',
@@ -496,139 +607,463 @@
         'Authenticating with Google...'
       );
 
-      // 1. Wait for Firebase SDK if needed
+      // Wait for Firebase
       if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
         await new Promise(resolve => {
           if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
-          const handler = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', handler); };
-          window.addEventListener('akalbodhon:firebase-ready', handler);
+          const h = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', h); };
+          window.addEventListener('akalbodhon:firebase-ready', h);
           setTimeout(resolve, 1000);
         });
       }
 
       if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
-        showAlert('Firebase Authentication is connecting. Please try again in a few seconds.');
-        resetGoogleBtn();
+        showAlert('Firebase Authentication is initializing. Please try again in a few seconds.');
+        isGoogleAuthInProgress = false;
+        hideGlobalLoader();
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Continue with Google';
         return;
       }
 
-      // 2. Primary: Firebase Google OAuth Popup
       try {
         const profile = await window.AkalbodhonFirebase.signInWithGoogle();
         if (profile) {
           hideGlobalLoader();
           showLoggedInState(profile);
           showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
-          setTimeout(() => {
-            window.location.href = 'index.html';
-          }, 700);
-          resetGoogleBtn();
+          setTimeout(() => { window.location.href = 'index.html'; }, 700);
           return;
         }
       } catch (fbErr) {
         console.warn('Firebase Google Sign-In notice:', fbErr);
-        if (fbErr.code === 'auth/popup-closed-by-user') {
-          resetGoogleBtn();
+        hideGlobalLoader();
+        isGoogleAuthInProgress = false;
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Continue with Google';
+
+        if (fbErr.code === 'auth/popup-closed-by-user') return;
+        if (fbErr.code === 'auth/popup-blocked') {
+          window.AkalbodhonFirebase.signInWithGoogleRedirect().catch(() => {});
           return;
         }
-
-        if (fbErr.code === 'auth/popup-blocked') {
-          showGlobalLoader(
-            'Redirecting to Google...',
-            'Popup was blocked by your browser. Redirecting directly to Google Sign-In portal...',
-            'google',
-            'Redirecting...'
-          );
-
-          showAlert(
-            `<div class="space-y-1.5">
-              <p class="font-medium">Popup was blocked by your browser. Redirecting directly to Google Sign-In...</p>
-              <div class="pt-1">
-                <button type="button" id="login-force-redirect-btn" class="px-3 py-1 bg-amber-400 text-black font-bold rounded-lg text-xs hover:bg-amber-300 transition-all cursor-pointer shadow-sm">
-                  Continue to Google Sign-In ↗
-                </button>
-              </div>
-            </div>`
-          );
-
-          const forceBtn = document.getElementById('login-force-redirect-btn');
-          if (forceBtn) {
-            forceBtn.onclick = () => {
-              window.AkalbodhonFirebase.signInWithGoogleRedirect();
-            };
-          }
-
-          try {
-            await window.AkalbodhonFirebase.signInWithGoogleRedirect();
-            return;
-          } catch (redirErr) {
-            console.error('Redirect sign-in error:', redirErr);
-            showAlert('Unable to open Google sign-in redirect. Please allow popups for this site, or sign in using email/phone.');
-            resetGoogleBtn();
-            return;
-          }
-        }
-
-        showAlert(fbErr.message || 'Google sign-in could not be initiated. Please try again or sign in with email/phone.');
-        resetGoogleBtn();
-        return;
+        showAlert(fbErr.message || 'Google sign-in could not be completed. Please try again or use Mobile/Email.');
       }
     }
-    window.handleGoogleSignIn = handleGoogleSignIn;
 
-    if (googleAuthBtn) {
-      googleAuthBtn.addEventListener('click', handleGoogleSignIn);
-    }
+    if (googleAuthBtn) googleAuthBtn.addEventListener('click', handleGoogleSignIn);
 
-    // Google Redirect Sign-In Session Recovery for login.html
+    // Google Redirect Sign-In Session Recovery
     function handleRedirectSuccess(profile) {
       if (!profile) return;
-      if (profile.google_photo_url) {
-        profile.custom_avatar_url = profile.google_photo_url;
-      }
       showLoggedInState(profile);
       showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 800);
+      setTimeout(() => { window.location.href = 'index.html'; }, 700);
     }
-
     window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
       handleRedirectSuccess(e.detail);
     });
-
     if (window.__akalbodhonRedirectProfile) {
       handleRedirectSuccess(window.__akalbodhonRedirectProfile);
     }
 
-    // 14 Authentic Puja-Themed Avatars with Bengali Sacred Meaning
-    const PUJA_AVATARS = [
-      { id: 'pradeep', icon: '🪔', name: 'Pradeep (Diya)', meaning: 'The sacred brass oil lamp illuminated during Bodhon to dispel darkness and awaken divine presence.' },
-      { id: 'dhak', icon: '🪘', name: 'Ceremonial Dhak', meaning: 'The twin-headed sacred drum whose thunderous rhythmic beats form the very heartbeat of Sharadotsav.' },
-      { id: 'raktajaba', icon: '🌺', name: 'Rakta Jaba (Red Hibiscus)', meaning: 'The holy crimson flower most cherished by Maa Durga, representing raw cosmic Shakti and devotion.' },
-      { id: 'trishul', icon: '🔱', name: 'Maa Durga\'s Trishul', meaning: 'The supreme three-pronged trident symbolizing truth, wisdom, and triumph over Mahishasura.' },
-      { id: 'japamala', icon: '📿', name: 'Japa Mala (Rudraksha)', meaning: 'The sacred 108 rosary prayer beads used for devout chanting of Sri Sri Chandi Path and Devi Suktam.' },
-      { id: 'neelpadma', icon: '🪷', name: '108 Neel Padma (Blue Lotus)', meaning: 'The celestial blue lotuses brought from Devidaha by Hanuman for Lord Rama\'s historic autumn Akalbodhon.' },
-      { id: 'dhunuchi_naach', icon: '💃', name: 'Dhunuchi Naach', meaning: 'The ecstatic devotional Aarti dance performed to the thunderous rhythmic tempo of dhak and gong.' },
-      { id: 'mayur', icon: '🦚', name: 'Sacred Mayur (Peacock)', meaning: 'The glorious vahana mount of Lord Kartikeya, symbolizing divine majesty, vigilance, and regal beauty.' },
-      { id: 'kalash', icon: '🏺', name: 'Mangal Ghat (Kalash)', meaning: 'The consecrated sacred water vessel topped with mango leaves and coconut, invoking the Devi\'s presence.' },
-      { id: 'dhunuchi', icon: '🔥', name: 'Dhunuchi (Aarti Flame)', meaning: 'The traditional earthen incense chalice filled with burning coconut husk and camphor for the Sandhi Aarti dance.' },
-      { id: 'shankha', icon: '🐚', name: 'Sacred Shankha (Conch)', meaning: 'The holy conch shell blown during Aarti to sanctify the atmosphere with the primordial sound of Om.' },
-      { id: 'kanshi', icon: '🥁', name: 'Dhol & Kanshi', meaning: 'The resonating bell-metal gong and percussion accompanying pushpanjali prayers and ceremonial chants.' },
-      { id: 'surya', icon: '☀️', name: 'Sharad Surya (Autumn Sun)', meaning: 'The auspicious golden autumn dawn breaking on Mahalaya as Chandi Path echoes across Bengal.' },
-      { id: 'kashphool', icon: '🌾', name: 'Kash Phool (White Reeds)', meaning: 'The silken wild grass swaying along riverbanks, heralding the joyous descent of Uma from Mount Kailash.' }
-    ];
-
-    function getRandomPujaIcon() {
-      return PUJA_AVATARS[Math.floor(Math.random() * PUJA_AVATARS.length)].icon;
+    // Helper: Normalize Phone Number to E.164
+    function normalizePhone(raw) {
+      if (!raw) return '';
+      const clean = String(raw).trim();
+      const digits = clean.replace(/[^0-9]/g, '');
+      if (clean.startsWith('+')) return '+' + digits;
+      if (digits.length === 10) return '+91' + digits;
+      if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1);
+      if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
+      return '+' + digits;
     }
 
-    let currentLoggedInUser = null;
+    // Helper: Check if devotee account exists in database
+    async function checkDevoteeAccountExists(identifier) {
+      const clean = String(identifier).trim().toLowerCase();
+      const digits = clean.replace(/[^0-9]/g, '');
+      const isPhone = digits.length >= 7 && !clean.includes('@');
+      const formatted = isPhone ? normalizePhone(clean) : null;
+      const safeDocId = isPhone ? digits : clean.replace(/[^a-z0-9]/g, '_');
 
-    function updateLoggedInAvatarDisplay(user) {
-      if (!user) return;
+      // 1. Check Firebase Firestore
+      if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+        try {
+          const fbProf = await window.AkalbodhonFirebase.getProfileByIdentifier(identifier);
+          if (fbProf) return fbProf;
+        } catch (_) {}
+      }
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const p = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(clean);
+          if (p) return p;
+        } catch (_) {}
+      }
+
+      // 2. Check Supabase
+      if (supabaseClient) {
+        try {
+          const orQuery = isPhone 
+            ? `identifier.eq.${formatted},identifier.eq.${digits},phone.eq.${formatted},phone.eq.${digits},id.eq.${digits}`
+            : `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+          const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
+          if (data && data.length > 0) return data[0];
+        } catch (_) {}
+      }
+
+      // 3. Check persistent localStorage
+      const candidates = [`akalbodhon_user_data_${isPhone ? 'phone_' + digits : 'email_' + safeDocId}`, `akalbodhon_user_data_${digits}`, `akalbodhon_user_data_id_${safeDocId}`];
+      for (const cand of candidates) {
+        const raw = localStorage.getItem(cand);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed) return parsed;
+          } catch (_) {}
+        }
+      }
+
+      return null;
+    }
+
+    // -------------------------------------------------------------
+    // MOBILE NUMBER (SMS OTP) HANDLERS
+    // -------------------------------------------------------------
+    phoneEntryForm?.addEventListener('submit', handleSendPhoneOtp);
+
+    async function handleSendPhoneOtp() {
+      clearAlerts();
+      const rawPhone = phoneNumberInput.value.trim();
+      const rawName = phoneNameInput.value.trim();
+      const digits = rawPhone.replace(/[^0-9]/g, '');
+
+      if (!rawPhone || digits.length < 10) {
+        showAlert('Please enter a valid 10-digit mobile number.');
+        return;
+      }
+
+      if (currentMode === 'signup' && !rawName) {
+        showAlert('Please enter your name so we know what to call you.');
+        phoneNameInput.focus();
+        return;
+      }
+
+      const formattedPhone = normalizePhone(rawPhone);
+
+      // Check account existence based on mode
+      sendOtpBtn.disabled = true;
+      sendOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying mobile number...';
+      showGlobalLoader('Verifying Mobile...', 'Checking devotee account status...', '🪔', 'Verifying...');
+
+      try {
+        const existing = await checkDevoteeAccountExists(formattedPhone);
+
+        if (currentMode === 'login' && !existing) {
+          hideGlobalLoader();
+          sendOtpBtn.disabled = false;
+          sendOtpBtnLabel.textContent = 'Send SMS OTP';
+
+          // CREATE HELPER BUTTON TO ASSIST TO SIGNUP
+          const actionBtn = document.createElement('button');
+          actionBtn.type = 'button';
+          actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+          actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Number';
+          actionBtn.onclick = () => {
+            setAuthMode('signup', rawPhone, 'phone');
+          };
+
+          showAlert(
+            `No devotee account found for <strong>${formattedPhone}</strong>. Please create an account to get started with Akalbodhon.`,
+            true,
+            actionBtn
+          );
+          return;
+        }
+
+        if (currentMode === 'signup' && existing) {
+          hideGlobalLoader();
+          sendOtpBtn.disabled = false;
+          sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
+
+          const actionBtn = document.createElement('button');
+          actionBtn.type = 'button';
+          actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
+          actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Number';
+          actionBtn.onclick = () => {
+            setAuthMode('login', rawPhone, 'phone');
+          };
+
+          showAlert(
+            `An account already exists for <strong>${formattedPhone}</strong>. Please sign in instead.`,
+            true,
+            actionBtn
+          );
+          return;
+        }
+
+        // Send OTP via Firebase Phone Auth
+        showGlobalLoader('Sending SMS OTP...', `Sending 6-digit verification code to ${formattedPhone}...`, '🪔', 'Sending SMS OTP...');
+        const res = await window.AkalbodhonFirebase.sendPhoneOtp(formattedPhone, 'recaptcha-container');
+        activeConfirmationResult = res.confirmationResult;
+        lastSentPhoneNumber = formattedPhone;
+
+        hideGlobalLoader();
+        sendOtpBtn.disabled = false;
+        sendOtpBtnLabel.textContent = currentMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
+
+        // Transition to OTP verification step
+        phoneEntryForm.classList.add('hidden');
+        otpVerifySection.classList.remove('hidden');
+        otpTargetDisplay.textContent = formattedPhone;
+        otpCodeInput.value = '';
+        otpCodeInput.focus();
+
+        startResendTimer();
+        showAlert(`SMS OTP code sent to ${formattedPhone}. Please check your phone messages.`, false);
+
+      } catch (err) {
+        console.error('Phone OTP error:', err);
+        hideGlobalLoader();
+        sendOtpBtn.disabled = false;
+        sendOtpBtnLabel.textContent = currentMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
+
+        if (err.code === 'auth/invalid-phone-number') {
+          showAlert('The mobile number format is invalid. Please enter a valid 10-digit number.');
+        } else if (err.code === 'auth/too-many-requests') {
+          showAlert('Too many OTP attempts. Please wait a few moments before trying again.');
+        } else {
+          showAlert(err.message || 'Unable to send SMS OTP. Please check your number or try email login.');
+        }
+      }
+    }
+
+    function startResendTimer() {
+      let seconds = 30;
+      if (resendCooldownTimer) clearInterval(resendCooldownTimer);
+      resendOtpBtn.disabled = true;
+      resendOtpBtn.classList.add('opacity-50', 'pointer-events-none');
+      resendOtpText.textContent = `Resend in ${seconds}s`;
+
+      resendCooldownTimer = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+          clearInterval(resendCooldownTimer);
+          resendOtpBtn.disabled = false;
+          resendOtpBtn.classList.remove('opacity-50', 'pointer-events-none');
+          resendOtpText.textContent = 'Resend Code';
+        } else {
+          resendOtpText.textContent = `Resend in ${seconds}s`;
+        }
+      }, 1000);
+    }
+
+    resendOtpBtn?.addEventListener('click', () => {
+      if (lastSentPhoneNumber) {
+        phoneNumberInput.value = lastSentPhoneNumber.replace(/^\+91/, '');
+        handleSendPhoneOtp();
+      }
+    });
+
+    changePhoneBtn?.addEventListener('click', () => {
+      clearAlerts();
+      otpVerifySection.classList.add('hidden');
+      phoneEntryForm.classList.remove('hidden');
+      phoneNumberInput.focus();
+    });
+
+    otpVerifyForm?.addEventListener('submit', handleVerifyPhoneOtp);
+
+    async function handleVerifyPhoneOtp() {
+      clearAlerts();
+      const otpCode = otpCodeInput.value.trim().replace(/[^0-9]/g, '');
+      if (otpCode.length < 6) {
+        showAlert('Please enter the complete 6-digit verification code.');
+        otpCodeInput.focus();
+        return;
+      }
+
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying Code...';
+      showGlobalLoader('Verifying Code...', 'Authenticating devotee session...', '🪔', 'Verifying OTP...');
+
+      try {
+        const rawName = phoneNameInput.value.trim();
+        const profile = await window.AkalbodhonFirebase.verifyPhoneOtp(
+          activeConfirmationResult,
+          otpCode,
+          currentMode === 'signup',
+          rawName,
+          { phoneNumber: lastSentPhoneNumber }
+        );
+
+        if (profile) {
+          hideGlobalLoader();
+          showLoggedInState(profile);
+          showAlert(`Welcome, ${profile.username}! Authenticated with mobile number. Redirecting to home...`, false);
+          setTimeout(() => { window.location.href = 'index.html'; }, 700);
+        }
+      } catch (err) {
+        console.error('Verify OTP error:', err);
+        hideGlobalLoader();
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtnLabel.textContent = 'Verify & Continue';
+        showAlert(err.message || 'Invalid or expired OTP code. Please verify the code or request a new one.');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // EMAIL & PASSWORD AUTH HANDLERS
+    // -------------------------------------------------------------
+    emailAuthForm?.addEventListener('submit', handleEmailAuth);
+
+    async function handleEmailAuth() {
+      clearAlerts();
+      const rawEmail = emailAddressInput.value.trim().toLowerCase();
+      const rawPassword = emailPasswordInput.value;
+      const rawName = emailNameInput.value.trim();
+
+      if (!rawEmail || !rawEmail.includes('@') || !rawEmail.includes('.')) {
+        showAlert('Please enter a valid email address.');
+        emailAddressInput.focus();
+        return;
+      }
+
+      if (rawPassword.length < 6) {
+        showAlert('Password must be at least 6 characters (letters and numbers recommended).');
+        emailPasswordInput.focus();
+        return;
+      }
+
+      if (currentMode === 'signup' && !rawName) {
+        showAlert('Please enter your name so we know what to call you.');
+        emailNameInput.focus();
+        return;
+      }
+
+      emailSubmitBtn.disabled = true;
+      emailSubmitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${currentMode === 'signup' ? 'Creating Account...' : 'Signing In...'}`;
+      showGlobalLoader(
+        currentMode === 'signup' ? 'Creating Account...' : 'Signing In...',
+        'Authenticating with devotee sanctuary...',
+        '🪔',
+        'Securing session...'
+      );
+
+      try {
+        if (currentMode === 'signup') {
+          // --- CREATE ACCOUNT WITH EMAIL & PASSWORD ---
+          let profile = null;
+          try {
+            profile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawEmail, rawPassword, rawName);
+          } catch (regErr) {
+            if (regErr.code === 'auth/email-already-in-use') {
+              hideGlobalLoader();
+              emailSubmitBtn.disabled = false;
+              emailSubmitLabel.textContent = 'Create Account with Email';
+
+              const actionBtn = document.createElement('button');
+              actionBtn.type = 'button';
+              actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
+              actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Email';
+              actionBtn.onclick = () => {
+                setAuthMode('login', rawEmail, 'email');
+              };
+
+              showAlert(`An account with <strong>${rawEmail}</strong> already exists. Please sign in instead.`, true, actionBtn);
+              return;
+            }
+            throw regErr;
+          }
+
+          if (profile) {
+            hideGlobalLoader();
+            showLoggedInState(profile);
+            showAlert(`Welcome, ${profile.username}! Your devotee account has been created. Redirecting...`, false);
+            setTimeout(() => { window.location.href = 'index.html'; }, 700);
+          }
+
+        } else {
+          // --- SIGN IN WITH EMAIL & PASSWORD ---
+          // 1. First check if account exists in database
+          const existing = await checkDevoteeAccountExists(rawEmail);
+          if (!existing) {
+            hideGlobalLoader();
+            emailSubmitBtn.disabled = false;
+            emailSubmitLabel.textContent = 'Sign In with Email';
+
+            const actionBtn = document.createElement('button');
+            actionBtn.type = 'button';
+            actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+            actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
+            actionBtn.onclick = () => {
+              setAuthMode('signup', rawEmail, 'email');
+            };
+
+            showAlert(
+              `No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`,
+              true,
+              actionBtn
+            );
+            return;
+          }
+
+          // 2. Authenticate with Firebase Email & Password
+          let profile = null;
+          try {
+            profile = await window.AkalbodhonFirebase.signInWithEmailPassword(rawEmail, rawPassword);
+          } catch (signInErr) {
+            console.warn('Firebase email sign in error:', signInErr);
+            if (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential') {
+              hideGlobalLoader();
+              emailSubmitBtn.disabled = false;
+              emailSubmitLabel.textContent = 'Sign In with Email';
+              showAlert('Incorrect password. Please verify your password and try again.');
+              return;
+            } else if (signInErr.code === 'auth/user-not-found') {
+              hideGlobalLoader();
+              emailSubmitBtn.disabled = false;
+              emailSubmitLabel.textContent = 'Sign In with Email';
+
+              const actionBtn = document.createElement('button');
+              actionBtn.type = 'button';
+              actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+              actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
+              actionBtn.onclick = () => { setAuthMode('signup', rawEmail, 'email'); };
+
+              showAlert(`No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`, true, actionBtn);
+              return;
+            }
+            throw signInErr;
+          }
+
+          if (profile) {
+            hideGlobalLoader();
+            showLoggedInState(profile);
+            showAlert(`Welcome, ${profile.username}! Signed in successfully. Redirecting to home...`, false);
+            setTimeout(() => { window.location.href = 'index.html'; }, 700);
+          }
+        }
+      } catch (err) {
+        console.error('Email auth error:', err);
+        hideGlobalLoader();
+        emailSubmitBtn.disabled = false;
+        emailSubmitLabel.textContent = currentMode === 'signup' ? 'Create Account with Email' : 'Sign In with Email';
+        showAlert(err.message || 'Authentication error occurred. Please try again.');
+      }
+    }
+
+    // -------------------------------------------------------------
+    // SESSION STATE & SIGN OUT
+    // -------------------------------------------------------------
+    function showLoggedInState(user) {
+      authFlowContainer.classList.add('hidden');
+      loggedInView.classList.remove('hidden');
+      loggedName.textContent = user.username || user.full_name || 'Devotee';
+      loggedIdentifier.textContent = user.identifier || user.email || user.phone || user.id || 'User';
+
       if (loggedAvatarContainer) {
-        if (user.custom_avatar_url || (user.identifier_type === 'google' && user.google_photo_url)) {
+        if (user.custom_avatar_url || user.google_photo_url) {
           const photoSrc = user.custom_avatar_url || user.google_photo_url;
           loggedAvatarContainer.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
         } else {
@@ -637,790 +1072,37 @@
       }
     }
 
-    // Check Existing Session
-    async function checkCurrentSession() {
-      showTopProgressBar();
-      try {
-        if (supabaseClient) {
-          try {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session && session.user) {
-              const u = session.user;
-              const isPhoneSession = (!u.email && !!u.phone) || u.app_metadata?.provider === 'phone';
-              const userIdentifier = u.phone ? (u.phone.startsWith('+') ? u.phone : '+' + u.phone) : (u.email || 'devotee');
-              const sessionUser = {
-                id: u.id,
-                user_id: u.id,
-                identifier: userIdentifier,
-                identifier_type: isPhoneSession ? 'phone' : (u.app_metadata?.provider === 'google' ? 'google' : 'email'),
-                phone: isPhoneSession ? userIdentifier : null,
-                email: u.email || null,
-                provider: isPhoneSession ? 'phone' : (u.app_metadata?.provider === 'google' ? 'google' : 'email'),
-                username: u.user_metadata?.username || u.user_metadata?.full_name || u.user_metadata?.name || (isPhoneSession ? 'Devotee' : (u.email ? u.email.split('@')[0] : 'Devotee')),
-                avatar: u.user_metadata?.avatar || '🪔',
-                google_photo_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
-                custom_avatar_url: u.user_metadata?.avatar_url || u.user_metadata?.picture || null,
-                created_at: u.created_at || new Date().toISOString()
-              };
-              
-              // Sync with profile table
-              const { data: profs } = await supabaseClient.from('profiles').select('*').or(`id.eq.${u.id},identifier.eq.${userIdentifier}`).limit(1);
-              if (profs && profs.length > 0) {
-                const prof = profs[0];
-                if (prof.username) sessionUser.username = prof.username;
-                if (sessionUser.identifier_type === 'google') {
-                  sessionUser.google_photo_url = sessionUser.google_photo_url || prof.google_photo_url || null;
-                  sessionUser.custom_avatar_url = sessionUser.google_photo_url;
-                } else {
-                  if (!prof.avatar || !prof.avatar_assigned) {
-                    sessionUser.avatar = getRandomPujaIcon();
-                    sessionUser.avatar_assigned = true;
-                  } else {
-                    sessionUser.avatar = prof.avatar;
-                    sessionUser.avatar_assigned = true;
-                  }
-                  sessionUser.custom_avatar_url = null;
-                }
-                if (prof.saved_items) localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(prof.saved_items));
-                if (prof.custom_plans) localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(prof.custom_plans));
-              }
-              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(sessionUser));
-              showLoggedInState(sessionUser);
-              return;
-            }
-          } catch (e) {
-            console.warn('Session check error:', e);
-          }
-        }
-
-        const local = localStorage.getItem('akalbodhon_user_profile');
-        if (local) {
-          try {
-            const user = JSON.parse(local);
-            if (user && (user.id || user.user_id)) {
-              showLoggedInState(user);
-            }
-          } catch (e) {}
-        }
-      } finally {
-        hideTopProgressBar();
-      }
-    }
-
-    function showLoggedInState(user) {
-      currentLoggedInUser = user;
-      authFlowContainer.classList.add('hidden');
-      loggedInView.classList.remove('hidden');
-      loggedName.textContent = user.username || user.full_name || 'Devotee';
-      loggedIdentifier.textContent = user.identifier || user.user_id || user.id || 'User ID';
-      updateLoggedInAvatarDisplay(user);
-    }
-
-    // Sign Out
-    signoutBtn.onclick = async () => {
-      const userRaw = localStorage.getItem('akalbodhon_user_profile');
-      if (userRaw) {
+    function checkActiveSession() {
+      const raw = localStorage.getItem('akalbodhon_user_profile');
+      if (raw) {
         try {
-          const u = JSON.parse(userRaw);
-          const bm = JSON.parse(localStorage.getItem('akalbodhon_bookmarks') || '[]');
-          const pl = JSON.parse(localStorage.getItem('akalbodhon_custom_plans') || '[]');
-          const uid = u.phone || u.identifier || u.email || u.id;
-          if (uid) {
-            const cleanDigits = String(uid).replace(/[^0-9]/g, '');
-            const key = (!String(uid).includes('@') && cleanDigits.length >= 7)
-              ? 'phone_' + (cleanDigits.length === 10 ? '91' + cleanDigits : cleanDigits)
-              : (String(uid).includes('@') ? 'email_' + String(uid).toLowerCase().replace(/[^a-z0-9]/g, '_') : 'id_' + String(uid).toLowerCase().replace(/[^a-z0-9]/g, '_'));
-            const data = {
-              identifier: uid,
-              user_key: key,
-              bookmarks: bm,
-              custom_plans: pl,
-              updated_at: new Date().toISOString()
-            };
-            localStorage.setItem('akalbodhon_user_data_' + key, JSON.stringify(data));
-            if (key.startsWith('phone_')) {
-              localStorage.setItem('akalbodhon_user_data_' + cleanDigits, JSON.stringify(data));
-            }
+          const u = JSON.parse(raw);
+          if (u && (u.id || u.user_id || u.identifier)) {
+            showLoggedInState(u);
           }
         } catch (_) {}
       }
+    }
+
+    checkActiveSession();
+
+    signoutBtn?.addEventListener('click', async () => {
       localStorage.removeItem('akalbodhon_user_profile');
-      // Devotee's saved itinerary remains safely preserved
+      localStorage.removeItem('akalbodhon_bookmarks');
+      localStorage.removeItem('akalbodhon_custom_plans');
+
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          await window.AkalbodhonFirebase.signOutUser();
-        } catch (e) {}
+        try { await window.AkalbodhonFirebase.signOutUser(); } catch (_) {}
       }
+      if (supabaseClient) {
+        try { await supabaseClient.auth.signOut(); } catch (_) {}
+      }
+
       loggedInView.classList.add('hidden');
       authFlowContainer.classList.remove('hidden');
-      showAlert('Signed out successfully. Your saved itinerary remains available.', false);
-    };
-
-    // Normalize devotee phone numbers to standard E.164 format (+91 default for Bengal / India)
-    function formatPhoneNumber(raw) {
-      if (!raw) return '';
-      const clean = String(raw).trim();
-      const digits = clean.replace(/[^0-9]/g, '');
-      if (clean.startsWith('+')) return '+' + digits;
-      if (digits.length === 10) return '+91' + digits; // Kolkata / India default (+91)
-      if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1);
-      if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
-      return '+' + digits;
-    }
-
-    // Form Submit Handler
-    async function handleAuth() {
-      clearAlerts();
-      const rawIdentifier = useridInput.value.trim();
-      const rawPassword = pwdInput.value;
-      const rawName = nameInput.value.trim();
-
-      if (!rawIdentifier) {
-        showAlert('Please enter your email or phone number.');
-        return;
-      }
-
-      if (rawPassword.length < 6) {
-        showAlert('Password must be at least 6 characters (letters and numbers recommended).');
-        return;
-      }
-
-      const cleanIdentifier = rawIdentifier.toLowerCase();
-      const cleanPhoneDigits = rawIdentifier.replace(/[^0-9]/g, '');
-      const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
-      const isPhone = !isEmail && cleanPhoneDigits.length >= 7 && cleanPhoneDigits.length <= 15;
-      const formattedPhone = isPhone ? formatPhoneNumber(rawIdentifier) : null;
-      const safeDocId = isPhone ? cleanPhoneDigits : cleanIdentifier.replace(/[^a-z0-9]/g, '_');
-
-      const originalLabel = submitLabel.textContent;
-      submitBtn.disabled = true;
-      submitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${currentMode === 'signup' ? 'Creating Account...' : 'Signing In...'}`;
-
-      showGlobalLoader(
-        currentMode === 'signup' ? 'Creating Devotee Account...' : 'Signing In to Sanctuary...',
-        currentMode === 'signup' ? 'Securing devotee credentials & establishing cloud itinerary...' : 'Verifying credentials & syncing personal festival plans...',
-        '🪔',
-        currentMode === 'signup' ? 'Registering Account...' : 'Authenticating with Cloud...'
-      );
-
-      try {
-        const passwordHash = await hashPassword(rawPassword);
-
-        if (currentMode === 'signup') {
-          // --- CREATE ACCOUNT ---
-          const displayName = rawName || (isPhone ? 'Devotee' : (isEmail ? rawIdentifier.split('@')[0] : 'Devotee'));
-
-          // Check if account with this identifier already exists in Supabase or Firebase
-          let existing = null;
-          if (supabaseClient) {
-            try {
-              const orQuery = isPhone 
-                ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
-                : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
-              const { data } = await supabaseClient
-                .from('profiles')
-                .select('id, identifier')
-                .or(orQuery)
-                .limit(1);
-              if (data && data.length > 0) existing = data[0];
-            } catch (e) {}
-          }
-
-          if (!existing && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
-            try {
-              existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-            } catch (e) {
-              console.warn('Firebase duplicate check notice:', e);
-            }
-          } else if (!existing && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            try {
-              existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-            } catch (e) {}
-          }
-
-          if (existing) {
-            showAlert('An account with this ' + (isPhone ? 'phone number' : 'email') + ' already exists. Please sign in instead with the same credentials.');
-            setTimeout(() => {
-              setAuthMode('login');
-            }, 2200);
-            return;
-          }
-
-          let initialSaved = [];
-          try {
-            const b = localStorage.getItem('akalbodhon_bookmarks');
-            if (b) initialSaved = JSON.parse(b);
-          } catch (e) {}
-
-          let initialPlans = [];
-          try {
-            const p = localStorage.getItem('akalbodhon_custom_plans');
-            if (p) initialPlans = JSON.parse(p);
-          } catch (e) {}
-
-          let supabaseAuthUser = null;
-          const randomAvatar = getRandomPujaIcon();
-
-          // Register in Supabase Authentication section
-          if (supabaseClient) {
-            try {
-              if (isPhone) {
-                // Register under native 'phone' provider in Supabase Authentication
-                const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
-                  phone: formattedPhone,
-                  password: rawPassword,
-                  options: {
-                    data: {
-                      username: displayName,
-                      avatar: randomAvatar,
-                      identifier: formattedPhone,
-                      identifier_type: 'phone'
-                    }
-                  }
-                });
-                if (sbErr) {
-                  console.warn('Supabase phone signUp notice:', sbErr);
-                  if (sbErr.message && (sbErr.message.toLowerCase().includes('already') || sbErr.status === 400 || sbErr.status === 422)) {
-                    showAlert('An account with this phone number already exists in Supabase. Please sign in instead.');
-                    setTimeout(() => { setAuthMode('login'); }, 2200);
-                    return;
-                  }
-                } else if (sbData && sbData.user) {
-                  supabaseAuthUser = sbData.user;
-                }
-              } else if (isEmail) {
-                // Register under native 'email' provider in Supabase Authentication
-                const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
-                  email: cleanIdentifier,
-                  password: rawPassword,
-                  options: {
-                    data: {
-                      username: displayName,
-                      avatar: randomAvatar,
-                      identifier: cleanIdentifier,
-                      identifier_type: 'email'
-                    }
-                  }
-                });
-                if (sbErr) {
-                  console.warn('Supabase email signUp notice:', sbErr);
-                  if (sbErr.message && sbErr.message.toLowerCase().includes('already')) {
-                    showAlert('An account with this email already exists in Supabase. Please sign in instead.');
-                    setTimeout(() => { setAuthMode('login'); }, 2200);
-                    return;
-                  }
-                } else if (sbData && sbData.user) {
-                  supabaseAuthUser = sbData.user;
-                }
-              }
-            } catch (supAuthErr) {
-              console.warn('Supabase auth signup error:', supAuthErr);
-            }
-          }
-
-          // For email devotees, register with Firebase Auth if available
-          let fbProfile = null;
-          if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
-            try {
-              const regResult = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
-                avatar: randomAvatar,
-                saved_items: initialSaved,
-                custom_plans: initialPlans
-              });
-              if (regResult) {
-                fbProfile = regResult.profile || regResult;
-              }
-            } catch (fbAuthErr) {
-              console.warn('Firebase Auth registration notice:', fbAuthErr);
-              if (fbAuthErr.code === 'auth/email-already-in-use') {
-                showAlert('An account with this email already exists in Firebase. Please sign in instead.');
-                setTimeout(() => {
-                  setAuthMode('login');
-                }, 2200);
-                return;
-              }
-            }
-          }
-
-          const profileId = (supabaseAuthUser && supabaseAuthUser.id)
-            ? supabaseAuthUser.id
-            : (fbProfile && fbProfile.id ? fbProfile.id : (isPhone ? cleanPhoneDigits : safeDocId));
-
-          const newProfile = {
-            id: profileId,
-            user_id: isPhone ? formattedPhone : (profileId || rawIdentifier),
-            identifier: isPhone ? formattedPhone : (cleanIdentifier || rawIdentifier),
-            identifier_type: isPhone ? 'phone' : (isEmail ? 'email' : 'identifier'),
-            email: isEmail ? rawIdentifier : null,
-            phone: isPhone ? formattedPhone : null,
-            provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
-            username: displayName,
-            avatar: randomAvatar,
-            avatar_assigned: true,
-            avatar_type: 'puja',
-            custom_avatar_url: null,
-            google_photo_url: null,
-            password_hash: passwordHash,
-            saved_items: initialSaved,
-            custom_plans: initialPlans,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          };
-
-          // Save to Firebase Firestore ('users' collection)
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            try {
-              await window.AkalbodhonFirebase.syncProfile(newProfile);
-            } catch (e) {
-              console.warn('Firebase syncProfile notice:', e);
-            }
-          }
-
-          // Save to Supabase public.profiles table
-          if (supabaseClient) {
-            try {
-              await supabaseClient.from('profiles').upsert(newProfile);
-            } catch (e) {
-              console.warn('Supabase profile upsert notice:', e);
-            }
-          }
-
-          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(newProfile));
-          showAlert(`Welcome ${displayName}! Your account has been created. Redirecting to home...`, false);
-          setTimeout(() => { window.location.href = 'index.html'; }, 800);
-
-        } else {
-          // --- SIGN IN ---
-          let foundProfile = null;
-          let authenticatedBySupabase = false;
-
-          // 1. If phone number: authenticate directly against Supabase Phone Auth!
-          if (isPhone && supabaseClient) {
-            try {
-              // First try with formattedPhone (+91...)
-              let { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-                phone: formattedPhone,
-                password: rawPassword
-              });
-              // If failed, try with clean digits (e.g. 919876543210)
-              if (sbErr && cleanPhoneDigits && cleanPhoneDigits !== formattedPhone) {
-                const { data: sbRes2, error: sbErr2 } = await supabaseClient.auth.signInWithPassword({
-                  phone: cleanPhoneDigits,
-                  password: rawPassword
-                });
-                if (!sbErr2 && sbRes2 && sbRes2.user) {
-                  sbRes = sbRes2;
-                  sbErr = null;
-                }
-              }
-
-              if (!sbErr && sbRes && sbRes.user) {
-                authenticatedBySupabase = true;
-                const u = sbRes.user;
-                try {
-                  const { data: profs } = await supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .or(`id.eq.${u.id},identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone}`)
-                    .limit(1);
-                  if (profs && profs.length > 0) {
-                    foundProfile = profs[0];
-                  }
-                } catch (e) {}
-
-                if (!foundProfile) {
-                  foundProfile = {
-                    id: u.id,
-                    user_id: formattedPhone,
-                    identifier: formattedPhone,
-                    identifier_type: 'phone',
-                    phone: formattedPhone,
-                    email: null,
-                    provider: 'phone',
-                    username: u.user_metadata?.username || u.user_metadata?.full_name || 'Devotee',
-                    avatar: u.user_metadata?.avatar || '🪔',
-                    avatar_type: 'puja',
-                    saved_items: [],
-                    custom_plans: [],
-                    created_at: u.created_at || new Date().toISOString()
-                  };
-                }
-              } else if (sbErr) {
-                console.warn('Supabase phone signInWithPassword notice:', sbErr.message);
-              }
-            } catch (err) {
-              console.warn('Supabase phone auth error:', err);
-            }
-          }
-
-          // 2. If email: try Supabase email sign in
-          if (isEmail && supabaseClient && !foundProfile) {
-            try {
-              const { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-                email: cleanIdentifier,
-                password: rawPassword
-              });
-              if (!sbErr && sbRes && sbRes.user) {
-                authenticatedBySupabase = true;
-                const u = sbRes.user;
-                try {
-                  const { data: profs } = await supabaseClient
-                    .from('profiles')
-                    .select('*')
-                    .or(`id.eq.${u.id},identifier.eq.${cleanIdentifier},email.eq.${cleanIdentifier}`)
-                    .limit(1);
-                  if (profs && profs.length > 0) {
-                    foundProfile = profs[0];
-                  }
-                } catch (e) {}
-                if (!foundProfile) {
-                  foundProfile = {
-                    id: u.id,
-                    user_id: u.id,
-                    identifier: cleanIdentifier,
-                    identifier_type: 'email',
-                    email: cleanIdentifier,
-                    phone: null,
-                    provider: 'email',
-                    username: u.user_metadata?.username || u.user_metadata?.full_name || cleanIdentifier.split('@')[0],
-                    avatar: u.user_metadata?.avatar || '🪔',
-                    avatar_type: 'puja',
-                    saved_items: [],
-                    custom_plans: [],
-                    created_at: u.created_at || new Date().toISOString()
-                  };
-                }
-              }
-            } catch (err) {
-              console.warn('Supabase email auth notice:', err);
-            }
-          }
-
-          // 3. If email: try Firebase Authentication
-          if (isEmail && !foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
-            try {
-              const fbLoginRes = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
-                avatar: '🪔'
-              });
-              if (fbLoginRes) {
-                foundProfile = fbLoginRes.profile || fbLoginRes.user || fbLoginRes;
-              }
-            } catch (fbErr) {
-              console.warn('Firebase signInWithEmailPassword notice:', fbErr);
-              if (fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
-                showAlert('Incorrect password. Please verify your password and try again.');
-                return;
-              }
-            }
-          }
-
-          // 4. Try Supabase profiles table lookup
-          if (!foundProfile && supabaseClient) {
-            try {
-              const orQuery = isPhone
-                ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
-                : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
-              const { data, error: fetchErr } = await supabaseClient
-                .from('profiles')
-                .select('*')
-                .or(orQuery)
-                .limit(1);
-
-              if (!fetchErr && data && data.length > 0) {
-                foundProfile = data[0];
-              }
-            } catch (e) {}
-          }
-
-          // 5. Try Firebase Firestore
-          if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
-            try {
-              foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-            } catch (e) {
-              console.warn('Firebase getProfile notice:', e);
-            }
-          }
-
-          if (!foundProfile && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            try {
-              foundProfile = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-            } catch (e) {}
-          }
-
-          // 6. Cached profile fallback
-          if (!foundProfile) {
-            const cached = localStorage.getItem('akalbodhon_user_profile');
-            if (cached) {
-              try {
-                const p = JSON.parse(cached);
-                if (
-                  p.identifier?.toLowerCase() === cleanIdentifier ||
-                  p.user_id?.toLowerCase() === cleanIdentifier ||
-                  p.id === safeDocId ||
-                  (isPhone && (p.phone === formattedPhone || p.phone === cleanPhoneDigits || p.identifier === formattedPhone))
-                ) {
-                  foundProfile = p;
-                }
-              } catch (e) {}
-            }
-          }
-
-          if (!foundProfile) {
-            showAlert('No devotee account found with this ' + (isPhone ? 'phone number' : 'email') + '. Please create an account.');
-            return;
-          }
-
-          // If not already authenticated by Supabase Auth session, verify password hash
-          if (!authenticatedBySupabase) {
-            if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
-              showAlert('Incorrect password. Please try again.');
-              return;
-            }
-
-            // Password verified! Auto-enroll / link user into Supabase Native Auth if missing
-            if (supabaseClient) {
-              try {
-                if (isPhone) {
-                  // Auto-create in Supabase phone authentication so their Sign-in provider is phone!
-                  const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
-                    phone: formattedPhone,
-                    password: rawPassword,
-                    options: {
-                      data: {
-                        username: foundProfile.username || 'Devotee',
-                        avatar: foundProfile.avatar || '🪔',
-                        identifier: formattedPhone,
-                        identifier_type: 'phone'
-                      }
-                    }
-                  });
-                  if (!upErr) {
-                    await supabaseClient.auth.signInWithPassword({
-                      phone: formattedPhone,
-                      password: rawPassword
-                    });
-                  }
-                } else if (isEmail) {
-                  const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
-                    email: cleanIdentifier,
-                    password: rawPassword,
-                    options: {
-                      data: {
-                        username: foundProfile.username || 'Devotee',
-                        avatar: foundProfile.avatar || '🪔',
-                        identifier: cleanIdentifier,
-                        identifier_type: 'email'
-                      }
-                    }
-                  });
-                  if (!upErr) {
-                    await supabaseClient.auth.signInWithPassword({
-                      email: cleanIdentifier,
-                      password: rawPassword
-                    });
-                  }
-                }
-              } catch (autoEnrollErr) {
-                console.warn('Auto-enroll in Supabase notice:', autoEnrollErr);
-              }
-            }
-          }
-
-          // Fetch & restore saved details stored under devotee's specific identifier
-          const userStorageKey = isPhone
-            ? 'phone_' + (cleanPhoneDigits.length === 10 ? '91' + cleanPhoneDigits : cleanPhoneDigits)
-            : (isEmail ? 'email_' + cleanIdentifier.replace(/[^a-z0-9]/g, '_') : 'id_' + safeDocId);
-
-          let localBm = [];
-          try { localBm = JSON.parse(localStorage.getItem('akalbodhon_bookmarks') || '[]'); } catch (_) {}
-          let restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
-
-          // Load from user-specific persistent store if present
-          const userKeyCandidates = [
-            `akalbodhon_user_data_${userStorageKey}`,
-            `akalbodhon_user_data_${cleanPhoneDigits}`,
-            `akalbodhon_user_data_id_${safeDocId}`
-          ];
-          for (const cand of userKeyCandidates) {
-            const raw = localStorage.getItem(cand);
-            if (raw) {
-              try {
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed.bookmarks) && parsed.bookmarks.length > 0) {
-                  const m = new Map();
-                  restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-                  parsed.bookmarks.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-                  restoredSavedItems = Array.from(m.values());
-                  break;
-                }
-              } catch (_) {}
-            }
-          }
-
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserSavedItems === 'function') {
-            try {
-              const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(foundProfile);
-              if (Array.isArray(fbSaved) && fbSaved.length > 0) {
-                const m = new Map();
-                restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-                fbSaved.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-                restoredSavedItems = Array.from(m.values());
-              }
-            } catch (e) {
-              console.warn('Firebase saved items fetch notice:', e);
-            }
-          }
-
-          // Merge any current local bookmarks from guest session
-          if (localBm.length > 0) {
-            const m = new Map();
-            restoredSavedItems.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-            localBm.forEach(b => { if (b && (b.id || b.name)) m.set(b.id || b.name, b); });
-            restoredSavedItems = Array.from(m.values());
-          }
-          localStorage.setItem('akalbodhon_bookmarks', JSON.stringify(restoredSavedItems));
-
-          let localPlans = [];
-          try { localPlans = JSON.parse(localStorage.getItem('akalbodhon_custom_plans') || '[]'); } catch (_) {}
-          let restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
-          for (const cand of userKeyCandidates) {
-            const raw = localStorage.getItem(cand);
-            if (raw) {
-              try {
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed.custom_plans) && parsed.custom_plans.length > 0) {
-                  const m = new Map();
-                  restoredCustomPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
-                  parsed.custom_plans.forEach(p => { if (p && p.id) m.set(p.id, p); });
-                  restoredCustomPlans = Array.from(m.values());
-                  break;
-                }
-              } catch (_) {}
-            }
-          }
-
-          if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchUserPlans === 'function') {
-            try {
-              const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(foundProfile);
-              if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-                const planMap = new Map();
-                restoredCustomPlans.forEach(p => planMap.set(p.id, p));
-                fbPlans.forEach(p => planMap.set(p.id, p));
-                restoredCustomPlans = Array.from(planMap.values());
-              }
-            } catch (e) {
-              console.warn('Firebase plans fetch notice:', e);
-            }
-          }
-
-          if (localPlans.length > 0) {
-            const m = new Map();
-            restoredCustomPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
-            localPlans.forEach(p => { if (p && p.id) m.set(p.id, p); });
-            restoredCustomPlans = Array.from(m.values());
-          }
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(restoredCustomPlans));
-
-          // Save under devotee's specific identifier store
-          localStorage.setItem(`akalbodhon_user_data_${userStorageKey}`, JSON.stringify({
-            identifier: isPhone ? formattedPhone : cleanIdentifier,
-            user_key: userStorageKey,
-            bookmarks: restoredSavedItems,
-            custom_plans: restoredCustomPlans,
-            updated_at: new Date().toISOString()
-          }));
-          if (userStorageKey.startsWith('phone_')) {
-            localStorage.setItem(`akalbodhon_user_data_${cleanPhoneDigits}`, JSON.stringify({
-              identifier: formattedPhone,
-              user_key: userStorageKey,
-              bookmarks: restoredSavedItems,
-              custom_plans: restoredCustomPlans,
-              updated_at: new Date().toISOString()
-            }));
-          }
-
-          let devoteeAvatar = foundProfile.avatar;
-          if (!devoteeAvatar || !foundProfile.avatar_assigned) {
-            devoteeAvatar = getRandomPujaIcon();
-            foundProfile.avatar = devoteeAvatar;
-            foundProfile.avatar_assigned = true;
-            if (supabaseClient) {
-              supabaseClient.from('profiles').update({
-                avatar: devoteeAvatar,
-                custom_avatar_url: null,
-                updated_at: new Date().toISOString()
-              }).eq('id', foundProfile.id || foundProfile.user_id).catch(() => {});
-            }
-            if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-              window.AkalbodhonFirebase.syncProfile({
-                id: foundProfile.id || foundProfile.user_id,
-                avatar: devoteeAvatar,
-                custom_avatar_url: null
-              }).catch(() => {});
-            }
-          }
-
-          const authenticatedUser = {
-            id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
-            user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
-            identifier: isPhone ? (foundProfile.identifier || formattedPhone) : (foundProfile.identifier || rawIdentifier),
-            identifier_type: isPhone ? 'phone' : (foundProfile.identifier_type || (isEmail ? 'email' : 'phone')),
-            phone: isPhone ? (foundProfile.phone || formattedPhone) : null,
-            email: isEmail ? (foundProfile.email || rawIdentifier) : null,
-            provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
-            username: foundProfile.username || 'Devotee',
-            avatar: devoteeAvatar,
-            avatar_assigned: true,
-            custom_avatar_url: null,
-            google_photo_url: null,
-            saved_items: restoredSavedItems,
-            custom_plans: restoredCustomPlans,
-            feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
-            created_at: foundProfile.created_at || new Date().toISOString()
-          };
-
-          // Synchronize account-specific feedback cooldown timer immediately
-          if (foundProfile.feedback_cooldown_until) {
-            const exp = parseInt(foundProfile.feedback_cooldown_until, 10);
-            const uid = String(authenticatedUser.id || authenticatedUser.user_id || authenticatedUser.identifier).toLowerCase().replace(/[^a-z0-9]/g, '_');
-            if (!isNaN(exp) && exp > Date.now()) {
-              localStorage.setItem('akalbodhon_feedback_cooldown_' + uid, exp.toString());
-            } else {
-              localStorage.removeItem('akalbodhon_feedback_cooldown_' + uid);
-            }
-          }
-
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            window.AkalbodhonFirebase.syncProfile(authenticatedUser).catch(() => {});
-          }
-
-          localStorage.setItem('akalbodhon_user_profile', JSON.stringify(authenticatedUser));
-          showAlert(`Welcome back, ${authenticatedUser.username}! Redirecting to home...`, false);
-          setTimeout(() => { window.location.href = 'index.html'; }, 800);
-        }
-
-      } catch (err) {
-        console.error('Auth error:', err);
-        showAlert('An unexpected error occurred. Please try again.');
-      } finally {
-        hideGlobalLoader();
-        submitBtn.disabled = false;
-        submitLabel.textContent = originalLabel;
-      }
-    }
-
-    submitBtn.addEventListener('click', handleAuth);
-    authForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleAuth();
+      showAlert('Signed out of Akalbodhon.', false);
     });
 
-    // Initialize counters
-    updateDynamicCounter(useridInput, useridCounter, 10, 'length');
-    updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
-
-    // Run check on mount
-    checkCurrentSession();
   </script>
 </body>
 </html>

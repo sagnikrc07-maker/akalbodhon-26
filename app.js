@@ -4840,35 +4840,173 @@
     }
   }
 
-  function openAuthModal(mode = 'login') {
+  // Active auth modal state
+  let currentAuthModalMode = 'login'; // 'login' | 'signup'
+  let currentAuthModalMethod = 'phone'; // 'phone' | 'email'
+  let activeModalConfirmationResult = null;
+  let lastModalPhoneNumber = '';
+  let modalResendCooldownTimer = null;
+
+  function clearAuthModalAlerts() {
+    const errorAlert = document.getElementById('auth-error-alert');
+    const successAlert = document.getElementById('auth-success-alert');
+    const errorActionContainer = document.getElementById('auth-error-action-container');
+    if (errorAlert) errorAlert.classList.add('hidden');
+    if (successAlert) successAlert.classList.add('hidden');
+    if (errorActionContainer) {
+      errorActionContainer.innerHTML = '';
+      errorActionContainer.classList.add('hidden');
+    }
+  }
+
+  function showAuthModalError(msg, actionElement = null) {
+    const alertEl = document.getElementById('auth-error-alert');
+    const msgEl = document.getElementById('auth-error-msg');
+    const actionContainer = document.getElementById('auth-error-action-container');
+    if (alertEl && msgEl) {
+      msgEl.innerHTML = msg;
+      if (actionContainer) {
+        actionContainer.innerHTML = '';
+        if (actionElement) {
+          actionContainer.appendChild(actionElement);
+          actionContainer.classList.remove('hidden');
+        } else {
+          actionContainer.classList.add('hidden');
+        }
+      }
+      alertEl.classList.remove('hidden');
+    }
+  }
+
+  function showAuthModalSuccess(msg) {
+    const successEl = document.getElementById('auth-success-alert');
+    const msgEl = document.getElementById('auth-success-msg');
+    if (successEl && msgEl) {
+      msgEl.innerHTML = msg;
+      successEl.classList.remove('hidden');
+    }
+  }
+
+  function setAuthMethodModal(method = 'phone') {
+    currentAuthModalMethod = method;
+    clearAuthModalAlerts();
+
+    const phoneBtn = document.getElementById('auth-method-phone-btn');
+    const emailBtn = document.getElementById('auth-method-email-btn');
+    const phoneSection = document.getElementById('auth-phone-section');
+    const emailSection = document.getElementById('auth-email-section');
+    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
+    const otpVerifySection = document.getElementById('auth-otp-verify-section');
+
+    if (method === 'phone') {
+      if (phoneBtn) {
+        phoneBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+      }
+      if (emailBtn) {
+        emailBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+      }
+      phoneSection?.classList.remove('hidden');
+      emailSection?.classList.add('hidden');
+
+      // Reset phone form view to step 1
+      phoneEntryForm?.classList.remove('hidden');
+      otpVerifySection?.classList.add('hidden');
+    } else {
+      if (emailBtn) {
+        emailBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+      }
+      if (phoneBtn) {
+        phoneBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer';
+      }
+      emailSection?.classList.remove('hidden');
+      phoneSection?.classList.add('hidden');
+    }
+  }
+
+  function setAuthMode(mode = 'login', presetValue = '', targetMethod = null) {
+    currentAuthModalMode = mode;
+    clearAuthModalAlerts();
+
+    const loginTab = document.getElementById('auth-tab-login');
+    const signupTab = document.getElementById('auth-tab-signup');
+    const titleEl = document.getElementById('auth-modal-title');
+    const phoneNameField = document.getElementById('auth-phone-name-field');
+    const emailNameField = document.getElementById('auth-email-name-field');
+    const sendOtpBtnLabel = document.getElementById('auth-send-otp-btn-label');
+    const emailSubmitLabel = document.getElementById('auth-email-submit-label');
+
+    // Reset phone view to step 1
+    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
+    const otpVerifySection = document.getElementById('auth-otp-verify-section');
+    phoneEntryForm?.classList.remove('hidden');
+    otpVerifySection?.classList.add('hidden');
+
+    if (mode === 'signup') {
+      loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      loginTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+
+      phoneNameField?.classList.remove('hidden');
+      emailNameField?.classList.remove('hidden');
+
+      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
+      if (emailSubmitLabel) emailSubmitLabel.textContent = 'Create Account with Email';
+      if (titleEl) titleEl.textContent = 'Create Devotee Account';
+    } else {
+      signupTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      signupTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
+      loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+      loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
+
+      phoneNameField?.classList.add('hidden');
+      emailNameField?.classList.add('hidden');
+
+      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send SMS OTP';
+      if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
+      if (titleEl) titleEl.textContent = 'Devotee Sign In';
+    }
+
+    if (targetMethod) {
+      setAuthMethodModal(targetMethod);
+    }
+
+    if (presetValue) {
+      if (currentAuthModalMethod === 'phone' || targetMethod === 'phone') {
+        const phoneInput = document.getElementById('auth-phone-number-input');
+        if (phoneInput) phoneInput.value = presetValue.replace(/^\+91/, '').trim();
+      } else {
+        const emailInput = document.getElementById('auth-email-address-input');
+        if (emailInput) emailInput.value = presetValue.trim();
+      }
+    }
+  }
+
+  function openAuthModal(mode = 'login', targetMethod = 'phone') {
     document.body.classList.add('modal-open');
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
 
-    setAuthMode(mode);
-    const errorAlert = document.getElementById('auth-error-alert');
-    if (errorAlert) errorAlert.classList.add('hidden');
+    setAuthMode(mode, '', targetMethod);
 
     const googleBtn = document.getElementById('google-auth-btn');
     if (googleBtn) googleBtn.disabled = false;
     const googleLabel = document.getElementById('google-auth-btn-label');
-    if (googleLabel) googleLabel.textContent = 'Sign in with Google';
+    if (googleLabel) googleLabel.textContent = 'Continue with Google';
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    const idInput = document.getElementById('auth-userid-input');
-    const idCounter = document.getElementById('auth-userid-counter');
-    const pwdInput = document.getElementById('auth-password-input');
-    const pwdCounter = document.getElementById('auth-password-counter');
-
-    if (idInput && idCounter) updateDynamicCounter(idInput, idCounter, 10, 'length');
-    if (pwdInput && pwdCounter) updateDynamicCounter(pwdInput, pwdCounter, 5, 'alphanumeric');
-
-    if (mode === 'signup') {
-      document.getElementById('auth-name-input')?.focus();
+    if (targetMethod === 'phone') {
+      const phoneInput = document.getElementById('auth-phone-number-input');
+      const phoneNameInput = document.getElementById('auth-phone-name-input');
+      if (mode === 'signup' && phoneNameInput) phoneNameInput.focus();
+      else if (phoneInput) phoneInput.focus();
     } else {
-      idInput?.focus();
+      const emailInput = document.getElementById('auth-email-address-input');
+      const emailNameInput = document.getElementById('auth-email-name-input');
+      if (mode === 'signup' && emailNameInput) emailNameInput.focus();
+      else if (emailInput) emailInput.focus();
     }
   }
 
@@ -4884,36 +5022,6 @@
     }
   }
 
-  function setAuthMode(mode = 'login') {
-    const loginTab = document.getElementById('auth-tab-login');
-    const signupTab = document.getElementById('auth-tab-signup');
-    const nameField = document.getElementById('auth-name-field');
-    const submitLabel = document.getElementById('auth-submit-label');
-    const titleEl = document.getElementById('auth-modal-title');
-    const errorAlert = document.getElementById('auth-error-alert');
-    const successAlert = document.getElementById('auth-success-alert');
-    if (errorAlert) errorAlert.classList.add('hidden');
-    if (successAlert) successAlert.classList.add('hidden');
-
-    if (mode === 'signup') {
-      loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      loginTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      nameField?.classList.remove('hidden');
-      if (submitLabel) submitLabel.textContent = 'Create Account';
-      if (titleEl) titleEl.textContent = 'Create Devotee Account';
-    } else {
-      signupTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      signupTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      nameField?.classList.add('hidden');
-      if (submitLabel) submitLabel.textContent = 'Sign In';
-      if (titleEl) titleEl.textContent = 'Devotee Sign In';
-    }
-  }
-
   function showAuthError(msg, isPage = false) {
     if (isPage) {
       const alertEl = document.getElementById('page-error-alert');
@@ -4923,12 +5031,7 @@
         alertEl.classList.remove('hidden');
       }
     } else {
-      const alertEl = document.getElementById('auth-error-alert');
-      const msgEl = document.getElementById('auth-error-msg');
-      if (alertEl && msgEl) {
-        msgEl.innerHTML = msg;
-        alertEl.classList.remove('hidden');
-      }
+      showAuthModalError(msg);
     }
   }
 
@@ -5126,7 +5229,7 @@
   }
 
   // Normalize devotee phone numbers to standard E.164 format (+91 default for Bengal / India)
-  function formatPhoneNumber(raw) {
+  function normalizePhone(raw) {
     if (!raw) return '';
     const clean = String(raw).trim();
     const digits = clean.replace(/[^0-9]/g, '');
@@ -5136,562 +5239,446 @@
     if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
     return '+' + digits;
   }
-  window.formatPhoneNumber = formatPhoneNumber;
+  window.formatPhoneNumber = normalizePhone;
+  window.normalizePhone = normalizePhone;
 
-  // Core User ID & Password Authentication Handler (Sign In / Account Creation)
-  async function handleAuthSubmit(isPage = false) {
-    const errorAlert = document.getElementById(isPage ? 'page-error-alert' : 'auth-error-alert');
-    const successAlert = document.getElementById(isPage ? 'page-success-alert' : 'auth-success-alert');
-    if (errorAlert) errorAlert.classList.add('hidden');
-    if (successAlert) successAlert.classList.add('hidden');
+  // Helper: Check if devotee account exists in databases (Firebase, Supabase, LocalStorage)
+  async function checkDevoteeAccountExists(identifier) {
+    if (!identifier) return null;
+    const clean = String(identifier).trim().toLowerCase();
+    const digits = clean.replace(/[^0-9]/g, '');
+    const isPhone = digits.length >= 7 && !clean.includes('@');
+    const formatted = isPhone ? normalizePhone(clean) : null;
+    const safeDocId = isPhone ? digits : clean.replace(/[^a-z0-9]/g, '_');
 
-    const idInput = document.getElementById(isPage ? 'page-userid-input' : 'auth-userid-input');
-    const pwdInput = document.getElementById(isPage ? 'page-password-input' : 'auth-password-input');
-    const nameInput = document.getElementById(isPage ? 'page-name-input' : 'auth-name-input');
-    const submitBtn = document.getElementById(isPage ? 'page-submit-btn' : 'auth-submit-btn');
-    const submitLabel = document.getElementById(isPage ? 'page-submit-label' : 'auth-submit-label');
+    // 1. Check Firebase Firestore
+    if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+      try {
+        const fbProf = await window.AkalbodhonFirebase.getProfileByIdentifier(identifier);
+        if (fbProf) return fbProf;
+      } catch (_) {}
+    }
+    if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+      try {
+        const p = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(clean);
+        if (p) return p;
+      } catch (_) {}
+    }
 
-    const isSignUp = document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('bg-primary') ||
-      document.getElementById(isPage ? 'page-tab-signup' : 'auth-tab-signup')?.classList.contains('dark:bg-amber-400');
+    // 2. Check Supabase
+    if (supabaseClient) {
+      try {
+        const orQuery = isPhone 
+          ? `identifier.eq.${formatted},identifier.eq.${digits},phone.eq.${formatted},phone.eq.${digits},id.eq.${digits}`
+          : `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+        const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
+        if (data && data.length > 0) return data[0];
+      } catch (_) {}
+    }
 
-    const rawIdentifier = idInput ? idInput.value.trim() : '';
-    const rawPassword = pwdInput ? pwdInput.value : '';
-    const rawName = nameInput ? nameInput.value.trim() : '';
+    // 3. Check persistent localStorage
+    const candidates = [
+      `akalbodhon_user_data_${isPhone ? 'phone_' + digits : 'email_' + safeDocId}`,
+      `akalbodhon_user_data_${digits}`,
+      `akalbodhon_user_data_id_${safeDocId}`
+    ];
+    for (const cand of candidates) {
+      const raw = localStorage.getItem(cand);
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && (parsed.id || parsed.identifier || parsed.username)) return parsed;
+        } catch (_) {}
+      }
+    }
 
-    if (!rawIdentifier) {
-      showAuthError('Please enter your email or phone number.', isPage);
+    return null;
+  }
+  window.checkDevoteeAccountExists = checkDevoteeAccountExists;
+
+  // -------------------------------------------------------------
+  // MOBILE NUMBER (SMS OTP) MODAL HANDLERS
+  // -------------------------------------------------------------
+  async function handleSendPhoneOtpModal() {
+    clearAuthModalAlerts();
+    const phoneInput = document.getElementById('auth-phone-number-input');
+    const phoneNameInput = document.getElementById('auth-phone-name-input');
+    const sendOtpBtn = document.getElementById('auth-send-otp-btn');
+    const sendOtpBtnLabel = document.getElementById('auth-send-otp-btn-label');
+    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
+    const otpVerifySection = document.getElementById('auth-otp-verify-section');
+    const otpTargetDisplay = document.getElementById('auth-otp-target-display');
+    const otpCodeInput = document.getElementById('auth-otp-code-input');
+
+    const rawPhone = phoneInput ? phoneInput.value.trim() : '';
+    const rawName = phoneNameInput ? phoneNameInput.value.trim() : '';
+    const digits = rawPhone.replace(/[^0-9]/g, '');
+
+    if (!rawPhone || digits.length < 10) {
+      showAuthModalError('Please enter a valid 10-digit mobile number.');
+      phoneInput?.focus();
       return;
     }
 
-    // Password validation: minimum 6 characters
+    if (currentAuthModalMode === 'signup' && !rawName) {
+      showAuthModalError('Please enter your name so we know what to call you.');
+      phoneNameInput?.focus();
+      return;
+    }
+
+    const formattedPhone = normalizePhone(rawPhone);
+
+    // Check account existence based on mode
+    if (sendOtpBtn) sendOtpBtn.disabled = true;
+    if (sendOtpBtnLabel) sendOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying mobile number...';
+    showGlobalLoader('Verifying Mobile...', 'Checking devotee account status...', '🪔', 'Verifying...');
+
+    try {
+      const existing = await checkDevoteeAccountExists(formattedPhone);
+
+      if (currentAuthModalMode === 'login' && !existing) {
+        hideGlobalLoader();
+        if (sendOtpBtn) sendOtpBtn.disabled = false;
+        if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send SMS OTP';
+
+        // CREATE HELPER BUTTON TO ASSIST TO SIGNUP
+        const actionBtn = document.createElement('button');
+        actionBtn.type = 'button';
+        actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+        actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Number';
+        actionBtn.onclick = () => {
+          setAuthMode('signup', rawPhone, 'phone');
+        };
+
+        showAuthModalError(
+          `No devotee account found for <strong>${formattedPhone}</strong>. Please create an account to get started with Akalbodhon.`,
+          actionBtn
+        );
+        return;
+      }
+
+      if (currentAuthModalMode === 'signup' && existing) {
+        hideGlobalLoader();
+        if (sendOtpBtn) sendOtpBtn.disabled = false;
+        if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
+
+        const actionBtn = document.createElement('button');
+        actionBtn.type = 'button';
+        actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
+        actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Number';
+        actionBtn.onclick = () => {
+          setAuthMode('login', rawPhone, 'phone');
+        };
+
+        showAuthModalError(
+          `An account already exists for <strong>${formattedPhone}</strong>. Please sign in instead.`,
+          actionBtn
+        );
+        return;
+      }
+
+      // Send OTP via Firebase Phone Auth
+      showGlobalLoader('Sending SMS OTP...', `Sending 6-digit verification code to ${formattedPhone}...`, '🪔', 'Sending SMS OTP...');
+      const res = await window.AkalbodhonFirebase.sendPhoneOtp(formattedPhone, 'auth-recaptcha-container');
+      activeModalConfirmationResult = res.confirmationResult;
+      lastModalPhoneNumber = formattedPhone;
+
+      hideGlobalLoader();
+      if (sendOtpBtn) sendOtpBtn.disabled = false;
+      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = currentAuthModalMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
+
+      // Transition to OTP verification step
+      phoneEntryForm?.classList.add('hidden');
+      otpVerifySection?.classList.remove('hidden');
+      if (otpTargetDisplay) otpTargetDisplay.textContent = formattedPhone;
+      if (otpCodeInput) {
+        otpCodeInput.value = '';
+        otpCodeInput.focus();
+      }
+
+      startModalResendTimer();
+      showAuthModalSuccess(`SMS OTP code sent to ${formattedPhone}. Please enter the 6-digit code.`);
+
+    } catch (err) {
+      console.error('Phone OTP modal error:', err);
+      hideGlobalLoader();
+      if (sendOtpBtn) sendOtpBtn.disabled = false;
+      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = currentAuthModalMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
+
+      if (err.code === 'auth/invalid-phone-number') {
+        showAuthModalError('The mobile number format is invalid. Please enter a valid 10-digit number.');
+      } else if (err.code === 'auth/too-many-requests') {
+        showAuthModalError('Too many OTP attempts. Please wait a few moments before trying again.');
+      } else {
+        showAuthModalError(err.message || 'Unable to send SMS OTP. Please check your number or try email login.');
+      }
+    }
+  }
+
+  function startModalResendTimer() {
+    let seconds = 30;
+    if (modalResendCooldownTimer) clearInterval(modalResendCooldownTimer);
+    const resendBtn = document.getElementById('auth-resend-otp-btn');
+    const resendText = document.getElementById('auth-resend-otp-text');
+    if (!resendBtn) return;
+
+    resendBtn.disabled = true;
+    resendBtn.classList.add('opacity-50', 'pointer-events-none');
+    if (resendText) resendText.textContent = `Resend in ${seconds}s`;
+
+    modalResendCooldownTimer = setInterval(() => {
+      seconds--;
+      if (seconds <= 0) {
+        clearInterval(modalResendCooldownTimer);
+        resendBtn.disabled = false;
+        resendBtn.classList.remove('opacity-50', 'pointer-events-none');
+        if (resendText) resendText.textContent = 'Resend Code';
+      } else {
+        if (resendText) resendText.textContent = `Resend in ${seconds}s`;
+      }
+    }, 1000);
+  }
+
+  async function handleVerifyPhoneOtpModal() {
+    clearAuthModalAlerts();
+    const otpCodeInput = document.getElementById('auth-otp-code-input');
+    const verifyOtpBtn = document.getElementById('auth-verify-otp-btn');
+    const verifyOtpBtnLabel = document.getElementById('auth-verify-otp-btn-label');
+    const phoneNameInput = document.getElementById('auth-phone-name-input');
+
+    const otpCode = otpCodeInput ? otpCodeInput.value.trim().replace(/[^0-9]/g, '') : '';
+    if (otpCode.length < 6) {
+      showAuthModalError('Please enter the complete 6-digit verification code.');
+      otpCodeInput?.focus();
+      return;
+    }
+
+    if (verifyOtpBtn) verifyOtpBtn.disabled = true;
+    if (verifyOtpBtnLabel) verifyOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying Code...';
+    showGlobalLoader('Verifying Code...', 'Authenticating devotee session...', '🪔', 'Verifying OTP...');
+
+    try {
+      const rawName = phoneNameInput ? phoneNameInput.value.trim() : '';
+      const profile = await window.AkalbodhonFirebase.verifyPhoneOtp(
+        activeModalConfirmationResult,
+        otpCode,
+        currentAuthModalMode === 'signup',
+        rawName,
+        { phoneNumber: lastModalPhoneNumber }
+      );
+
+      if (profile) {
+        hideGlobalLoader();
+        saveUserSession(profile);
+        closeAuthModal();
+        closeSaveAuthPromptModal();
+
+        if (typeof renderSavedSection === 'function') renderSavedSection();
+        if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+        if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        showToast(`Welcome, ${profile.username}! Authenticated with mobile number.`, 'celebration');
+
+        if (pendingSaveAction) {
+          const action = pendingSaveAction;
+          pendingSaveAction = null;
+          action();
+        }
+      }
+    } catch (err) {
+      console.error('Verify OTP modal error:', err);
+      hideGlobalLoader();
+      if (verifyOtpBtn) verifyOtpBtn.disabled = false;
+      if (verifyOtpBtnLabel) verifyOtpBtnLabel.textContent = 'Verify & Continue';
+      showAuthModalError(err.message || 'Invalid or expired OTP code. Please verify the code or request a new one.');
+    }
+  }
+
+  // -------------------------------------------------------------
+  // EMAIL & PASSWORD MODAL HANDLERS
+  // -------------------------------------------------------------
+  async function handleEmailAuthModal() {
+    clearAuthModalAlerts();
+    const emailAddressInput = document.getElementById('auth-email-address-input');
+    const emailPasswordInput = document.getElementById('auth-email-password-input');
+    const emailNameInput = document.getElementById('auth-email-name-input');
+    const emailSubmitBtn = document.getElementById('auth-email-submit-btn');
+    const emailSubmitLabel = document.getElementById('auth-email-submit-label');
+
+    const rawEmail = emailAddressInput ? emailAddressInput.value.trim().toLowerCase() : '';
+    const rawPassword = emailPasswordInput ? emailPasswordInput.value : '';
+    const rawName = emailNameInput ? emailNameInput.value.trim() : '';
+
+    if (!rawEmail || !rawEmail.includes('@') || !rawEmail.includes('.')) {
+      showAuthModalError('Please enter a valid email address.');
+      emailAddressInput?.focus();
+      return;
+    }
+
     if (rawPassword.length < 6) {
-      showAuthError('Password must be at least 6 characters (letters and numbers recommended).', isPage);
+      showAuthModalError('Password must be at least 6 characters (letters and numbers recommended).');
+      emailPasswordInput?.focus();
       return;
     }
 
-    const cleanIdentifier = rawIdentifier.toLowerCase();
-    const cleanPhoneDigits = rawIdentifier.replace(/[^0-9]/g, '');
-    const isEmail = rawIdentifier.includes('@') && rawIdentifier.includes('.');
-    const isPhone = !isEmail && cleanPhoneDigits.length >= 7 && cleanPhoneDigits.length <= 15;
-    const formattedPhone = isPhone ? formatPhoneNumber(rawIdentifier) : null;
-    const safeDocId = isPhone ? cleanPhoneDigits : cleanIdentifier.replace(/[^a-z0-9]/g, '_');
+    if (currentAuthModalMode === 'signup' && !rawName) {
+      showAuthModalError('Please enter your name so we know what to call you.');
+      emailNameInput?.focus();
+      return;
+    }
 
-    const originalLabel = submitLabel ? submitLabel.textContent : (isSignUp ? 'Create Account' : 'Sign In');
-    if (submitBtn) submitBtn.disabled = true;
-    if (submitLabel) submitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${isSignUp ? 'Creating Account...' : 'Signing In...'}`;
-
+    if (emailSubmitBtn) emailSubmitBtn.disabled = true;
+    if (emailSubmitLabel) emailSubmitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${currentAuthModalMode === 'signup' ? 'Creating Account...' : 'Signing In...'}`;
     showGlobalLoader(
-      isSignUp ? 'Creating Devotee Account...' : 'Signing In to Sanctuary...',
-      isSignUp ? 'Securing devotee credentials & establishing cloud itinerary...' : 'Verifying credentials & syncing personal festival plans...',
+      currentAuthModalMode === 'signup' ? 'Creating Account...' : 'Signing In...',
+      'Authenticating with devotee sanctuary...',
       '🪔',
-      isSignUp ? 'Registering Account...' : 'Authenticating with Cloud...'
+      'Securing session...'
     );
 
     try {
-      const passwordHash = await hashPassword(rawPassword);
+      if (currentAuthModalMode === 'signup') {
+        // --- CREATE ACCOUNT WITH EMAIL & PASSWORD ---
+        let profile = null;
+        try {
+          profile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawEmail, rawPassword, rawName);
+        } catch (regErr) {
+          if (regErr.code === 'auth/email-already-in-use') {
+            hideGlobalLoader();
+            if (emailSubmitBtn) emailSubmitBtn.disabled = false;
+            if (emailSubmitLabel) emailSubmitLabel.textContent = 'Create Account with Email';
 
-      if (isSignUp) {
-        // --- CREATE ACCOUNT ---
-        const displayName = rawName || (isPhone ? 'Devotee' : (isEmail ? rawIdentifier.split('@')[0] : 'Devotee'));
+            const actionBtn = document.createElement('button');
+            actionBtn.type = 'button';
+            actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
+            actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Email';
+            actionBtn.onclick = () => {
+              setAuthMode('login', rawEmail, 'email');
+            };
 
-        // Check if account with this identifier already exists in Supabase or Firebase
-        let existing = null;
-        if (supabaseClient) {
-          try {
-            const orQuery = isPhone 
-              ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
-              : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
-            const { data } = await supabaseClient
-              .from('profiles')
-              .select('id, identifier')
-              .or(orQuery)
-              .limit(1);
-            if (data && data.length > 0) existing = data[0];
-          } catch (e) {}
-        }
-
-        if (!existing && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
-          try {
-            existing = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-          } catch (e) {
-            console.warn('Firebase duplicate check notice:', e);
-          }
-        } else if (!existing && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            existing = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-          } catch (e) {}
-        }
-
-        if (existing) {
-          showAuthError('An account with this ' + (isPhone ? 'phone number' : 'email') + ' already exists. Please sign in instead with the same credentials.', isPage);
-          setTimeout(() => {
-            if (!isPage && typeof setAuthMode === 'function') {
-              setAuthMode('login');
-            } else if (isPage) {
-              document.getElementById('page-tab-login')?.click();
-            }
-          }, 2400);
-          return;
-        }
-
-        const initialSaved = Storage.getBookmarks() || [];
-        let supabaseAuthUser = null;
-        const randomAvatar = getRandomPujaIcon();
-
-        // Register in Supabase Authentication section
-        if (supabaseClient) {
-          try {
-            if (isPhone) {
-              // Register under native 'phone' provider in Supabase Authentication
-              const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
-                phone: formattedPhone,
-                password: rawPassword,
-                options: {
-                  data: {
-                    username: displayName,
-                    avatar: randomAvatar,
-                    identifier: formattedPhone,
-                    identifier_type: 'phone'
-                  }
-                }
-              });
-              if (sbErr) {
-                console.warn('Supabase phone signUp notice:', sbErr);
-                if (sbErr.message && (sbErr.message.toLowerCase().includes('already') || sbErr.status === 400 || sbErr.status === 422)) {
-                  showAuthError('An account with this phone number already exists in Supabase. Please sign in instead.', isPage);
-                  setTimeout(() => {
-                    if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
-                    else if (isPage) document.getElementById('page-tab-login')?.click();
-                  }, 2200);
-                  return;
-                }
-              } else if (sbData && sbData.user) {
-                supabaseAuthUser = sbData.user;
-              }
-            } else if (isEmail) {
-              // Register under native 'email' provider in Supabase Authentication
-              const { data: sbData, error: sbErr } = await supabaseClient.auth.signUp({
-                email: cleanIdentifier,
-                password: rawPassword,
-                options: {
-                  data: {
-                    username: displayName,
-                    avatar: randomAvatar,
-                    identifier: cleanIdentifier,
-                    identifier_type: 'email'
-                  }
-                }
-              });
-              if (sbErr) {
-                console.warn('Supabase email signUp notice:', sbErr);
-                if (sbErr.message && sbErr.message.toLowerCase().includes('already')) {
-                  showAuthError('An account with this email already exists in Supabase. Please sign in instead.', isPage);
-                  setTimeout(() => {
-                    if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
-                    else if (isPage) document.getElementById('page-tab-login')?.click();
-                  }, 2200);
-                  return;
-                }
-              } else if (sbData && sbData.user) {
-                supabaseAuthUser = sbData.user;
-              }
-            }
-          } catch (supAuthErr) {
-            console.warn('Supabase auth signup error:', supAuthErr);
-          }
-        }
-
-        // For email devotees, register with Firebase Auth if available
-        let fbProfile = null;
-        if (isEmail && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.registerWithEmailPassword === 'function') {
-          try {
-            fbProfile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawIdentifier, rawPassword, displayName, {
-              avatar: randomAvatar,
-              saved_items: initialSaved,
-              custom_plans: customPlans || []
-            });
-          } catch (fbAuthErr) {
-            console.warn('Firebase Auth registration notice:', fbAuthErr);
-            if (fbAuthErr.code === 'auth/email-already-in-use') {
-              showAuthError('An account with this email already exists in Firebase. Please sign in instead.', isPage);
-              setTimeout(() => {
-                if (!isPage && typeof setAuthMode === 'function') setAuthMode('login');
-                else if (isPage) document.getElementById('page-tab-login')?.click();
-              }, 2200);
-              return;
-            }
-          }
-        }
-
-        const profileId = (supabaseAuthUser && supabaseAuthUser.id)
-          ? supabaseAuthUser.id
-          : (fbProfile && fbProfile.id ? fbProfile.id : (isPhone ? cleanPhoneDigits : safeDocId));
-
-        const newProfile = {
-          id: profileId,
-          user_id: isPhone ? formattedPhone : (profileId || rawIdentifier),
-          identifier: isPhone ? formattedPhone : (cleanIdentifier || rawIdentifier),
-          identifier_type: isPhone ? 'phone' : (isEmail ? 'email' : 'identifier'),
-          email: isEmail ? rawIdentifier : null,
-          phone: isPhone ? formattedPhone : null,
-          provider: isPhone ? 'phone' : (isEmail ? 'email' : 'credentials'),
-          username: displayName,
-          avatar: randomAvatar,
-          avatar_assigned: true,
-          avatar_type: 'puja',
-          custom_avatar_url: null,
-          google_photo_url: null,
-          password_hash: passwordHash,
-          saved_items: initialSaved,
-          custom_plans: customPlans || [],
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-
-        // Save to Firebase Firestore Database ('users' collection)
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            await window.AkalbodhonFirebase.syncProfile(newProfile);
-          } catch (fbErr) {
-            console.warn('Firebase profile sync notice:', fbErr);
-          }
-        }
-
-        // Save to Supabase public.profiles table
-        if (supabaseClient) {
-          try {
-            await supabaseClient.from('profiles').upsert(newProfile);
-          } catch (supErr) {
-            console.warn('Supabase profile upsert notice:', supErr);
-          }
-        }
-
-        saveUserSession(newProfile);
-        closeAuthModal();
-        showToast(`Welcome to Akalbodhon, ${displayName}! Your devotee account is active.`, 'celebration');
-
-        // Bring user to home page
-        window.location.hash = '';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      } else {
-        // --- SIGN IN ---
-        let foundProfile = null;
-        let authenticatedBySupabase = false;
-
-        // 1. If phone number: authenticate directly against Supabase Phone Auth!
-        if (isPhone && supabaseClient) {
-          try {
-            // First try with formattedPhone (+91...)
-            let { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-              phone: formattedPhone,
-              password: rawPassword
-            });
-            // If failed, try with clean digits (e.g. 919876543210)
-            if (sbErr && cleanPhoneDigits && cleanPhoneDigits !== formattedPhone) {
-              const { data: sbRes2, error: sbErr2 } = await supabaseClient.auth.signInWithPassword({
-                phone: cleanPhoneDigits,
-                password: rawPassword
-              });
-              if (!sbErr2 && sbRes2 && sbRes2.user) {
-                sbRes = sbRes2;
-                sbErr = null;
-              }
-            }
-
-            if (!sbErr && sbRes && sbRes.user) {
-              authenticatedBySupabase = true;
-              const u = sbRes.user;
-              // Fetch user profile from profiles table
-              try {
-                const { data: profs } = await supabaseClient
-                  .from('profiles')
-                  .select('*')
-                  .or(`id.eq.${u.id},identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone}`)
-                  .limit(1);
-                if (profs && profs.length > 0) {
-                  foundProfile = profs[0];
-                }
-              } catch (e) {}
-
-              if (!foundProfile) {
-                foundProfile = {
-                  id: u.id,
-                  user_id: formattedPhone,
-                  identifier: formattedPhone,
-                  identifier_type: 'phone',
-                  phone: formattedPhone,
-                  email: null,
-                  provider: 'phone',
-                  username: u.user_metadata?.username || u.user_metadata?.full_name || 'Devotee',
-                  avatar: u.user_metadata?.avatar || '🪔',
-                  avatar_type: 'puja',
-                  saved_items: [],
-                  custom_plans: [],
-                  created_at: u.created_at || new Date().toISOString()
-                };
-              }
-            } else if (sbErr) {
-              console.warn('Supabase phone signInWithPassword notice:', sbErr.message);
-            }
-          } catch (err) {
-            console.warn('Supabase phone auth error:', err);
-          }
-        }
-
-        // 2. If email: try Supabase email sign in
-        if (isEmail && supabaseClient && !foundProfile) {
-          try {
-            const { data: sbRes, error: sbErr } = await supabaseClient.auth.signInWithPassword({
-              email: cleanIdentifier,
-              password: rawPassword
-            });
-            if (!sbErr && sbRes && sbRes.user) {
-              authenticatedBySupabase = true;
-              const u = sbRes.user;
-              try {
-                const { data: profs } = await supabaseClient
-                  .from('profiles')
-                  .select('*')
-                  .or(`id.eq.${u.id},identifier.eq.${cleanIdentifier},email.eq.${cleanIdentifier}`)
-                  .limit(1);
-                if (profs && profs.length > 0) {
-                  foundProfile = profs[0];
-                }
-              } catch (e) {}
-              if (!foundProfile) {
-                foundProfile = {
-                  id: u.id,
-                  user_id: u.id,
-                  identifier: cleanIdentifier,
-                  identifier_type: 'email',
-                  email: cleanIdentifier,
-                  phone: null,
-                  provider: 'email',
-                  username: u.user_metadata?.username || u.user_metadata?.full_name || cleanIdentifier.split('@')[0],
-                  avatar: u.user_metadata?.avatar || '🪔',
-                  avatar_type: 'puja',
-                  saved_items: [],
-                  custom_plans: [],
-                  created_at: u.created_at || new Date().toISOString()
-                };
-              }
-            }
-          } catch (err) {
-            console.warn('Supabase email auth notice:', err);
-          }
-        }
-
-        // 3. If email: try Firebase Authentication
-        if (isEmail && !foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.signInWithEmailPassword === 'function') {
-          try {
-            const fbLoginUser = await window.AkalbodhonFirebase.signInWithEmailPassword(rawIdentifier, rawPassword, true, rawName, {
-              avatar: '🪔',
-              saved_items: Storage.getBookmarks() || [],
-              custom_plans: customPlans || []
-            });
-            if (fbLoginUser) {
-              foundProfile = fbLoginUser;
-            }
-          } catch (fbErr) {
-            console.warn('Firebase signInWithEmailPassword notice:', fbErr);
-            if (fbErr.code === 'auth/wrong-password' || fbErr.code === 'auth/invalid-credential') {
-              showAuthError('Incorrect password. Please verify your password and try again.', isPage);
-              return;
-            }
-          }
-        }
-
-        // 4. Try profile lookup in Supabase profiles if not yet resolved
-        if (!foundProfile && supabaseClient) {
-          try {
-            const orQuery = isPhone
-              ? `identifier.eq.${formattedPhone},identifier.eq.${cleanPhoneDigits},phone.eq.${formattedPhone},phone.eq.${cleanPhoneDigits},id.eq.${cleanPhoneDigits}`
-              : `identifier.eq.${cleanIdentifier},identifier.eq.${rawIdentifier},id.eq.${safeDocId}`;
-            const { data } = await supabaseClient
-              .from('profiles')
-              .select('*')
-              .or(orQuery)
-              .limit(1);
-            if (data && data.length > 0) foundProfile = data[0];
-          } catch (fetchErr) {
-            console.warn('Supabase profile query notice:', fetchErr);
-          }
-        }
-
-        // 5. Try Firebase Firestore profile lookup if not resolved
-        if (!foundProfile && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
-          try {
-            foundProfile = await window.AkalbodhonFirebase.getProfileByIdentifier(rawIdentifier);
-          } catch (e) {
-            console.warn('Firebase getProfileByIdentifier notice:', e);
-          }
-        }
-
-        if (!foundProfile && window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          try {
-            foundProfile = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(cleanIdentifier);
-          } catch (e) {}
-        }
-
-        // 6. Cached profile fallback
-        if (!foundProfile) {
-          const cached = localStorage.getItem('akalbodhon_user_profile');
-          if (cached) {
-            try {
-              const p = JSON.parse(cached);
-              if (
-                p.identifier?.toLowerCase() === cleanIdentifier ||
-                p.user_id?.toLowerCase() === cleanIdentifier ||
-                p.id === safeDocId ||
-                (isPhone && (p.phone === formattedPhone || p.phone === cleanPhoneDigits || p.identifier === formattedPhone))
-              ) {
-                foundProfile = p;
-              }
-            } catch (e) {}
-          }
-        }
-
-        if (!foundProfile) {
-          showAuthError('No devotee account found with this ' + (isPhone ? 'phone number' : 'email') + '. Please check or create an account.', isPage);
-          return;
-        }
-
-        // If not already authenticated by Supabase Auth session, verify password hash
-        if (!authenticatedBySupabase) {
-          if (foundProfile.password_hash && foundProfile.password_hash !== passwordHash) {
-            showAuthError('Incorrect password. Please try again.', isPage);
+            showAuthModalError(`An account with <strong>${rawEmail}</strong> already exists. Please sign in instead.`, actionBtn);
             return;
           }
+          throw regErr;
+        }
 
-          // Password verified! Auto-enroll / link user into Supabase Native Auth if missing
-          if (supabaseClient) {
-            try {
-              if (isPhone) {
-                // Auto-create in Supabase phone authentication so their Sign-in provider is phone!
-                const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
-                  phone: formattedPhone,
-                  password: rawPassword,
-                  options: {
-                    data: {
-                      username: foundProfile.username || 'Devotee',
-                      avatar: foundProfile.avatar || '🪔',
-                      identifier: formattedPhone,
-                      identifier_type: 'phone'
-                    }
-                  }
-                });
-                if (!upErr) {
-                  await supabaseClient.auth.signInWithPassword({
-                    phone: formattedPhone,
-                    password: rawPassword
-                  });
-                }
-              } else if (isEmail) {
-                const { data: upData, error: upErr } = await supabaseClient.auth.signUp({
-                  email: cleanIdentifier,
-                  password: rawPassword,
-                  options: {
-                    data: {
-                      username: foundProfile.username || 'Devotee',
-                      avatar: foundProfile.avatar || '🪔',
-                      identifier: cleanIdentifier,
-                      identifier_type: 'email'
-                    }
-                  }
-                });
-                if (!upErr) {
-                  await supabaseClient.auth.signInWithPassword({
-                    email: cleanIdentifier,
-                    password: rawPassword
-                  });
-                }
-              }
-            } catch (autoEnrollErr) {
-              console.warn('Auto-enroll in Supabase notice:', autoEnrollErr);
-            }
+        if (profile) {
+          hideGlobalLoader();
+          saveUserSession(profile);
+          closeAuthModal();
+          closeSaveAuthPromptModal();
+
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          showToast(`Welcome, ${profile.username}! Your devotee account has been created.`, 'celebration');
+
+          if (pendingSaveAction) {
+            const action = pendingSaveAction;
+            pendingSaveAction = null;
+            action();
           }
         }
 
-        // Devotee profile saved details from remote profile
-        const restoredSavedItems = Array.isArray(foundProfile.saved_items) ? foundProfile.saved_items : [];
-        const restoredCustomPlans = Array.isArray(foundProfile.custom_plans) ? foundProfile.custom_plans : [];
+      } else {
+        // --- SIGN IN WITH EMAIL & PASSWORD ---
+        // 1. First check if account exists in database
+        const existing = await checkDevoteeAccountExists(rawEmail);
+        if (!existing) {
+          hideGlobalLoader();
+          if (emailSubmitBtn) emailSubmitBtn.disabled = false;
+          if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
 
-        let devoteeAvatar = foundProfile.avatar;
-        if (!devoteeAvatar || !foundProfile.avatar_assigned) {
-          devoteeAvatar = getRandomPujaIcon();
-          foundProfile.avatar = devoteeAvatar;
-          foundProfile.avatar_assigned = true;
-          if (supabaseClient) {
-            supabaseClient.from('profiles').update({
-              avatar: devoteeAvatar,
-              custom_avatar_url: null,
-              updated_at: new Date().toISOString()
-            }).eq('id', foundProfile.id || foundProfile.user_id).catch(() => {});
-          }
-          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-            window.AkalbodhonFirebase.syncProfile({
-              id: foundProfile.id || foundProfile.user_id,
-              avatar: devoteeAvatar,
-              custom_avatar_url: null
-            }).catch(() => {});
-          }
+          const actionBtn = document.createElement('button');
+          actionBtn.type = 'button';
+          actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+          actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
+          actionBtn.onclick = () => {
+            setAuthMode('signup', rawEmail, 'email');
+          };
+
+          showAuthModalError(
+            `No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`,
+            actionBtn
+          );
+          return;
         }
 
-        const authenticatedUser = {
-          id: foundProfile.id || (isPhone ? cleanPhoneDigits : safeDocId),
-          user_id: foundProfile.user_id || (isPhone ? formattedPhone : rawIdentifier),
-          identifier: isPhone ? (foundProfile.identifier || formattedPhone) : (foundProfile.identifier || rawIdentifier),
-          identifier_type: isPhone ? 'phone' : (foundProfile.identifier_type || (isEmail ? 'email' : 'phone')),
-          phone: isPhone ? (foundProfile.phone || formattedPhone) : null,
-          email: isEmail ? (foundProfile.email || rawIdentifier) : null,
-          provider: isPhone ? 'phone' : (foundProfile.provider || (isEmail ? 'email' : 'credentials')),
-          username: foundProfile.username || 'Devotee',
-          avatar: devoteeAvatar,
-          avatar_assigned: true,
-          custom_avatar_url: null,
-          google_photo_url: null,
-          saved_items: restoredSavedItems,
-          custom_plans: restoredCustomPlans,
-          feedback_cooldown_until: foundProfile.feedback_cooldown_until || null,
-          created_at: foundProfile.created_at || new Date().toISOString()
-        };
+        // 2. Authenticate with Firebase Email & Password
+        let profile = null;
+        try {
+          profile = await window.AkalbodhonFirebase.signInWithEmailPassword(rawEmail, rawPassword);
+        } catch (signInErr) {
+          console.warn('Firebase email sign in error:', signInErr);
+          if (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential') {
+            hideGlobalLoader();
+            if (emailSubmitBtn) emailSubmitBtn.disabled = false;
+            if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
+            showAuthModalError('Incorrect password. Please verify your password and try again.');
+            return;
+          } else if (signInErr.code === 'auth/user-not-found') {
+            hideGlobalLoader();
+            if (emailSubmitBtn) emailSubmitBtn.disabled = false;
+            if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
 
-        // Reflect login in Firestore
-        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-          window.AkalbodhonFirebase.syncProfile(authenticatedUser).catch(() => {});
+            const actionBtn = document.createElement('button');
+            actionBtn.type = 'button';
+            actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
+            actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
+            actionBtn.onclick = () => { setAuthMode('signup', rawEmail, 'email'); };
+
+            showAuthModalError(`No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`, actionBtn);
+            return;
+          }
+          throw signInErr;
         }
 
-        saveUserSession(authenticatedUser);
-        closeAuthModal();
-        showToast(`Welcome back, ${authenticatedUser.username}! Your devotee account is signed in.`, 'celebration');
+        if (profile) {
+          hideGlobalLoader();
+          saveUserSession(profile);
+          closeAuthModal();
+          closeSaveAuthPromptModal();
 
-        // Bring user to home page
-        window.location.hash = '';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+
+          window.location.hash = '';
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+
+          showToast(`Welcome back, ${profile.username}! Signed in successfully.`, 'celebration');
+
+          if (pendingSaveAction) {
+            const action = pendingSaveAction;
+            pendingSaveAction = null;
+            action();
+          }
+        }
       }
-
-      if (typeof renderSavedSection === 'function') renderSavedSection();
-      if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
-      if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-
-      if (isPage) {
-        window.location.hash = 'saved';
-      }
-
-      if (pendingPlanJoinId) {
-        const targetPlanId = pendingPlanJoinId;
-        pendingPlanJoinId = null;
-        handleSharedPlanDeepLink(targetPlanId);
-      }
-
     } catch (err) {
-      console.error('Auth handler error:', err);
-      showAuthError('An unexpected error occurred. Please try again.', isPage);
-    } finally {
+      console.error('Email auth modal error:', err);
       hideGlobalLoader();
-      if (submitBtn) submitBtn.disabled = false;
-      if (submitLabel) submitLabel.textContent = originalLabel;
+      if (emailSubmitBtn) emailSubmitBtn.disabled = false;
+      if (emailSubmitLabel) emailSubmitLabel.textContent = currentAuthModalMode === 'signup' ? 'Create Account with Email' : 'Sign In with Email';
+      showAuthModalError(err.message || 'Authentication error occurred. Please try again.');
+    }
+  }
+
+  // Fallback unified submit handler
+  async function handleAuthSubmit(isPage = false) {
+    if (!isPage) {
+      if (currentAuthModalMethod === 'phone') {
+        return handleSendPhoneOtpModal();
+      } else {
+        return handleEmailAuthModal();
+      }
     }
   }
 
@@ -7868,61 +7855,60 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
     document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
     document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
-    document.getElementById('auth-submit-btn')?.addEventListener('click', () => handleAuthSubmit(false));
-    document.getElementById('auth-form')?.addEventListener('submit', (e) => { e.preventDefault(); handleAuthSubmit(false); });
 
+    // Method Switcher (Mobile OTP vs Email & Password)
+    document.getElementById('auth-method-phone-btn')?.addEventListener('click', () => setAuthMethodModal('phone'));
+    document.getElementById('auth-method-email-btn')?.addEventListener('click', () => setAuthMethodModal('email'));
 
-
-    // Password dynamic counter for modal if present
-    const modalPwdInput = document.getElementById('auth-password-input');
-    const modalPwdCounter = document.getElementById('auth-password-counter');
-    if (modalPwdInput && modalPwdCounter) {
-      modalPwdInput.addEventListener('input', () => {
-        updateDynamicCounter(modalPwdInput, modalPwdCounter, 6, 'alphanumeric');
-      });
-    }
-
-    // Save Auth Prompt Modal Handlers
-    document.getElementById('close-save-auth-prompt-btn')?.addEventListener('click', () => {
-      closeSaveAuthPromptModal();
-      pendingSaveAction = null;
+    // Phone SMS OTP Form Events
+    document.getElementById('auth-phone-entry-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSendPhoneOtpModal();
     });
-    document.getElementById('save-auth-dismiss-btn')?.addEventListener('click', () => {
-      closeSaveAuthPromptModal();
-      pendingSaveAction = null;
+    document.getElementById('auth-send-otp-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleSendPhoneOtpModal();
     });
-    document.getElementById('save-auth-login-btn')?.addEventListener('click', () => {
-      closeSaveAuthPromptModal();
-      openAuthModal('login');
+
+    document.getElementById('auth-otp-verify-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleVerifyPhoneOtpModal();
     });
-    document.getElementById('save-auth-signup-btn')?.addEventListener('click', () => {
-      closeSaveAuthPromptModal();
-      openAuthModal('signup');
+    document.getElementById('auth-verify-otp-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleVerifyPhoneOtpModal();
     });
-    const savePromptModal = document.getElementById('save-auth-prompt-modal');
-    if (savePromptModal) {
-      savePromptModal.addEventListener('click', (e) => {
-        if (e.target === savePromptModal) {
-          closeSaveAuthPromptModal();
-          pendingSaveAction = null;
-        }
-      });
-    }
 
-    const authModal = document.getElementById('auth-modal');
-    if (authModal) {
-      authModal.addEventListener('click', (e) => {
-        if (e.target === authModal) closeAuthModal();
-      });
-    }
+    document.getElementById('auth-change-phone-btn')?.addEventListener('click', () => {
+      clearAuthModalAlerts();
+      const otpSection = document.getElementById('auth-otp-verify-section');
+      const phoneForm = document.getElementById('auth-phone-entry-form');
+      otpSection?.classList.add('hidden');
+      phoneForm?.classList.remove('hidden');
+      document.getElementById('auth-phone-number-input')?.focus();
+    });
 
+    document.getElementById('auth-resend-otp-btn')?.addEventListener('click', () => {
+      if (lastModalPhoneNumber) {
+        handleSendPhoneOtpModal();
+      }
+    });
 
+    // Email & Password Form Events
+    document.getElementById('auth-email-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleEmailAuthModal();
+    });
+    document.getElementById('auth-email-submit-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      handleEmailAuthModal();
+    });
 
-    // Password Visibility Toggle
-    document.getElementById('toggle-pwd-visibility')?.addEventListener('click', function () {
-      const pwdInput = document.getElementById('auth-password-input');
-      const icon = document.getElementById('toggle-pwd-icon');
-      const text = document.getElementById('toggle-pwd-text');
+    // Password Visibility Toggle for Email Form
+    document.getElementById('auth-email-toggle-pwd-btn')?.addEventListener('click', function () {
+      const pwdInput = document.getElementById('auth-email-password-input');
+      const icon = document.getElementById('auth-email-toggle-pwd-icon');
+      const text = document.getElementById('auth-email-toggle-pwd-text');
       if (pwdInput) {
         const isPwd = pwdInput.type === 'password';
         pwdInput.type = isPwd ? 'text' : 'password';
