@@ -1847,6 +1847,14 @@
                   <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
                 </button>
                 <button 
+                  onclick="event.stopPropagation(); window.openSharePandalModal('${pandal.id}')"
+                  class="pandal-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
+                  title="Share Pandal & Route"
+                >
+                  <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
+                  <span class="text-[10px] font-bold sm:hidden">Share</span>
+                </button>
+                <button 
                   class="pandal-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
                   data-id="${pandal.id}"
                   title="View Full Details"
@@ -2098,6 +2106,14 @@
                       <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
                     </button>
                     <button 
+                      onclick="event.stopPropagation(); window.openShareFoodModal('${food.id}')"
+                      class="food-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
+                      title="Share Food Destination"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
+                      <span class="text-[10px] font-bold sm:hidden">Share</span>
+                    </button>
+                    <button 
                       class="food-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
                       data-id="${food.id}"
                       title="View Full Details"
@@ -2175,6 +2191,14 @@
                     >
                       <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
                       <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
+                    </button>
+                    <button 
+                      onclick="event.stopPropagation(); window.openShareShopModal('${shop.id}')"
+                      class="shop-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
+                      title="Share Shopping District"
+                    >
+                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
+                      <span class="text-[10px] font-bold sm:hidden">Share</span>
                     </button>
                     <button 
                       class="shop-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
@@ -2676,9 +2700,34 @@
     const container = document.getElementById('saved-itinerary-container');
     if (!container) return;
 
-    // If no user is logged in, show a login-required empty state
+    // If no user is logged in, show a login-required empty state and keep itinerary clear
     if (!isUserLoggedIn() || !currentUser) {
       updateBookmarkCount();
+      const clearBtn = document.getElementById('clear-all-bookmarks-btn');
+      if (clearBtn) clearBtn.style.display = 'none';
+
+      // Zero out all tab badges
+      const badgeAll = document.getElementById('saved-badge-all');
+      const badgePandals = document.getElementById('saved-badge-pandals');
+      const badgeFood = document.getElementById('saved-badge-food');
+      const badgePlans = document.getElementById('saved-badge-plans');
+      if (badgeAll) badgeAll.textContent = '0';
+      if (badgePandals) badgePandals.textContent = '0';
+      if (badgeFood) badgeFood.textContent = '0';
+      if (badgePlans) badgePlans.textContent = '0';
+
+      const savedDropdown = document.getElementById('saved-filter-dropdown');
+      if (savedDropdown) {
+        const optAll = savedDropdown.querySelector('option[value="all"]');
+        const optPandals = savedDropdown.querySelector('option[value="pandals"]');
+        const optFood = savedDropdown.querySelector('option[value="food-shopping"]');
+        const optPlans = savedDropdown.querySelector('option[value="plans"]');
+        if (optAll) optAll.textContent = '✨ All Saved (0)';
+        if (optPandals) optPandals.textContent = '🏛️ Pandals & Transit (0)';
+        if (optFood) optFood.textContent = '🍽️ Food & Shopping (0)';
+        if (optPlans) optPlans.textContent = '📋 Saved Plans (0)';
+      }
+
       container.innerHTML = `
         <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-xl mx-auto my-6 space-y-5 reveal-on-scroll">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-400/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto shadow-inner">
@@ -2687,16 +2736,16 @@
           <div class="space-y-2">
             <h3 class="font-display text-xl sm:text-2xl font-bold text-on-surface dark:text-white">Sign In to View Your Itinerary</h3>
             <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7] leading-relaxed max-w-md mx-auto">
-              Your personal Puja itinerary — saved pandals, food spots, and custom plans — is protected and synced to your devotee account. Please log in to access it.
+              Your personal Puja itinerary — saved pandals, dining spots, and custom plans — is protected and synced to your devotee account. Please log in or create an account to view and customize your itinerary.
             </p>
           </div>
           <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-            <a href="login.html" class="px-4 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+            <button onclick="if(window.openAuthModal) window.openAuthModal('login'); else window.location.href='login.html';" class="px-5 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs sm:text-sm shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[16px]">login</span> Sign In
-            </a>
-            <a href="login.html#signup" class="px-4 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs hover:bg-surface-container-highest dark:hover:bg-[#322c20] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+            </button>
+            <button onclick="if(window.openAuthModal) window.openAuthModal('signup'); else window.location.href='login.html#signup';" class="px-5 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs sm:text-sm hover:bg-surface-container-highest dark:hover:bg-[#322c20] active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[16px]">person_add</span> Create Account
-            </a>
+            </button>
           </div>
         </div>
       `;
@@ -2704,6 +2753,9 @@
       initScrollReveal();
       return;
     }
+
+    const clearBtn = document.getElementById('clear-all-bookmarks-btn');
+    if (clearBtn) clearBtn.style.display = 'flex';
 
     const bookmarks = Storage.getBookmarks();
     
@@ -2951,18 +3003,33 @@
                 <span>Saved Puja Plans (${displayPlans.length})</span>
               </h3>
             </div>
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 gap-2.5 sm:gap-4 md:gap-6 saved-itinerary-grid">
               ${displayPlans.map((p) => {
                 const pandalList = p.pandals || [];
                 const foodList = p.food_stops || [];
+                const isMine = isCurrentUserPlan(p, currentUser);
+                const creatorNameText = isMine 
+                  ? `You (${p.creator_name || (currentUser && currentUser.username) || 'Devotee'})` 
+                  : (p.creator_name || 'Devotee');
+
                 return `
-                <div class="glass-panel p-2.5 sm:p-4 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-2.5 sm:gap-3.5 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
+                <div id="itinerary-plan-${p.id}" class="glass-panel p-3 sm:p-5 rounded-2.5xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 flex flex-col justify-between gap-3 reveal-on-scroll hover:shadow-lg hover:border-primary/50 dark:hover:border-amber-400/50 transition-all">
                   <div>
+                    <!-- Prominent Creator Banner -->
+                    <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-surface-container-high/90 dark:bg-[#252016]/90 border border-outline-variant/30 dark:border-amber-400/25 mb-2.5 shadow-xs" title="Created by: ${escapeHtml(p.creator_name || 'Devotee')}">
+                      <span class="text-xs shrink-0">${p.creator_avatar || '🌺'}</span>
+                      <span class="text-[10px] sm:text-[11px] font-semibold text-on-surface dark:text-[#ded5c7] truncate">
+                        Created by: <span class="font-bold text-primary dark:text-amber-300">${escapeHtml(creatorNameText)}</span>
+                      </span>
+                    </div>
+
                     <div class="flex items-center justify-between gap-1 mb-1">
-                      <span class="px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Puja Plan'}</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9.5px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Puja Plan'}</span>
                       <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
                     </div>
+
                     <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
+                    
                     <p class="text-[9.5px] sm:text-xs text-on-surface-variant/80 dark:text-[#ded5c7]/80 flex items-center gap-1 font-medium truncate mt-0.5">
                       <span class="material-symbols-outlined text-[13px] text-primary dark:text-amber-300 shrink-0">temple_hindu</span>
                       <span>${pandalList.length} Pandals</span>
@@ -2973,15 +3040,29 @@
                       <span class="truncate">${p.route_summary}</span>
                     </p>` : ''}
                   </div>
-                  <div class="pt-2 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
+
+                  <div class="pt-2.5 border-t border-outline-variant/20 dark:border-amber-400/20 flex items-center justify-between gap-1 mt-auto">
                     <button onclick="window.openViewPlanModal('${p.id}')" class="text-[10px] sm:text-xs font-bold text-primary dark:text-amber-300 hover:underline flex items-center gap-0.5 cursor-pointer">
+                      <span class="material-symbols-outlined text-[14px]">visibility</span>
                       <span>View Plan</span>
-                      <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
                     </button>
-                    <button onclick="window.removePlanFromItinerary('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Remove from Itinerary">
-                      <span class="material-symbols-outlined text-[14px]">delete</span>
-                      <span>Remove</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <button onclick="event.stopPropagation(); window.openSharePlanModal('${p.id}')" class="text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 text-[10px] sm:text-xs font-bold cursor-pointer flex items-center gap-0.5" title="Share Plan">
+                        <span class="material-symbols-outlined text-[14px]">share</span>
+                        <span>Share</span>
+                      </button>
+                      ${isMine ? `
+                        <button onclick="event.stopPropagation(); window.deleteCustomPlan('${p.id}')" class="text-red-500 hover:text-red-600 dark:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Delete Plan (Removes from Database & Receivers)">
+                          <span class="material-symbols-outlined text-[14px]">delete</span>
+                          <span>Delete</span>
+                        </button>
+                      ` : `
+                        <button onclick="event.stopPropagation(); window.removePlanFromItinerary('${p.id}')" class="text-outline hover:text-error dark:text-[#ded5c7] dark:hover:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Remove from Itinerary">
+                          <span class="material-symbols-outlined text-[14px]">delete</span>
+                          <span>Remove</span>
+                        </button>
+                      `}
+                    </div>
                   </div>
                 </div>
               `;
@@ -2995,11 +3076,11 @@
             <div class="w-14 h-14 rounded-2xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto">
               <span class="material-symbols-outlined text-[28px]">event_note</span>
             </div>
-            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Puja Plans Saved</h4>
-            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Explore curated routes or build your own custom festival plan under Puja Plans, then save it to your personal itinerary.</p>
-            <a href="#plans" onclick="document.querySelector('nav a[href=\\'#plans\\']')?.click();" class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
-              <span class="material-symbols-outlined text-[15px]">event_note</span> Puja Plans
-            </a>
+            <h4 class="font-display text-base sm:text-lg font-bold text-on-surface dark:text-white">No Custom Plans in Itinerary</h4>
+            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-[#ded5c7]">Build your own personalized Puja itinerary with custom pandals and food pit-stops, or save a plan shared by your friends.</p>
+            <button onclick="document.getElementById('open-create-plan-btn').click()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow-md cursor-pointer">
+              <span class="material-symbols-outlined text-[15px]">add_circle</span> Make Your Own Plan
+            </button>
           </div>
         `;
       }
@@ -3075,6 +3156,16 @@
 
     modal.querySelector('#modal-pandal-nav-btn').href = toMapsSearchUrl(item.locationUrl, (item.name || '') + ' Kolkata');
     modal.querySelector('#modal-pandal-nav-btn').title = `Search ${escapeHtml(item.name || '')} on Google Maps`;
+    const shareBtn = modal.querySelector('#modal-pandal-share-btn');
+    if (shareBtn) {
+      if (type === 'food') {
+        shareBtn.title = `Share ${escapeHtml(item.name || 'Food Destination')}`;
+      } else if (type === 'shop') {
+        shareBtn.title = `Share ${escapeHtml(item.name || 'Shopping District')}`;
+      } else {
+        shareBtn.title = `Share ${escapeHtml(item.name || 'Puja Pandal & Transit')}`;
+      }
+    }
     window.currentDetailModalItem = item;
     window.currentDetailModalType = type;
     modal.classList.remove('hidden');
@@ -3083,30 +3174,40 @@
 
   // --- 12. ROUTING & TAB NAVIGATION ---
   function handleRouting() {
-    // 1. Check URL query parameters (?plan=..., ?pandal=...)
+    // 1. Check URL query parameters (?plan=..., ?pandal=..., ?food=..., ?shop=...)
     const urlParams = new URLSearchParams(window.location.search);
     const queryPlan = urlParams.get('plan');
     const queryPandal = urlParams.get('pandal');
+    const queryFood = urlParams.get('food');
+    const queryShop = urlParams.get('shop');
 
-    // 2. Check URL hash (#plan=..., #pandal=..., #plans, etc.)
+    // 2. Check URL hash (#plan=..., #pandal=..., #food=..., #shop=...)
     const rawHash = window.location.hash.slice(1) || '';
     let hashPlan = null;
     let hashPandal = null;
+    let hashFood = null;
+    let hashShop = null;
     if (rawHash.startsWith('plan=')) {
       hashPlan = rawHash.slice(5);
     } else if (rawHash.startsWith('pandal=')) {
       hashPandal = rawHash.slice(7);
+    } else if (rawHash.startsWith('food=')) {
+      hashFood = rawHash.slice(5);
+    } else if (rawHash.startsWith('shop=')) {
+      hashShop = rawHash.slice(5);
     }
 
     const targetPlan = queryPlan || hashPlan;
     const targetPandal = queryPandal || hashPandal;
+    const targetFood = queryFood || hashFood;
+    const targetShop = queryShop || hashShop;
 
     const validSections = ['home', 'pandals', 'plans', 'audio', 'food-shopping', 'rituals', 'saved', 'login'];
     const isExplicitSectionNav = validSections.includes(rawHash);
 
-    // If user explicitly navigated to a section other than plans, prioritize user navigation and clear lingering deep link query params!
-    if (isExplicitSectionNav && rawHash !== 'plans') {
-      if (queryPlan || queryPandal) {
+    // If user explicitly navigated to a section other than plans/pandals/food-shopping, prioritize user navigation and clear lingering deep link query params!
+    if (isExplicitSectionNav && rawHash !== 'plans' && rawHash !== 'pandals' && rawHash !== 'food-shopping') {
+      if (queryPlan || queryPandal || queryFood || queryShop) {
         window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
       }
     } else if (targetPlan) {
@@ -3114,6 +3215,12 @@
       return;
     } else if (targetPandal) {
       handleSharedPandalDeepLink(targetPandal);
+      return;
+    } else if (targetFood) {
+      handleSharedFoodDeepLink(targetFood);
+      return;
+    } else if (targetShop) {
+      handleSharedShopDeepLink(targetShop);
       return;
     }
 
@@ -4712,7 +4819,9 @@
       }
       currentUser = null;
       localStorage.removeItem('akalbodhon_user_profile');
-      // Devotee's saved itinerary remains safely preserved in local storage & customPlans
+      localStorage.removeItem('akalbodhon_bookmarks');
+      localStorage.removeItem('akalbodhon_custom_plans');
+      customPlans = [];
     }
 
     updateAccountUI();
@@ -4729,6 +4838,16 @@
       } catch (e) {
         console.warn('Pending save action error:', e);
       }
+    }
+
+    if (user && window.__pendingSharedPlanId) {
+      const pId = window.__pendingSharedPlanId;
+      window.__pendingSharedPlanId = null;
+      setTimeout(() => {
+        if (typeof window.openViewPlanModal === 'function') {
+          window.openViewPlanModal(pId);
+        }
+      }, 300);
     }
 
     if (user && pendingPlanJoinId) {
@@ -5951,7 +6070,18 @@
     if (sharedPlansToCheck.length > 0) {
       const deletedPlanIds = new Set();
 
+      // A. Fast check against Firestore deleted_plans tombstone collection
+      if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getDeletedPlanIds === 'function') {
+        try {
+          const tombstoned = await window.AkalbodhonFirebase.getDeletedPlanIds(sharedPlansToCheck.map(p => p.id));
+          if (Array.isArray(tombstoned)) {
+            tombstoned.forEach(id => deletedPlanIds.add(id));
+          }
+        } catch (_) {}
+      }
+
       for (const sp of sharedPlansToCheck) {
+        if (deletedPlanIds.has(sp.id)) continue;
         let existsInFb = false;
         let existsInSb = false;
 
@@ -5988,6 +6118,13 @@
             localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
             saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
           } catch (_) {}
+
+          if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+            window.AkalbodhonFirebase.syncProfile({
+              id: currentUser.id || currentUser.user_id,
+              custom_plans: customPlans
+            }).catch(() => {});
+          }
         }
 
         // If receiver is currently viewing a deleted plan in the modal, close modal and warn
@@ -6076,24 +6213,10 @@
     const container = document.getElementById('plans-list-container');
     if (!container) return;
 
-    // Combine Master Plans & Custom Plans
-    let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    // Master Festival Plans ONLY for the public website (custom plans live in personal Itinerary)
+    let allPlans = [...MASTER_PUJA_PLANS];
 
-    if (dayFilter === 'my-plans') {
-      if (currentUser) {
-        allPlans = customPlans.filter(p => isCurrentUserPlan(p, currentUser));
-      } else {
-        allPlans = customPlans.filter(p => isCurrentUserPlan(p, null));
-      }
-    } else if (dayFilter === 'shared') {
-      if (currentUser) {
-        allPlans = customPlans.filter(p => !isCurrentUserPlan(p, currentUser));
-      } else {
-        allPlans = customPlans;
-      }
-    } else if (dayFilter === 'custom') {
-      allPlans = customPlans;
-    } else if (dayFilter !== 'all') {
+    if (dayFilter !== 'all') {
       allPlans = allPlans.filter(p => {
         const tag = (p.day_tag || '').toLowerCase();
         const key = (p.day_key || '').toLowerCase();
@@ -6102,20 +6225,17 @@
     }
 
     if (allPlans.length === 0) {
-      const isMyPlansFilter = dayFilter === 'my-plans';
       container.innerHTML = `
         <div class="col-span-full text-center py-16 px-4 rounded-3xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 space-y-3">
           <span class="text-4xl">🪔</span>
           <h3 class="font-display text-xl font-bold text-on-surface dark:text-white">
-            ${isMyPlansFilter && !currentUser ? 'No Custom Plans Saved Yet' : 'No plans found for this selection'}
+            No festival plans found for this selection
           </h3>
           <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-sm mx-auto">
-            ${isMyPlansFilter && !currentUser 
-              ? 'You have not created any custom plans yet in this session. Click below to craft your dream itinerary!' 
-              : 'Create your customized festival itinerary to hop pandals, follow canonical rituals, and share with your friends.'}
+            Choose another festive day from the filter above or craft your bespoke plan for your personal itinerary!
           </p>
           <button onclick="document.getElementById('open-create-plan-btn').click()" class="mt-2 px-4 py-2 rounded-xl bg-primary dark:bg-amber-400 text-white dark:text-black text-xs font-bold shadow-md cursor-pointer">
-            + Create Plan Now
+            + Make Your Own Plan
           </button>
         </div>
       `;
@@ -6278,10 +6398,31 @@
   // ========================================================
   window.openViewPlanModal = function (planId) {
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+    if (window.__sharedPlansMap && window.__sharedPlansMap.has(planId)) {
+      allPlans.push(window.__sharedPlansMap.get(planId));
+    }
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 
     window.activeViewingPlanId = plan.id;
+
+    // Check if custom plan was deleted by its creator from database
+    if (!plan.is_template && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.isPlanDeleted === 'function') {
+      window.AkalbodhonFirebase.isPlanDeleted(plan.id).then(wasDeleted => {
+        if (wasDeleted) {
+          customPlans = customPlans.filter(p => p.id !== plan.id);
+          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          if (currentUser && Array.isArray(currentUser.custom_plans)) {
+            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
+            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
+          }
+          window.closeViewPlanModal();
+          renderSavedItinerary();
+          updateBookmarkCount();
+          showToast('This custom Puja plan was deleted by its creator.', 'warning');
+        }
+      }).catch(() => {});
+    }
 
     const modal = document.getElementById('view-plan-modal');
     if (!modal) return;
@@ -6579,12 +6720,14 @@
     if (saveBtn) {
       const isSaved = customPlans.some(p => p.id === plan.id);
       if (isSaved) {
-        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_added</span> <span>Saved in Itinerary</span>`;
-        saveBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_added</span> <span id="vp-save-btn-text">Saved in Itinerary</span>`;
+        saveBtn.classList.add('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+        saveBtn.classList.remove('text-on-surface', 'dark:text-amber-300');
         saveBtn.title = "Click to remove this plan from your Itinerary";
       } else {
-        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark</span> <span>Save to Itinerary</span>`;
-        saveBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        saveBtn.innerHTML = `<span class="material-symbols-outlined text-[17px]">bookmark_add</span> <span id="vp-save-btn-text">Save to Itinerary</span>`;
+        saveBtn.classList.remove('bg-emerald-600', 'hover:bg-emerald-700', 'text-white');
+        saveBtn.classList.add('text-on-surface', 'dark:text-amber-300');
         saveBtn.title = "Save entire plan to your Itinerary";
       }
       saveBtn.onclick = () => {
@@ -6686,6 +6829,18 @@
     if (openBtn && modal) {
       openBtn.onclick = (e) => {
         if (e) e.preventDefault();
+        if (!isUserLoggedIn() || !currentUser) {
+          promptAuthBeforeSave({
+            title: 'Sign In to Create Custom Plan',
+            message: 'Please <strong>log in</strong> or <strong>create an account</strong> to craft your custom Puja plan and save it to your personal itinerary.',
+            categoryName: 'Custom Plans',
+            defaultMode: 'login',
+            onAuthenticatedSave: () => {
+              openModal();
+            }
+          });
+          return;
+        }
         openModal();
       };
     }
@@ -6795,7 +6950,8 @@
 
       showTopProgressBar();
 
-      // OPTIMISTIC LOCAL SAVE (Instant UI response)
+      // OPTIMISTIC LOCAL SAVE (Custom plans are strictly scoped to devotee's personal itinerary)
+      newPlan.saved_to_itinerary = true;
       customPlans.unshift(newPlan);
       try {
         localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
@@ -6819,25 +6975,39 @@
       const descInputEl = document.getElementById('plan-description-input');
       if (descInputEl) descInputEl.value = '';
 
-      // Set filter to 'all' so new plan is immediately visible
-      activePlanFilter = 'all';
-      const planFilterSelect = document.getElementById('plan-filter-dropdown');
-      if (planFilterSelect) planFilterSelect.value = 'all';
+      // Navigate devotee directly to personal itinerary under Custom Plans
+      activeSavedTab = 'plans';
+      window.location.hash = 'saved';
+      document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+      const savedSec = document.getElementById('section-saved');
+      if (savedSec) {
+        savedSec.classList.remove('hidden');
+        savedSec.classList.add('tab-content');
+      }
+      document.querySelectorAll('[data-nav-target]').forEach(link => {
+        if (link.dataset.navTarget === 'saved') {
+          link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+          link.classList.remove('text-on-surface-variant', 'font-normal');
+        } else {
+          link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+          link.classList.add('text-on-surface-variant', 'font-normal');
+        }
+      });
 
-      // Re-render festival plans
-      renderFestivalPlans(activePlanFilter);
+      renderSavedItinerary('plans');
+      updateBookmarkCount();
 
-      // Smoothly highlight new plan card
+      // Smoothly highlight new plan card in the Itinerary
       setTimeout(() => {
-        const newCard = document.getElementById(`plan-card-${newPlan.id}`);
+        const newCard = document.getElementById(`itinerary-plan-${newPlan.id}`);
         if (newCard) {
           newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
           newCard.classList.add('ring-2', 'ring-primary', 'dark:ring-amber-400');
           setTimeout(() => newCard.classList.remove('ring-2', 'ring-primary', 'dark:ring-amber-400'), 2500);
         }
-      }, 150);
+      }, 200);
 
-      showToast(`🎉 "${title}" created successfully! You can now share it with friends.`, 'celebration');
+      showToast(`🎉 "${title}" created and saved to your personal Itinerary!`, 'celebration');
       setTimeout(hideTopProgressBar, 500);
 
       // NON-BLOCKING REMOTE SYNC (Cloud persistence in background)
@@ -7057,6 +7227,34 @@
 🚇 Nearest Transit: ${pandal.transit || pandal.metro || 'Kolkata Metro'}
 📍 Explore pandal route, timings & nearby bhog spots on Akalbodhon:`;
 
+    } else if (type === 'food') {
+      const food = item || FOOD_DATA.find(f => f.id === id);
+      if (!food) return;
+
+      heading = 'Share Food Destination';
+      subTitle = `${food.name} (${food.location || 'Kolkata'})`;
+      shareUrl = `${window.location.origin}${window.location.pathname}?food=${encodeURIComponent(food.id)}`;
+      label = 'Direct Food Link';
+
+      message = `🍽️ *Durga Puja 2026 Food Trail: ${food.name}* (${food.location || 'Kolkata'})
+⭐ Signature Delicacy: ${food.mustTry || 'Festive Specialty'}
+🚇 Transit: ${food.metro || 'Metro Accessible'}
+📍 Explore festive food trails & nearby pandals on Akalbodhon:`;
+
+    } else if (type === 'shop') {
+      const shop = item || SHOPPING_DATA.find(s => s.id === id);
+      if (!shop) return;
+
+      heading = 'Share Festive Shopping District';
+      subTitle = `${shop.name} (${shop.location || 'Kolkata'})`;
+      shareUrl = `${window.location.origin}${window.location.pathname}?shop=${encodeURIComponent(shop.id)}`;
+      label = 'Direct Shopping Link';
+
+      message = `🛍️ *Durga Puja 2026 Festive Shopping: ${shop.name}* (${shop.location || 'Kolkata'})
+✨ Highlights: ${shop.highlight || 'Traditional Festive Shopping'}
+🚇 Transit: ${shop.metro || 'Metro Accessible'}
+📍 Explore shopping bazaars & festive guide on Akalbodhon:`;
+
     } else {
       // Website
       heading = 'Share Akalbodhon Website';
@@ -7127,6 +7325,96 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     window.openShareModal({ type: 'pandal', id: pandalId });
   };
 
+  window.openShareFoodModal = function (foodId) {
+    window.openShareModal({ type: 'food', id: foodId });
+  };
+
+  window.openShareShopModal = function (shopId) {
+    window.openShareModal({ type: 'shop', id: shopId });
+  };
+
+  // Food Deep Link Handler (Receiver views shared food spot on website)
+  function handleSharedFoodDeepLink(foodId) {
+    const cleanId = decodeURIComponent(foodId).trim().toLowerCase();
+    const food = FOOD_DATA.find(f => f.id === cleanId || f.id === foodId || (f.name && f.name.toLowerCase().includes(cleanId)));
+
+    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+    const fsSec = document.getElementById('section-food-shopping');
+    if (fsSec) {
+      fsSec.classList.remove('hidden');
+      fsSec.classList.add('tab-content');
+    }
+    document.querySelectorAll('[data-nav-target]').forEach(link => {
+      if (link.dataset.navTarget === 'food-shopping') {
+        link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.remove('text-on-surface-variant', 'font-normal');
+      } else {
+        link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.add('text-on-surface-variant', 'font-normal');
+      }
+    });
+
+    if (food) {
+      openDetailModal(food, 'food');
+      showToast(`🍽️ Opened shared dining spot: "${food.name}"`, 'restaurant');
+      setTimeout(() => {
+        const card = document.querySelector(`[data-id="${food.id}"]`) || document.getElementById(`food-card-${food.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('ring-2', 'ring-amber-400');
+          setTimeout(() => card.classList.remove('ring-2', 'ring-amber-400'), 2500);
+        }
+      }, 300);
+      const cleanUrl = window.location.pathname + '#food-shopping';
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else {
+      showToast('Dining spot not found, explore festive food options below.', 'restaurant');
+      const cleanUrl = window.location.pathname + '#food-shopping';
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }
+
+  // Shopping Deep Link Handler (Receiver views shared shopping district on website)
+  function handleSharedShopDeepLink(shopId) {
+    const cleanId = decodeURIComponent(shopId).trim().toLowerCase();
+    const shop = SHOPPING_DATA.find(s => s.id === cleanId || s.id === shopId || (s.name && s.name.toLowerCase().includes(cleanId)));
+
+    document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+    const fsSec = document.getElementById('section-food-shopping');
+    if (fsSec) {
+      fsSec.classList.remove('hidden');
+      fsSec.classList.add('tab-content');
+    }
+    document.querySelectorAll('[data-nav-target]').forEach(link => {
+      if (link.dataset.navTarget === 'food-shopping') {
+        link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.remove('text-on-surface-variant', 'font-normal');
+      } else {
+        link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+        link.classList.add('text-on-surface-variant', 'font-normal');
+      }
+    });
+
+    if (shop) {
+      openDetailModal(shop, 'shop');
+      showToast(`🛍️ Opened shared shopping district: "${shop.name}"`, 'shopping_bag');
+      setTimeout(() => {
+        const card = document.querySelector(`[data-id="${shop.id}"]`) || document.getElementById(`shop-card-${shop.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.classList.add('ring-2', 'ring-amber-400');
+          setTimeout(() => card.classList.remove('ring-2', 'ring-amber-400'), 2500);
+        }
+      }, 300);
+      const cleanUrl = window.location.pathname + '#food-shopping';
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else {
+      showToast('Shopping district not found, explore shopping bazaars below.', 'shopping_bag');
+      const cleanUrl = window.location.pathname + '#food-shopping';
+      window.history.replaceState({}, document.title, cleanUrl);
+    }
+  }
+
   // Pandal Deep Link Handler
   function handleSharedPandalDeepLink(pandalId) {
     const cleanId = decodeURIComponent(pandalId).trim().toLowerCase();
@@ -7165,8 +7453,32 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   }
 
   // Deep Link Plan Handler (Receiver directly opens the shared plan)
+  // Deep Link Plan Handler (Receiver directly opens the shared plan)
   async function handleSharedPlanDeepLink(planId) {
     const cleanId = decodeURIComponent(planId).trim();
+    const isMasterPlan = MASTER_PUJA_PLANS.some(p => p.id === cleanId);
+
+    // 1. For custom plans, verify if creator deleted it from database
+    if (!isMasterPlan) {
+      if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.isPlanDeleted === 'function') {
+        try {
+          const wasDeleted = await window.AkalbodhonFirebase.isPlanDeleted(cleanId);
+          if (wasDeleted) {
+            showToast('This custom Puja plan has been deleted by its creator and is no longer available.', 'warning');
+            customPlans = customPlans.filter(p => p.id !== cleanId);
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+            if (currentUser && Array.isArray(currentUser.custom_plans)) {
+              currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== cleanId);
+              try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
+            }
+            const cleanUrl = window.location.pathname + '#saved';
+            window.history.replaceState({}, document.title, cleanUrl);
+            return;
+          }
+        } catch (_) {}
+      }
+    }
+
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     let plan = allPlans.find(p => p.id === cleanId || p.id === planId);
 
@@ -7195,15 +7507,15 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               day_key: (decoded.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
               date_str: decoded.date_str || decoded.day_tag,
               creator_name: decoded.creator_name || 'Devotee',
-              creator_avatar: '🌺',
+              creator_avatar: decoded.creator_avatar || '🌺',
               creator_id: decoded.creator_id || 'shared',
               route_summary: decoded.route_summary || '',
               pandals: decoded.pandals || [],
               food_stops: decoded.food_stops || [],
               rituals: decoded.rituals || [],
+              custom_notes: decoded.custom_notes || decoded.description || '',
               members: []
             };
-            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (err) {
           console.warn('Error parsing shared custom plan pdata:', err);
@@ -7216,7 +7528,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           const fbPlan = await window.AkalbodhonFirebase.fetchPlanById(cleanId);
           if (fbPlan) {
             plan = fbPlan;
-            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (fbErr) {
           console.warn('Firebase deep link plan lookup error:', fbErr);
@@ -7257,65 +7568,72 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               members: members,
               custom_notes: data.custom_notes
             };
-            // Do NOT auto-save to customPlans — receiver must explicitly save the plan themselves
           }
         } catch (err) {
           console.warn('Deep link plan lookup error:', err);
         }
       }
 
-      // Switch view to plans section
-      document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
-      const plansSec = document.getElementById('section-plans');
-      if (plansSec) {
-        plansSec.classList.remove('hidden');
-        plansSec.classList.add('tab-content');
-      }
-      document.querySelectorAll('[data-nav-target]').forEach(link => {
-        if (link.dataset.navTarget === 'plans') {
-          link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
-          link.classList.remove('text-on-surface-variant', 'font-normal');
-        } else {
-          link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
-          link.classList.add('text-on-surface-variant', 'font-normal');
-        }
-      });
-
-      if (plan) {
-        // Mark as shared but do NOT auto-save — receiver must explicitly save the plan themselves
-        if (!plan.is_template) {
-          plan.is_shared = true;
-        }
-
-        // Render plans (without auto-inserting into customPlans)
-        renderFestivalPlans('all');
-
-        // Receiver directly opens the specific shared puja plan!
-        if (typeof window.openViewPlanModal === 'function') {
-          window.openViewPlanModal(plan.id);
-        }
-
-        // Scroll to card and highlight with glowing pulsing creator spotlight
-        setTimeout(() => {
-          const card = document.getElementById(`plan-card-${plan.id}`) || document.querySelector(`[data-plan-id="${plan.id}"]`);
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('plan-highlight-focus', 'ring-4', 'ring-amber-400', 'shadow-2xl');
-            setTimeout(() => card.classList.remove('plan-highlight-focus', 'ring-4', 'ring-amber-400', 'shadow-2xl'), 4500);
-          }
-        }, 350);
-
-        showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
-
-        // Clean up the URL search params so the receiver is not trapped when navigating around
-        const cleanUrl = window.location.pathname + '#plans';
-        window.history.replaceState({}, document.title, cleanUrl);
-      } else {
-        renderFestivalPlans('all');
+      if (!plan) {
         showToast('Puja plan link could not be found or has expired.', 'warning');
         const cleanUrl = window.location.pathname + '#plans';
         window.history.replaceState({}, document.title, cleanUrl);
+        return;
       }
+
+      // 3. For Custom Plans: require receiver to log in or create an account first!
+      if (!isMasterPlan) {
+        if (!isUserLoggedIn() || !currentUser) {
+          window.__pendingSharedPlanId = plan.id;
+          window.__pendingSharedPlanData = plan;
+          promptAuthBeforeSave({
+            title: 'Sign In to View Shared Plan',
+            message: `<strong>${escapeHtml(plan.creator_name || 'A Devotee')}</strong> shared the custom Puja plan <em>"${escapeHtml(plan.title || 'Plan')}"</em> with you.<br/><br/>Please <strong>sign in</strong> or <strong>create an account</strong> to view this plan on Akalbodhon and save it to your personal itinerary.`,
+            categoryName: 'Shared Custom Plan',
+            defaultMode: 'login',
+            onAuthenticatedSave: () => {
+              if (typeof window.openViewPlanModal === 'function') {
+                window.openViewPlanModal(plan.id);
+              }
+            }
+          });
+          const cleanUrl = window.location.pathname + '#saved';
+          window.history.replaceState({}, document.title, cleanUrl);
+          return;
+        }
+      }
+
+      // Mark as shared in temporary memory map
+      window.__sharedPlansMap = window.__sharedPlansMap || new Map();
+      window.__sharedPlansMap.set(plan.id, plan);
+
+      // If it's a master festival plan, switch to plans section; else to saved itinerary section
+      if (isMasterPlan) {
+        document.querySelectorAll('.app-section').forEach(sec => sec.classList.add('hidden'));
+        const plansSec = document.getElementById('section-plans');
+        if (plansSec) {
+          plansSec.classList.remove('hidden');
+          plansSec.classList.add('tab-content');
+        }
+        document.querySelectorAll('[data-nav-target]').forEach(link => {
+          if (link.dataset.navTarget === 'plans') {
+            link.classList.add('text-primary', 'dark:text-amber-300', 'font-bold');
+            link.classList.remove('text-on-surface-variant', 'font-normal');
+          } else {
+            link.classList.remove('text-primary', 'dark:text-amber-300', 'font-bold');
+            link.classList.add('text-on-surface-variant', 'font-normal');
+          }
+        });
+      }
+
+      // Open the plan modal directly for the receiver
+      if (typeof window.openViewPlanModal === 'function') {
+        window.openViewPlanModal(plan.id);
+      }
+
+      showToast(`🌺 Opened shared plan: "${plan.title}" by ${plan.creator_name || 'Devotee'}`, 'event_available');
+      const cleanUrl = window.location.pathname + (isMasterPlan ? '#plans' : '#saved');
+      window.history.replaceState({}, document.title, cleanUrl);
     } finally {
       if (isRemoteFetch) {
         hideGlobalLoader();
@@ -8369,10 +8687,16 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       window.openShareWebsiteModal();
     });
 
-    // Pandal Detail Modal Share
+    // Pandal / Food / Shopping Detail Modal Share
     document.getElementById('modal-pandal-share-btn')?.addEventListener('click', () => {
       if (window.currentDetailModalItem && window.currentDetailModalItem.id) {
-        window.openSharePandalModal(window.currentDetailModalItem.id);
+        if (window.currentDetailModalType === 'food') {
+          window.openShareFoodModal(window.currentDetailModalItem.id);
+        } else if (window.currentDetailModalType === 'shop') {
+          window.openShareShopModal(window.currentDetailModalItem.id);
+        } else {
+          window.openSharePandalModal(window.currentDetailModalItem.id);
+        }
       }
     });
 
@@ -8403,8 +8727,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // Detail Modal Close
     const cleanPandalUrlParams = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('pandal')) {
-        const cleanUrl = window.location.pathname + (window.location.hash || '#pandals');
+      if (urlParams.has('pandal') || urlParams.has('food') || urlParams.has('shop')) {
+        const cleanUrl = window.location.pathname + (window.location.hash || '');
         window.history.replaceState({}, document.title, cleanUrl);
       }
     };
@@ -8428,7 +8752,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     // First-Time Visitor Welcome Modal (Only shown if no deep link and not already welcomed)
     const checkUrlParams = new URLSearchParams(window.location.search);
-    const hasInitialDeepLink = checkUrlParams.get('plan') || checkUrlParams.get('pandal') || window.location.hash.startsWith('#plan=') || window.location.hash.startsWith('#pandal=');
+    const hasInitialDeepLink = checkUrlParams.get('plan') || checkUrlParams.get('pandal') || checkUrlParams.get('food') || checkUrlParams.get('shop') || window.location.hash.startsWith('#plan=') || window.location.hash.startsWith('#pandal=') || window.location.hash.startsWith('#food=') || window.location.hash.startsWith('#shop=');
 
     if (!localStorage.getItem('akalbodhon_welcomed') && !hasInitialDeepLink && !currentUser) {
       const gateModal = document.getElementById('shared-plan-gate-modal');
@@ -8452,6 +8776,12 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // Global helper aliases
     window.openPandalDetail = function (pandalId) {
       handleSharedPandalDeepLink(pandalId);
+    };
+    window.openFoodDetail = function (foodId) {
+      handleSharedFoodDeepLink(foodId);
+    };
+    window.openShopDetail = function (shopId) {
+      handleSharedShopDeepLink(shopId);
     };
     window.viewFestivalPlan = function (planId) {
       if (typeof window.openViewPlanModal === 'function') {

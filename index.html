@@ -778,16 +778,13 @@
 
         <div class="relative w-full sm:w-72">
           <select id="plan-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-            <option value="all" selected>🌟 All Plans (Full Festival)</option>
-            <option value="my-plans">👤 My Created Plans</option>
-            <option value="shared">🤝 Shared with Me</option>
+            <option value="all" selected>🌟 All Festival Plans</option>
             <option value="mahalaya">🌅 Mahalaya (10 Oct 2026)</option>
             <option value="shasthi">🥁 Maha Shasthi (17 Oct 2026)</option>
             <option value="saptami">🌿 Maha Saptami (18 Oct 2026)</option>
             <option value="ashtami">🔥 Maha Ashtami (19 Oct 2026)</option>
             <option value="navami">✨ Maha Navami (20 Oct 2026)</option>
             <option value="dashami">🪷 Bijoya Dashami (21 Oct 2026)</option>
-            <option value="custom">📝 All Custom Plans</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
             <span class="material-symbols-outlined text-[20px]">expand_more</span>
@@ -1485,10 +1482,14 @@
       </div>
 
       <!-- Modal Bottom Actions (Save Options — share removed per user specification) -->
+      <!-- Modal Bottom Actions (Save / Close / Delete) -->
       <div class="p-3.5 sm:p-5 border-t border-outline-variant/30 dark:border-amber-400/20 bg-surface-container-low/80 dark:bg-[#16130d]/90 backdrop-blur-md flex items-center gap-2">
         <button id="vp-save-btn" class="flex-1 py-2.5 px-4 rounded-xl border border-secondary-container dark:border-amber-400/40 hover:bg-secondary-container/20 text-on-surface dark:text-amber-300 font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer" title="Save to Itinerary">
           <span class="material-symbols-outlined text-[17px]">bookmark_add</span>
-          <span>Save</span>
+          <span id="vp-save-btn-text">Save to Itinerary</span>
+        </button>
+        <button id="vp-close-bottom-btn" type="button" onclick="if(window.closeViewPlanModal) window.closeViewPlanModal();" class="py-2.5 px-4 rounded-xl bg-surface-container-high dark:bg-[#252016] hover:bg-surface-container-highest dark:hover:bg-[#322c20] text-on-surface dark:text-[#ded5c7] font-bold text-xs sm:text-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+          <span>Close</span>
         </button>
         <button id="vp-delete-btn" class="hidden p-2.5 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Delete Plan">
           <span class="material-symbols-outlined text-[18px]">delete</span>

@@ -938,6 +938,17 @@ export const AkalbodhonFirebase = {
       // 1. Delete from top-level plans (removes it for all shared recipients)
       await withTimeout(deleteDoc(doc(db, "plans", cleanPlanId)), 2500).catch(() => {});
 
+      // 1b. Write tombstone to deleted_plans collection so receivers immediately detect deletion across database
+      try {
+        const tombstoneRef = doc(db, "deleted_plans", cleanPlanId);
+        await withTimeout(setDoc(tombstoneRef, {
+          id: cleanPlanId,
+          plan_id: cleanPlanId,
+          deleted_at: new Date().toISOString(),
+          deleted_by: userId || 'creator'
+        }, { merge: true }), 2000).catch(() => {});
+      } catch (e) {}
+
       // 2. Delete from users/{userId}/plans if userId provided
       if (userId) {
         const creatorIds = getPossibleUserDocIds(userId);
@@ -963,6 +974,51 @@ export const AkalbodhonFirebase = {
     }
   },
 
+  // 10b. Check if a custom plan has been permanently deleted from database
+  async isPlanDeleted(planId) {
+    if (!db || !planId) return false;
+    const cleanPlanId = String(planId).trim();
+    try {
+      // 1. Check deleted_plans tombstone collection
+      const tombstoneRef = doc(db, "deleted_plans", cleanPlanId);
+      const snap = await withTimeout(getDoc(tombstoneRef), 2000).catch(() => null);
+      if (snap && snap.exists()) return true;
+
+      // 2. Check top-level plans
+      const planRef = doc(db, "plans", cleanPlanId);
+      const pSnap = await withTimeout(getDoc(planRef), 2000).catch(() => null);
+      if (pSnap && !pSnap.exists()) {
+        // If not found in global plans, check if tombstone was placed or if plan is gone
+        return true;
+      }
+      return false;
+    } catch (_) {
+      return false;
+    }
+  },
+
+  // 10c. Batch check deleted plan IDs for receivers
+  async getDeletedPlanIds(planIds = []) {
+    if (!db || !Array.isArray(planIds) || planIds.length === 0) return [];
+    const deleted = [];
+    for (const pid of planIds) {
+      if (!pid) continue;
+      const cleanPid = String(pid).trim();
+      try {
+        const tombSnap = await withTimeout(getDoc(doc(db, "deleted_plans", cleanPid)), 1500).catch(() => null);
+        if (tombSnap && tombSnap.exists()) {
+          deleted.push(cleanPid);
+          continue;
+        }
+        const planSnap = await withTimeout(getDoc(doc(db, "plans", cleanPid)), 1500).catch(() => null);
+        if (planSnap && !planSnap.exists()) {
+          deleted.push(cleanPid);
+        }
+      } catch (_) {}
+    }
+    return deleted;
+  },
+
   // 11. Sign Out
   async signOutUser() {
     if (auth) {
@@ -973,7 +1029,8 @@ export const AkalbodhonFirebase = {
       }
     }
     localStorage.removeItem("akalbodhon_user_profile");
-    // Saved itinerary bookmarks and custom plans are permanently preserved on device and under user identifier
+    localStorage.removeItem("akalbodhon_bookmarks");
+    localStorage.removeItem("akalbodhon_custom_plans");
   },
 
   // 12. Listen to Auth State Changes
