@@ -5065,10 +5065,7 @@
 
   // Active auth modal state
   let currentAuthModalMode = 'login'; // 'login' | 'signup'
-  let currentAuthModalMethod = 'phone'; // 'phone' | 'email'
-  let activeModalConfirmationResult = null;
-  let lastModalPhoneNumber = '';
-  let modalResendCooldownTimer = null;
+  let currentAuthModalMethod = 'email'; // 'email'
 
   function clearAuthModalAlerts() {
     const errorAlert = document.getElementById('auth-error-alert');
@@ -5110,59 +5107,22 @@
     }
   }
 
-  function setAuthMethodModal(method = 'phone') {
-    currentAuthModalMethod = method;
+  function setAuthMethodModal(method = 'email') {
+    currentAuthModalMethod = 'email';
     clearAuthModalAlerts();
-
-    const phoneBtn = document.getElementById('auth-method-phone-btn');
-    const emailBtn = document.getElementById('auth-method-email-btn');
-    const phoneSection = document.getElementById('auth-phone-section');
     const emailSection = document.getElementById('auth-email-section');
-    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
-    const otpVerifySection = document.getElementById('auth-otp-verify-section');
-
-    if (method === 'phone') {
-      if (phoneBtn) {
-        phoneBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer';
-      }
-      if (emailBtn) {
-        emailBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer';
-      }
-      phoneSection?.classList.remove('hidden');
-      emailSection?.classList.add('hidden');
-
-      // Reset phone form view to step 1
-      phoneEntryForm?.classList.remove('hidden');
-      otpVerifySection?.classList.add('hidden');
-    } else {
-      if (emailBtn) {
-        emailBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer';
-      }
-      if (phoneBtn) {
-        phoneBtn.className = 'py-1.5 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer';
-      }
-      emailSection?.classList.remove('hidden');
-      phoneSection?.classList.add('hidden');
-    }
+    emailSection?.classList.remove('hidden');
   }
 
-  function setAuthMode(mode = 'login', presetValue = '', targetMethod = null) {
+  function setAuthMode(mode = 'login', presetValue = '') {
     currentAuthModalMode = mode;
     clearAuthModalAlerts();
 
     const loginTab = document.getElementById('auth-tab-login');
     const signupTab = document.getElementById('auth-tab-signup');
     const titleEl = document.getElementById('auth-modal-title');
-    const phoneNameField = document.getElementById('auth-phone-name-field');
     const emailNameField = document.getElementById('auth-email-name-field');
-    const sendOtpBtnLabel = document.getElementById('auth-send-otp-btn-label');
     const emailSubmitLabel = document.getElementById('auth-email-submit-label');
-
-    // Reset phone view to step 1
-    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
-    const otpVerifySection = document.getElementById('auth-otp-verify-section');
-    phoneEntryForm?.classList.remove('hidden');
-    otpVerifySection?.classList.add('hidden');
 
     if (mode === 'signup') {
       loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
@@ -5170,10 +5130,8 @@
       signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
 
-      phoneNameField?.classList.remove('hidden');
       emailNameField?.classList.remove('hidden');
 
-      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
       if (emailSubmitLabel) emailSubmitLabel.textContent = 'Create Account with Email';
       if (titleEl) titleEl.textContent = 'Create Devotee Account';
     } else {
@@ -5182,35 +5140,24 @@
       loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
       loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
 
-      phoneNameField?.classList.add('hidden');
       emailNameField?.classList.add('hidden');
 
-      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send SMS OTP';
       if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
       if (titleEl) titleEl.textContent = 'Devotee Sign In';
     }
 
-    if (targetMethod) {
-      setAuthMethodModal(targetMethod);
-    }
-
     if (presetValue) {
-      if (currentAuthModalMethod === 'phone' || targetMethod === 'phone') {
-        const phoneInput = document.getElementById('auth-phone-number-input');
-        if (phoneInput) phoneInput.value = presetValue.replace(/^\+91/, '').trim();
-      } else {
-        const emailInput = document.getElementById('auth-email-address-input');
-        if (emailInput) emailInput.value = presetValue.trim();
-      }
+      const emailInput = document.getElementById('auth-email-address-input');
+      if (emailInput) emailInput.value = presetValue.trim();
     }
   }
 
-  function openAuthModal(mode = 'login', targetMethod = 'phone') {
+  function openAuthModal(mode = 'login') {
     document.body.classList.add('modal-open');
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
 
-    setAuthMode(mode, '', targetMethod);
+    setAuthMode(mode);
 
     const googleBtn = document.getElementById('google-auth-btn');
     if (googleBtn) googleBtn.disabled = false;
@@ -5220,17 +5167,10 @@
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    if (targetMethod === 'phone') {
-      const phoneInput = document.getElementById('auth-phone-number-input');
-      const phoneNameInput = document.getElementById('auth-phone-name-input');
-      if (mode === 'signup' && phoneNameInput) phoneNameInput.focus();
-      else if (phoneInput) phoneInput.focus();
-    } else {
-      const emailInput = document.getElementById('auth-email-address-input');
-      const emailNameInput = document.getElementById('auth-email-name-input');
-      if (mode === 'signup' && emailNameInput) emailNameInput.focus();
-      else if (emailInput) emailInput.focus();
-    }
+    const emailInput = document.getElementById('auth-email-address-input');
+    const emailNameInput = document.getElementById('auth-email-name-input');
+    if (mode === 'signup' && emailNameInput) emailNameInput.focus();
+    else if (emailInput) emailInput.focus();
   }
 
   function closeAuthModal() {
@@ -5520,213 +5460,6 @@
   window.checkDevoteeAccountExists = checkDevoteeAccountExists;
 
   // -------------------------------------------------------------
-  // MOBILE NUMBER (SMS OTP) MODAL HANDLERS
-  // -------------------------------------------------------------
-  async function handleSendPhoneOtpModal() {
-    clearAuthModalAlerts();
-    const phoneInput = document.getElementById('auth-phone-number-input');
-    const phoneNameInput = document.getElementById('auth-phone-name-input');
-    const sendOtpBtn = document.getElementById('auth-send-otp-btn');
-    const sendOtpBtnLabel = document.getElementById('auth-send-otp-btn-label');
-    const phoneEntryForm = document.getElementById('auth-phone-entry-form');
-    const otpVerifySection = document.getElementById('auth-otp-verify-section');
-    const otpTargetDisplay = document.getElementById('auth-otp-target-display');
-    const otpCodeInput = document.getElementById('auth-otp-code-input');
-
-    const rawPhone = phoneInput ? phoneInput.value.trim() : '';
-    const rawName = phoneNameInput ? phoneNameInput.value.trim() : '';
-    const digits = rawPhone.replace(/[^0-9]/g, '');
-
-    if (!rawPhone || digits.length < 10) {
-      showAuthModalError('Please enter a valid 10-digit mobile number.');
-      phoneInput?.focus();
-      return;
-    }
-
-    if (currentAuthModalMode === 'signup' && !rawName) {
-      showAuthModalError('Please enter your name so we know what to call you.');
-      phoneNameInput?.focus();
-      return;
-    }
-
-    const formattedPhone = normalizePhone(rawPhone);
-
-    // Check account existence based on mode
-    if (sendOtpBtn) sendOtpBtn.disabled = true;
-    if (sendOtpBtnLabel) sendOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying mobile number...';
-    showGlobalLoader('Verifying Mobile...', 'Checking devotee account status...', '🪔', 'Verifying...');
-
-    try {
-      const existing = await checkDevoteeAccountExists(formattedPhone);
-
-      if (currentAuthModalMode === 'login' && !existing) {
-        hideGlobalLoader();
-        if (sendOtpBtn) sendOtpBtn.disabled = false;
-        if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send SMS OTP';
-
-        // CREATE HELPER BUTTON TO ASSIST TO SIGNUP
-        const actionBtn = document.createElement('button');
-        actionBtn.type = 'button';
-        actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
-        actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Number';
-        actionBtn.onclick = () => {
-          setAuthMode('signup', rawPhone, 'phone');
-        };
-
-        showAuthModalError(
-          `No devotee account found for <strong>${formattedPhone}</strong>. Please create an account to get started with Akalbodhon.`,
-          actionBtn
-        );
-        return;
-      }
-
-      if (currentAuthModalMode === 'signup' && existing) {
-        hideGlobalLoader();
-        if (sendOtpBtn) sendOtpBtn.disabled = false;
-        if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
-
-        const actionBtn = document.createElement('button');
-        actionBtn.type = 'button';
-        actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
-        actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Number';
-        actionBtn.onclick = () => {
-          setAuthMode('login', rawPhone, 'phone');
-        };
-
-        showAuthModalError(
-          `An account already exists for <strong>${formattedPhone}</strong>. Please sign in instead.`,
-          actionBtn
-        );
-        return;
-      }
-
-      // Send OTP via Firebase Phone Auth
-      showGlobalLoader('Sending SMS OTP...', `Sending 6-digit verification code to ${formattedPhone}...`, '🪔', 'Sending SMS OTP...');
-      const res = await window.AkalbodhonFirebase.sendPhoneOtp(formattedPhone, 'auth-recaptcha-container');
-      activeModalConfirmationResult = res.confirmationResult;
-      lastModalPhoneNumber = formattedPhone;
-
-      hideGlobalLoader();
-      if (sendOtpBtn) sendOtpBtn.disabled = false;
-      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = currentAuthModalMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
-
-      // Transition to OTP verification step
-      phoneEntryForm?.classList.add('hidden');
-      otpVerifySection?.classList.remove('hidden');
-      if (otpTargetDisplay) otpTargetDisplay.textContent = formattedPhone;
-      if (otpCodeInput) {
-        otpCodeInput.value = res.isSimulation ? (res.simulationCode || '123456') : '';
-        otpCodeInput.focus();
-      }
-
-      startModalResendTimer();
-      if (res.isSimulation) {
-        showAuthModalSuccess(`⚠️ Firebase SMS billing is disabled on this project. For testing, your OTP code is <strong>${res.simulationCode || '123456'}</strong>.`);
-      } else {
-        showAuthModalSuccess(`SMS OTP code sent to ${formattedPhone}. Please enter the 6-digit code.`);
-      }
-
-    } catch (err) {
-      console.error('Phone OTP modal error:', err);
-      hideGlobalLoader();
-      if (sendOtpBtn) sendOtpBtn.disabled = false;
-      if (sendOtpBtnLabel) sendOtpBtnLabel.textContent = currentAuthModalMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
-
-      if (err.code === 'auth/invalid-phone-number') {
-        showAuthModalError('The mobile number format is invalid. Please enter a valid 10-digit number.');
-      } else if (err.code === 'auth/too-many-requests') {
-        showAuthModalError('Too many OTP attempts. Please wait a few moments before trying again.');
-      } else if (err.code === 'auth/billing-not-enabled' || (err.message && err.message.includes('billing-not-enabled'))) {
-        showAuthModalError('Firebase SMS billing is not enabled on this project. Please enable the Blaze plan or add this number to "Phone numbers for testing" in Firebase Console.');
-      } else {
-        showAuthModalError(err.message || 'Unable to send SMS OTP. Please check your number or try email login.');
-      }
-    }
-  }
-
-  function startModalResendTimer() {
-    let seconds = 30;
-    if (modalResendCooldownTimer) clearInterval(modalResendCooldownTimer);
-    const resendBtn = document.getElementById('auth-resend-otp-btn');
-    const resendText = document.getElementById('auth-resend-otp-text');
-    if (!resendBtn) return;
-
-    resendBtn.disabled = true;
-    resendBtn.classList.add('opacity-50', 'pointer-events-none');
-    if (resendText) resendText.textContent = `Resend in ${seconds}s`;
-
-    modalResendCooldownTimer = setInterval(() => {
-      seconds--;
-      if (seconds <= 0) {
-        clearInterval(modalResendCooldownTimer);
-        resendBtn.disabled = false;
-        resendBtn.classList.remove('opacity-50', 'pointer-events-none');
-        if (resendText) resendText.textContent = 'Resend Code';
-      } else {
-        if (resendText) resendText.textContent = `Resend in ${seconds}s`;
-      }
-    }, 1000);
-  }
-
-  async function handleVerifyPhoneOtpModal() {
-    clearAuthModalAlerts();
-    const otpCodeInput = document.getElementById('auth-otp-code-input');
-    const verifyOtpBtn = document.getElementById('auth-verify-otp-btn');
-    const verifyOtpBtnLabel = document.getElementById('auth-verify-otp-btn-label');
-    const phoneNameInput = document.getElementById('auth-phone-name-input');
-
-    const otpCode = otpCodeInput ? otpCodeInput.value.trim().replace(/[^0-9]/g, '') : '';
-    if (otpCode.length < 6) {
-      showAuthModalError('Please enter the complete 6-digit verification code.');
-      otpCodeInput?.focus();
-      return;
-    }
-
-    if (verifyOtpBtn) verifyOtpBtn.disabled = true;
-    if (verifyOtpBtnLabel) verifyOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying Code...';
-    showGlobalLoader('Verifying Code...', 'Authenticating devotee session...', '🪔', 'Verifying OTP...');
-
-    try {
-      const rawName = phoneNameInput ? phoneNameInput.value.trim() : '';
-      const profile = await window.AkalbodhonFirebase.verifyPhoneOtp(
-        activeModalConfirmationResult,
-        otpCode,
-        currentAuthModalMode === 'signup',
-        rawName,
-        { phoneNumber: lastModalPhoneNumber }
-      );
-
-      if (profile) {
-        hideGlobalLoader();
-        saveUserSession(profile);
-        closeAuthModal();
-        closeSaveAuthPromptModal();
-
-        if (typeof renderSavedSection === 'function') renderSavedSection();
-        if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
-        if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-
-        window.location.hash = '';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        showToast(`Welcome, ${profile.username}! Authenticated with mobile number.`, 'celebration');
-
-        if (pendingSaveAction) {
-          const action = pendingSaveAction;
-          pendingSaveAction = null;
-          action();
-        }
-      }
-    } catch (err) {
-      console.error('Verify OTP modal error:', err);
-      hideGlobalLoader();
-      if (verifyOtpBtn) verifyOtpBtn.disabled = false;
-      if (verifyOtpBtnLabel) verifyOtpBtnLabel.textContent = 'Verify & Continue';
-      showAuthModalError(err.message || 'Invalid or expired OTP code. Please verify the code or request a new one.');
-    }
-  }
-
-  // -------------------------------------------------------------
   // EMAIL & PASSWORD MODAL HANDLERS
   // -------------------------------------------------------------
   async function handleEmailAuthModal() {
@@ -5903,12 +5636,17 @@
   // Fallback unified submit handler
   async function handleAuthSubmit(isPage = false) {
     if (!isPage) {
-      if (currentAuthModalMethod === 'phone') {
-        return handleSendPhoneOtpModal();
-      } else {
-        return handleEmailAuthModal();
-      }
+      return handleEmailAuthModal();
     }
+    const pageUseridInput = document.getElementById('page-userid-input');
+    const pagePwdInput = document.getElementById('page-password-input');
+    const email = pageUseridInput ? pageUseridInput.value.trim() : '';
+    const pwd = pagePwdInput ? pagePwdInput.value : '';
+    const modalEmail = document.getElementById('auth-email-address-input');
+    const modalPwd = document.getElementById('auth-email-password-input');
+    if (modalEmail && email) modalEmail.value = email;
+    if (modalPwd && pwd) modalPwd.value = pwd;
+    openAuthModal('login');
   }
 
 
@@ -6032,7 +5770,7 @@
         } catch (redirErr) {
           console.error('Redirect sign-in error:', redirErr);
           showAuthError(
-            'Unable to start Google sign-in redirect. Please allow popups for this site or sign in using email / phone.',
+            'Unable to start Google sign-in redirect. Please allow popups for this site or sign in using email.',
             false
           );
           resetGoogleButtons();
@@ -6040,7 +5778,7 @@
         }
       }
 
-      showAuthError(fbErr.message || 'Google sign-in could not be completed. Please try again or use email/phone.', false);
+      showAuthError(fbErr.message || 'Google sign-in could not be completed. Please try again or use email.', false);
       resetGoogleButtons();
       return;
     }
@@ -8283,44 +8021,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
     document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
     document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
-
-    // Method Switcher (Mobile OTP vs Email & Password)
-    document.getElementById('auth-method-phone-btn')?.addEventListener('click', () => setAuthMethodModal('phone'));
-    document.getElementById('auth-method-email-btn')?.addEventListener('click', () => setAuthMethodModal('email'));
-
-    // Phone SMS OTP Form Events
-    document.getElementById('auth-phone-entry-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleSendPhoneOtpModal();
-    });
-    document.getElementById('auth-send-otp-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleSendPhoneOtpModal();
-    });
-
-    document.getElementById('auth-otp-verify-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleVerifyPhoneOtpModal();
-    });
-    document.getElementById('auth-verify-otp-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleVerifyPhoneOtpModal();
-    });
-
-    document.getElementById('auth-change-phone-btn')?.addEventListener('click', () => {
-      clearAuthModalAlerts();
-      const otpSection = document.getElementById('auth-otp-verify-section');
-      const phoneForm = document.getElementById('auth-phone-entry-form');
-      otpSection?.classList.add('hidden');
-      phoneForm?.classList.remove('hidden');
-      document.getElementById('auth-phone-number-input')?.focus();
-    });
-
-    document.getElementById('auth-resend-otp-btn')?.addEventListener('click', () => {
-      if (lastModalPhoneNumber) {
-        handleSendPhoneOtpModal();
-      }
-    });
 
     // Email & Password Form Events
     document.getElementById('auth-email-form')?.addEventListener('submit', (e) => {

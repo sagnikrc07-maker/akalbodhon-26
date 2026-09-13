@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sign In & Register | Akalbodhon - Kolkata Durga Puja 2026</title>
-  <meta name="description" content="Sign in or create your Akalbodhon devotee account with Google, Mobile Number (SMS OTP), or Email to save your Puja itineraries, pandals, and sacred plans." />
+  <meta name="description" content="Sign in or create your Akalbodhon devotee account with Google or Email & Password to save your Puja itineraries, pandals, and sacred plans." />
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -221,93 +221,13 @@
 
           <div class="flex items-center gap-3">
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or choose an option</span>
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with email</span>
             <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
           </div>
         </div>
 
-        <!-- Method Selector Tabs: Mobile Number (SMS OTP) vs Email & Password -->
-        <div class="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
-          <button type="button" id="method-phone-btn" class="py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">smartphone</span>
-            <span>Mobile OTP</span>
-          </button>
-          <button type="button" id="method-email-btn" class="py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer">
-            <span class="material-symbols-outlined text-[16px]">mail</span>
-            <span>Email & Password</span>
-          </button>
-        </div>
-
-        <!-- 2. MOBILE NUMBER (SMS OTP) SECTION -->
-        <div id="phone-auth-section" class="space-y-4">
-          <!-- Step 1: Phone & Name Input Form -->
-          <form id="phone-entry-form" class="space-y-4" onsubmit="return false;">
-            <!-- Name (Only in Create Account mode) -->
-            <div id="phone-name-field" class="space-y-1 hidden">
-              <label for="phone-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
-                <input type="text" id="phone-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-            </div>
-
-            <!-- Mobile Number -->
-            <div class="space-y-1">
-              <label for="phone-number-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Mobile Number</label>
-              <div class="relative flex items-center">
-                <div class="absolute left-3 flex items-center gap-1 text-xs font-bold text-on-surface-variant dark:text-amber-300 pointer-events-none select-none">
-                  <span>🇮🇳 +91</span>
-                  <span class="text-outline-variant/50 dark:text-amber-400/40">|</span>
-                </div>
-                <input type="tel" id="phone-number-input" maxlength="15" autocomplete="tel" placeholder="98765 43210" required class="w-full pl-20 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50 font-medium tracking-wide" />
-              </div>
-              <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">We will send a 6-digit SMS verification code to verify this number.</p>
-            </div>
-
-            <!-- Send OTP Button -->
-            <button id="send-otp-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">sms</span>
-              <span id="send-otp-btn-label">Send SMS OTP</span>
-            </button>
-          </form>
-
-          <!-- Step 2: OTP Verification Form (Hidden initially) -->
-          <div id="otp-verify-section" class="hidden space-y-4 animate-scale-up">
-            <div class="p-3.5 rounded-2xl bg-amber-400/10 dark:bg-amber-400/15 border border-amber-400/30 text-center space-y-1">
-              <span class="text-[10px] uppercase font-bold tracking-wider text-primary dark:text-amber-300">OTP Sent via SMS</span>
-              <p class="text-xs text-on-surface dark:text-[#ded5c7]">
-                Enter the 6-digit code sent to <strong id="otp-target-display" class="text-primary dark:text-amber-300 font-mono">+91 ...</strong>
-              </p>
-            </div>
-
-            <form id="otp-verify-form" class="space-y-4" onsubmit="return false;">
-              <div class="space-y-1">
-                <label for="otp-code-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block text-center">6-Digit Verification Code</label>
-                <input type="text" id="otp-code-input" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="• • • • • •" required class="w-full py-3 px-4 text-center text-xl font-mono font-bold tracking-[0.35em] rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-on-surface dark:text-amber-300 focus:outline-none focus:border-primary dark:focus:border-amber-400" />
-              </div>
-
-              <button id="verify-otp-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                <span class="material-symbols-outlined text-[18px]">verified</span>
-                <span id="verify-otp-btn-label">Verify & Continue</span>
-              </button>
-
-              <div class="flex items-center justify-between text-xs pt-1">
-                <button type="button" id="change-phone-btn" class="font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                  <span class="material-symbols-outlined text-[14px]">arrow_back</span> Change Number
-                </button>
-                <button type="button" id="resend-otp-btn" class="font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                  <span class="material-symbols-outlined text-[14px]">refresh</span> <span id="resend-otp-text">Resend Code</span>
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Hidden container for Firebase invisible reCAPTCHA -->
-          <div id="recaptcha-container" class="flex justify-center"></div>
-        </div>
-
-        <!-- 3. EMAIL & PASSWORD SECTION -->
-        <div id="email-auth-section" class="hidden space-y-4">
+        <!-- 2. EMAIL & PASSWORD SECTION -->
+        <div id="email-auth-section" class="space-y-4">
           <form id="email-auth-form" class="space-y-4" onsubmit="return false;">
             <!-- Name (Only in Create Account mode) -->
             <div id="email-name-field" class="space-y-1 hidden">
@@ -404,30 +324,8 @@
     const tabLogin = document.getElementById('tab-login');
     const tabSignup = document.getElementById('tab-signup');
 
-    // Method buttons
-    const methodPhoneBtn = document.getElementById('method-phone-btn');
-    const methodEmailBtn = document.getElementById('method-email-btn');
-    const phoneAuthSection = document.getElementById('phone-auth-section');
-    const emailAuthSection = document.getElementById('email-auth-section');
-
-    // Phone elements
-    const phoneEntryForm = document.getElementById('phone-entry-form');
-    const phoneNameField = document.getElementById('phone-name-field');
-    const phoneNameInput = document.getElementById('phone-name-input');
-    const phoneNumberInput = document.getElementById('phone-number-input');
-    const sendOtpBtn = document.getElementById('send-otp-btn');
-    const sendOtpBtnLabel = document.getElementById('send-otp-btn-label');
-    const otpVerifySection = document.getElementById('otp-verify-section');
-    const otpVerifyForm = document.getElementById('otp-verify-form');
-    const otpCodeInput = document.getElementById('otp-code-input');
-    const otpTargetDisplay = document.getElementById('otp-target-display');
-    const verifyOtpBtn = document.getElementById('verify-otp-btn');
-    const verifyOtpBtnLabel = document.getElementById('verify-otp-btn-label');
-    const changePhoneBtn = document.getElementById('change-phone-btn');
-    const resendOtpBtn = document.getElementById('resend-otp-btn');
-    const resendOtpText = document.getElementById('resend-otp-text');
-
     // Email elements
+    const emailAuthSection = document.getElementById('email-auth-section');
     const emailAuthForm = document.getElementById('email-auth-form');
     const emailNameField = document.getElementById('email-name-field');
     const emailNameInput = document.getElementById('email-name-input');
@@ -440,10 +338,6 @@
     const emailSubmitLabel = document.getElementById('email-submit-label');
 
     let currentMode = 'login'; // 'login' | 'signup'
-    let currentMethod = 'phone'; // 'phone' | 'email'
-    let activeConfirmationResult = null;
-    let lastSentPhoneNumber = '';
-    let resendCooldownTimer = null;
 
     function showAlert(msg, isError = true, actionBtn = null) {
       if (isError) {
@@ -478,65 +372,31 @@
       if (emailTogglePwdText) emailTogglePwdText.textContent = isPwd ? 'Hide' : 'Show';
     });
 
-    // Switch Method
-    function setAuthMethod(method) {
-      currentMethod = method;
-      clearAlerts();
-      if (method === 'phone') {
-        methodPhoneBtn.className = "py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer";
-        methodEmailBtn.className = "py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer";
-        phoneAuthSection.classList.remove('hidden');
-        emailAuthSection.classList.add('hidden');
-      } else {
-        methodEmailBtn.className = "py-2 px-3 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer";
-        methodPhoneBtn.className = "py-2 px-3 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface flex items-center justify-center gap-1.5 transition-all cursor-pointer";
-        emailAuthSection.classList.remove('hidden');
-        phoneAuthSection.classList.add('hidden');
-      }
-    }
-
-    methodPhoneBtn.addEventListener('click', () => setAuthMethod('phone'));
-    methodEmailBtn.addEventListener('click', () => setAuthMethod('email'));
-
     // Switch Mode (Sign In vs Create Account)
-    function setAuthMode(mode, presetValue = '', targetMethod = null) {
+    function setAuthMode(mode, presetValue = '') {
       currentMode = mode;
       clearAlerts();
-
-      if (targetMethod) {
-        setAuthMethod(targetMethod);
-      }
 
       if (mode === 'signup') {
         tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
         tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        phoneNameField.classList.remove('hidden');
-        emailNameField.classList.remove('hidden');
+        emailNameField?.classList.remove('hidden');
         authHeading.textContent = 'Create Devotee Account';
         authSubheading.textContent = 'Join Akalbodhon to save custom Puja itineraries, pandal trails, and sacred bookmarks.';
-        sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
         emailSubmitLabel.textContent = 'Create Account with Email';
       } else {
         tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
         tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        phoneNameField.classList.add('hidden');
-        emailNameField.classList.add('hidden');
+        emailNameField?.classList.add('hidden');
         authHeading.textContent = 'Devotee Sign In';
         authSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
-        sendOtpBtnLabel.textContent = 'Send SMS OTP';
         emailSubmitLabel.textContent = 'Sign In with Email';
       }
 
-      if (presetValue) {
-        if (currentMethod === 'phone' || presetValue.replace(/[^0-9]/g, '').length >= 7) {
-          setAuthMethod('phone');
-          phoneNumberInput.value = presetValue.replace(/^\+91/, '').trim();
-          if (mode === 'signup') phoneNameInput.focus();
-        } else if (presetValue.includes('@')) {
-          setAuthMethod('email');
-          emailAddressInput.value = presetValue.trim();
-          if (mode === 'signup') emailNameInput.focus();
-        }
+      if (presetValue && emailAddressInput) {
+        emailAddressInput.value = presetValue.trim();
+        if (mode === 'signup' && emailNameInput) emailNameInput.focus();
+        else emailPasswordInput?.focus();
       }
     }
 
@@ -647,7 +507,7 @@
           window.AkalbodhonFirebase.signInWithGoogleRedirect().catch(() => {});
           return;
         }
-        showAlert(fbErr.message || 'Google sign-in could not be completed. Please try again or use Mobile/Email.');
+        showAlert(fbErr.message || 'Google sign-in could not be completed. Please try again or use Email.');
       }
     }
 
@@ -667,30 +527,16 @@
       handleRedirectSuccess(window.__akalbodhonRedirectProfile);
     }
 
-    // Helper: Normalize Phone Number to E.164
-    function normalizePhone(raw) {
-      if (!raw) return '';
-      const clean = String(raw).trim();
-      const digits = clean.replace(/[^0-9]/g, '');
-      if (clean.startsWith('+')) return '+' + digits;
-      if (digits.length === 10) return '+91' + digits;
-      if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1);
-      if (digits.length === 12 && digits.startsWith('91')) return '+' + digits;
-      return '+' + digits;
-    }
-
     // Helper: Check if devotee account exists in database
     async function checkDevoteeAccountExists(identifier) {
+      if (!identifier) return null;
       const clean = String(identifier).trim().toLowerCase();
-      const digits = clean.replace(/[^0-9]/g, '');
-      const isPhone = digits.length >= 7 && !clean.includes('@');
-      const formatted = isPhone ? normalizePhone(clean) : null;
-      const safeDocId = isPhone ? digits : clean.replace(/[^a-z0-9]/g, '_');
+      const safeDocId = clean.replace(/[^a-z0-9]/g, '_');
 
       // 1. Check Firebase Firestore
       if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
         try {
-          const fbProf = await window.AkalbodhonFirebase.getProfileByIdentifier(identifier);
+          const fbProf = await window.AkalbodhonFirebase.getProfileByIdentifier(clean);
           if (fbProf) return fbProf;
         } catch (_) {}
       }
@@ -704,16 +550,14 @@
       // 2. Check Supabase
       if (supabaseClient) {
         try {
-          const orQuery = isPhone 
-            ? `identifier.eq.${formatted},identifier.eq.${digits},phone.eq.${formatted},phone.eq.${digits},id.eq.${digits}`
-            : `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+          const orQuery = `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
           const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
           if (data && data.length > 0) return data[0];
         } catch (_) {}
       }
 
       // 3. Check persistent localStorage
-      const candidates = [`akalbodhon_user_data_${isPhone ? 'phone_' + digits : 'email_' + safeDocId}`, `akalbodhon_user_data_${digits}`, `akalbodhon_user_data_id_${safeDocId}`];
+      const candidates = [`akalbodhon_user_data_email_${safeDocId}`, `akalbodhon_user_data_id_${safeDocId}`];
       for (const cand of candidates) {
         const raw = localStorage.getItem(cand);
         if (raw) {
@@ -725,197 +569,6 @@
       }
 
       return null;
-    }
-
-    // -------------------------------------------------------------
-    // MOBILE NUMBER (SMS OTP) HANDLERS
-    // -------------------------------------------------------------
-    phoneEntryForm?.addEventListener('submit', handleSendPhoneOtp);
-
-    async function handleSendPhoneOtp() {
-      clearAlerts();
-      const rawPhone = phoneNumberInput.value.trim();
-      const rawName = phoneNameInput.value.trim();
-      const digits = rawPhone.replace(/[^0-9]/g, '');
-
-      if (!rawPhone || digits.length < 10) {
-        showAlert('Please enter a valid 10-digit mobile number.');
-        return;
-      }
-
-      if (currentMode === 'signup' && !rawName) {
-        showAlert('Please enter your name so we know what to call you.');
-        phoneNameInput.focus();
-        return;
-      }
-
-      const formattedPhone = normalizePhone(rawPhone);
-
-      // Check account existence based on mode
-      sendOtpBtn.disabled = true;
-      sendOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying mobile number...';
-      showGlobalLoader('Verifying Mobile...', 'Checking devotee account status...', '🪔', 'Verifying...');
-
-      try {
-        const existing = await checkDevoteeAccountExists(formattedPhone);
-
-        if (currentMode === 'login' && !existing) {
-          hideGlobalLoader();
-          sendOtpBtn.disabled = false;
-          sendOtpBtnLabel.textContent = 'Send SMS OTP';
-
-          // CREATE HELPER BUTTON TO ASSIST TO SIGNUP
-          const actionBtn = document.createElement('button');
-          actionBtn.type = 'button';
-          actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
-          actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Number';
-          actionBtn.onclick = () => {
-            setAuthMode('signup', rawPhone, 'phone');
-          };
-
-          showAlert(
-            `No devotee account found for <strong>${formattedPhone}</strong>. Please create an account to get started with Akalbodhon.`,
-            true,
-            actionBtn
-          );
-          return;
-        }
-
-        if (currentMode === 'signup' && existing) {
-          hideGlobalLoader();
-          sendOtpBtn.disabled = false;
-          sendOtpBtnLabel.textContent = 'Send OTP & Create Account';
-
-          const actionBtn = document.createElement('button');
-          actionBtn.type = 'button';
-          actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
-          actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Number';
-          actionBtn.onclick = () => {
-            setAuthMode('login', rawPhone, 'phone');
-          };
-
-          showAlert(
-            `An account already exists for <strong>${formattedPhone}</strong>. Please sign in instead.`,
-            true,
-            actionBtn
-          );
-          return;
-        }
-
-        // Send OTP via Firebase Phone Auth
-        showGlobalLoader('Sending SMS OTP...', `Sending 6-digit verification code to ${formattedPhone}...`, '🪔', 'Sending SMS OTP...');
-        const res = await window.AkalbodhonFirebase.sendPhoneOtp(formattedPhone, 'recaptcha-container');
-        activeConfirmationResult = res.confirmationResult;
-        lastSentPhoneNumber = formattedPhone;
-
-        hideGlobalLoader();
-        sendOtpBtn.disabled = false;
-        sendOtpBtnLabel.textContent = currentMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
-
-        // Transition to OTP verification step
-        phoneEntryForm.classList.add('hidden');
-        otpVerifySection.classList.remove('hidden');
-        otpTargetDisplay.textContent = formattedPhone;
-        otpCodeInput.value = res.isSimulation ? (res.simulationCode || '123456') : '';
-        otpCodeInput.focus();
-
-        startResendTimer();
-        if (res.isSimulation) {
-          showAlert(`⚠️ Firebase SMS billing is disabled on this project. For testing, your OTP code is <strong>${res.simulationCode || '123456'}</strong>.`, false);
-        } else {
-          showAlert(`SMS OTP code sent to ${formattedPhone}. Please check your phone messages.`, false);
-        }
-
-      } catch (err) {
-        console.error('Phone OTP error:', err);
-        hideGlobalLoader();
-        sendOtpBtn.disabled = false;
-        sendOtpBtnLabel.textContent = currentMode === 'signup' ? 'Send OTP & Create Account' : 'Send SMS OTP';
-
-        if (err.code === 'auth/invalid-phone-number') {
-          showAlert('The mobile number format is invalid. Please enter a valid 10-digit number.');
-        } else if (err.code === 'auth/too-many-requests') {
-          showAlert('Too many OTP attempts. Please wait a few moments before trying again.');
-        } else if (err.code === 'auth/billing-not-enabled' || (err.message && err.message.includes('billing-not-enabled'))) {
-          showAlert('Firebase SMS billing is not enabled on this project. Please enable the Blaze plan or add this number to "Phone numbers for testing" in Firebase Console.');
-        } else {
-          showAlert(err.message || 'Unable to send SMS OTP. Please check your number or try email login.');
-        }
-      }
-    }
-
-    function startResendTimer() {
-      let seconds = 30;
-      if (resendCooldownTimer) clearInterval(resendCooldownTimer);
-      resendOtpBtn.disabled = true;
-      resendOtpBtn.classList.add('opacity-50', 'pointer-events-none');
-      resendOtpText.textContent = `Resend in ${seconds}s`;
-
-      resendCooldownTimer = setInterval(() => {
-        seconds--;
-        if (seconds <= 0) {
-          clearInterval(resendCooldownTimer);
-          resendOtpBtn.disabled = false;
-          resendOtpBtn.classList.remove('opacity-50', 'pointer-events-none');
-          resendOtpText.textContent = 'Resend Code';
-        } else {
-          resendOtpText.textContent = `Resend in ${seconds}s`;
-        }
-      }, 1000);
-    }
-
-    resendOtpBtn?.addEventListener('click', () => {
-      if (lastSentPhoneNumber) {
-        phoneNumberInput.value = lastSentPhoneNumber.replace(/^\+91/, '');
-        handleSendPhoneOtp();
-      }
-    });
-
-    changePhoneBtn?.addEventListener('click', () => {
-      clearAlerts();
-      otpVerifySection.classList.add('hidden');
-      phoneEntryForm.classList.remove('hidden');
-      phoneNumberInput.focus();
-    });
-
-    otpVerifyForm?.addEventListener('submit', handleVerifyPhoneOtp);
-
-    async function handleVerifyPhoneOtp() {
-      clearAlerts();
-      const otpCode = otpCodeInput.value.trim().replace(/[^0-9]/g, '');
-      if (otpCode.length < 6) {
-        showAlert('Please enter the complete 6-digit verification code.');
-        otpCodeInput.focus();
-        return;
-      }
-
-      verifyOtpBtn.disabled = true;
-      verifyOtpBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Verifying Code...';
-      showGlobalLoader('Verifying Code...', 'Authenticating devotee session...', '🪔', 'Verifying OTP...');
-
-      try {
-        const rawName = phoneNameInput.value.trim();
-        const profile = await window.AkalbodhonFirebase.verifyPhoneOtp(
-          activeConfirmationResult,
-          otpCode,
-          currentMode === 'signup',
-          rawName,
-          { phoneNumber: lastSentPhoneNumber }
-        );
-
-        if (profile) {
-          hideGlobalLoader();
-          showLoggedInState(profile);
-          showAlert(`Welcome, ${profile.username}! Authenticated with mobile number. Redirecting to home...`, false);
-          setTimeout(() => { window.location.href = 'index.html'; }, 700);
-        }
-      } catch (err) {
-        console.error('Verify OTP error:', err);
-        hideGlobalLoader();
-        verifyOtpBtn.disabled = false;
-        verifyOtpBtnLabel.textContent = 'Verify & Continue';
-        showAlert(err.message || 'Invalid or expired OTP code. Please verify the code or request a new one.');
-      }
     }
 
     // -------------------------------------------------------------
