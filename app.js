@@ -3276,7 +3276,7 @@
     sharodiya: {
       id: '7EFTbXOZuUZEqdt5cMwaH5',
       name: 'Sharodiya hits',
-      songCount: 23,
+      songCount: 21,
       spotifyUrl: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=YBxuDKpVR22HV8vvie_UMg&utm_source=whatsapp',
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
       youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8',
@@ -3287,7 +3287,7 @@
     mahalaya: {
       id: '5dUPbjW2MgX96HUlQX81Xs',
       name: 'Mahalaya',
-      songCount: 10,
+      songCount: 11,
       spotifyUrl: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=BlPUrpc2S3aqv_2As2-Xig&utm_source=whatsapp',
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
       youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo',
@@ -3308,8 +3308,10 @@
       spotifyTrackId: '0qo204uS81FwkIQDYkQfCi',
       spotifyUrl: 'https://open.spotify.com/track/0qo204uS81FwkIQDYkQfCi',
       embedUrl: 'https://open.spotify.com/embed/track/0qo204uS81FwkIQDYkQfCi?utm_source=generator&theme=0',
-      cover: 'radio/dugga_ma_asche.jpg',
-      previewUrl: 'https://p.scdn.co/mp3-preview/8fd52ee34e2425deecd0981428ae7e3a6ccea88d'
+      youtubeId: 'sf6usUybi3k',
+      youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?autoplay=1&enablejsapi=1',
+      cover: 'radio/dugga_ma_asche.jpg'
     },
     {
       id: '0Z9Ok50nu5nxyJPP9jZqPM',
@@ -3320,8 +3322,10 @@
       spotifyTrackId: '0Z9Ok50nu5nxyJPP9jZqPM',
       spotifyUrl: 'https://open.spotify.com/track/0Z9Ok50nu5nxyJPP9jZqPM',
       embedUrl: 'https://open.spotify.com/embed/track/0Z9Ok50nu5nxyJPP9jZqPM?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624',
-      previewUrl: 'https://p.scdn.co/mp3-preview/8ef10111bc0c21049896185ba4cde161e517a4d7'
+      youtubeId: 'sPuZ0Q3KDWo',
+      youtubeUrl: 'https://www.youtube.com/watch?v=sPuZ0Q3KDWo',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/sPuZ0Q3KDWo?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624'
     },
     {
       id: '0nspNLUZLF1RwbpP7uIwox',
@@ -3332,8 +3336,10 @@
       spotifyTrackId: '0nspNLUZLF1RwbpP7uIwox',
       spotifyUrl: 'https://open.spotify.com/track/0nspNLUZLF1RwbpP7uIwox',
       embedUrl: 'https://open.spotify.com/embed/track/0nspNLUZLF1RwbpP7uIwox?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27321792f8da1279de3b03b4b80',
-      previewUrl: 'https://p.scdn.co/mp3-preview/53a16647842901a73d4749fd91a9c4e2be0d01e7'
+      youtubeId: 'id5_3dKvEBg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=id5_3dKvEBg',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/id5_3dKvEBg?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27321792f8da1279de3b03b4b80'
     },
     {
       id: '14mxoVNHA77ja4bre40T1p',
@@ -3344,8 +3350,10 @@
       spotifyTrackId: '14mxoVNHA77ja4bre40T1p',
       spotifyUrl: 'https://open.spotify.com/track/14mxoVNHA77ja4bre40T1p',
       embedUrl: 'https://open.spotify.com/embed/track/14mxoVNHA77ja4bre40T1p?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273877df1f4d86607531a93ead2',
-      previewUrl: 'https://p.scdn.co/mp3-preview/a5c2b12ab188e0d41d97f65c0584bc2aa2e82f44'
+      youtubeId: 'xlElO06nQy8',
+      youtubeUrl: 'https://www.youtube.com/watch?v=xlElO06nQy8',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/xlElO06nQy8?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273877df1f4d86607531a93ead2'
     },
     {
       id: '1xcq7GEsaUKGNiK7NQliB9',
@@ -3356,8 +3364,10 @@
       spotifyTrackId: '1xcq7GEsaUKGNiK7NQliB9',
       spotifyUrl: 'https://open.spotify.com/track/1xcq7GEsaUKGNiK7NQliB9',
       embedUrl: 'https://open.spotify.com/embed/track/1xcq7GEsaUKGNiK7NQliB9?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a0ae69b032b80eb175748db2',
-      previewUrl: 'https://p.scdn.co/mp3-preview/f56927349a9b63b15389b10d33f7b89c445981de'
+      youtubeId: '4h5DXcN6cd4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=4h5DXcN6cd4',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/4h5DXcN6cd4?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a0ae69b032b80eb175748db2'
     },
     {
       id: '0dJGrIiwlyshcRuvMddU66',
@@ -3368,8 +3378,10 @@
       spotifyTrackId: '0dJGrIiwlyshcRuvMddU66',
       spotifyUrl: 'https://open.spotify.com/track/0dJGrIiwlyshcRuvMddU66',
       embedUrl: 'https://open.spotify.com/embed/track/0dJGrIiwlyshcRuvMddU66?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624',
-      previewUrl: 'https://p.scdn.co/mp3-preview/dd599f5f1683af89f06c8658496de5f10218be0b'
+      youtubeId: '6GY5s8DbBlg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=6GY5s8DbBlg',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/6GY5s8DbBlg?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327fe75746b882c2cf91b7624'
     },
     {
       id: '6HNbprsATKyydJ7YdrLuPd',
@@ -3380,8 +3392,10 @@
       spotifyTrackId: '6HNbprsATKyydJ7YdrLuPd',
       spotifyUrl: 'https://open.spotify.com/track/6HNbprsATKyydJ7YdrLuPd',
       embedUrl: 'https://open.spotify.com/embed/track/6HNbprsATKyydJ7YdrLuPd?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273dff82889c347a6db8a7e4fe5',
-      previewUrl: 'https://p.scdn.co/mp3-preview/782e00ddf7a28921942ffe25e0ee6250c0acc32c'
+      youtubeId: 'E2zfQEo7Q_M',
+      youtubeUrl: 'https://www.youtube.com/watch?v=E2zfQEo7Q_M',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/E2zfQEo7Q_M?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273dff82889c347a6db8a7e4fe5'
     },
     {
       id: '5gGAG8v5UAeUW7kxq9BK0y',
@@ -3392,8 +3406,10 @@
       spotifyTrackId: '5gGAG8v5UAeUW7kxq9BK0y',
       spotifyUrl: 'https://open.spotify.com/track/5gGAG8v5UAeUW7kxq9BK0y',
       embedUrl: 'https://open.spotify.com/embed/track/5gGAG8v5UAeUW7kxq9BK0y?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273aff57a62be756269cad3f23b',
-      previewUrl: 'https://p.scdn.co/mp3-preview/5bc557143231a23bfdcf765a479107fae08439ec'
+      youtubeId: 'asdoVzpUFsE',
+      youtubeUrl: 'https://www.youtube.com/watch?v=asdoVzpUFsE',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/asdoVzpUFsE?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273aff57a62be756269cad3f23b'
     },
     {
       id: '21rIO2dhW37d8CVJBT0Ass',
@@ -3404,8 +3420,10 @@
       spotifyTrackId: '21rIO2dhW37d8CVJBT0Ass',
       spotifyUrl: 'https://open.spotify.com/track/21rIO2dhW37d8CVJBT0Ass',
       embedUrl: 'https://open.spotify.com/embed/track/21rIO2dhW37d8CVJBT0Ass?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273bccb335165d31c982c1d5919',
-      previewUrl: 'https://p.scdn.co/mp3-preview/569880aae61c48d38c39d9b492803c5dcebc0f4c'
+      youtubeId: '2U416kTo0as',
+      youtubeUrl: 'https://www.youtube.com/watch?v=2U416kTo0as',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/2U416kTo0as?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273bccb335165d31c982c1d5919'
     },
     {
       id: '0lbpCmeKfDa8O8rwezno3i',
@@ -3416,8 +3434,10 @@
       spotifyTrackId: '0lbpCmeKfDa8O8rwezno3i',
       spotifyUrl: 'https://open.spotify.com/track/0lbpCmeKfDa8O8rwezno3i',
       embedUrl: 'https://open.spotify.com/embed/track/0lbpCmeKfDa8O8rwezno3i?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734c8f943b782b3cfc146125e4',
-      previewUrl: 'https://p.scdn.co/mp3-preview/778820c713b9aed596cdf8eb8ba5cdebb10d98e8'
+      youtubeId: 'hbXuXt7gkFY',
+      youtubeUrl: 'https://www.youtube.com/watch?v=hbXuXt7gkFY',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/hbXuXt7gkFY?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734c8f943b782b3cfc146125e4'
     },
     {
       id: '5dOHCKsalASHbAn2mZCWgq',
@@ -3428,8 +3448,10 @@
       spotifyTrackId: '5dOHCKsalASHbAn2mZCWgq',
       spotifyUrl: 'https://open.spotify.com/track/5dOHCKsalASHbAn2mZCWgq',
       embedUrl: 'https://open.spotify.com/embed/track/5dOHCKsalASHbAn2mZCWgq?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27312369566acbeabf040cd9ef0',
-      previewUrl: 'https://p.scdn.co/mp3-preview/ae38ceb580ae12f842613645f368351cf89003b3'
+      youtubeId: '4zyCkmAS1Oo',
+      youtubeUrl: 'https://www.youtube.com/watch?v=4zyCkmAS1Oo',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/4zyCkmAS1Oo?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27312369566acbeabf040cd9ef0'
     },
     {
       id: '6XbWY7TpYBcdBCBiTOh5EA',
@@ -3440,8 +3462,10 @@
       spotifyTrackId: '6XbWY7TpYBcdBCBiTOh5EA',
       spotifyUrl: 'https://open.spotify.com/track/6XbWY7TpYBcdBCBiTOh5EA',
       embedUrl: 'https://open.spotify.com/embed/track/6XbWY7TpYBcdBCBiTOh5EA?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730f9df00be51e525670195af5',
-      previewUrl: 'https://p.scdn.co/mp3-preview/9f61865f4edfc11b1928f6bc8fc204ac0fabf9e4'
+      youtubeId: 'wF9oo8dJ5t4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=wF9oo8dJ5t4',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/wF9oo8dJ5t4?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730f9df00be51e525670195af5'
     },
     {
       id: '4MQPlquCDaltOs006z65aG',
@@ -3452,8 +3476,24 @@
       spotifyTrackId: '4MQPlquCDaltOs006z65aG',
       spotifyUrl: 'https://open.spotify.com/track/4MQPlquCDaltOs006z65aG',
       embedUrl: 'https://open.spotify.com/embed/track/4MQPlquCDaltOs006z65aG?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273facb0bc10d8032ba2d4996ea',
-      previewUrl: 'https://p.scdn.co/mp3-preview/2cecdcae539cc1c78d44b4f455ca79f45a61f697'
+      youtubeId: 'OWhOsOHQjY0',
+      youtubeUrl: 'https://www.youtube.com/watch?v=OWhOsOHQjY0',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/OWhOsOHQjY0?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273facb0bc10d8032ba2d4996ea'
+    },
+    {
+      id: '5fN2XXtz5pAHo0iRTMfQnj',
+      playlist: 'sharodiya',
+      playlistName: 'Sharodiya hits',
+      title: 'Aamaar Dugga (Festive Single)',
+      duration: '3:19',
+      spotifyTrackId: '5fN2XXtz5pAHo0iRTMfQnj',
+      spotifyUrl: 'https://open.spotify.com/track/5fN2XXtz5pAHo0iRTMfQnj',
+      embedUrl: 'https://open.spotify.com/embed/track/5fN2XXtz5pAHo0iRTMfQnj?utm_source=generator&theme=0',
+      youtubeId: '4h5DXcN6cd4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=4h5DXcN6cd4',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/4h5DXcN6cd4?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a0ae69b032b80eb175748db2'
     },
     {
       id: '7hQN6fL1OI0L6O2qkfTsBk',
@@ -3464,8 +3504,10 @@
       spotifyTrackId: '7hQN6fL1OI0L6O2qkfTsBk',
       spotifyUrl: 'https://open.spotify.com/track/7hQN6fL1OI0L6O2qkfTsBk',
       embedUrl: 'https://open.spotify.com/embed/track/7hQN6fL1OI0L6O2qkfTsBk?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27388eb8bd72f0b5f649c941797',
-      previewUrl: 'https://p.scdn.co/mp3-preview/ba4d409e897ec6b153900a83a97e022a48382498'
+      youtubeId: 'uBNSBgO-Imw',
+      youtubeUrl: 'https://www.youtube.com/watch?v=uBNSBgO-Imw',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/uBNSBgO-Imw?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27388eb8bd72f0b5f649c941797'
     },
     {
       id: '17gIko1QQ6f19KFdLfy29u',
@@ -3476,8 +3518,10 @@
       spotifyTrackId: '17gIko1QQ6f19KFdLfy29u',
       spotifyUrl: 'https://open.spotify.com/track/17gIko1QQ6f19KFdLfy29u',
       embedUrl: 'https://open.spotify.com/embed/track/17gIko1QQ6f19KFdLfy29u?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327f30dba0f8f29ef9a080177',
-      previewUrl: 'https://p.scdn.co/mp3-preview/4df79a1b618d428b19dd1c4ee7b113d411ead14e'
+      youtubeId: '64vvyOokAn4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=64vvyOokAn4',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/64vvyOokAn4?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27327f30dba0f8f29ef9a080177'
     },
     {
       id: '5uOOUslPTmopqWmfxHwTYS',
@@ -3488,8 +3532,10 @@
       spotifyTrackId: '5uOOUslPTmopqWmfxHwTYS',
       spotifyUrl: 'https://open.spotify.com/track/5uOOUslPTmopqWmfxHwTYS',
       embedUrl: 'https://open.spotify.com/embed/track/5uOOUslPTmopqWmfxHwTYS?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734084058303be1a2542d3f556',
-      previewUrl: 'https://p.scdn.co/mp3-preview/296135659b75ed4a148db45e5bc3a421933522de'
+      youtubeId: 'zoAIg8_5Cto',
+      youtubeUrl: 'https://www.youtube.com/watch?v=zoAIg8_5Cto',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/zoAIg8_5Cto?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734084058303be1a2542d3f556'
     },
     {
       id: '3xZ0zNtVRhWY4ukiMC3bRh',
@@ -3500,8 +3546,10 @@
       spotifyTrackId: '3xZ0zNtVRhWY4ukiMC3bRh',
       spotifyUrl: 'https://open.spotify.com/track/3xZ0zNtVRhWY4ukiMC3bRh',
       embedUrl: 'https://open.spotify.com/embed/track/3xZ0zNtVRhWY4ukiMC3bRh?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27336c009c80b6fe5ea98a6a2ec',
-      previewUrl: 'https://p.scdn.co/mp3-preview/15a22038b8741f10a851314f4ad68dac3292a4de'
+      youtubeId: 'yD0dpeS1eak',
+      youtubeUrl: 'https://www.youtube.com/watch?v=yD0dpeS1eak',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/yD0dpeS1eak?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27336c009c80b6fe5ea98a6a2ec'
     },
     {
       id: '38HoPYFgz9RbYWItrKxsVo',
@@ -3512,20 +3560,24 @@
       spotifyTrackId: '38HoPYFgz9RbYWItrKxsVo',
       spotifyUrl: 'https://open.spotify.com/track/38HoPYFgz9RbYWItrKxsVo',
       embedUrl: 'https://open.spotify.com/embed/track/38HoPYFgz9RbYWItrKxsVo?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27306f8db75dac07d9bbb5cbb79',
-      previewUrl: 'https://p.scdn.co/mp3-preview/fcc14808a5ce92c2ed2097b6eaacbd336e6f8f49'
+      youtubeId: '07BadGcIEe4',
+      youtubeUrl: 'https://www.youtube.com/watch?v=07BadGcIEe4',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/07BadGcIEe4?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27306f8db75dac07d9bbb5cbb79'
     },
     {
       id: '1sTggjsam1Q59GYhLmtmLp',
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
-      title: 'Nilanjana - I - Se Pratham Prem Lal Phite Sada Moja',
+      title: 'Nilanjana - I - Se Pratham Prem',
       duration: '5:35',
       spotifyTrackId: '1sTggjsam1Q59GYhLmtmLp',
       spotifyUrl: 'https://open.spotify.com/track/1sTggjsam1Q59GYhLmtmLp',
       embedUrl: 'https://open.spotify.com/embed/track/1sTggjsam1Q59GYhLmtmLp?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735b5399e2b75b3d21550949db',
-      previewUrl: 'https://p.scdn.co/mp3-preview/2b3e27915b3af65d2383937be8e0ff37ca0b4185'
+      youtubeId: '2SsglpexdZM',
+      youtubeUrl: 'https://www.youtube.com/watch?v=2SsglpexdZM',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/2SsglpexdZM?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735b5399e2b75b3d21550949db'
     },
     {
       id: '3in4LAp0Tcq9NRfpr7EKjm',
@@ -3536,8 +3588,10 @@
       spotifyTrackId: '3in4LAp0Tcq9NRfpr7EKjm',
       spotifyUrl: 'https://open.spotify.com/track/3in4LAp0Tcq9NRfpr7EKjm',
       embedUrl: 'https://open.spotify.com/embed/track/3in4LAp0Tcq9NRfpr7EKjm?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735eeab3e4aab3f8bec5f40493',
-      previewUrl: 'https://p.scdn.co/mp3-preview/8a8e482e5a789d399fe2ad4bdb7135f41c38be99'
+      youtubeId: 'PiMa4BW9Vrw',
+      youtubeUrl: 'https://www.youtube.com/watch?v=PiMa4BW9Vrw',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/PiMa4BW9Vrw?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735eeab3e4aab3f8bec5f40493'
     },
     {
       id: '0BAwwUhO60U01O9c1OxHfe',
@@ -3548,8 +3602,10 @@
       spotifyTrackId: '0BAwwUhO60U01O9c1OxHfe',
       spotifyUrl: 'https://open.spotify.com/track/0BAwwUhO60U01O9c1OxHfe',
       embedUrl: 'https://open.spotify.com/embed/track/0BAwwUhO60U01O9c1OxHfe?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
-      previewUrl: 'https://p.scdn.co/mp3-preview/c0ba2a13cc7ccbfc82cd78dc58d452b35292a96c'
+      youtubeId: '6rwF1iQPVzc',
+      youtubeUrl: 'https://www.youtube.com/watch?v=6rwF1iQPVzc',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/6rwF1iQPVzc?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4'
     },
     {
       id: '3w0q9HtvdnU19IdAbOl1XQ',
@@ -3560,8 +3616,10 @@
       spotifyTrackId: '3w0q9HtvdnU19IdAbOl1XQ',
       spotifyUrl: 'https://open.spotify.com/track/3w0q9HtvdnU19IdAbOl1XQ',
       embedUrl: 'https://open.spotify.com/embed/track/3w0q9HtvdnU19IdAbOl1XQ?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
-      previewUrl: 'https://p.scdn.co/mp3-preview/edad0b59a894f0f7935c2f27ca24b72e4a5d5737'
+      youtubeId: '2RZZzJdzGPM',
+      youtubeUrl: 'https://www.youtube.com/watch?v=2RZZzJdzGPM',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/2RZZzJdzGPM?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4'
     },
     {
       id: '0hJmNTKYGevHLMIWvCUE8c',
@@ -3572,8 +3630,10 @@
       spotifyTrackId: '0hJmNTKYGevHLMIWvCUE8c',
       spotifyUrl: 'https://open.spotify.com/track/0hJmNTKYGevHLMIWvCUE8c',
       embedUrl: 'https://open.spotify.com/embed/track/0hJmNTKYGevHLMIWvCUE8c?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4',
-      previewUrl: 'https://p.scdn.co/mp3-preview/00b5ca64826c9216d23915eea5329f647cec55b9'
+      youtubeId: 'IfSJy3_Lkuo',
+      youtubeUrl: 'https://www.youtube.com/watch?v=IfSJy3_Lkuo',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/IfSJy3_Lkuo?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732a497efb96016d4d26cb83b4'
     },
     {
       id: '3FrWOsMayIJcPWduMVEVF6',
@@ -3584,8 +3644,10 @@
       spotifyTrackId: '3FrWOsMayIJcPWduMVEVF6',
       spotifyUrl: 'https://open.spotify.com/track/3FrWOsMayIJcPWduMVEVF6',
       embedUrl: 'https://open.spotify.com/embed/track/3FrWOsMayIJcPWduMVEVF6?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273759df1fcaea412cb5dbd5dca',
-      previewUrl: 'https://p.scdn.co/mp3-preview/8c2faf8f73a485cbf84377173ff60aa72fbc9ed6'
+      youtubeId: 'IlerrCPk_0Y',
+      youtubeUrl: 'https://www.youtube.com/watch?v=IlerrCPk_0Y',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/IlerrCPk_0Y?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273759df1fcaea412cb5dbd5dca'
     },
     {
       id: '2ArskmlOgluJZ86RD1z0qq',
@@ -3596,8 +3658,10 @@
       spotifyTrackId: '2ArskmlOgluJZ86RD1z0qq',
       spotifyUrl: 'https://open.spotify.com/track/2ArskmlOgluJZ86RD1z0qq',
       embedUrl: 'https://open.spotify.com/embed/track/2ArskmlOgluJZ86RD1z0qq?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/f7328414dcf5f6645f3cf8d37989a99e118f1244'
+      youtubeId: 'dQZrQ-za8Gc',
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQZrQ-za8Gc',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/dQZrQ-za8Gc?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     },
     {
       id: '0SEnZ1JaMXSQr32TOupRQF',
@@ -3608,8 +3672,10 @@
       spotifyTrackId: '0SEnZ1JaMXSQr32TOupRQF',
       spotifyUrl: 'https://open.spotify.com/track/0SEnZ1JaMXSQr32TOupRQF',
       embedUrl: 'https://open.spotify.com/embed/track/0SEnZ1JaMXSQr32TOupRQF?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/f00696760a1073257de436860ca8cd00835cfd92'
+      youtubeId: '8FytVk54-dw',
+      youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     },
     {
       id: '4mnYGUG890pny5QTjCaZWr',
@@ -3620,8 +3686,10 @@
       spotifyTrackId: '4mnYGUG890pny5QTjCaZWr',
       spotifyUrl: 'https://open.spotify.com/track/4mnYGUG890pny5QTjCaZWr',
       embedUrl: 'https://open.spotify.com/embed/track/4mnYGUG890pny5QTjCaZWr?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/007f9efb5571f2d5ab1579da9882ba17aecc0b3b'
+      youtubeId: 'GJccKU4_5wg',
+      youtubeUrl: 'https://www.youtube.com/watch?v=GJccKU4_5wg',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/GJccKU4_5wg?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     },
     {
       id: '2iKRC4L9MihhRVlGBRb3H8',
@@ -3632,8 +3700,10 @@
       spotifyTrackId: '2iKRC4L9MihhRVlGBRb3H8',
       spotifyUrl: 'https://open.spotify.com/track/2iKRC4L9MihhRVlGBRb3H8',
       embedUrl: 'https://open.spotify.com/embed/track/2iKRC4L9MihhRVlGBRb3H8?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/677e7912fbe8096c00ef835cb448a0b94e38c834'
+      youtubeId: 'FVmMOP9dKQM',
+      youtubeUrl: 'https://www.youtube.com/watch?v=FVmMOP9dKQM',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/FVmMOP9dKQM?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     },
     {
       id: '5CGYig9Hg49EL6g6NlxNhv',
@@ -3644,8 +3714,10 @@
       spotifyTrackId: '5CGYig9Hg49EL6g6NlxNhv',
       spotifyUrl: 'https://open.spotify.com/track/5CGYig9Hg49EL6g6NlxNhv',
       embedUrl: 'https://open.spotify.com/embed/track/5CGYig9Hg49EL6g6NlxNhv?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/c3e05e45960b4468b9ce81a85bf474c2d1ba50cd'
+      youtubeId: 'AB4IUcvuEXs',
+      youtubeUrl: 'https://www.youtube.com/watch?v=AB4IUcvuEXs',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/AB4IUcvuEXs?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     },
     {
       id: '742moqjpE88LUEAs1W9yVY',
@@ -3656,24 +3728,60 @@
       spotifyTrackId: '742moqjpE88LUEAs1W9yVY',
       spotifyUrl: 'https://open.spotify.com/track/742moqjpE88LUEAs1W9yVY',
       embedUrl: 'https://open.spotify.com/embed/track/742moqjpE88LUEAs1W9yVY?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9',
-      previewUrl: 'https://p.scdn.co/mp3-preview/b9e854905062e00006b96db0e9056a4916bc7870'
+      youtubeId: 'FrHp3pXxeNU',
+      youtubeUrl: 'https://www.youtube.com/watch?v=FrHp3pXxeNU',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/FrHp3pXxeNU?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
+    },
+    {
+      id: '0a7c4amhDaDZlaJqSwIu7f',
+      playlist: 'mahalaya',
+      playlistName: 'Mahalaya',
+      title: 'Jatajutasamayuktamardhendukrita - Sekharam',
+      duration: '2:15',
+      spotifyTrackId: '0a7c4amhDaDZlaJqSwIu7f',
+      spotifyUrl: 'https://open.spotify.com/track/0a7c4amhDaDZlaJqSwIu7f',
+      embedUrl: 'https://open.spotify.com/embed/track/0a7c4amhDaDZlaJqSwIu7f?utm_source=generator&theme=0',
+      youtubeId: 'h5O3igngxCU',
+      youtubeUrl: 'https://www.youtube.com/watch?v=h5O3igngxCU',
+      youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/h5O3igngxCU?autoplay=1&enablejsapi=1',
+      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c958a88351e5c690101ec1f9'
     }
   ];
 
-  // Verified YouTube track IDs for individual tracks
   const YOUTUBE_TRACK_IDS = {
     '0qo204uS81FwkIQDYkQfCi': 'sf6usUybi3k', // Dugga Ma Asche
-    '0Z9Ok50nu5nxyJPP9jZqPM': 'sPuZ0Q3KDWo', // Dugga Ma (Arijit Singh)
-    '14mxoVNHA77ja4bre40T1p': 'xlElO06nQy8', // Dugga Elo (Monali Thakur)
-    '0lbpCmeKfDa8O8rwezno3i': 'Xy5S9j4lTaE', // Dhaker Taley (Abhijeet)
+    '0Z9Ok50nu5nxyJPP9jZqPM': 'sPuZ0Q3KDWo', // Dugga Ma
+    '0nspNLUZLF1RwbpP7uIwox': 'id5_3dKvEBg', // Dhak Baja Kashor Baja
+    '14mxoVNHA77ja4bre40T1p': 'xlElO06nQy8', // Dugga Elo
+    '1xcq7GEsaUKGNiK7NQliB9': '4h5DXcN6cd4', // Aamaar Dugga
+    '0dJGrIiwlyshcRuvMddU66': '6GY5s8DbBlg', // Hote Paare Na
+    '6HNbprsATKyydJ7YdrLuPd': 'E2zfQEo7Q_M', // Ebar Jeno Onno Rokom Pujo
+    '5gGAG8v5UAeUW7kxq9BK0y': 'asdoVzpUFsE', // Gouri Elo Dekhe Jalo
+    '21rIO2dhW37d8CVJBT0Ass': '2U416kTo0as', // Elo Je Maa
+    '0lbpCmeKfDa8O8rwezno3i': 'hbXuXt7gkFY', // Dhaker Taley
     '5dOHCKsalASHbAn2mZCWgq': '4zyCkmAS1Oo', // Ailo Uma Barite
-    '6XbWY7TpYBcdBCBiTOh5EA': '2YBTzGq9Q30', // Dakatiya Banshi
-    '0BAwwUhO60U01O9c1OxHfe': 'pKFYVocKB08', // Tabo Achintya Rupa
-    '3w0q9HtvdnU19IdAbOl1XQ': 'u-J39i_n6pU', // Ogo Amar Agamani
+    '6XbWY7TpYBcdBCBiTOh5EA': 'wF9oo8dJ5t4', // Dakatiya Banshi (From "Bohurupi")
+    '4MQPlquCDaltOs006z65aG': 'OWhOsOHQjY0', // Jaago Uma
+    '5fN2XXtz5pAHo0iRTMfQnj': '4h5DXcN6cd4', // Aamaar Dugga (Festive Single)
+    '7hQN6fL1OI0L6O2qkfTsBk': 'uBNSBgO-Imw', // Emon Madhur Sandhyay
+    '17gIko1QQ6f19KFdLfy29u': '64vvyOokAn4', // Aar Koto Raat Eka Thakbo
+    '5uOOUslPTmopqWmfxHwTYS': 'zoAIg8_5Cto', // Gold Priter Sari
+    '3xZ0zNtVRhWY4ukiMC3bRh': 'yD0dpeS1eak', // Ashtami Te Tomar Paray
+    '38HoPYFgz9RbYWItrKxsVo': '07BadGcIEe4', // Sei Raate Raat Chhilo Purnima
+    '1sTggjsam1Q59GYhLmtmLp': '2SsglpexdZM', // Nilanjana - I - Se Pratham Prem
+    '3in4LAp0Tcq9NRfpr7EKjm': 'PiMa4BW9Vrw', // Bolo Dugga Elo
+    '0BAwwUhO60U01O9c1OxHfe': '6rwF1iQPVzc', // Tabo Achintya Rupa - Charita - Mahima
+    '3w0q9HtvdnU19IdAbOl1XQ': '2RZZzJdzGPM', // Ogo Amar Agamani - Alo
     '0hJmNTKYGevHLMIWvCUE8c': 'IfSJy3_Lkuo', // Jago Durga Dashapraharanadharinee
-    '3FrWOsMayIJcPWduMVEVF6': 'yzEbF55ywtM', // Bajlo Tomar Aalor Benu
-    '0SEnZ1JaMXSQr32TOupRQF': '8FytVk54-dw'  // Ya Chandi
+    '3FrWOsMayIJcPWduMVEVF6': 'IlerrCPk_0Y', // Bajlo Tomar Aalor Benu With Narration
+    '2ArskmlOgluJZ86RD1z0qq': 'dQZrQ-za8Gc', // Simhastha Sashisekhara
+    '0SEnZ1JaMXSQr32TOupRQF': '8FytVk54-dw', // Ya Chandi
+    '4mnYGUG890pny5QTjCaZWr': 'GJccKU4_5wg', // Aham Rudrebhirvasubhischara
+    '2iKRC4L9MihhRVlGBRb3H8': 'FVmMOP9dKQM', // Subhra Sankha - Rabe
+    '5CGYig9Hg49EL6g6NlxNhv': 'AB4IUcvuEXs', // Jaya Jaya Japyajaye
+    '742moqjpE88LUEAs1W9yVY': 'FrHp3pXxeNU', // Akhila - Bimane Taba Jaya - Gane
+    '0a7c4amhDaDZlaJqSwIu7f': 'h5O3igngxCU', // Jatajutasamayuktamardhendukrita - Sekharam
   };
 
   // Initialize YouTube playback endpoints for all tracks
