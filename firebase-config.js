@@ -1010,30 +1010,22 @@ export const AkalbodhonFirebase = {
     }
   },
 
-  // 10b. Check if a custom plan has been permanently deleted from database
+  // 10b. Check if a custom plan has been permanently deleted from database (Explicit tombstone only)
   async isPlanDeleted(planId) {
     if (!db || !planId) return false;
     const cleanPlanId = String(planId).trim();
     try {
-      // 1. Check deleted_plans tombstone collection
+      // Check deleted_plans tombstone collection ONLY
       const tombstoneRef = doc(db, "deleted_plans", cleanPlanId);
       const snap = await withTimeout(getDoc(tombstoneRef), 2000).catch(() => null);
-      if (snap && snap.exists()) return true;
-
-      // 2. Check top-level plans
-      const planRef = doc(db, "plans", cleanPlanId);
-      const pSnap = await withTimeout(getDoc(planRef), 2000).catch(() => null);
-      if (pSnap && !pSnap.exists()) {
-        // If not found in global plans, check if tombstone was placed or if plan is gone
-        return true;
-      }
+      if (snap && snap.exists && snap.exists()) return true;
       return false;
     } catch (_) {
       return false;
     }
   },
 
-  // 10c. Batch check deleted plan IDs for receivers
+  // 10c. Batch check deleted plan IDs for receivers (Explicit tombstone only)
   async getDeletedPlanIds(planIds = []) {
     if (!db || !Array.isArray(planIds) || planIds.length === 0) return [];
     const deleted = [];
@@ -1042,12 +1034,7 @@ export const AkalbodhonFirebase = {
       const cleanPid = String(pid).trim();
       try {
         const tombSnap = await withTimeout(getDoc(doc(db, "deleted_plans", cleanPid)), 1500).catch(() => null);
-        if (tombSnap && tombSnap.exists()) {
-          deleted.push(cleanPid);
-          continue;
-        }
-        const planSnap = await withTimeout(getDoc(doc(db, "plans", cleanPid)), 1500).catch(() => null);
-        if (planSnap && !planSnap.exists()) {
+        if (tombSnap && tombSnap.exists && tombSnap.exists()) {
           deleted.push(cleanPid);
         }
       } catch (_) {}

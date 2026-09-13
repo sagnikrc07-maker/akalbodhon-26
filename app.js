@@ -2766,12 +2766,20 @@
     let pandalBookmarks = bookmarks.filter(b => !isFoodOrShopBookmark(b));
     let foodBookmarks = bookmarks.filter(b => isFoodOrShopBookmark(b));
 
-    // Include: plans created by user + shared plans explicitly saved by user (is_shared=true or saved_to_itinerary=true)
-    let myPlans = (customPlans && customPlans.length > 0) ? customPlans.filter(p => {
-      const isMine = isCurrentUserPlan(p, currentUser);
-      const isExplicitlySavedShared = (p.is_shared || p.saved_to_itinerary) && !isMine;
-      return isMine || isExplicitlySavedShared;
-    }) : [];
+    // Recover customPlans if empty in memory from user profile or local user store
+    if ((!customPlans || customPlans.length === 0) && currentUser) {
+      if (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.length > 0) {
+        customPlans = [...currentUser.custom_plans];
+      } else {
+        const specific = loadUserSpecificItinerary(currentUser);
+        if (specific && Array.isArray(specific.custom_plans) && specific.custom_plans.length > 0) {
+          customPlans = [...specific.custom_plans];
+        }
+      }
+    }
+
+    // Display all custom plans saved in user's itinerary
+    let myPlans = (customPlans && customPlans.length > 0) ? [...customPlans] : [];
 
     let displayPandals = [...pandalBookmarks];
     let displayFood = [...foodBookmarks];
@@ -5825,22 +5833,31 @@
         // Guard: only accept arrays, discard corrupted values
         customPlans = Array.isArray(parsed) ? parsed : [];
       }
+
+      // If local cache was empty, recover from currentUser or specific itinerary
+      if (!Array.isArray(customPlans) || customPlans.length === 0) {
+        if (currentUser && Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.length > 0) {
+          customPlans = [...currentUser.custom_plans];
+        } else {
+          const specific = loadUserSpecificItinerary(currentUser);
+          if (specific && Array.isArray(specific.custom_plans) && specific.custom_plans.length > 0) {
+            customPlans = [...specific.custom_plans];
+          }
+        }
+      }
+
       customPlans = (customPlans || []).filter(p => {
-        if (!p || typeof p !== 'object') return false;
-        const t = (p.title || '').trim().toLowerCase();
-        if (t === 'x' || t === 'bnfhm' || t === 'test') return false;
-        // Strict user scoping: keep only plans created by this user or explicitly shared with / saved by this user
-        const isMine = isCurrentUserPlan(p, currentUser);
-        const isExplicitlySaved = p.saved_to_itinerary || p.is_shared || 
-          (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.some(cp => cp && cp.id === p.id));
-        return isMine || isExplicitlySaved;
+        if (!p || typeof p !== 'object' || !p.id) return false;
+        return true;
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
     } catch (e) {
-      // Corrupted JSON — reset to a clean empty state
-      console.warn('Local plans cache corrupted, resetting:', e);
-      customPlans = [];
-      try { localStorage.removeItem('akalbodhon_custom_plans'); } catch (_) {}
+      console.warn('Local plans cache error:', e);
+      if (currentUser && Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.length > 0) {
+        customPlans = [...currentUser.custom_plans];
+      } else {
+        customPlans = [];
+      }
     }
   }
 
@@ -5866,11 +5883,8 @@
         try {
           const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(currentUser);
           if (Array.isArray(fbPlans)) {
-            const validFbPlans = fbPlans.filter(p => {
-              const t = (p.title || '').trim().toLowerCase();
-              return t !== 'x' && t !== 'bnfhm' && t !== 'test';
-            });
-            validFbPlans.forEach(p => {
+            fbPlans.forEach(p => {
+              if (!p || !p.id) return;
               const idx = customPlans.findIndex(cp => cp.id === p.id);
               if (idx >= 0) {
                 customPlans[idx] = { ...customPlans[idx], ...p };
@@ -5896,10 +5910,6 @@
 
           if (!error && Array.isArray(data)) {
             const remotePlans = data
-              .filter(p => {
-                const t = (p.title || '').trim().toLowerCase();
-                return t !== 'x' && t !== 'bnfhm' && t !== 'test';
-              })
               .map(p => {
                 let parsedPandals = [];
                 try { parsedPandals = typeof p.pandals === 'string' ? JSON.parse(p.pandals) : (p.pandals || []); } catch (_) { parsedPandals = []; }
@@ -5942,13 +5952,12 @@
     }
 
     // 2. Cascade Deletion & Verification for Shared Plans:
-    // If a plan in customPlans was created by someone else (shared with this user),
-    // verify if it STILL EXISTS in the database. If creator deleted it, delete from receiver's account!
-    const sharedPlansToCheck = (customPlans || []).filter(p => !p.is_template && !isCurrentUserPlan(p, currentUser));
+    // Only check plans with an explicit tombstone in deleted_plans collection
+    const sharedPlansToCheck = (customPlans || []).filter(p => !p.is_template && p.is_shared === true && !isCurrentUserPlan(p, currentUser));
     if (sharedPlansToCheck.length > 0) {
       const deletedPlanIds = new Set();
 
-      // A. Fast check against Firestore deleted_plans tombstone collection
+      // Check against Firestore deleted_plans tombstone collection ONLY
       if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getDeletedPlanIds === 'function') {
         try {
           const tombstoned = await window.AkalbodhonFirebase.getDeletedPlanIds(sharedPlansToCheck.map(p => p.id));
@@ -5956,34 +5965,6 @@
             tombstoned.forEach(id => deletedPlanIds.add(id));
           }
         } catch (_) {}
-      }
-
-      for (const sp of sharedPlansToCheck) {
-        if (deletedPlanIds.has(sp.id)) continue;
-        let existsInFb = false;
-        let existsInSb = false;
-
-        // Check Firebase
-        if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
-          try {
-            const fbDoc = await window.AkalbodhonFirebase.fetchPlanById(sp.id);
-            if (fbDoc) existsInFb = true;
-          } catch (_) {}
-        }
-
-        // Check Supabase
-        if (supabaseClient) {
-          try {
-            const { data } = await supabaseClient.from('puja_plans').select('id').eq('id', sp.id).maybeSingle();
-            if (data && data.id) existsInSb = true;
-          } catch (_) {}
-        }
-
-        // If both checks ran or either is available and neither found the plan, creator deleted it from DB!
-        const hasDb = (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) || supabaseClient;
-        if (hasDb && !existsInFb && !existsInSb) {
-          deletedPlanIds.add(sp.id);
-        }
       }
 
       if (deletedPlanIds.size > 0) {
@@ -6005,7 +5986,7 @@
           }
         }
 
-        // If receiver is currently viewing a deleted plan in the modal, close modal and warn
+        // If receiver is currently viewing an explicitly tombstoned plan in the modal, close modal and warn
         if (window.activeViewingPlanId && deletedPlanIds.has(window.activeViewingPlanId)) {
           if (typeof window.closeViewPlanModal === 'function') window.closeViewPlanModal();
           showToast('This shared plan was deleted by its creator.', 'warning');
@@ -6045,10 +6026,12 @@
   // Robust check if a custom plan belongs to the current devotee across all auth providers
   function isCurrentUserPlan(plan, user) {
     if (!plan) return false;
-    const creatorId = String(plan.creator_id || '').trim().toLowerCase();
-    if (!creatorId) return false;
+    if (plan.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === plan.id)) return false;
 
-    if (user) {
+    // If explicitly marked as an imported shared plan with a different creator ID
+    if (plan.is_shared === true && plan.creator_id) {
+      if (!user) return false;
+      const creatorId = String(plan.creator_id).trim().toLowerCase();
       const candidateIds = [
         user.id,
         user.user_id,
@@ -6056,12 +6039,12 @@
         user.firebase_uid,
         user.identifier,
         user.email,
-        user.phone
+        user.phone,
+        user.username
       ].filter(Boolean).map(s => String(s).trim().toLowerCase());
 
       if (candidateIds.includes(creatorId)) return true;
 
-      // Digits match for phone numbers (e.g. +919876543210 vs 9876543210)
       const creatorDigits = creatorId.replace(/[^0-9]/g, '');
       if (creatorDigits.length >= 7) {
         for (const cid of candidateIds) {
@@ -6071,15 +6054,11 @@
           }
         }
       }
+      return false;
     }
 
-    // Guest creator identification check
-    try {
-      const guestId = localStorage.getItem('akalbodhon_guest_devotee_id');
-      if (guestId && guestId.toLowerCase() === creatorId) return true;
-    } catch (_) {}
-
-    return false;
+    // Any plan created or present in the current user's session is their own plan
+    return true;
   }
 
   function renderFestivalPlans(dayFilter = 'all') {
@@ -6279,32 +6258,24 @@
   // VIEW FULL PUJA PLAN OVERLAY MODAL ENGINE
   // ========================================================
   window.openViewPlanModal = function (planId) {
+    if (!customPlans || customPlans.length === 0) {
+      loadLocalCustomPlans();
+    }
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     if (window.__sharedPlansMap && window.__sharedPlansMap.has(planId)) {
       allPlans.push(window.__sharedPlansMap.get(planId));
+    }
+    if (currentUser && Array.isArray(currentUser.custom_plans)) {
+      currentUser.custom_plans.forEach(cp => {
+        if (cp && cp.id && !allPlans.some(p => p.id === cp.id)) {
+          allPlans.push(cp);
+        }
+      });
     }
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 
     window.activeViewingPlanId = plan.id;
-
-    // Check if custom plan was deleted by its creator from database
-    if (!plan.is_template && window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.isPlanDeleted === 'function') {
-      window.AkalbodhonFirebase.isPlanDeleted(plan.id).then(wasDeleted => {
-        if (wasDeleted) {
-          customPlans = customPlans.filter(p => p.id !== plan.id);
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          if (currentUser && Array.isArray(currentUser.custom_plans)) {
-            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
-            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
-          }
-          window.closeViewPlanModal();
-          renderSavedItinerary();
-          updateBookmarkCount();
-          showToast('This custom Puja plan was deleted by its creator.', 'warning');
-        }
-      }).catch(() => {});
-    }
 
     const modal = document.getElementById('view-plan-modal');
     if (!modal) return;
@@ -6525,23 +6496,9 @@
       }
     }
 
-    // Fetch freshest plan from Firebase Firestore (and auto-detect creator deletion)
+    // Fetch freshest plan from Firebase Firestore (safely update notes/description if available)
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.fetchPlanById === 'function') {
       window.AkalbodhonFirebase.fetchPlanById(plan.id).then(fresh => {
-        if (!fresh && !plan.is_template) {
-          // The plan was deleted by its creator from database! Cascade deletion from receiver account
-          customPlans = customPlans.filter(p => p.id !== plan.id);
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          if (currentUser && Array.isArray(currentUser.custom_plans)) {
-            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
-            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
-          }
-          window.closeViewPlanModal();
-          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
-          showToast('This plan was deleted by its creator.', 'warning');
-          return;
-        }
         if (fresh) {
           if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
             const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
@@ -6553,32 +6510,20 @@
       }).catch(() => {});
     }
 
-    // Set up real-time listener: if creator updates or deletes the plan, react immediately
+    // Set up real-time listener: reflect remote description edits safely
     if (activePlanListenerUnsub) {
       try { activePlanListenerUnsub(); } catch (e) {}
       activePlanListenerUnsub = null;
     }
     if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.listenToPlan === 'function') {
       activePlanListenerUnsub = window.AkalbodhonFirebase.listenToPlan(plan.id, (fresh) => {
-        if (!fresh || fresh.deleted) {
-          // Creator deleted plan from database — automatically purge from receiver's account
-          customPlans = customPlans.filter(p => p.id !== plan.id);
-          localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-          if (currentUser && Array.isArray(currentUser.custom_plans)) {
-            currentUser.custom_plans = currentUser.custom_plans.filter(p => p.id !== plan.id);
-            try { localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser)); } catch (_) {}
+        if (fresh && !fresh.deleted) {
+          if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
+            const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
+            plan.custom_notes = freshDesc;
+            plan.description = freshDesc;
+            renderDescriptionDisplay();
           }
-          window.closeViewPlanModal();
-          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
-          showToast('This plan was deleted by its creator.', 'warning');
-          return;
-        }
-        if (fresh.custom_notes !== undefined || fresh.description !== undefined) {
-          const freshDesc = (fresh.custom_notes !== undefined ? fresh.custom_notes : fresh.description) || '';
-          plan.custom_notes = freshDesc;
-          plan.description = freshDesc;
-          renderDescriptionDisplay();
         }
       });
     }
