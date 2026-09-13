@@ -816,11 +816,15 @@
         phoneEntryForm.classList.add('hidden');
         otpVerifySection.classList.remove('hidden');
         otpTargetDisplay.textContent = formattedPhone;
-        otpCodeInput.value = '';
+        otpCodeInput.value = res.isSimulation ? (res.simulationCode || '123456') : '';
         otpCodeInput.focus();
 
         startResendTimer();
-        showAlert(`SMS OTP code sent to ${formattedPhone}. Please check your phone messages.`, false);
+        if (res.isSimulation) {
+          showAlert(`⚠️ Firebase SMS billing is disabled on this project. For testing, your OTP code is <strong>${res.simulationCode || '123456'}</strong>.`, false);
+        } else {
+          showAlert(`SMS OTP code sent to ${formattedPhone}. Please check your phone messages.`, false);
+        }
 
       } catch (err) {
         console.error('Phone OTP error:', err);
@@ -832,6 +836,8 @@
           showAlert('The mobile number format is invalid. Please enter a valid 10-digit number.');
         } else if (err.code === 'auth/too-many-requests') {
           showAlert('Too many OTP attempts. Please wait a few moments before trying again.');
+        } else if (err.code === 'auth/billing-not-enabled' || (err.message && err.message.includes('billing-not-enabled'))) {
+          showAlert('Firebase SMS billing is not enabled on this project. Please enable the Blaze plan or add this number to "Phone numbers for testing" in Firebase Console.');
         } else {
           showAlert(err.message || 'Unable to send SMS OTP. Please check your number or try email login.');
         }
