@@ -4129,6 +4129,8 @@
 
     if (coverEl) coverEl.src = pl.cover;
     if (titleEl) titleEl.textContent = pl.name || pl.title;
+    const headerTitleEl = document.getElementById('pl-modal-header-title');
+    if (headerTitleEl) headerTitleEl.textContent = pl.name || pl.title;
     if (descEl) descEl.textContent = pl.description || '';
     if (countEl) countEl.textContent = `${songs.length} Tracks`;
 
