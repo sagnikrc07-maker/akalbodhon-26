@@ -3325,18 +3325,6 @@
       previewUrl: 'https://p.scdn.co/mp3-preview/ae38ceb580ae12f842613645f368351cf89003b3'
     },
     {
-      id: '3tLUTDrVx8lnOEYuStzbT5',
-      playlist: 'sharodiya',
-      playlistName: 'Sharodiya hits',
-      title: 'Asatoma Sadgamaya',
-      duration: '5:18',
-      spotifyTrackId: '3tLUTDrVx8lnOEYuStzbT5',
-      spotifyUrl: 'https://open.spotify.com/track/3tLUTDrVx8lnOEYuStzbT5',
-      embedUrl: 'https://open.spotify.com/embed/track/3tLUTDrVx8lnOEYuStzbT5?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27373d361bdee22b03b26953ef3',
-      previewUrl: 'https://p.scdn.co/mp3-preview/9bc5f3eeaad281043bb9d06caa93395abaec9acf'
-    },
-    {
       id: '6XbWY7TpYBcdBCBiTOh5EA',
       playlist: 'sharodiya',
       playlistName: 'Sharodiya hits',
@@ -3359,18 +3347,6 @@
       embedUrl: 'https://open.spotify.com/embed/track/4MQPlquCDaltOs006z65aG?utm_source=generator&theme=0',
       cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273facb0bc10d8032ba2d4996ea',
       previewUrl: 'https://p.scdn.co/mp3-preview/2cecdcae539cc1c78d44b4f455ca79f45a61f697'
-    },
-    {
-      id: '5fN2XXtz5pAHo0iRTMfQnj',
-      playlist: 'sharodiya',
-      playlistName: 'Sharodiya hits',
-      title: 'Aamaar Dugga',
-      duration: '3:19',
-      spotifyTrackId: '5fN2XXtz5pAHo0iRTMfQnj',
-      spotifyUrl: 'https://open.spotify.com/track/5fN2XXtz5pAHo0iRTMfQnj',
-      embedUrl: 'https://open.spotify.com/embed/track/5fN2XXtz5pAHo0iRTMfQnj?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273bc0278fe7524c43b2260fc38',
-      previewUrl: 'https://p.scdn.co/mp3-preview/f56927349a9b63b15389b10d33f7b89c445981de'
     },
     {
       id: '7hQN6fL1OI0L6O2qkfTsBk',
@@ -3455,18 +3431,6 @@
       embedUrl: 'https://open.spotify.com/embed/track/3in4LAp0Tcq9NRfpr7EKjm?utm_source=generator&theme=0',
       cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735eeab3e4aab3f8bec5f40493',
       previewUrl: 'https://p.scdn.co/mp3-preview/8a8e482e5a789d399fe2ad4bdb7135f41c38be99'
-    },
-    {
-      id: '0aRQXJ47S3iHISW8LnfFRS',
-      playlist: 'sharodiya',
-      playlistName: 'Sharodiya hits',
-      title: 'Durge Durge Durgatinashini',
-      duration: '5:09',
-      spotifyTrackId: '0aRQXJ47S3iHISW8LnfFRS',
-      spotifyUrl: 'https://open.spotify.com/track/0aRQXJ47S3iHISW8LnfFRS',
-      embedUrl: 'https://open.spotify.com/embed/track/0aRQXJ47S3iHISW8LnfFRS?utm_source=generator&theme=0',
-      cover: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27343afeb4c19583ccb2848cc95',
-      previewUrl: 'https://p.scdn.co/mp3-preview/c57f40c5e0b7465257c1635c9b857a974468373b'
     },
     {
       id: '0BAwwUhO60U01O9c1OxHfe',
