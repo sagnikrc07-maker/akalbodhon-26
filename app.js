@@ -3277,9 +3277,9 @@
       id: '7EFTbXOZuUZEqdt5cMwaH5',
       name: 'Sharodiya hits',
       songCount: 23,
-      spotifyUrl: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
+      spotifyUrl: 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=YBxuDKpVR22HV8vvie_UMg&utm_source=whatsapp',
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/7EFTbXOZuUZEqdt5cMwaH5?utm_source=generator&theme=0',
-      youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC',
+      youtubeUrl: 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8',
       youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/sf6usUybi3k?list=PLNW14fSkx0r8&autoplay=1&enablejsapi=1',
       cover: 'radio/dugga_ma_asche.jpg',
       description: 'Festive Bengali chartbusters, dhak rhythms, and celebratory pandal anthems.'
@@ -3288,9 +3288,9 @@
       id: '5dUPbjW2MgX96HUlQX81Xs',
       name: 'Mahalaya',
       songCount: 10,
-      spotifyUrl: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link',
+      spotifyUrl: 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=BlPUrpc2S3aqv_2As2-Xig&utm_source=whatsapp',
       spotifyEmbedUrl: 'https://open.spotify.com/embed/playlist/5dUPbjW2MgX96HUlQX81Xs?utm_source=generator&theme=0',
-      youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC',
+      youtubeUrl: 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo',
       youtubeEmbedUrl: 'https://www.youtube-nocookie.com/embed/8FytVk54-dw?list=PLJVPabLHUolo&autoplay=1&enablejsapi=1',
       cover: 'radio/durga_vandana.jpg',
       description: 'The eternal dawn Mahishasuramardini, sacred Vedic stotras, and Birendra Krishna Bhadra invocation.'
@@ -3833,6 +3833,19 @@
     }
   }
 
+  function focusActiveRadioPlayer() {
+    const activeBox = document.getElementById('radio-active-player-box');
+    if (activeBox) {
+      setTimeout(() => {
+        activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        activeBox.classList.add('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+        setTimeout(() => {
+          activeBox.classList.remove('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
+        }, 2000);
+      }, 150);
+    }
+  }
+
   function playRadioSong(song, engine) {
     activeRadioSongId = song.id;
     activeRadioItem = { type: 'song', song };
@@ -3850,9 +3863,29 @@
     showToast(`Streaming "${pl.name}" on ${activeRadioEngine === 'youtube' ? 'YouTube' : 'Spotify'}`, 'graphic_eq');
   }
 
-  function playSpotifyPlaylist(playlistKey) {
-    playRadioPlaylist(playlistKey, 'spotify');
-  }
+  window.playRadioPlaylist = function(playlistKey, engine = 'spotify') {
+    const audioSec = document.getElementById('section-audio');
+    if (audioSec && audioSec.classList.contains('hidden')) {
+      window.location.hash = 'audio';
+    }
+    playRadioPlaylist(playlistKey, engine);
+    focusActiveRadioPlayer();
+  };
+
+  window.playRadioSongById = function(songId, engine = 'spotify') {
+    const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
+    if (!song) return;
+    const audioSec = document.getElementById('section-audio');
+    if (audioSec && audioSec.classList.contains('hidden')) {
+      window.location.hash = 'audio';
+    }
+    playRadioSong(song, engine);
+    focusActiveRadioPlayer();
+  };
+
+  window.playSpotifyPlaylist = function(playlistKey) {
+    window.playRadioPlaylist(playlistKey, 'spotify');
+  };
 
   function renderPujaRadioSongs() {
     const sharodiyaContainer = document.getElementById('radio-songs-sharodiya-list') || document.getElementById('radio-songs-hiphop-list');
@@ -3861,8 +3894,9 @@
 
     const renderSongItem = (song, index) => `
       <div 
-        class="glass-panel p-2 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#1DB954]/50 dark:hover:border-amber-400/50 transition-all flex flex-col justify-between gap-2 group hover:shadow-md"
+        class="glass-panel p-2 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#1DB954]/50 dark:hover:border-amber-400/50 transition-all flex flex-col justify-between gap-2 group hover:shadow-md cursor-pointer"
         id="song-card-${song.id}"
+        onclick="window.playRadioSongById('${song.id}')"
       >
         <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
           <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
@@ -3887,36 +3921,23 @@
           </div>
         </div>
 
-        <!-- Action Links: Spotify, YouTube, Play on Website -->
-        <div class="flex items-center justify-between gap-1 pt-1.5 border-t border-outline-variant/20 dark:border-amber-400/15">
-          <div class="flex items-center gap-1">
-            <a 
-              href="${song.spotifyUrl}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer"
-              title="Open Track on Spotify"
-            >
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.503 17.309c-.216.353-.674.464-1.027.249-2.815-1.72-6.359-2.109-10.534-1.155-.403.092-.807-.16-.9-.562-.092-.403.16-.807.562-.9 4.568-1.044 8.487-.605 11.65 1.341.353.215.464.674.249 1.027zm1.469-3.266c-.272.441-.852.58-1.293.308-3.223-1.981-8.136-2.553-11.948-1.396-.499.151-1.031-.133-1.183-.632-.151-.499.133-1.031.632-1.183 4.364-1.325 9.778-.686 13.485 1.595.441.272.58.852.308 1.293zm.126-3.41c-3.865-2.295-10.239-2.507-13.913-1.391-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.227-1.284 11.266-1.038 15.698 1.594.533.316.708 1.009.392 1.542-.316.533-1.009.708-1.542.392z"/></svg>
-            </a>
-            <a 
-              href="${song.youtubeUrl}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer"
-              title="Watch on YouTube"
-            >
-              <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-          </div>
-
+        <!-- In-Website Stream Actions: Spotify & YouTube (No play button, streams directly on website player) -->
+        <div class="flex items-center justify-end gap-1.5 pt-1.5 border-t border-outline-variant/20 dark:border-amber-400/15" onclick="event.stopPropagation()">
           <button 
-            class="play-radio-song-btn px-2 sm:px-2.5 py-1 rounded-lg bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-[10px] sm:text-[11px] flex items-center gap-1 transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
+            type="button"
+            class="play-song-spotify-btn w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#1DB954]/15 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/25 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             data-song-id="${song.id}"
-            title="Stream Track on Website"
+            title="Stream Track on Spotify Player"
           >
-            <span class="material-symbols-outlined text-[13px]">play_arrow</span>
-            <span>Play</span>
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </button>
+          <button 
+            type="button"
+            class="play-song-yt-btn w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FF0000]/15 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/25 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
+            data-song-id="${song.id}"
+            title="Stream Track on YouTube Player"
+          >
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           </button>
         </div>
       </div>
@@ -3929,12 +3950,28 @@
     if (mahalayaContainer) mahalayaContainer.innerHTML = mahalayaSongs.map(renderSongItem).join('');
     if (legacyList) legacyList.innerHTML = PUJA_RADIO_SONGS.map(renderSongItem).join('');
 
-    // Attach play song handlers
-    document.querySelectorAll('.play-radio-song-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    // Attach stream handlers
+    document.querySelectorAll('.play-song-spotify-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         const songId = btn.dataset.songId;
         const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
-        if (song) playRadioSong(song);
+        if (song) {
+          playRadioSong(song, 'spotify');
+          focusActiveRadioPlayer();
+        }
+      });
+    });
+
+    document.querySelectorAll('.play-song-yt-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const songId = btn.dataset.songId;
+        const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
+        if (song) {
+          playRadioSong(song, 'youtube');
+          focusActiveRadioPlayer();
+        }
       });
     });
 
@@ -3965,11 +4002,11 @@
         ? 'radio/durga_vandana.jpg' 
         : 'radio/dugga_ma_asche.jpg',
       spotifyUrl: playlistKey === 'mahalaya'
-        ? 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=35qIvMeeRuSHLSXwsu9lWw&utm_source=copy-link'
-        : 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=u1bm8rK5SIi6Fdyo79B1ew&utm_source=copy-link&pi=RkVoKNYpTQeZo',
+        ? 'https://open.spotify.com/playlist/5dUPbjW2MgX96HUlQX81Xs?si=BlPUrpc2S3aqv_2As2-Xig&utm_source=whatsapp'
+        : 'https://open.spotify.com/playlist/7EFTbXOZuUZEqdt5cMwaH5?si=YBxuDKpVR22HV8vvie_UMg&utm_source=whatsapp',
       youtubeUrl: playlistKey === 'mahalaya'
-        ? 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo&pp=sAgC'
-        : 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8&pp=0gcJCf8COCosWNinsAgC'
+        ? 'https://www.youtube.com/watch?v=8FytVk54-dw&list=PLJVPabLHUolo'
+        : 'https://www.youtube.com/watch?v=sf6usUybi3k&list=PLNW14fSkx0r8'
     };
 
     const songs = PUJA_RADIO_SONGS.filter(s => s.playlist === playlistKey);
@@ -3978,16 +4015,40 @@
     const titleEl = document.getElementById('pl-modal-title');
     const descEl = document.getElementById('pl-modal-desc');
     const countEl = document.getElementById('pl-modal-count');
-    const spotifyLink = document.getElementById('pl-modal-spotify-btn');
-    const youtubeLink = document.getElementById('pl-modal-youtube-btn');
+    const spotifyBtn = document.getElementById('pl-modal-spotify-btn');
+    const youtubeBtn = document.getElementById('pl-modal-youtube-btn');
     const playAllBtn = document.getElementById('pl-modal-play-all-btn');
 
     if (coverEl) coverEl.src = pl.cover;
     if (titleEl) titleEl.textContent = pl.name || pl.title;
     if (descEl) descEl.textContent = pl.description || '';
     if (countEl) countEl.textContent = `${songs.length} Tracks`;
-    if (spotifyLink) spotifyLink.href = pl.spotifyUrl;
-    if (youtubeLink) youtubeLink.href = pl.youtubeUrl;
+
+    // Direct streaming on website player from modal header
+    if (spotifyBtn) {
+      spotifyBtn.onclick = (e) => {
+        e.stopPropagation();
+        closePlaylistDetailModal();
+        const audioSec = document.getElementById('section-audio');
+        if (audioSec && audioSec.classList.contains('hidden')) {
+          window.location.hash = 'audio';
+        }
+        playRadioPlaylist(playlistKey, 'spotify');
+        focusActiveRadioPlayer();
+      };
+    }
+    if (youtubeBtn) {
+      youtubeBtn.onclick = (e) => {
+        e.stopPropagation();
+        closePlaylistDetailModal();
+        const audioSec = document.getElementById('section-audio');
+        if (audioSec && audioSec.classList.contains('hidden')) {
+          window.location.hash = 'audio';
+        }
+        playRadioPlaylist(playlistKey, 'youtube');
+        focusActiveRadioPlayer();
+      };
+    }
 
     if (playAllBtn) {
       playAllBtn.onclick = () => {
@@ -4004,16 +4065,7 @@
         playRadioPlaylist(playlistKey);
 
         // 4. Smoothly focus on and pulse player box so user sees it actively playing
-        const activeBox = document.getElementById('radio-active-player-box');
-        if (activeBox) {
-          setTimeout(() => {
-            activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            activeBox.classList.add('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
-            setTimeout(() => {
-              activeBox.classList.remove('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
-            }, 2000);
-          }, 150);
-        }
+        focusActiveRadioPlayer();
 
         showToast(`🎶 Streaming ${pl.name || pl.title} on Akalbodhon player!`, 'celebration');
       };
@@ -4022,7 +4074,7 @@
     const tracklistEl = document.getElementById('playlist-modal-tracklist');
     if (tracklistEl) {
       tracklistEl.innerHTML = songs.map((song, idx) => `
-        <div onclick="window.playSongFromPlaylistModal('${song.id}')" class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md cursor-pointer">
+        <div onclick="window.playSongFromPlaylistModal('${song.id}', 'spotify')" class="glass-panel p-2.5 sm:p-3 rounded-2xl border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary/50 dark:hover:border-amber-400/50 transition-all flex items-center justify-between gap-2.5 group hover:shadow-md cursor-pointer">
           <div class="flex items-center gap-2.5 min-w-0 flex-1">
             <span class="text-xs font-mono font-bold text-on-surface-variant/60 dark:text-amber-400/60 w-5 text-center shrink-0">${idx + 1}</span>
             <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl overflow-hidden shrink-0 shadow-sm border border-outline-variant/20 dark:border-amber-400/20 relative">
@@ -4036,38 +4088,25 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 shrink-0" onclick="event.stopPropagation()">
-            <!-- Spotify Track Link -->
-            <a 
-              href="${song.spotifyUrl}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#1DB954]/10 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/20 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-xs"
-              title="Open Track on Spotify"
-            >
-              <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
-            </a>
-
-            <!-- YouTube Track Link -->
-            <a 
-              href="${song.youtubeUrl}" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FF0000]/10 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/20 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all shadow-xs"
-              title="Watch on YouTube"
-            >
-              <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-            </a>
-
-            <!-- Stream on Website Player -->
+          <div class="flex items-center gap-2 shrink-0" onclick="event.stopPropagation()">
+            <!-- Spotify Track Button (Streams directly on in-website player) -->
             <button 
               type="button"
-              onclick="event.stopPropagation(); window.playSongFromPlaylistModal('${song.id}')" 
-              class="px-2.5 py-1.5 rounded-xl bg-primary hover:bg-primary-container text-white dark:bg-amber-400 dark:hover:bg-amber-300 dark:text-black font-bold text-xs flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
-              title="Play on Website"
+              onclick="event.stopPropagation(); window.playSongFromPlaylistModal('${song.id}', 'spotify')" 
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#1DB954]/15 hover:bg-[#1DB954] text-[#1DB954] hover:text-white dark:bg-[#1DB954]/25 dark:hover:bg-[#1DB954] dark:text-[#1ed760] dark:hover:text-black flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Stream on Spotify Player"
             >
-              <span class="material-symbols-outlined text-[15px]">play_arrow</span>
-              <span>Play</span>
+              <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            </button>
+
+            <!-- YouTube Track Button (Streams directly on in-website player) -->
+            <button 
+              type="button"
+              onclick="event.stopPropagation(); window.playSongFromPlaylistModal('${song.id}', 'youtube')" 
+              class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-[#FF0000]/15 hover:bg-[#FF0000] text-[#FF0000] hover:text-white dark:bg-[#FF0000]/25 dark:hover:bg-[#FF0000] dark:text-[#ff4e4e] dark:hover:text-white flex items-center justify-center transition-all shadow-xs active:scale-95 cursor-pointer"
+              title="Stream on YouTube Player"
+            >
+              <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </button>
           </div>
         </div>
@@ -4088,7 +4127,7 @@
     document.body.classList.remove('modal-open');
   };
 
-  window.playSongFromPlaylistModal = function(songId) {
+  window.playSongFromPlaylistModal = function(songId, engine = 'spotify') {
     const song = PUJA_RADIO_SONGS.find(s => s.id === songId);
     if (!song) return;
 
@@ -4103,20 +4142,11 @@
       window.location.hash = 'audio';
     }
 
-    // 3. Play chosen song on website player
-    playRadioSong(song);
+    // 3. Play chosen song on website player with selected engine
+    playRadioSong(song, engine);
 
     // 4. Return to and smoothly center on active player with visual pulse
-    const activeBox = document.getElementById('radio-active-player-box');
-    if (activeBox) {
-      setTimeout(() => {
-        activeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        activeBox.classList.add('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
-        setTimeout(() => {
-          activeBox.classList.remove('player-active-pulse', 'ring-2', 'ring-primary', 'dark:ring-amber-400');
-        }, 2000);
-      }, 150);
-    }
+    focusActiveRadioPlayer();
   };
 
   // --- 13. AUDIO & RADIO CONTROLLER ---
