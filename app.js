@@ -1385,6 +1385,9 @@
 
     getBookmarks() {
       try {
+        if (!isUserLoggedIn() || !currentUser) {
+          return [];
+        }
         let list = null;
         const saved = localStorage.getItem(this.KEY_BOOKMARKS);
         if (saved !== null) {
@@ -2476,15 +2479,16 @@
 
   function updateBookmarkCount() {
     try {
-      const bookmarks = Storage.getBookmarks() || [];
-      const plans = (typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : [];
+      const loggedIn = isUserLoggedIn() && !!currentUser;
+      const bookmarks = loggedIn ? (Storage.getBookmarks() || []) : [];
+      const plans = (loggedIn && typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : [];
       const total = bookmarks.length + plans.length;
 
       // Update Navigation Badge in Header/Navbar
       const navBadge = document.getElementById('saved-count-badge');
       if (navBadge) {
         navBadge.textContent = total;
-        if (total > 0) {
+        if (total > 0 && loggedIn) {
           navBadge.classList.remove('hidden');
         } else {
           navBadge.classList.add('hidden');
@@ -2493,18 +2497,18 @@
 
       // Update Itinerary Section Tab Badges
       const badgeAll = document.getElementById('saved-badge-all');
-      if (badgeAll) badgeAll.textContent = total;
+      if (badgeAll) badgeAll.textContent = loggedIn ? total : 0;
 
-      const pandalCount = bookmarks.filter(b => {
+      const pandalCount = loggedIn ? bookmarks.filter(b => {
         const isFoodOrShop = b.type === 'food' || b.type === 'shop' || 
           b.category === 'Food & Shopping' || b.category === 'Food' || b.category === 'Shop' ||
           b.category === 'Famous Food Joints' || b.category === 'Food Destination' || b.category === 'Shopping Bazaar' ||
           FOOD_DATA.some(f => f.id === b.id || ((f.name || '').toLowerCase() === (b.name || '').toLowerCase())) ||
           SHOPPING_DATA.some(s => s.id === b.id || ((s.name || '').toLowerCase() === (b.name || '').toLowerCase()));
         return !isFoodOrShop;
-      }).length;
+      }).length : 0;
 
-      const foodCount = bookmarks.length - pandalCount;
+      const foodCount = loggedIn ? (bookmarks.length - pandalCount) : 0;
 
       const badgePandals = document.getElementById('saved-badge-pandals');
       if (badgePandals) badgePandals.textContent = pandalCount;
@@ -2513,7 +2517,7 @@
       if (badgeFood) badgeFood.textContent = foodCount;
 
       const badgePlans = document.getElementById('saved-badge-plans');
-      if (badgePlans) badgePlans.textContent = plans.length;
+      if (badgePlans) badgePlans.textContent = loggedIn ? plans.length : 0;
 
       // Update Dropdown Options text
       const savedDropdown = document.getElementById('saved-filter-dropdown');
@@ -2522,10 +2526,10 @@
         const optPandals = savedDropdown.querySelector('option[value="pandals"]');
         const optFood = savedDropdown.querySelector('option[value="food-shopping"]');
         const optPlans = savedDropdown.querySelector('option[value="plans"]');
-        if (optAll) optAll.textContent = `✨ All Saved (${total})`;
+        if (optAll) optAll.textContent = `✨ All Saved (${loggedIn ? total : 0})`;
         if (optPandals) optPandals.textContent = `🏛️ Pandals & Transit (${pandalCount})`;
         if (optFood) optFood.textContent = `🍽️ Food & Shopping (${foodCount})`;
-        if (optPlans) optPlans.textContent = `📋 Saved Plans (${plans.length})`;
+        if (optPlans) optPlans.textContent = `📋 Saved Plans (${loggedIn ? plans.length : 0})`;
       }
     } catch (e) {
       console.warn('updateBookmarkCount warning:', e);
@@ -2674,6 +2678,7 @@
 
     // If no user is logged in, show a login-required empty state
     if (!isUserLoggedIn() || !currentUser) {
+      updateBookmarkCount();
       container.innerHTML = `
         <div class="glass-panel p-8 sm:p-12 rounded-3xl border border-outline-variant/30 dark:border-amber-400/20 text-center max-w-xl mx-auto my-6 space-y-5 reveal-on-scroll">
           <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-400/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 flex items-center justify-center mx-auto shadow-inner">
@@ -5835,10 +5840,9 @@
     }
     currentUser = null;
     localStorage.removeItem('akalbodhon_user_profile');
-
-    // CRITICAL FIX: DO NOT wipe saved bookmarks or custom plans from localStorage or memory!
-    // Devotee's saved itinerary items remain safely preserved so they stay visible when logged out.
-    // Items stay until the devotee explicitly deletes them from their itinerary.
+    localStorage.removeItem('akalbodhon_bookmarks');
+    localStorage.removeItem('akalbodhon_custom_plans');
+    customPlans = [];
 
     if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
       window.AkalbodhonFirebase.signOutUser().catch(() => {});
@@ -5851,8 +5855,10 @@
     if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
     if (typeof renderSavedSection === 'function') renderSavedSection();
     if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+    if (typeof renderPandals === 'function') renderPandals();
+    if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
     if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
-    showToast('Signed out of Akalbodhon. Your saved itinerary remains available.', 'logout');
+    showToast('Signed out of Akalbodhon.', 'logout');
   }
 
   // ========================================================
@@ -5861,6 +5867,10 @@
   // Synchronous local cache loader for custom plans (Instant, zero-delay rendering)
   function loadLocalCustomPlans() {
     try {
+      if (!isUserLoggedIn() || !currentUser) {
+        customPlans = [];
+        return;
+      }
       const local = localStorage.getItem('akalbodhon_custom_plans');
       if (local) {
         const parsed = JSON.parse(local);
@@ -5872,15 +5882,10 @@
         const t = (p.title || '').trim().toLowerCase();
         if (t === 'x' || t === 'bnfhm' || t === 'test') return false;
         // Strict user scoping: keep only plans created by this user or explicitly shared with / saved by this user
-        if (currentUser) {
-          const isMine = isCurrentUserPlan(p, currentUser);
-          const isExplicitlySaved = p.saved_to_itinerary || p.is_shared || 
-            (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.some(cp => cp && cp.id === p.id));
-          return isMine || isExplicitlySaved;
-        } else {
-          const isGuestMine = isCurrentUserPlan(p, null);
-          return isGuestMine || p.is_shared || p.saved_to_itinerary;
-        }
+        const isMine = isCurrentUserPlan(p, currentUser);
+        const isExplicitlySaved = p.saved_to_itinerary || p.is_shared || 
+          (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.some(cp => cp && cp.id === p.id));
+        return isMine || isExplicitlySaved;
       });
       localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
     } catch (e) {
