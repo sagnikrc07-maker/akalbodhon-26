@@ -1019,234 +1019,245 @@
   </nav>
 
   <!-- ==================== 1. ACCOUNT AUTHENTICATION MODAL (LOGIN / SIGNUP) ==================== -->
-  <div id="auth-modal" class="fixed inset-0 z-[90] bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full max-h-[90vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
-      <button id="close-auth-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
+  <div id="auth-modal" class="fixed inset-0 z-[90] bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full max-h-[90vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right (Fixed above scroll area, never scrolls away) -->
+      <button id="close-auth-modal-btn" class="absolute top-3.5 sm:top-4 right-3.5 sm:right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105 border border-outline-variant/20 dark:border-amber-400/20" title="Close">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <!-- Modal Header -->
-      <div class="text-center space-y-1.5 pt-2">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border border-secondary-container dark:border-amber-400/40 flex items-center justify-center mx-auto shadow-lg">
-          <span class="text-3xl">🪔</span>
-        </div>
-        <h3 id="auth-modal-title" class="font-display text-2xl font-bold crimson-gradient-text">Welcome to Akalbodhon</h3>
-        <p id="auth-modal-subtitle" class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
-          Sign in or create an account to save custom plans, pandals, and sacred itineraries.
-        </p>
-      </div>
-
-      <!-- Auth Tab Switcher (Sign In vs Create Account) -->
-      <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-        <button id="auth-tab-login" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
-        <button id="auth-tab-signup" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
-      </div>
-
-      <!-- Notification Alert with dynamic helper action -->
-      <div id="auth-error-alert" class="hidden p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs space-y-2">
-        <div class="flex items-start gap-2">
-          <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
-          <div id="auth-error-msg" class="flex-1 leading-relaxed">Error message</div>
-        </div>
-        <div id="auth-error-action-container" class="hidden pt-1 border-t border-red-500/20"></div>
-      </div>
-      <div id="auth-success-alert" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
-        <span class="material-symbols-outlined text-[18px] shrink-0">check_circle</span>
-        <span id="auth-success-msg">Success</span>
-      </div>
-
-      <!-- Option 1: Continue with Google -->
-      <div class="space-y-3">
-        <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
-          <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-          </svg>
-          <span id="google-auth-btn-label">Continue with Google</span>
-        </button>
-
-        <div class="flex items-center gap-3">
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with email</span>
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-        </div>
-      </div>
-
-      <!-- Email & Password Section -->
-      <div id="auth-email-section" class="space-y-4">
-        <form id="auth-email-form" class="space-y-3.5" onsubmit="return false;">
-          <!-- Name (Only in Create Account mode) -->
-          <div id="auth-email-name-field" class="space-y-1 hidden">
-            <label for="auth-email-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">person</span>
-              <input type="text" id="auth-email-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
+      <!-- Scrollable Inner Content Area -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-5 flex-1">
+        <!-- Modal Header -->
+        <div class="text-center space-y-1.5 pt-2">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border border-secondary-container dark:border-amber-400/40 flex items-center justify-center mx-auto shadow-lg">
+            <span class="text-3xl">🪔</span>
           </div>
+          <h3 id="auth-modal-title" class="font-display text-2xl font-bold crimson-gradient-text">Welcome to Akalbodhon</h3>
+          <p id="auth-modal-subtitle" class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
+            Sign in or create an account to save custom plans, pandals, and sacred itineraries.
+          </p>
+        </div>
 
-          <!-- Email Address Input -->
-          <div class="space-y-1">
-            <label for="auth-email-address-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">mail</span>
-              <input type="email" id="auth-email-address-input" autocomplete="email" placeholder="e.g. devotee@example.com" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
+        <!-- Auth Tab Switcher (Sign In vs Create Account) -->
+        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
+          <button id="auth-tab-login" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
+          <button id="auth-tab-signup" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
+        </div>
+
+        <!-- Notification Alert with dynamic helper action -->
+        <div id="auth-error-alert" class="hidden p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs space-y-2">
+          <div class="flex items-start gap-2">
+            <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+            <div id="auth-error-msg" class="flex-1 leading-relaxed">Error message</div>
           </div>
+          <div id="auth-error-action-container" class="hidden pt-1 border-t border-red-500/20"></div>
+        </div>
+        <div id="auth-success-alert" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px] shrink-0">check_circle</span>
+          <span id="auth-success-msg">Success</span>
+        </div>
 
-          <!-- Password Input -->
-          <div class="space-y-1">
-            <label for="auth-email-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">lock</span>
-              <input type="password" id="auth-email-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <div class="flex items-center justify-between pt-0.5">
-              <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Min 6 characters (letters & numbers)</span>
-              <button type="button" id="auth-email-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                <span class="material-symbols-outlined text-[15px]" id="auth-email-toggle-pwd-icon">visibility</span>
-                <span id="auth-email-toggle-pwd-text">Show</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button id="auth-email-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">login</span>
-            <span id="auth-email-submit-label">Sign In with Email</span>
+        <!-- Option 1: Continue with Google -->
+        <div class="space-y-3">
+          <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span id="google-auth-btn-label">Continue with Google</span>
           </button>
-        </form>
-      </div>
 
+          <div class="flex items-center gap-3">
+            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with email</span>
+            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
+          </div>
+        </div>
+
+        <!-- Email & Password Section -->
+        <div id="auth-email-section" class="space-y-4">
+          <form id="auth-email-form" class="space-y-3.5" onsubmit="return false;">
+            <!-- Name (Only in Create Account mode) -->
+            <div id="auth-email-name-field" class="space-y-1 hidden">
+              <label for="auth-email-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">person</span>
+                <input type="text" id="auth-email-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Email Address Input -->
+            <div class="space-y-1">
+              <label for="auth-email-address-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">mail</span>
+                <input type="email" id="auth-email-address-input" autocomplete="email" placeholder="e.g. devotee@example.com" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="space-y-1">
+              <label for="auth-email-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">lock</span>
+                <input type="password" id="auth-email-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
+              </div>
+              <div class="flex items-center justify-between pt-0.5">
+                <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Min 6 characters (letters & numbers)</span>
+                <button type="button" id="auth-email-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
+                  <span class="material-symbols-outlined text-[15px]" id="auth-email-toggle-pwd-icon">visibility</span>
+                  <span id="auth-email-toggle-pwd-text">Show</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="auth-email-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">login</span>
+              <span id="auth-email-submit-label">Sign In with Email</span>
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
 
 
   <!-- ==================== 2. ACCOUNT PROFILE MODAL ==================== -->
-  <div id="profile-modal" class="fixed inset-0 z-[85] bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-lg w-full max-h-[90vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
-      <button id="close-profile-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
+  <div id="profile-modal" class="fixed inset-0 z-[85] bg-black/80 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-lg w-full max-h-[90vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right (Fixed above scroll area, never scrolls away) -->
+      <button id="close-profile-modal-btn" class="absolute top-3.5 sm:top-4 right-3.5 sm:right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105 border border-outline-variant/20 dark:border-amber-400/20" title="Close Profile">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <!-- Profile Header / Current Avatar -->
-      <div class="flex items-center gap-4 border-b border-outline-variant/30 dark:border-amber-400/20 pb-4">
-        <div class="relative group">
-          <div id="current-profile-avatar-display" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center text-3xl shadow-xl overflow-hidden">
-            🪔
+      <!-- Scrollable Inner Content Area -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-5 flex-1">
+        <!-- Profile Header / Current Avatar -->
+        <div class="flex items-center gap-4 border-b border-outline-variant/30 dark:border-amber-400/20 pb-4">
+          <div class="relative group">
+            <div id="current-profile-avatar-display" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center text-3xl shadow-xl overflow-hidden">
+              🪔
+            </div>
+            <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md bg-primary dark:bg-amber-400 text-white dark:text-black text-[9px] font-bold shadow">AVATAR</span>
           </div>
-          <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md bg-primary dark:bg-amber-400 text-white dark:text-black text-[9px] font-bold shadow">AVATAR</span>
-        </div>
-        <div class="min-w-0 flex-1">
-          <h3 id="profile-display-name" class="font-display text-xl font-bold text-on-surface dark:text-white truncate">Devotee</h3>
-          <p id="profile-display-identifier" class="text-xs text-on-surface-variant dark:text-amber-300 font-medium truncate">devotee@akalbodhon.com</p>
-          <div class="flex items-center gap-2 mt-1 flex-wrap">
-            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Logged In Account
-            </span>
+          <div class="min-w-0 flex-1">
+            <h3 id="profile-display-name" class="font-display text-xl font-bold text-on-surface dark:text-white truncate">Devotee</h3>
+            <p id="profile-display-identifier" class="text-xs text-on-surface-variant dark:text-amber-300 font-medium truncate">devotee@akalbodhon.com</p>
+            <div class="flex items-center gap-2 mt-1 flex-wrap">
+              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Logged In Account
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- User Profile Name Input -->
-      <div class="space-y-1.5 pt-1">
-        <label class="text-xs font-semibold text-on-surface dark:text-white">Display Name</label>
-        <input type="text" id="profile-edit-name-input" placeholder="Your Name" class="w-full px-3.5 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-      </div>
+        <!-- User Profile Name Input -->
+        <div class="space-y-1.5 pt-1">
+          <label class="text-xs font-semibold text-on-surface dark:text-white">Display Name</label>
+          <input type="text" id="profile-edit-name-input" placeholder="Your Name" class="w-full px-3.5 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+        </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/30 dark:border-amber-400/20">
-        <button id="save-profile-btn" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">check_circle</span> Save Profile
-        </button>
-        <button id="auth-logout-btn" class="px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all flex items-center gap-1.5 cursor-pointer" title="Log Out">
-          <span class="material-symbols-outlined text-[18px]">logout</span> Log Out
-        </button>
+        <!-- Action Buttons -->
+        <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/30 dark:border-amber-400/20">
+          <button id="save-profile-btn" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span> Save Profile
+          </button>
+          <button id="auth-logout-btn" class="px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all flex items-center gap-1.5 cursor-pointer" title="Log Out">
+            <span class="material-symbols-outlined text-[18px]">logout</span> Log Out
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ==================== 3. CUSTOM PUJA PLAN CREATOR MODAL ==================== -->
-  <div id="create-plan-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] modal-scrollable border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 relative flex flex-col space-y-5 animate-scale-up">
-      <button id="close-create-plan-modal-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer">
+  <div id="create-plan-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-2xl w-full max-h-[88vh] border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl relative flex flex-col overflow-hidden animate-scale-up">
+      <!-- Cross Button on Top Right (Fixed above scroll area, never scrolls away) -->
+      <button id="close-create-plan-modal-btn" class="absolute top-3.5 sm:top-4 right-3.5 sm:right-4 z-30 w-9 h-9 rounded-full bg-surface-container-high/90 dark:bg-[#2c261b]/90 backdrop-blur-md flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-all cursor-pointer shadow-md hover:scale-105 border border-outline-variant/20 dark:border-amber-400/20" title="Close Creator">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <div class="border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
-        <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px]">edit_calendar</span> Personal Planner
-        </span>
-        <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white mt-1">Make Your Own Puja Plan</h3>
-        <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Build your custom pandal hopping trail, dining spots, and sacred rituals.</p>
-      </div>
-
-      <form id="create-plan-form" class="space-y-4">
-        <!-- Plan Title (Defaults to 'Plan', non-mandatory) -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Name / Title <span class="text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-normal">(Default: Plan)</span></label>
-          <input type="text" id="plan-title-input" value="Plan" placeholder="Plan" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+      <!-- Scrollable Inner Content Area -->
+      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-5 flex-1">
+        <div class="border-b border-outline-variant/30 dark:border-amber-400/20 pb-3">
+          <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">edit_calendar</span> Personal Planner
+          </span>
+          <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white mt-1">Make Your Own Puja Plan</h3>
+          <p class="text-xs text-on-surface-variant dark:text-[#ded5c7]">Build your custom pandal hopping trail, dining spots, and sacred rituals.</p>
         </div>
 
-        <!-- Festival Day Selection -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Select Puja Day</label>
-          <select id="plan-day-select" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white">
-            <option value="Maha Shasthi">Maha Shasthi (17 Oct 2026)</option>
-            <option value="Maha Saptami">Maha Saptami (18 Oct 2026)</option>
-            <option value="Maha Ashtami" selected>Maha Ashtami (19 Oct 2026)</option>
-            <option value="Maha Navami">Maha Navami (20 Oct 2026)</option>
-            <option value="Bijoya Dashami">Bijoya Dashami (21 Oct 2026)</option>
-            <option value="Mahalaya">Mahalaya (10 Oct 2026)</option>
-            <option value="Custom Festival Day">Custom Festival Day</option>
-          </select>
-        </div>
-
-        <!-- Transit Route Summary -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Route & Transit Summary</label>
-          <input type="text" id="plan-route-input" placeholder="e.g. Shyambazar Metro -> Sovabazar Sutanuti -> College St Tram -> Sealdah" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
-
-        <!-- Custom Plan Description -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Description / Creator Notes</label>
-          <textarea id="plan-description-input" rows="2" placeholder="e.g. Join our festive pandal trail! Morning Pushpanjali, followed by authentic street food and late-night illumination walks." class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white resize-none"></textarea>
-        </div>
-
-        <!-- Pandals Selection -->
-        <div class="space-y-1.5">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 flex items-center justify-between">
-            <span>Select Pandals to Visit</span>
-            <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(Optional • 3 iconic pandals auto-selected if blank)</span>
-          </label>
-          <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
-            <!-- Injected dynamically -->
+        <form id="create-plan-form" class="space-y-4">
+          <!-- Plan Title (Defaults to 'Plan', non-mandatory) -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Name / Title <span class="text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-normal">(Default: Plan)</span></label>
+            <input type="text" id="plan-title-input" value="Plan" placeholder="Plan" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
           </div>
-          <input type="text" id="plan-custom-pandals-input" placeholder="Add custom pandal names (comma separated)" class="w-full px-3 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
 
-        <!-- Food & Dining Stops -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Where to Eat / Food Pit-Stops</label>
-          <input type="text" id="plan-food-input" placeholder="e.g. Golbari Kosha Mangsho, Mitra Cafe Kabiraji, Arsalan Biryani" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
+          <!-- Festival Day Selection -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Select Puja Day</label>
+            <select id="plan-day-select" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white">
+              <option value="Maha Shasthi">Maha Shasthi (17 Oct 2026)</option>
+              <option value="Maha Saptami">Maha Saptami (18 Oct 2026)</option>
+              <option value="Maha Ashtami" selected>Maha Ashtami (19 Oct 2026)</option>
+              <option value="Maha Navami">Maha Navami (20 Oct 2026)</option>
+              <option value="Bijoya Dashami">Bijoya Dashami (21 Oct 2026)</option>
+              <option value="Mahalaya">Mahalaya (10 Oct 2026)</option>
+              <option value="Custom Festival Day">Custom Festival Day</option>
+            </select>
+          </div>
 
-        <!-- Rituals & Auspicious Timings -->
-        <div class="space-y-1">
-          <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Rituals to Follow</label>
-          <input type="text" id="plan-rituals-input" placeholder="e.g. Maha Ashtami Puspanjali (9:30 AM IST), Sandhi Puja 108 Diyas (8:42 PM IST)" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
-        </div>
+          <!-- Transit Route Summary -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Route & Transit Summary</label>
+            <input type="text" id="plan-route-input" placeholder="e.g. Shyambazar Metro -> Sovabazar Sutanuti -> College St Tram -> Sealdah" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          </div>
 
-        <!-- Submit Button -->
-        <div class="pt-2">
-          <button type="submit" id="save-new-plan-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-lg hover:shadow-primary/30 dark:hover:shadow-amber-400/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[20px]">save</span> Save & Publish Plan
-          </button>
-        </div>
-      </form>
+          <!-- Custom Plan Description -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Plan Description / Creator Notes</label>
+            <textarea id="plan-description-input" rows="2" placeholder="e.g. Join our festive pandal trail! Morning Pushpanjali, followed by authentic street food and late-night illumination walks." class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white resize-none"></textarea>
+          </div>
+
+          <!-- Pandals Selection -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 flex items-center justify-between">
+              <span>Select Pandals to Visit</span>
+              <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(Optional • 3 iconic pandals auto-selected if blank)</span>
+            </label>
+            <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
+              <!-- Injected dynamically -->
+            </div>
+            <input type="text" id="plan-custom-pandals-input" placeholder="Add custom pandal names (comma separated)" class="w-full px-3 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          </div>
+
+          <!-- Food & Dining Stops -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Where to Eat / Food Pit-Stops</label>
+            <input type="text" id="plan-food-input" placeholder="e.g. Golbari Kosha Mangsho, Mitra Cafe Kabiraji, Arsalan Biryani" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          </div>
+
+          <!-- Rituals & Auspicious Timings -->
+          <div class="space-y-1">
+            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Rituals to Follow</label>
+            <input type="text" id="plan-rituals-input" placeholder="e.g. Maha Ashtami Puspanjali (9:30 AM IST), Sandhi Puja 108 Diyas (8:42 PM IST)" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" id="save-new-plan-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-lg hover:shadow-primary/30 dark:hover:shadow-amber-400/20 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <span class="material-symbols-outlined text-[20px]">save</span> Save & Publish Plan
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

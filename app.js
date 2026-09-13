@@ -5172,6 +5172,7 @@
     if (mode === 'signup' && emailNameInput) emailNameInput.focus();
     else if (emailInput) emailInput.focus();
   }
+  window.openAuthModal = openAuthModal;
 
   function closeAuthModal() {
     const modal = document.getElementById('auth-modal');
@@ -5184,6 +5185,7 @@
       document.body.classList.remove('modal-open');
     }
   }
+  window.closeAuthModal = closeAuthModal;
 
   function showAuthError(msg, isPage = false) {
     if (isPage) {
