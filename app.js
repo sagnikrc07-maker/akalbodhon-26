@@ -2508,17 +2508,6 @@
       const plans = (loggedIn && typeof customPlans !== 'undefined' && Array.isArray(customPlans)) ? customPlans : [];
       const total = bookmarks.length + plans.length;
 
-      // Update Navigation Badge in Header/Navbar
-      const navBadge = document.getElementById('saved-count-badge');
-      if (navBadge) {
-        navBadge.textContent = total;
-        if (total > 0 && loggedIn) {
-          navBadge.classList.remove('hidden');
-        } else {
-          navBadge.classList.add('hidden');
-        }
-      }
-
       // Update Itinerary Section Tab Badges
       const badgeAll = document.getElementById('saved-badge-all');
       if (badgeAll) badgeAll.textContent = loggedIn ? total : 0;
