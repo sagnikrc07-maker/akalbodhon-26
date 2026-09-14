@@ -8194,7 +8194,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         feedbackFormArea.classList.remove('hidden');
         if (feedbackTextarea) feedbackTextarea.value = '';
         if (feedbackWordCount) {
-          feedbackWordCount.textContent = '0 / 50 words';
+          feedbackWordCount.textContent = '0 / 300 letters';
           feedbackWordCount.classList.remove('text-red-500');
         }
         return;
@@ -8228,7 +8228,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           feedbackFormArea.classList.remove('hidden');
           if (feedbackTextarea) feedbackTextarea.value = '';
           if (feedbackWordCount) {
-            feedbackWordCount.textContent = '0 / 50 words';
+            feedbackWordCount.textContent = '0 / 300 letters';
             feedbackWordCount.classList.remove('text-red-500');
           }
           return;
@@ -8266,17 +8266,19 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     window.checkFeedbackCooldown = checkFeedbackCooldown;
 
     if (feedbackTextarea && feedbackWordCount) {
-      feedbackTextarea.addEventListener('input', () => {
-        const words = feedbackTextarea.value.trim().split(/\s+/).filter(w => w.length > 0);
-        const count = feedbackTextarea.value.trim() === '' ? 0 : words.length;
-        feedbackWordCount.textContent = `${count} / 50 words`;
-        // Limit to 50 words
-        if (count > 50) {
+      const updateFeedbackLetterCount = () => {
+        const count = feedbackTextarea.value.length;
+        feedbackWordCount.textContent = `${count} / 300 letters`;
+        // Limit to 300 letters
+        if (count >= 300) {
           feedbackWordCount.classList.add('text-red-500');
         } else {
           feedbackWordCount.classList.remove('text-red-500');
         }
-      });
+      };
+      feedbackTextarea.addEventListener('input', updateFeedbackLetterCount);
+      feedbackTextarea.addEventListener('keyup', updateFeedbackLetterCount);
+      feedbackTextarea.addEventListener('change', updateFeedbackLetterCount);
     }
 
     if (feedbackSubmitBtn) {
@@ -8315,9 +8317,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           showToast('Please write your feedback before submitting.', 'error');
           return;
         }
-        const words = text.split(/\s+/).filter(w => w.length > 0);
-        if (words.length > 50) {
-          showToast('Feedback must be 50 words or less.', 'error');
+        if (text.length > 300) {
+          showToast('Feedback must be 300 letters or less.', 'error');
           return;
         }
 
