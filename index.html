@@ -1336,7 +1336,7 @@
   <!-- ==================== SAVE AUTH REQUIRED PROMPT MODAL ==================== -->
   <div id="save-auth-prompt-modal" class="fixed inset-0 z-[85] bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="bg-surface dark:bg-[#1a160f] rounded-3xl max-w-md w-full border-2 border-secondary-container dark:border-amber-400 shadow-2xl p-6 sm:p-8 relative flex flex-col text-center items-center space-y-5 animate-scale-up">
-      <button id="close-save-auth-prompt-btn" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer" title="Close">
+      <button id="close-save-auth-prompt-btn" type="button" onclick="if(window.closeSaveAuthPromptModal){window.closeSaveAuthPromptModal();}else{const m=document.getElementById('save-auth-prompt-modal');if(m){m.classList.add('hidden');m.classList.remove('flex');document.body.classList.remove('modal-open');}}" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-surface-container-high dark:bg-[#2c261b] flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:text-primary transition-colors cursor-pointer shadow-md hover:scale-105" title="Close">
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
@@ -1367,7 +1367,7 @@
           <span id="save-auth-google-btn-label">Continue with Google</span>
         </button>
 
-        <button id="save-auth-dismiss-btn" type="button" class="w-full py-2 rounded-xl text-on-surface-variant dark:text-[#ded5c7] text-xs hover:underline cursor-pointer">
+        <button id="save-auth-dismiss-btn" type="button" onclick="if(window.closeSaveAuthPromptModal){window.closeSaveAuthPromptModal();}else{const m=document.getElementById('save-auth-prompt-modal');if(m){m.classList.add('hidden');m.classList.remove('flex');document.body.classList.remove('modal-open');}}" class="w-full py-2 rounded-xl text-on-surface-variant dark:text-[#ded5c7] text-xs hover:underline cursor-pointer">
           Maybe Later
         </button>
       </div>

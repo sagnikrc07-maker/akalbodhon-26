@@ -1932,6 +1932,7 @@
   }
 
   function closeSaveAuthPromptModal() {
+    pendingSaveAction = null;
     const modal = document.getElementById('save-auth-prompt-modal');
     if (modal) {
       modal.classList.add('hidden');
@@ -1942,6 +1943,8 @@
       document.body.classList.remove('modal-open');
     }
   }
+  window.closeSaveAuthPromptModal = closeSaveAuthPromptModal;
+  window.promptAuthBeforeSave = promptAuthBeforeSave;
 
   function attachPandalEventListeners() {
     document.querySelectorAll('.pandal-bookmark-btn').forEach(btn => {
@@ -7939,6 +7942,22 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('google-auth-btn')?.addEventListener('click', handleGoogleSignIn);
     document.getElementById('save-auth-google-btn')?.addEventListener('click', handleGoogleSignIn);
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
+    document.getElementById('close-save-auth-prompt-btn')?.addEventListener('click', closeSaveAuthPromptModal);
+    document.getElementById('save-auth-dismiss-btn')?.addEventListener('click', closeSaveAuthPromptModal);
+
+    const saveAuthModal = document.getElementById('save-auth-prompt-modal');
+    if (saveAuthModal) {
+      saveAuthModal.addEventListener('click', (e) => {
+        if (e.target === saveAuthModal) closeSaveAuthPromptModal();
+      });
+    }
+
+    const authModalEl = document.getElementById('auth-modal');
+    if (authModalEl) {
+      authModalEl.addEventListener('click', (e) => {
+        if (e.target === authModalEl) closeAuthModal();
+      });
+    }
 
     // Profile Modal Handlers
     document.getElementById('close-profile-modal-btn')?.addEventListener('click', closeProfileModal);
