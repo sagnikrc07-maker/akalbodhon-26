@@ -6894,15 +6894,15 @@
       parts.push(`🌺 *Plan Name:* ${title}`);
     }
 
-    // 2. Pooja Day
+    // 2. Puja Day
     const day = (plan.day_tag || '').trim();
     const date = (plan.date_str || '').trim();
     if (day && date && !date.includes(day)) {
-      parts.push(`🗓️ *Pooja Day:* ${day} (${date})`);
+      parts.push(`🗓️ *Puja Day:* ${day} (${date})`);
     } else if (day) {
-      parts.push(`🗓️ *Pooja Day:* ${day}`);
+      parts.push(`🗓️ *Puja Day:* ${day}`);
     } else if (date) {
-      parts.push(`🗓️ *Pooja Day:* ${date}`);
+      parts.push(`🗓️ *Puja Day:* ${date}`);
     }
 
     // 3. Route & Transit Summary
