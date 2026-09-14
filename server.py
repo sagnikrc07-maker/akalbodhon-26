@@ -15,9 +15,14 @@ if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
 PORT = 8080
+MAX_BODY_SIZE = 1048576  # 1 MB maximum payload protection against DoS
 SUPABASE_URL = "https://yagvczdnfyhdtvggkclj.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA"
 
+ALLOWED_STATIC_EXTS = {
+    '.html', '.htm', '.css', '.js', '.jpg', '.jpeg', '.png',
+    '.webp', '.avif', '.svg', '.ico', '.woff', '.woff2'
+}
 COMPRESSIBLE_EXTS = {'.html', '.htm', '.js', '.css', '.json', '.svg', '.txt', '.xml'}
 
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
@@ -31,6 +36,9 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey')
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        self.send_header('X-Frame-Options', 'SAMEORIGIN')
+        self.send_header('Referrer-Policy', 'strict-origin-when-cross-origin')
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -61,19 +69,43 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(payload)
             return
 
-        # Static file serving with Keep-Alive, gzip compression, and caching
+        # Security: Resolve file path and enforce strict sandbox containment
+        root_dir = os.path.abspath(os.getcwd())
         filepath = self.translate_path(self.path)
+
         if os.path.isdir(filepath):
             for index in ["index.html", "index.htm"]:
                 idx_path = os.path.join(filepath, index)
                 if os.path.isfile(idx_path):
                     filepath = idx_path
                     break
-        
+
+        abs_filepath = os.path.abspath(filepath)
+
+        # 1. Path Traversal Defense: Ensure target is strictly inside root_dir
+        if not abs_filepath.startswith(root_dir) or os.path.commonpath([abs_filepath, root_dir]) != root_dir:
+            self.send_error(403, "Access Denied")
+            return
+
+        # 2. Block sensitive directories, hidden dotfiles (.git, .env), and scratch code
+        rel_path = os.path.relpath(abs_filepath, root_dir)
+        path_parts = rel_path.replace('\\', '/').split('/')
+        for part in path_parts:
+            if part.startswith('.') or part in {'scratch', '__pycache__', 'node_modules'}:
+                self.send_error(404, "File not found")
+                return
+
+        # 3. Extension Allowlist: Block server scripts (.py, .sql, .sh, .bat, etc.)
+        _, ext = os.path.splitext(filepath)
+        ext = ext.lower()
+        is_allowed = (ext in ALLOWED_STATIC_EXTS) or (ext == '.json' and os.path.basename(filepath) == 'manifest.json')
+        if not is_allowed:
+            self.send_error(404, "File not found")
+            return
+
+        # Static file serving with Keep-Alive, gzip compression, and caching
         if os.path.isfile(filepath):
             ctype = self.guess_type(filepath) or 'application/octet-stream'
-            _, ext = os.path.splitext(filepath)
-            ext = ext.lower()
             
             try:
                 with open(filepath, 'rb') as f:
@@ -109,12 +141,19 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(content)
             return
 
-        return super().do_GET()
+        self.send_error(404, "File not found")
 
     def do_POST(self):
         clean_path = self.path.split('?')[0]
         if clean_path == '/api/auth/devotee':
             content_length = int(self.headers.get('Content-Length', 0))
+            if content_length > MAX_BODY_SIZE:
+                self.send_error(413, "Payload Too Large")
+                return
+            if content_length <= 0:
+                self.send_error(400, "Bad Request: Empty Body")
+                return
+
             body = self.rfile.read(content_length).decode('utf-8')
             try:
                 data = json.loads(body)
@@ -182,7 +221,7 @@ def btoa_py(s):
 if __name__ == '__main__':
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
     with ThreadedTCPServer(("0.0.0.0", PORT), AkalbodhonHandler) as httpd:
-        print(f"🪔 Akalbodhon Backend Server running at http://localhost:{PORT}")
+        print(f"🪔 Akalbodhon Secure Server running at http://localhost:{PORT}")
         print(f"🌺 Supabase Backend Connected: {SUPABASE_URL}")
         sys.stdout.flush()
         try:

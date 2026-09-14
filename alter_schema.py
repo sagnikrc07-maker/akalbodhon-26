@@ -1,9 +1,10 @@
 import urllib.request
 import json
 import sys
+import os
 
 sys.stdout.reconfigure(encoding='utf-8')
-token = 'sbp_fc5618fe2ce19fa2c107e104513b978d5043509b'
+token = os.environ.get('SUPABASE_ACCESS_TOKEN', '')
 
 sql_statements = [
     # Alter id column to TEXT if it was UUID so it can take both UUID and custom slug IDs

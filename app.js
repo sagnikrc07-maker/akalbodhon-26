@@ -5,23 +5,40 @@
 
 (function () {
   'use strict';
-  // --- GOOGLE MAPS SEARCH URL CONVERTER ---
+  // --- HTML ENTITY ENCODER (XSS Defense) ---
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // --- GOOGLE MAPS SEARCH URL CONVERTER (Safe Navigation & Protocol Validation) ---
   function toMapsSearchUrl(url, fallbackQuery = '') {
     if (!url || url === '#' || url === 'undefined') {
       return fallbackQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackQuery)}` : '#';
     }
     if (typeof url === 'string') {
-      if (url.includes('/maps/dir/')) {
-        return url.replace('/maps/dir/?api=1&destination=', '/maps/search/?api=1&query=')
-                  .replace('/maps/dir/?destination=', '/maps/search/?query=')
-                  .replace('/maps/dir/', '/maps/search/')
-                  .replace('destination=', 'query=');
+      const cleanUrl = url.trim();
+      // Security: strictly reject unsafe protocols (javascript:, data:, vbscript:, etc.)
+      if (/^(javascript|data|vbscript):/i.test(cleanUrl)) {
+        return fallbackQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackQuery)}` : '#';
       }
-      if (url.includes('destination=')) {
-        return url.replace('destination=', 'query=').replace('/dir/', '/search/');
+      if (cleanUrl.includes('/maps/dir/')) {
+        return cleanUrl.replace('/maps/dir/?api=1&destination=', '/maps/search/?api=1&query=')
+                       .replace('/maps/dir/?destination=', '/maps/search/?query=')
+                       .replace('/maps/dir/', '/maps/search/')
+                       .replace('destination=', 'query=');
       }
+      if (cleanUrl.includes('destination=')) {
+        return cleanUrl.replace('destination=', 'query=').replace('/dir/', '/search/');
+      }
+      return cleanUrl;
     }
-    return url;
+    return fallbackQuery ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackQuery)}` : '#';
   }
 
 
@@ -3006,11 +3023,11 @@
                     </div>
 
                     <div class="flex items-center justify-between gap-1 mb-1">
-                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9.5px] sm:text-[11px] font-bold truncate">${p.day_tag || 'Puja Plan'}</span>
-                      <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${p.date_str || ''}</span>
+                      <span class="px-2.5 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[9.5px] sm:text-[11px] font-bold truncate">${escapeHtml(p.day_tag || 'Puja Plan')}</span>
+                      <span class="text-[8.5px] sm:text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate shrink-0">${escapeHtml(p.date_str || '')}</span>
                     </div>
 
-                    <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${p.title}</h4>
+                    <h4 class="font-headline-md text-xs sm:text-base font-bold text-on-surface dark:text-white line-clamp-2 mt-1 mb-1">${escapeHtml(p.title || 'Untitled Plan')}</h4>
                     
                     <p class="text-[9.5px] sm:text-xs text-on-surface-variant/80 dark:text-[#ded5c7]/80 flex items-center gap-1 font-medium truncate mt-0.5">
                       <span class="material-symbols-outlined text-[13px] text-primary dark:text-amber-300 shrink-0">temple_hindu</span>
@@ -3019,7 +3036,7 @@
                     </p>
                     ${p.route_summary ? `<p class="text-[9.5px] sm:text-xs text-primary dark:text-amber-300 truncate mt-1 flex items-center gap-1">
                       <span class="material-symbols-outlined text-[12px] sm:text-[14px] shrink-0">near_me</span>
-                      <span class="truncate">${p.route_summary}</span>
+                      <span class="truncate">${escapeHtml(p.route_summary)}</span>
                     </p>` : ''}
                   </div>
 
@@ -6217,11 +6234,6 @@
     setTimeout(initScrollReveal, 50);
   }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-  }
-
   // Active listener unsubscribe handle for real-time plan members sync
   let activePlanListenerUnsub = null;
 
@@ -6306,7 +6318,7 @@
     // Date
     const dateEl = document.getElementById('vp-date');
     if (dateEl) {
-      dateEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span> <span>${plan.date_str || plan.day_tag || 'Festive Day'}</span>`;
+      dateEl.innerHTML = `<span class="material-symbols-outlined text-[14px] text-primary dark:text-amber-300">calendar_month</span> <span>${escapeHtml(plan.date_str || plan.day_tag || 'Festive Day')}</span>`;
     }
 
     // Host & Creator Name
@@ -6451,7 +6463,7 @@
           return `
             <div class="p-2.5 sm:p-3 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm">
               <div class="min-w-0 flex-1">
-                <span class="font-bold text-xs text-on-surface dark:text-white block">🏛️ ${pName}</span>
+                <span class="font-bold text-xs text-on-surface dark:text-white block">🏛️ ${escapeHtml(pName)}</span>
               </div>
               <span class="py-1 px-2.5 rounded-xl bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300 text-[11px] font-semibold flex items-center gap-1 shrink-0">
                 <span class="material-symbols-outlined text-[13px]">home_pin</span>
@@ -6468,11 +6480,11 @@
         return `
           <div class="p-2.5 sm:p-3 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm hover:border-primary/40 dark:hover:border-amber-400/40 transition-all">
             <div class="min-w-0 flex-1">
-              <span class="font-bold text-xs text-on-surface dark:text-white block truncate">🏛️ ${pName}</span>
+              <span class="font-bold text-xs text-on-surface dark:text-white block truncate">🏛️ ${escapeHtml(pName)}</span>
               ${metro ? `
                 <div class="mt-1 flex items-center gap-1 text-[10px] text-on-surface-variant dark:text-[#ded5c7]">
                   <span class="material-symbols-outlined text-[12px] text-primary dark:text-amber-300 shrink-0">directions_transit</span>
-                  <span class="truncate">${metro}</span>
+                  <span class="truncate">${escapeHtml(metro)}</span>
                 </div>
               ` : ''}
             </div>
@@ -6500,8 +6512,8 @@
           return `
             <div class="p-2 sm:p-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between gap-2 shadow-sm hover:border-primary/40 dark:hover:border-amber-400/40 transition-all">
               <div class="min-w-0 flex-1">
-                <span class="font-semibold text-xs text-on-surface dark:text-white block truncate">🍽️ ${fName}</span>
-                ${dish ? `<span class="text-on-surface-variant dark:text-[#ded5c7] block text-[11px] truncate">${dish}</span>` : ''}
+                <span class="font-semibold text-xs text-on-surface dark:text-white block truncate">🍽️ ${escapeHtml(fName)}</span>
+                ${dish ? `<span class="text-on-surface-variant dark:text-[#ded5c7] block text-[11px] truncate">${escapeHtml(dish)}</span>` : ''}
               </div>
               <a href="${foodMapsUrl}" target="_blank" rel="noopener noreferrer" class="py-1 px-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-black text-[11px] font-bold shadow-sm hover:scale-105 transition-all flex items-center gap-1 shrink-0 cursor-pointer" title="Search Location in Google Maps">
                 <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 shrink-0 object-contain" />
@@ -7479,21 +7491,22 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (!plan && pdataParam) {
         try {
           const decoded = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(pdataParam)))));
-          if (decoded && decoded.id) {
+          if (decoded && decoded.id && typeof decoded.id === 'string') {
+            const cleanStr = (val, maxLen = 200) => typeof val === 'string' ? val.trim().slice(0, maxLen) : '';
             plan = {
-              id: decoded.id,
-              title: decoded.title,
-              day_tag: decoded.day_tag,
-              day_key: (decoded.day_tag || '').toLowerCase().replace(/[^a-z]/g, ''),
-              date_str: decoded.date_str || decoded.day_tag,
-              creator_name: decoded.creator_name || 'Devotee',
-              creator_avatar: decoded.creator_avatar || '🌺',
-              creator_id: decoded.creator_id || 'shared',
-              route_summary: decoded.route_summary || '',
-              pandals: decoded.pandals || [],
-              food_stops: decoded.food_stops || [],
-              rituals: decoded.rituals || [],
-              custom_notes: decoded.custom_notes || decoded.description || '',
+              id: cleanStr(decoded.id, 64),
+              title: cleanStr(decoded.title, 120) || 'Custom Puja Plan',
+              day_tag: cleanStr(decoded.day_tag, 60) || 'Festive Day',
+              day_key: cleanStr(decoded.day_tag, 60).toLowerCase().replace(/[^a-z]/g, ''),
+              date_str: cleanStr(decoded.date_str || decoded.day_tag, 60),
+              creator_name: cleanStr(decoded.creator_name, 60) || 'Devotee',
+              creator_avatar: cleanStr(decoded.creator_avatar, 10) || '🌺',
+              creator_id: cleanStr(decoded.creator_id, 64) || 'shared',
+              route_summary: cleanStr(decoded.route_summary, 250),
+              pandals: Array.isArray(decoded.pandals) ? decoded.pandals.slice(0, 50) : [],
+              food_stops: Array.isArray(decoded.food_stops) ? decoded.food_stops.slice(0, 50) : [],
+              rituals: Array.isArray(decoded.rituals) ? decoded.rituals.slice(0, 50) : [],
+              custom_notes: cleanStr(decoded.custom_notes || decoded.description, 1000),
               members: []
             };
           }
