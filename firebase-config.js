@@ -142,145 +142,192 @@ export const AkalbodhonFirebase = {
   googleProvider,
   isAvailable: () => Boolean(auth && db),
 
-  // Internal helper to build devotee profile and sync with Firestore & localStorage
-  async buildAndStoreProfile(user) {
+  // Fast profile builder: Creates/restores devotee session instantly in < 1ms, then syncs cloud data in background
+  buildFastProfile(user) {
     if (!user) throw new Error("No user credentials provided.");
     const cleanUid = String(user.uid);
     const email = user.email ? String(user.email).trim().toLowerCase() : '';
 
-    // Fetch existing user data under this specific user's credentials across all possible keys
-    let existingData = {};
-    if (db) {
-      try {
-        const candidateDocIds = [cleanUid, cleanUid.toLowerCase()];
-        if (email) {
-          candidateDocIds.push(email.replace(/[^a-z0-9]/g, '_'));
-          candidateDocIds.push(email);
-        }
-
-        for (const docId of candidateDocIds) {
-          // Check users/{docId}
-          try {
-            const userSnap = await withTimeout(getDoc(doc(db, "users", docId)), 2500);
-            if (userSnap && userSnap.exists()) {
-              const data = userSnap.data() || {};
-              existingData = { ...data, ...existingData };
-              if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
-                existingData.saved_items = data.saved_items;
-              }
-              if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
-                existingData.custom_plans = data.custom_plans;
-              }
-            }
-          } catch (_) {}
-
-          // Check profiles/{docId}
-          try {
-            const profSnap = await withTimeout(getDoc(doc(db, "profiles", docId)), 2000);
-            if (profSnap && profSnap.exists()) {
-              const data = profSnap.data() || {};
-              existingData = { ...data, ...existingData };
-              if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
-                existingData.saved_items = data.saved_items;
-              }
-              if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
-                existingData.custom_plans = data.custom_plans;
-              }
-            }
-          } catch (_) {}
-        }
-
-        // Also query users collection where email == email or identifier == email
-        if (email) {
-          try {
-            const q = query(collection(db, "users"), where("email", "==", email));
-            const qSnap = await withTimeout(getDocs(q), 2500);
-            if (qSnap && !qSnap.empty) {
-              qSnap.forEach(dSnap => {
-                const d = dSnap.data();
-                if (d) {
-                  existingData = { ...d, ...existingData };
-                  if (Array.isArray(d.saved_items) && d.saved_items.length > 0) existingData.saved_items = d.saved_items;
-                  if (Array.isArray(d.custom_plans) && d.custom_plans.length > 0) existingData.custom_plans = d.custom_plans;
-                }
-              });
-            }
-          } catch (_) {}
-        }
-      } catch (e) {
-        console.warn("Notice checking existing user data in Firestore:", e.message || e);
-      }
-    }
-
-    // Call deep fetchers to ensure all cloud saved items and custom plans are found
-    let restoredSavedItems = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
-    let restoredPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
+    // Check if there is already a cached profile or local bookmarks for instant restoration
+    let localBookmarks = [];
+    let localPlans = [];
+    let existingProfile = null;
 
     try {
-      if (restoredSavedItems.length === 0) {
-        const fetchedSaved = await this.fetchUserSavedItems({ id: cleanUid, uid: cleanUid, email: email });
-        if (Array.isArray(fetchedSaved) && fetchedSaved.length > 0) {
-          restoredSavedItems = fetchedSaved;
-        }
-      }
-      if (restoredPlans.length === 0) {
-        const fetchedPlans = await this.fetchUserPlans({ id: cleanUid, uid: cleanUid, email: email });
-        if (Array.isArray(fetchedPlans) && fetchedPlans.length > 0) {
-          restoredPlans = fetchedPlans;
+      localBookmarks = JSON.parse(localStorage.getItem("akalbodhon_bookmarks") || "[]");
+      if (!Array.isArray(localBookmarks)) localBookmarks = [];
+    } catch (_) {}
+
+    try {
+      localPlans = JSON.parse(localStorage.getItem("akalbodhon_custom_plans") || "[]");
+      if (!Array.isArray(localPlans)) localPlans = [];
+    } catch (_) {}
+
+    try {
+      const raw = localStorage.getItem("akalbodhon_user_profile");
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && (parsed.uid === cleanUid || parsed.id === cleanUid || (email && parsed.email && parsed.email.toLowerCase() === email))) {
+          existingProfile = parsed;
         }
       }
     } catch (_) {}
 
-    // Also check local storage for items saved before sign-in so we merge them rather than dropping
-    try {
-      const localBookmarks = JSON.parse(localStorage.getItem("akalbodhon_bookmarks") || "[]");
-      if (Array.isArray(localBookmarks) && localBookmarks.length > 0) {
-        const map = new Map();
-        restoredSavedItems.forEach(b => { if (b && b.id) map.set(b.id, b); });
-        localBookmarks.forEach(b => { if (b && b.id) map.set(b.id, b); });
-        restoredSavedItems = Array.from(map.values());
-      }
-      const localPlans = JSON.parse(localStorage.getItem("akalbodhon_custom_plans") || "[]");
-      if (Array.isArray(localPlans) && localPlans.length > 0) {
-        const pMap = new Map();
-        restoredPlans.forEach(p => { if (p && p.id) pMap.set(p.id, p); });
-        localPlans.forEach(p => { if (p && p.id) pMap.set(p.id, p); });
-        restoredPlans = Array.from(pMap.values());
-      }
-    } catch (_) {}
+    const googlePhoto = user.photoURL || existingProfile?.google_photo_url || existingProfile?.custom_avatar_url || null;
+    const username = existingProfile?.username || user.displayName || (email ? email.split('@')[0] : "Devotee");
 
-    const googlePhoto = user.photoURL || existingData.google_photo_url || existingData.custom_avatar_url || null;
     const profile = {
       id: cleanUid,
       user_id: cleanUid,
       uid: cleanUid,
-      identifier: user.email || user.displayName || "devotee",
+      firebase_uid: cleanUid,
+      identifier: email || user.displayName || "devotee",
       identifier_type: "google",
-      username: existingData.username || user.displayName || (user.email ? user.email.split('@')[0] : "Devotee"),
-      email: user.email,
-      avatar: existingData.avatar || getRandomPujaIcon(),
+      username: username,
+      email: user.email || email,
+      avatar: existingProfile?.avatar || getRandomPujaIcon(),
       google_photo_url: googlePhoto,
       custom_avatar_url: googlePhoto,
-      saved_items: restoredSavedItems,
-      custom_plans: restoredPlans,
-      feedback_cooldown_until: existingData.feedback_cooldown_until || null,
-      created_at: existingData.created_at || new Date().toISOString(),
+      saved_items: (existingProfile?.saved_items && existingProfile.saved_items.length > 0) ? existingProfile.saved_items : localBookmarks,
+      custom_plans: (existingProfile?.custom_plans && existingProfile.custom_plans.length > 0) ? existingProfile.custom_plans : localPlans,
+      feedback_cooldown_until: existingProfile?.feedback_cooldown_until || null,
+      created_at: existingProfile?.created_at || new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
 
-    // Store/Update user credentials and profile in Firestore
-    // SAFE UPDATE: Only sync saved_items and custom_plans if we actually have items, to prevent erasing remote data with []!
-    const syncPayload = { ...profile };
-    if (restoredSavedItems.length === 0) delete syncPayload.saved_items;
-    if (restoredPlans.length === 0) delete syncPayload.custom_plans;
-    this.syncProfile(syncPayload).catch(() => {});
-
-    // Restore to localStorage for active user session
+    // Immediately persist to localStorage so devotee is authenticated in 0 ms
     localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
-    localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(restoredSavedItems));
-    localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(restoredPlans));
+    if (profile.saved_items.length > 0) {
+      localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(profile.saved_items));
+    }
+    if (profile.custom_plans.length > 0) {
+      localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(profile.custom_plans));
+    }
+
+    // Launch background cloud synchronization without blocking return or navigation!
+    this.deepSyncUserCloudData(profile, user).catch(err => {
+      console.warn("Background user cloud sync notice:", err);
+    });
 
     return profile;
+  },
+
+  // Asynchronous background cloud synchronizer (non-blocking, runs after bringing user to the page)
+  async deepSyncUserCloudData(initialProfile, user) {
+    if (!user || !db) return;
+    const cleanUid = String(user.uid);
+    const email = user.email ? String(user.email).trim().toLowerCase() : '';
+
+    let existingData = {};
+    try {
+      const candidateDocIds = [cleanUid, cleanUid.toLowerCase()];
+      if (email) {
+        candidateDocIds.push(email.replace(/[^a-z0-9]/g, '_'));
+        candidateDocIds.push(email);
+      }
+
+      for (const docId of candidateDocIds) {
+        try {
+          const userSnap = await withTimeout(getDoc(doc(db, "users", docId)), 2500);
+          if (userSnap && userSnap.exists()) {
+            const data = userSnap.data() || {};
+            existingData = { ...data, ...existingData };
+            if (Array.isArray(data.saved_items) && data.saved_items.length > 0) existingData.saved_items = data.saved_items;
+            if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) existingData.custom_plans = data.custom_plans;
+          }
+        } catch (_) {}
+
+        try {
+          const profSnap = await withTimeout(getDoc(doc(db, "profiles", docId)), 2000);
+          if (profSnap && profSnap.exists()) {
+            const data = profSnap.data() || {};
+            existingData = { ...data, ...existingData };
+            if (Array.isArray(data.saved_items) && data.saved_items.length > 0) existingData.saved_items = data.saved_items;
+            if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) existingData.custom_plans = data.custom_plans;
+          }
+        } catch (_) {}
+      }
+
+      if (email) {
+        try {
+          const q = query(collection(db, "users"), where("email", "==", email));
+          const qSnap = await withTimeout(getDocs(q), 2500);
+          if (qSnap && !qSnap.empty) {
+            qSnap.forEach(dSnap => {
+              const d = dSnap.data();
+              if (d) {
+                existingData = { ...d, ...existingData };
+                if (Array.isArray(d.saved_items) && d.saved_items.length > 0) existingData.saved_items = d.saved_items;
+                if (Array.isArray(d.custom_plans) && d.custom_plans.length > 0) existingData.custom_plans = d.custom_plans;
+              }
+            });
+          }
+        } catch (_) {}
+      }
+    } catch (e) {
+      console.warn("Notice checking cloud user data in background:", e.message || e);
+    }
+
+    let cloudSaved = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
+    let cloudPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
+
+    try {
+      if (cloudSaved.length === 0) {
+        const fetchedSaved = await this.fetchUserSavedItems({ id: cleanUid, uid: cleanUid, email: email });
+        if (Array.isArray(fetchedSaved) && fetchedSaved.length > 0) cloudSaved = fetchedSaved;
+      }
+      if (cloudPlans.length === 0) {
+        const fetchedPlans = await this.fetchUserPlans({ id: cleanUid, uid: cleanUid, email: email });
+        if (Array.isArray(fetchedPlans) && fetchedPlans.length > 0) cloudPlans = fetchedPlans;
+      }
+    } catch (_) {}
+
+    // Merge active bookmarks & custom plans
+    let currentSaved = [];
+    let currentPlans = [];
+    try {
+      currentSaved = JSON.parse(localStorage.getItem("akalbodhon_bookmarks") || "[]");
+    } catch (_) {}
+    try {
+      currentPlans = JSON.parse(localStorage.getItem("akalbodhon_custom_plans") || "[]");
+    } catch (_) {}
+
+    const saveMap = new Map();
+    (currentSaved || []).forEach(b => { if (b && b.id) saveMap.set(b.id, b); });
+    (cloudSaved || []).forEach(b => { if (b && b.id) saveMap.set(b.id, b); });
+    const finalSaved = Array.from(saveMap.values());
+
+    const planMap = new Map();
+    (currentPlans || []).forEach(p => { if (p && p.id) planMap.set(p.id, p); });
+    (cloudPlans || []).forEach(p => { if (p && p.id) planMap.set(p.id, p); });
+    const finalPlans = Array.from(planMap.values());
+
+    const updatedProfile = {
+      ...initialProfile,
+      username: existingData.username || initialProfile.username,
+      avatar: existingData.avatar || initialProfile.avatar,
+      saved_items: finalSaved,
+      custom_plans: finalPlans,
+      feedback_cooldown_until: existingData.feedback_cooldown_until || initialProfile.feedback_cooldown_until,
+      updated_at: new Date().toISOString()
+    };
+
+    localStorage.setItem("akalbodhon_user_profile", JSON.stringify(updatedProfile));
+    localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(finalSaved));
+    localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(finalPlans));
+
+    // Sync back to Firestore (safe update)
+    const syncPayload = { ...updatedProfile };
+    if (finalSaved.length === 0) delete syncPayload.saved_items;
+    if (finalPlans.length === 0) delete syncPayload.custom_plans;
+    this.syncProfile(syncPayload).catch(() => {});
+
+    // Dispatch background load event so the active page can seamlessly update without reload
+    window.dispatchEvent(new CustomEvent('akalbodhon:userDataLoaded', { detail: updatedProfile }));
+  },
+
+  async buildAndStoreProfile(user) {
+    return this.buildFastProfile(user);
   },
 
   // 1. Google Sign-In with Popup and User Data Restoration
@@ -292,7 +339,7 @@ export const AkalbodhonFirebase = {
     if (!result || !result.user) {
       throw new Error("Google sign-in popup did not return a user.");
     }
-    return await this.buildAndStoreProfile(result.user);
+    return this.buildFastProfile(result.user);
   },
 
   // 1b. Google Sign-In with Direct Window Redirect (immune to popup blockers)
@@ -311,7 +358,7 @@ export const AkalbodhonFirebase = {
       const result = await getRedirectResult(auth);
       if (result && result.user) {
         sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
-        const profile = await this.buildAndStoreProfile(result.user);
+        const profile = this.buildFastProfile(result.user);
         window.__akalbodhonRedirectProfile = profile;
         return profile;
       }
@@ -1322,7 +1369,7 @@ export const AkalbodhonFirebase = {
         10000
       );
       const user = userCredential.user;
-      const profile = await this.buildAndStoreProfile(user);
+      const profile = this.buildFastProfile(user);
       return { success: true, user, profile };
     } catch (err) {
       console.warn("Firebase Auth sign in notice:", err.code, err.message);
@@ -1357,7 +1404,7 @@ if (typeof window !== "undefined") {
     getRedirectResult(auth).then(async (result) => {
       if (result && result.user) {
         sessionStorage.removeItem('akalbodhon_google_redirect_in_progress');
-        const profile = await AkalbodhonFirebase.buildAndStoreProfile(result.user);
+        const profile = AkalbodhonFirebase.buildFastProfile(result.user);
         window.__akalbodhonRedirectProfile = profile;
         window.dispatchEvent(new CustomEvent('akalbodhon:auth-redirect-success', { detail: profile }));
         console.debug("Google redirect sign-in restored for:", profile.username);

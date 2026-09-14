@@ -362,10 +362,8 @@
       try {
         const profile = await window.AkalbodhonFirebase.signInWithGoogle();
         if (profile) {
-          hideGlobalLoader();
-          showLoggedInState(profile);
-          showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
-          setTimeout(() => { window.location.href = 'index.html'; }, 700);
+          // Immediately log user and bring them to the page!
+          window.location.replace('index.html');
           return;
         }
       } catch (fbErr) {
@@ -389,9 +387,8 @@
     // Google Redirect Sign-In Session Recovery
     function handleRedirectSuccess(profile) {
       if (!profile) return;
-      showLoggedInState(profile);
-      showAlert(`Welcome, ${profile.username}! Signed in with Google. Redirecting to home...`, false);
-      setTimeout(() => { window.location.href = 'index.html'; }, 700);
+      // Immediately bring user to the page upon redirect authentication
+      window.location.replace('index.html');
     }
     window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
       handleRedirectSuccess(e.detail);

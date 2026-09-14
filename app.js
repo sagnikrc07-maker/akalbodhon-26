@@ -4753,14 +4753,10 @@
             localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
           }
         }
-        setTimeout(() => {
-          updateAccountUI();
-        }, 350);
+        updateAccountUI();
         syncRemoteUserSession();
       } else {
-        setTimeout(() => {
-          updateAccountUI();
-        }, 400);
+        updateAccountUI();
       }
     } catch (e) {
       console.warn('Session parse error:', e);
@@ -4930,73 +4926,11 @@
       // Persist permanently under devotee's specific identifier
       saveUserSpecificItinerary(user, mergedBookmarks, mergedPlans);
 
-      // Dual-sync from Firestore database to ensure freshest user credentials and saved items
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          const fbSaved = await window.AkalbodhonFirebase.fetchUserSavedItems(user);
-          if (Array.isArray(fbSaved) && fbSaved.length > 0) {
-            const finalSaved = mergeBookmarks(mergedBookmarks, fbSaved);
-            Storage.setBookmarks(finalSaved);
-            currentUser.saved_items = finalSaved;
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-            saveUserSpecificItinerary(currentUser, finalSaved, customPlans);
-            window.AkalbodhonFirebase.saveBookmarks(currentUser, finalSaved).catch(() => {});
-          } else if (mergedBookmarks.length > 0) {
-            window.AkalbodhonFirebase.saveBookmarks(currentUser, mergedBookmarks).catch(() => {});
-          }
-
-          const fbPlans = await window.AkalbodhonFirebase.fetchUserPlans(user);
-          if (Array.isArray(fbPlans) && fbPlans.length > 0) {
-            const finalPlans = mergePlans(customPlans, fbPlans);
-            customPlans = finalPlans;
-            currentUser.custom_plans = finalPlans;
-            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(finalPlans));
-            localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-            saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), finalPlans);
-          } else if (customPlans && customPlans.length > 0) {
-            const targetUid = user.id || user.user_id;
-            window.AkalbodhonFirebase.syncProfile({
-              ...currentUser,
-              id: targetUid,
-              custom_plans: customPlans
-            }).catch(() => {});
-          }
-        } catch (fbErr) {
-          console.warn('Firestore session sync notice:', fbErr);
-        }
-      }
-
-      // Also sync from Supabase if available
-      if (supabaseClient) {
-        try {
-          const targetId = (currentUser.id || '').toLowerCase();
-          const targetUid = currentUser.user_id || currentUser.id;
-          const orFilter = [`id.eq.${targetId}`, `identifier.eq.${targetId}`, `user_id.eq.${targetUid}`];
-          if (currentUser.email) orFilter.push(`email.eq.${currentUser.email.toLowerCase()}`);
-          const { data, error } = await supabaseClient
-            .from('profiles')
-            .select('saved_items, custom_plans')
-            .or(orFilter.join(','))
-            .maybeSingle();
-          if (!error && data) {
-            if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
-              const merged = mergeBookmarks(Storage.getBookmarks() || [], data.saved_items);
-              Storage.setBookmarks(merged);
-              currentUser.saved_items = merged;
-              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-              saveUserSpecificItinerary(currentUser, merged, customPlans);
-            }
-            if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
-              const mergedP = mergePlans(customPlans || [], data.custom_plans);
-              customPlans = mergedP;
-              currentUser.custom_plans = mergedP;
-              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
-              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
-              saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
-            }
-          }
-        } catch (_) {}
-      }
+      // Non-blocking background sync for remote cloud items (Firestore + Supabase)
+      // Loads remote devotee data in the background after bringing user to the page!
+      setTimeout(() => {
+        syncRemoteUserSession();
+      }, 30);
     } else {
       if (currentUser) {
         saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
@@ -8792,9 +8726,9 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     initScrollReveal();
 
     // Google Redirect Sign-In Session Recovery
-    async function handleRedirectAuthSuccess(profile) {
+    function handleRedirectAuthSuccess(profile) {
       if (!profile) return;
-      await saveUserSession(profile);
+      saveUserSession(profile);
       closeAuthModal();
       closeSaveAuthPromptModal();
       if (typeof renderSavedSection === 'function') renderSavedSection();
@@ -8804,7 +8738,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (typeof renderPandals === 'function') renderPandals();
       if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
       showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
-      setTimeout(syncAllRemoteData, 60);
+      setTimeout(syncAllRemoteData, 50);
     }
 
     window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
@@ -8815,11 +8749,37 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       handleRedirectAuthSuccess(window.__akalbodhonRedirectProfile);
     }
 
+    // Listen for background user cloud data load (hydrates saved items & custom plans smoothly)
+    window.addEventListener('akalbodhon:userDataLoaded', (e) => {
+      const updatedProfile = e.detail;
+      if (updatedProfile && currentUser) {
+        const matchesUser = (currentUser.id === updatedProfile.id || currentUser.uid === updatedProfile.uid || (currentUser.email && updatedProfile.email && currentUser.email.toLowerCase() === updatedProfile.email.toLowerCase()));
+        if (matchesUser) {
+          if (Array.isArray(updatedProfile.saved_items) && updatedProfile.saved_items.length > 0) {
+            const mergedBm = mergeBookmarks(Storage.getBookmarks() || [], updatedProfile.saved_items);
+            Storage.setBookmarks(mergedBm);
+            currentUser.saved_items = mergedBm;
+            saveUserSpecificItinerary(currentUser, mergedBm, customPlans);
+          }
+          if (Array.isArray(updatedProfile.custom_plans) && updatedProfile.custom_plans.length > 0) {
+            const mergedPlans = mergePlans(customPlans || [], updatedProfile.custom_plans);
+            customPlans = mergedPlans;
+            currentUser.custom_plans = mergedPlans;
+            saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), mergedPlans);
+          }
+          if (typeof renderSavedSection === 'function') renderSavedSection();
+          if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+          if (typeof renderPandals === 'function') renderPandals();
+          if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
+        }
+      }
+    });
+
     // Trigger background remote data synchronizer (Firestore + Supabase)
     setTimeout(syncAllRemoteData, 50);
     // Firebase ready-event race fix:
-    // firebase-config.js fires 'akalbodhon:firebase-ready' synchronously on module load,
-    // which can happen BEFORE this listener is registered. Check the flag first.
     if (window.__akalbodhonFirebaseReady) {
       setTimeout(syncAllRemoteData, 80);
     } else {
