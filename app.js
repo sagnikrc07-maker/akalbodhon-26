@@ -1658,28 +1658,12 @@
   }
   window.hideGlobalLoader = hideGlobalLoader;
 
-  // --- 5. SCROLL REVEAL (IntersectionObserver for GPU-efficient reveal) ---
-  let _scrollRevealObserver = null;
-  function initScrollReveal() {
-    // Immediately reveal any already-visible elements
-    document.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => {
-      el.classList.add('is-revealed');
-    });
-    // Use IntersectionObserver for future elements added dynamically
-    if (!_scrollRevealObserver && 'IntersectionObserver' in window) {
-      _scrollRevealObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-revealed');
-            _scrollRevealObserver.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
-    }
-    if (_scrollRevealObserver) {
-      document.querySelectorAll('.reveal-on-scroll:not(.is-revealed)').forEach(el => {
-        _scrollRevealObserver.observe(el);
-      });
+  // --- 5. SCROLL REVEAL (Fast single-pass reveal without DOM thrashing) ---
+  function initScrollReveal(scope) {
+    const root = (scope && scope.querySelectorAll) ? scope : document;
+    const elements = root.querySelectorAll('.reveal-on-scroll:not(.is-revealed)');
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].classList.add('is-revealed');
     }
   }
 
@@ -1819,7 +1803,7 @@
         : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30';
 
       return `
-        <div class="bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}" data-pandal-id="${pandal.id}">
+        <div class="pandal-card-item bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}" data-pandal-id="${pandal.id}">
           <div class="h-28 sm:h-52 relative overflow-hidden bg-surface-container dark:bg-[#252016]">
             <img 
               src="${pandal.image}" 
@@ -1883,7 +1867,7 @@
     }).join('');
 
     attachPandalEventListeners();
-    initScrollReveal();
+    initScrollReveal(container);
   }
 
   // --- AUTHENTICATION GATE FOR SAVING ITEMS ---
@@ -1946,11 +1930,17 @@
   window.closeSaveAuthPromptModal = closeSaveAuthPromptModal;
   window.promptAuthBeforeSave = promptAuthBeforeSave;
 
+  let _pandalDelegationDone = false;
   function attachPandalEventListeners() {
-    document.querySelectorAll('.pandal-bookmark-btn').forEach(btn => {
-      btn.onclick = (e) => {
+    const container = document.getElementById('pandals-grid-container');
+    if (!container || _pandalDelegationDone) return;
+    _pandalDelegationDone = true;
+
+    container.addEventListener('click', (e) => {
+      const bookmarkBtn = e.target.closest('.pandal-bookmark-btn');
+      if (bookmarkBtn) {
         e.stopPropagation();
-        const id = btn.dataset.id;
+        const id = bookmarkBtn.dataset.id;
         const pandal = PANDALS_DATA.find(p => p.id === id);
         if (!pandal) return;
 
@@ -1965,24 +1955,24 @@
             image: pandal.image
           });
 
-          const icon = btn.querySelector('.material-symbols-outlined');
+          const icon = bookmarkBtn.querySelector('.material-symbols-outlined');
           if (icon) {
             icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
             icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
           }
 
-          const label = btn.querySelector('.save-btn-text');
+          const label = bookmarkBtn.querySelector('.save-btn-text');
           if (label) {
             label.textContent = isSaved ? 'Saved' : 'Save';
           }
-          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+          bookmarkBtn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
 
           if (isSaved) {
-            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            bookmarkBtn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            bookmarkBtn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
           } else {
-            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            bookmarkBtn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+            bookmarkBtn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
           }
 
           showToast(isSaved ? `Added "${pandal.name}" to Itinerary!` : `Removed "${pandal.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
@@ -2001,16 +1991,17 @@
         }
 
         performSave();
-      };
-    });
+        return;
+      }
 
-    document.querySelectorAll('.pandal-info-btn').forEach(btn => {
-      btn.onclick = (e) => {
+      const infoBtn = e.target.closest('.pandal-info-btn');
+      if (infoBtn) {
         e.stopPropagation();
-        const id = btn.dataset.id;
+        const id = infoBtn.dataset.id;
         const pandal = PANDALS_DATA.find(p => p.id === id);
         if (pandal) openDetailModal(pandal, 'pandal');
-      };
+        return;
+      }
     });
   }
 
@@ -2074,7 +2065,7 @@
           const delayClass = `reveal-delay-${(idx % 6) + 1}`;
 
           return `
-            <div class="bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}">
+            <div class="food-card-item bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}">
               <div class="h-28 sm:h-48 relative overflow-hidden bg-surface-container dark:bg-[#252016]">
                 <img 
                   src="${food.image}" 
@@ -2153,7 +2144,7 @@
           const delayClass = `reveal-delay-${(idx % 6) + 1}`;
 
           return `
-            <div class="bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}">
+            <div class="shop-card-item bg-surface-container-lowest dark:bg-[#1c1810] rounded-xl sm:rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group border border-outline-variant/30 dark:border-amber-400/20 flex flex-col h-full relative reveal-on-scroll ${delayClass}">
               <div class="h-28 sm:h-48 relative overflow-hidden bg-surface-container dark:bg-[#252016]">
                 <img 
                   src="${shop.image}" 
@@ -2218,148 +2209,162 @@
     }
 
     attachFoodAndShopEventListeners();
-    initScrollReveal();
+    initScrollReveal(foodContainer);
+    initScrollReveal(shopContainer);
   }
 
+  let _foodShopDelegationDone = false;
   function attachFoodAndShopEventListeners() {
-    // Food Bookmarks
-    document.querySelectorAll('.food-bookmark-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.id;
-        const food = FOOD_DATA.find(f => f.id === id);
-        if (!food) return;
+    if (_foodShopDelegationDone) return;
+    _foodShopDelegationDone = true;
 
-        const performSave = () => {
-          const isSaved = Storage.toggleBookmark({
-            id: food.id,
-            name: food.name,
-            category: 'Food & Shopping',
-            sub_category: food.category || 'Famous Food Joints',
-            type: 'food',
-            location: food.location,
-            zone: food.zone || 'Culinary Landmark',
-            link: food.locationUrl,
-            image: food.image
-          });
+    // Delegated Food container listener
+    const foodContainer = document.getElementById('food-cards-container');
+    if (foodContainer) {
+      foodContainer.addEventListener('click', (e) => {
+        const bookmarkBtn = e.target.closest('.food-bookmark-btn');
+        if (bookmarkBtn) {
+          e.stopPropagation();
+          const id = bookmarkBtn.dataset.id;
+          const food = FOOD_DATA.find(f => f.id === id);
+          if (!food) return;
 
-          const icon = btn.querySelector('.material-symbols-outlined');
-          if (icon) {
-            icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
-            icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+          const performSave = () => {
+            const isSaved = Storage.toggleBookmark({
+              id: food.id,
+              name: food.name,
+              category: 'Food & Shopping',
+              sub_category: food.category || 'Famous Food Joints',
+              type: 'food',
+              location: food.location,
+              zone: food.zone || 'Culinary Landmark',
+              link: food.locationUrl,
+              image: food.image
+            });
+
+            const icon = bookmarkBtn.querySelector('.material-symbols-outlined');
+            if (icon) {
+              icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+              icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+            }
+
+            const label = bookmarkBtn.querySelector('.save-btn-text');
+            if (label) {
+              label.textContent = isSaved ? 'Saved' : 'Save';
+            }
+            bookmarkBtn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+            if (isSaved) {
+              bookmarkBtn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+              bookmarkBtn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            } else {
+              bookmarkBtn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+              bookmarkBtn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            }
+
+            showToast(isSaved ? `Added "${food.name}" to Itinerary!` : `Removed "${food.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
+            renderSavedItinerary();
+          };
+
+          if (!isUserLoggedIn()) {
+            promptAuthBeforeSave({
+              title: 'Sign In to Save Dining Spot',
+              message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${food.name}</em> under Food & Shopping to your personal itinerary.`,
+              categoryName: 'Food & Shopping',
+              defaultMode: 'login',
+              onAuthenticatedSave: performSave
+            });
+            return;
           }
 
-          const label = btn.querySelector('.save-btn-text');
-          if (label) {
-            label.textContent = isSaved ? 'Saved' : 'Save';
-          }
-          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
-
-          if (isSaved) {
-            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-          } else {
-            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-          }
-
-          showToast(isSaved ? `Added "${food.name}" to Itinerary!` : `Removed "${food.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
-          renderSavedItinerary();
-        };
-
-        if (!isUserLoggedIn()) {
-          promptAuthBeforeSave({
-            title: 'Sign In to Save Dining Spot',
-            message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${food.name}</em> under Food & Shopping to your personal itinerary.`,
-            categoryName: 'Food & Shopping',
-            defaultMode: 'login',
-            onAuthenticatedSave: performSave
-          });
+          performSave();
           return;
         }
 
-        performSave();
-      };
-    });
+        const infoBtn = e.target.closest('.food-info-btn');
+        if (infoBtn) {
+          e.stopPropagation();
+          const id = infoBtn.dataset.id;
+          const food = FOOD_DATA.find(f => f.id === id);
+          if (food) openDetailModal(food, 'food');
+          return;
+        }
+      });
+    }
 
-    // Shop Bookmarks
-    document.querySelectorAll('.shop-bookmark-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.id;
-        const shop = SHOPPING_DATA.find(s => s.id === id);
-        if (!shop) return;
+    // Delegated Shop container listener
+    const shopContainer = document.getElementById('shopping-cards-container');
+    if (shopContainer) {
+      shopContainer.addEventListener('click', (e) => {
+        const bookmarkBtn = e.target.closest('.shop-bookmark-btn');
+        if (bookmarkBtn) {
+          e.stopPropagation();
+          const id = bookmarkBtn.dataset.id;
+          const shop = SHOPPING_DATA.find(s => s.id === id);
+          if (!shop) return;
 
-        const performSave = () => {
-          const isSaved = Storage.toggleBookmark({
-            id: shop.id,
-            name: shop.name,
-            category: 'Food & Shopping',
-            sub_category: shop.category || 'Shopping Bazaar',
-            type: 'shop',
-            location: shop.location,
-            zone: 'Festive Shopping',
-            link: shop.locationUrl,
-            image: shop.image
-          });
+          const performSave = () => {
+            const isSaved = Storage.toggleBookmark({
+              id: shop.id,
+              name: shop.name,
+              category: 'Food & Shopping',
+              sub_category: shop.category || 'Shopping Bazaar',
+              type: 'shop',
+              location: shop.location,
+              zone: 'Festive Shopping',
+              link: shop.locationUrl,
+              image: shop.image
+            });
 
-          const icon = btn.querySelector('.material-symbols-outlined');
-          if (icon) {
-            icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
-            icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+            const icon = bookmarkBtn.querySelector('.material-symbols-outlined');
+            if (icon) {
+              icon.textContent = isSaved ? 'bookmark' : 'bookmark_border';
+              icon.style.fontVariationSettings = isSaved ? "'FILL' 1" : "";
+            }
+
+            const label = bookmarkBtn.querySelector('.save-btn-text');
+            if (label) {
+              label.textContent = isSaved ? 'Saved' : 'Save';
+            }
+            bookmarkBtn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
+
+            if (isSaved) {
+              bookmarkBtn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+              bookmarkBtn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            } else {
+              bookmarkBtn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
+              bookmarkBtn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
+            }
+
+            showToast(isSaved ? `Added "${shop.name}" to Itinerary!` : `Removed "${shop.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
+            renderSavedItinerary();
+          };
+
+          if (!isUserLoggedIn()) {
+            promptAuthBeforeSave({
+              title: 'Sign In to Save Shopping District',
+              message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${shop.name}</em> under Food & Shopping to your personal itinerary.`,
+              categoryName: 'Food & Shopping',
+              defaultMode: 'login',
+              onAuthenticatedSave: performSave
+            });
+            return;
           }
 
-          const label = btn.querySelector('.save-btn-text');
-          if (label) {
-            label.textContent = isSaved ? 'Saved' : 'Save';
-          }
-          btn.title = isSaved ? 'Remove from saved' : 'Save to Itinerary';
-
-          if (isSaved) {
-            btn.classList.add('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-          } else {
-            btn.classList.remove('bg-primary', 'text-white', 'border-primary', 'dark:bg-amber-400', 'dark:text-black', 'dark:border-amber-400', 'shadow-md');
-            btn.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]', 'hover:text-primary', 'dark:hover:text-amber-300', 'bg-surface-container-low', 'dark:bg-[#252016]', 'border-outline-variant/50', 'dark:border-amber-400/30');
-          }
-
-          showToast(isSaved ? `Added "${shop.name}" to Itinerary!` : `Removed "${shop.name}" from Itinerary`, isSaved ? 'bookmark_added' : 'bookmark_remove');
-          renderSavedItinerary();
-        };
-
-        if (!isUserLoggedIn()) {
-          promptAuthBeforeSave({
-            title: 'Sign In to Save Shopping District',
-            message: `Please <strong>log in</strong> or <strong>create an account</strong> to save <em>${shop.name}</em> under Food & Shopping to your personal itinerary.`,
-            categoryName: 'Food & Shopping',
-            defaultMode: 'login',
-            onAuthenticatedSave: performSave
-          });
+          performSave();
           return;
         }
 
-        performSave();
-      };
-    });
-
-    // Details Modal Triggers
-    document.querySelectorAll('.food-info-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.id;
-        const food = FOOD_DATA.find(f => f.id === id);
-        if (food) openDetailModal(food, 'food');
-      };
-    });
-
-    document.querySelectorAll('.shop-info-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const id = btn.dataset.id;
-        const shop = SHOPPING_DATA.find(s => s.id === id);
-        if (shop) openDetailModal(shop, 'shop');
-      };
-    });
+        const infoBtn = e.target.closest('.shop-info-btn');
+        if (infoBtn) {
+          e.stopPropagation();
+          const id = infoBtn.dataset.id;
+          const shop = SHOPPING_DATA.find(s => s.id === id);
+          if (shop) openDetailModal(shop, 'shop');
+          return;
+        }
+      });
+    }
   }
 
   // --- 9. RENDER TRAILS & RITUALS ---
@@ -6128,7 +6133,7 @@
         : (plan.creator_name || 'Community Devotee');
 
       return `
-        <div id="plan-card-${plan.id}" data-plan-id="${plan.id}" class="glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
+        <div id="plan-card-${plan.id}" data-plan-id="${plan.id}" class="plan-card-item glass-panel p-3 sm:p-6 rounded-2xl sm:rounded-3xl border border-outline-variant/30 dark:border-amber-400/25 shadow-xl flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden group hover:border-primary/50 dark:hover:border-amber-400/50 transition-all duration-300">
           <div class="space-y-2 sm:space-y-3">
             <!-- Header: Puja Day Centered in Middle with Badge -->
             <div class="flex items-center justify-between w-full">

@@ -882,3 +882,45 @@ body.modal-open {
     padding-right: 0.25rem;
   }
 }
+
+/* ======================================================== */
+/* ULTRA-SMOOTH RENDERING, HARDWARE ACCELERATION & CONTAINMENT */
+/* ======================================================== */
+
+/* Off-screen card rendering skip (silky 60/120fps scrolling on mobile & desktop) */
+.pandal-card-item,
+.food-card-item,
+.shop-card-item,
+.plan-card-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 420px;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Isolate grid repaints from rest of the DOM tree */
+#pandals-grid-container,
+#food-cards-container,
+#shopping-cards-container,
+#plans-list-container,
+#saved-itinerary-container {
+  contain: layout style;
+}
+
+/* Smooth native momentum scrolling for horizontal chips & scroll views */
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Hardware accelerated modals and sticky bars */
+#bottom-nav,
+header,
+.glass-panel {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+

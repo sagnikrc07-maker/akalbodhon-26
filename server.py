@@ -5,6 +5,8 @@ import json
 import urllib.request
 import sys
 import random
+import gzip
+import mimetypes
 
 PUJA_ICONS = ['🪔', '🪘', '🌺', '🔱', '📿', '🪷', '💃', '🦚', '🏺', '🔥', '🐚', '🥁', '☀️', '🌾']
 
@@ -16,11 +18,15 @@ PORT = 8080
 SUPABASE_URL = "https://yagvczdnfyhdtvggkclj.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA"
 
+COMPRESSIBLE_EXTS = {'.html', '.htm', '.js', '.css', '.json', '.svg', '.txt', '.xml'}
+
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     daemon_threads = True
-    allow_reuse_address = False
+    allow_reuse_address = True
 
 class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
+    protocol_version = "HTTP/1.1"
+
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -29,6 +35,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_OPTIONS(self):
         self.send_response(200)
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
     def do_GET(self):
@@ -41,14 +48,65 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
         
         # API: Get Health
         if clean_path == '/api/health':
-            self.send_response(200)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({
+            payload = json.dumps({
                 "status": "online",
                 "festival": "Akalbodhon Sharodiya Durga Puja 2026",
                 "supabase_project": "yagvczdnfyhdtvggkclj"
-            }).encode('utf-8'))
+            }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # Static file serving with Keep-Alive, gzip compression, and caching
+        filepath = self.translate_path(self.path)
+        if os.path.isdir(filepath):
+            for index in ["index.html", "index.htm"]:
+                idx_path = os.path.join(filepath, index)
+                if os.path.isfile(idx_path):
+                    filepath = idx_path
+                    break
+        
+        if os.path.isfile(filepath):
+            ctype = self.guess_type(filepath) or 'application/octet-stream'
+            _, ext = os.path.splitext(filepath)
+            ext = ext.lower()
+            
+            try:
+                with open(filepath, 'rb') as f:
+                    content = f.read()
+            except OSError:
+                self.send_error(404, "File not found")
+                return
+
+            accept_encoding = self.headers.get('Accept-Encoding', '')
+            use_gzip = ('gzip' in accept_encoding) and (
+                ext in COMPRESSIBLE_EXTS or 
+                ctype.startswith(('text/', 'application/javascript', 'application/json', 'image/svg+xml'))
+            )
+
+            self.send_response(200)
+            self.send_header('Content-Type', ctype)
+            
+            if ext in {'.html', '.htm'}:
+                self.send_header('Cache-Control', 'no-cache, must-revalidate')
+            else:
+                self.send_header('Cache-Control', 'public, max-age=86400')
+            
+            if use_gzip:
+                compressed = gzip.compress(content, compresslevel=6)
+                self.send_header('Content-Encoding', 'gzip')
+                self.send_header('Vary', 'Accept-Encoding')
+                self.send_header('Content-Length', str(len(compressed)))
+                self.end_headers()
+                self.wfile.write(compressed)
+            else:
+                self.send_header('Content-Length', str(len(content)))
+                self.end_headers()
+                self.wfile.write(content)
             return
 
         return super().do_GET()
@@ -90,10 +148,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 with urllib.request.urlopen(req) as resp:
                     res_body = resp.read().decode('utf-8')
 
-                self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.end_headers()
-                self.wfile.write(json.dumps({
+                payload = json.dumps({
                     "success": True,
                     "user": {
                         "id": user_id,
@@ -101,15 +156,23 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                         "username": username,
                         "avatar": avatar
                     }
-                }).encode('utf-8'))
+                }).encode('utf-8')
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(payload)))
+                self.end_headers()
+                self.wfile.write(payload)
             except Exception as e:
+                err_payload = json.dumps({"success": False, "error": str(e)}).encode('utf-8')
                 self.send_response(500)
                 self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(err_payload)))
                 self.end_headers()
-                self.wfile.write(json.dumps({"success": False, "error": str(e)}).encode('utf-8'))
+                self.wfile.write(err_payload)
             return
 
         self.send_response(404)
+        self.send_header('Content-Length', '0')
         self.end_headers()
 
 def btoa_py(s):
