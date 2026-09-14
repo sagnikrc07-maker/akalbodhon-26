@@ -6497,18 +6497,11 @@
       });
     }
 
-    // Share buttons (Header quick share & Bottom action bar) - Available for all plans (master and custom)
+    // Share button in Bottom action bar - Available for all plans (master and custom)
     const shareBtn = document.getElementById('vp-share-btn');
     if (shareBtn) {
       shareBtn.classList.remove('hidden');
       shareBtn.onclick = () => {
-        window.openSharePlanModal(plan.id);
-      };
-    }
-    const headerShareBtn = document.getElementById('vp-header-share-btn');
-    if (headerShareBtn) {
-      headerShareBtn.classList.remove('hidden');
-      headerShareBtn.onclick = () => {
         window.openSharePlanModal(plan.id);
       };
     }
