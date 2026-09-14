@@ -1858,7 +1858,7 @@
                 <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                 <span class="truncate">Open in Maps</span>
               </a>
-              <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+              <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
                 <button 
                   class="pandal-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${bookmarkBtnClass}"
                   data-id="${pandal.id}"
@@ -1866,14 +1866,6 @@
                 >
                   <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
                   <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
-                </button>
-                <button 
-                  onclick="event.stopPropagation(); window.openSharePandalModal('${pandal.id}')"
-                  class="pandal-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
-                  title="Share Pandal & Route"
-                >
-                  <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
-                  <span class="text-[10px] font-bold sm:hidden">Share</span>
                 </button>
                 <button 
                   class="pandal-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
@@ -2117,7 +2109,7 @@
                     <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span class="truncate">Open in Maps</span>
                   </a>
-                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
                     <button 
                       class="food-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${isSaved ? 'bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30'}"
                       data-id="${food.id}"
@@ -2125,14 +2117,6 @@
                     >
                       <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
                       <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
-                    </button>
-                    <button 
-                      onclick="event.stopPropagation(); window.openShareFoodModal('${food.id}')"
-                      class="food-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
-                      title="Share Food Destination"
-                    >
-                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
-                      <span class="text-[10px] font-bold sm:hidden">Share</span>
                     </button>
                     <button 
                       class="food-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
@@ -2204,7 +2188,7 @@
                     <img src="maps-pin.png" alt="Open in Maps" class="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 drop-shadow-sm object-contain" />
                     <span class="truncate">Open in Maps</span>
                   </a>
-                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto">
+                  <div class="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
                     <button 
                       class="shop-bookmark-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border rounded-lg sm:rounded-xl flex items-center justify-center gap-1 transition-all cursor-pointer ${isSaved ? 'bg-primary text-white border-primary dark:bg-amber-400 dark:text-black dark:border-amber-400 shadow-md' : 'text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 bg-surface-container-low dark:bg-[#252016] border-outline-variant/50 dark:border-amber-400/30'}"
                       data-id="${shop.id}"
@@ -2212,14 +2196,6 @@
                     >
                       <span class="material-symbols-outlined text-[15px] sm:text-[20px]" style="${isSaved ? "font-variation-settings: 'FILL' 1;" : ''}">${isSaved ? 'bookmark' : 'bookmark_border'}</span>
                       <span class="save-btn-text text-[10px] font-bold sm:hidden">${isSaved ? 'Saved' : 'Save'}</span>
-                    </button>
-                    <button 
-                      onclick="event.stopPropagation(); window.openShareShopModal('${shop.id}')"
-                      class="shop-share-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-amber-400 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-amber-500 dark:hover:text-amber-300 transition-colors cursor-pointer"
-                      title="Share Shopping District"
-                    >
-                      <span class="material-symbols-outlined text-[15px] sm:text-[20px]">share</span>
-                      <span class="text-[10px] font-bold sm:hidden">Share</span>
                     </button>
                     <button 
                       class="shop-info-btn flex-1 sm:flex-none w-auto sm:w-10 h-7 sm:h-10 px-2 sm:px-0 border border-outline-variant/50 dark:border-amber-400/30 hover:border-secondary-container dark:hover:border-amber-300 rounded-lg sm:rounded-xl flex items-center justify-center gap-1 text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300 transition-colors cursor-pointer"
@@ -3045,12 +3021,10 @@
                       <span>View Plan</span>
                     </button>
                     <div class="flex items-center gap-2">
-                      ${isMasterPlan ? `
-                        <button onclick="event.stopPropagation(); window.openSharePlanModal('${p.id}')" class="text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 text-[10px] sm:text-xs font-bold cursor-pointer flex items-center gap-0.5" title="Share Plan">
-                          <span class="material-symbols-outlined text-[14px]">share</span>
-                          <span>Share</span>
-                        </button>
-                      ` : ''}
+                      <button onclick="event.stopPropagation(); window.openSharePlanModal('${p.id}')" class="text-primary dark:text-amber-300 hover:text-primary-container text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Share Plan">
+                        <span class="material-symbols-outlined text-[14px]">share</span>
+                        <span>Share</span>
+                      </button>
                       ${isMine ? `
                         <button onclick="event.stopPropagation(); window.deleteCustomPlan('${p.id}')" class="text-red-500 hover:text-red-600 dark:text-red-400 text-[10px] sm:text-xs font-semibold cursor-pointer flex items-center gap-0.5" title="Delete Plan (Removes from Database & Receivers)">
                           <span class="material-symbols-outlined text-[14px]">delete</span>
@@ -6173,18 +6147,13 @@
 
           <!-- Action: View Plan Button & Quick Save to Itinerary -->
           <div class="pt-2 sm:pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex items-center gap-2">
-            <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <button onclick="window.openViewPlanModal('${plan.id}')" class="flex-1 py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl bg-primary dark:bg-amber-400 hover:bg-primary-container dark:hover:bg-amber-300 text-white dark:text-black font-bold text-xs sm:text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
               <span class="material-symbols-outlined text-[15px] sm:text-[18px]">visibility</span>
               <span>View Plan</span>
             </button>
             <button onclick="event.stopPropagation(); window.savePlanToItinerary('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border ${customPlans.some(p => p.id === plan.id) ? 'bg-emerald-500/20 border-emerald-500 text-emerald-500 dark:text-emerald-400' : 'border-outline-variant/40 dark:border-amber-400/30 text-primary dark:text-amber-300 hover:bg-primary/10'} text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="${customPlans.some(p => p.id === plan.id) ? 'Saved in Itinerary (Click to Remove)' : 'Save entire plan to Itinerary'}">
               <span class="material-symbols-outlined text-[17px]">${customPlans.some(p => p.id === plan.id) ? 'bookmark_added' : 'bookmark_add'}</span>
             </button>
-            ${!isCustom ? `
-              <button onclick="event.stopPropagation(); window.openSharePlanModal('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-amber-500 hover:text-amber-400 dark:text-amber-300 dark:hover:text-amber-200 hover:bg-amber-400/10 text-xs font-bold transition-all flex items-center justify-center cursor-pointer shrink-0" title="Share Festival Plan">
-                <span class="material-symbols-outlined text-[17px]">share</span>
-              </button>
-            ` : ''}
             ${isCustom && isMyPlan ? `
               <button onclick="event.stopPropagation(); window.deleteCustomPlan('${plan.id}')" class="p-2 sm:p-2.5 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 text-outline hover:text-error hover:bg-red-500/10 dark:text-[#ded5c7] dark:hover:text-red-400 transition-all cursor-pointer shrink-0" title="Delete Plan">
                 <span class="material-symbols-outlined text-[18px]">delete</span>
@@ -6528,31 +6497,20 @@
       });
     }
 
-    // Share buttons (Header quick share & Bottom action bar) - ONLY available for listed master plans
-    const isMasterPlan = plan.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
+    // Share buttons (Header quick share & Bottom action bar) - Available for all plans (master and custom)
     const shareBtn = document.getElementById('vp-share-btn');
     if (shareBtn) {
-      if (isMasterPlan) {
-        shareBtn.classList.remove('hidden');
-        shareBtn.onclick = () => {
-          window.openSharePlanModal(plan.id);
-        };
-      } else {
-        shareBtn.classList.add('hidden');
-        shareBtn.onclick = null;
-      }
+      shareBtn.classList.remove('hidden');
+      shareBtn.onclick = () => {
+        window.openSharePlanModal(plan.id);
+      };
     }
     const headerShareBtn = document.getElementById('vp-header-share-btn');
     if (headerShareBtn) {
-      if (isMasterPlan) {
-        headerShareBtn.classList.remove('hidden');
-        headerShareBtn.onclick = () => {
-          window.openSharePlanModal(plan.id);
-        };
-      } else {
-        headerShareBtn.classList.add('hidden');
-        headerShareBtn.onclick = null;
-      }
+      headerShareBtn.classList.remove('hidden');
+      headerShareBtn.onclick = () => {
+        window.openSharePlanModal(plan.id);
+      };
     }
 
     // Save button (adapts for personal itinerary vs shared plan)
@@ -6653,10 +6611,6 @@
     }
 
     function openModal() {
-      const titleInput = document.getElementById('plan-title-input');
-      if (titleInput && (!titleInput.value || !titleInput.value.trim())) {
-        titleInput.value = 'Plan';
-      }
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
@@ -6706,31 +6660,18 @@
         if (typeof e.stopPropagation === 'function') e.stopPropagation();
       }
 
-      let title = document.getElementById('plan-title-input')?.value.trim();
-      if (!title) {
-        title = 'Plan';
-      }
-
-      const day = document.getElementById('plan-day-select')?.value || 'Maha Ashtami';
+      let title = document.getElementById('plan-title-input')?.value.trim() || '';
+      const day = document.getElementById('plan-day-select')?.value || '';
       const route = document.getElementById('plan-route-input')?.value.trim() || '';
       const customPandals = document.getElementById('plan-custom-pandals-input')?.value.trim();
       const food = document.getElementById('plan-food-input')?.value.trim() || '';
       const rituals = document.getElementById('plan-rituals-input')?.value.trim() || '';
       const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
 
-      // Collect checked pandals
+      // Collect checked pandals (if user skips, remains empty)
       let checkedPandals = Array.from(pandalsPicker?.querySelectorAll('input[type="checkbox"]:checked') || []).map(cb => cb.value);
       if (customPandals) {
         customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => checkedPandals.push(p));
-      }
-
-      // Auto-fallback: if no pandal selected, automatically include top 3 canonical pandals
-      if (checkedPandals.length === 0) {
-        if (Array.isArray(PANDALS_DATA) && PANDALS_DATA.length > 0) {
-          checkedPandals = PANDALS_DATA.slice(0, 3).map(p => p.name);
-        } else {
-          checkedPandals = ['Bagbazar Sarbojanin', 'College Square', 'Ekdalia Evergreen'];
-        }
       }
 
       const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
@@ -6768,7 +6709,7 @@
         'Bijoya Dashami': '21 October 2026',
         'Custom Festival Day': 'Durga Puja 2026'
       };
-      const resolvedDateStr = PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`);
+      const resolvedDateStr = day ? (PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`)) : '';
 
       const newPlan = {
         id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
@@ -6777,7 +6718,7 @@
         creator_avatar: creatorAvatar,
         title: title,
         day_tag: day,
-        day_key: day.toLowerCase().replace(/[^a-z]/g, ''),
+        day_key: day ? day.toLowerCase().replace(/[^a-z]/g, '') : '',
         date_str: resolvedDateStr,
         route_summary: route,
         pandals: checkedPandals,
@@ -6811,7 +6752,7 @@
       closeModal();
       if (form) form.reset();
       const titleInput = document.getElementById('plan-title-input');
-      if (titleInput) titleInput.value = 'Plan';
+      if (titleInput) titleInput.value = '';
       const descInputEl = document.getElementById('plan-description-input');
       if (descInputEl) descInputEl.value = '';
 
@@ -6919,8 +6860,126 @@
   // 17. MULTI-CHANNEL SOCIAL SHARE & SMART DEEP LINKING
   // ========================================================
 
+  async function copyTextToClipboard(text) {
+    if (!text) return false;
+    let ok = false;
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    } catch (e) {
+      console.warn('Clipboard writeText failed, falling back:', e);
+    }
+    if (!ok) {
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.top = '-9999px';
+        textArea.style.left = '-9999px';
+        textArea.style.opacity = '0';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        ok = document.execCommand('copy');
+        document.body.removeChild(textArea);
+      } catch (err) {
+        console.warn('Fallback execCommand failed:', err);
+      }
+    }
+    return ok;
+  }
+
+  function formatCustomPlanShareMessage(plan) {
+    if (!plan) return '';
+    const parts = [];
+
+    // 1. Plan Name
+    const title = (plan.title || '').trim();
+    if (title) {
+      parts.push(`🌺 *Plan Name:* ${title}`);
+    }
+
+    // 2. Pooja Day
+    const day = (plan.day_tag || '').trim();
+    const date = (plan.date_str || '').trim();
+    if (day && date && !date.includes(day)) {
+      parts.push(`🗓️ *Pooja Day:* ${day} (${date})`);
+    } else if (day) {
+      parts.push(`🗓️ *Pooja Day:* ${day}`);
+    } else if (date) {
+      parts.push(`🗓️ *Pooja Day:* ${date}`);
+    }
+
+    // 3. Route & Transit Summary
+    const route = (plan.route_summary || '').trim();
+    if (route) {
+      parts.push(`🚇 *Route & Transit Summary:* ${route}`);
+    }
+
+    // 4. Plan Description
+    const desc = (plan.custom_notes || plan.description || '').trim();
+    if (desc) {
+      parts.push(`📝 *Plan Description:* ${desc}`);
+    }
+
+    // 5. Pandals to Visit
+    let pandals = [];
+    if (Array.isArray(plan.pandals)) {
+      pandals = plan.pandals.map(p => typeof p === 'string' ? p.trim() : (p && p.name ? p.name.trim() : '')).filter(Boolean);
+    } else if (typeof plan.pandals === 'string' && plan.pandals.trim()) {
+      pandals = plan.pandals.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (pandals.length > 0) {
+      const pandalText = pandals.map((p, idx) => `  ${idx + 1}. ${p}`).join('\n');
+      parts.push(`🏛️ *Pandals to Visit:*\n${pandalText}`);
+    }
+
+    // 6. Where to Eat
+    let foodStops = [];
+    if (Array.isArray(plan.food_stops)) {
+      foodStops = plan.food_stops.map(f => typeof f === 'string' ? f.trim() : (f && f.name ? f.name.trim() : '')).filter(Boolean);
+    } else if (typeof plan.food_stops === 'string' && plan.food_stops.trim()) {
+      foodStops = plan.food_stops.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (foodStops.length > 0) {
+      const foodText = foodStops.map(f => `  • ${f}`).join('\n');
+      parts.push(`🍽️ *Where to Eat:*\n${foodText}`);
+    }
+
+    // 7. Rituals to Follow
+    let rituals = [];
+    if (Array.isArray(plan.rituals)) {
+      rituals = plan.rituals.map(r => typeof r === 'string' ? r.trim() : (r && r.name ? r.name.trim() : '')).filter(Boolean);
+    } else if (typeof plan.rituals === 'string' && plan.rituals.trim()) {
+      rituals = plan.rituals.split(',').map(s => s.trim()).filter(Boolean);
+    }
+    if (rituals.length > 0) {
+      const ritualText = rituals.map(r => `  • ${r}`).join('\n');
+      parts.push(`🪔 *Rituals to Follow:*\n${ritualText}`);
+    }
+
+    // 8. Creator Name
+    const creator = (plan.creator_name || '').trim();
+    if (creator) {
+      parts.push(`👤 *Creator:* ${creator}`);
+    }
+
+    // 9. Website Link
+    parts.push(`🌐 *Website:* https://akalbodhon-26.vercel.app/`);
+
+    return parts.join('\n\n');
+  }
+
   function shareToWhatsApp(message, shareUrl) {
-    const fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    let fullText = message;
+    if (shareUrl && !message.includes(shareUrl)) {
+      fullText = `${message}\n\n👉 Open here: ${shareUrl}`;
+    }
+    try {
+      copyTextToClipboard(fullText);
+    } catch (_) {}
     const encoded = encodeURIComponent(fullText);
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
@@ -7010,30 +7069,49 @@
     let shareUrl = `${window.location.origin}${window.location.pathname}`;
     let message = '';
     let label = 'Direct Website Link';
+    let isCustomPlan = false;
 
     if (type === 'plan') {
+      if (!customPlans || customPlans.length === 0) {
+        loadLocalCustomPlans();
+      }
       let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
+      if (window.__sharedPlansMap && window.__sharedPlansMap.has(id)) {
+        allPlans.push(window.__sharedPlansMap.get(id));
+      }
+      if (currentUser && Array.isArray(currentUser.custom_plans)) {
+        currentUser.custom_plans.forEach(cp => {
+          if (cp && cp.id && !allPlans.some(p => p.id === cp.id)) {
+            allPlans.push(cp);
+          }
+        });
+      }
       const plan = item || allPlans.find(p => p.id === id);
       if (!plan) return;
 
-      const isCustom = !plan.is_template && !MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
+      const isCustom = !plan.is_template && !plan.is_shared && !MASTER_PUJA_PLANS.some(mp => mp.id === plan.id) && !(window.__sharedPlansMap && window.__sharedPlansMap.has(plan.id));
+
       if (isCustom) {
-        showToast('Custom plans cannot be shared.', 'info');
-        return;
-      }
+        isCustomPlan = true;
+        heading = 'Share Custom Puja Plan';
+        subTitle = `${plan.title || 'Puja Plan'} • By ${plan.creator_name || 'Devotee'}`;
+        label = 'Website Link';
+        shareUrl = 'https://akalbodhon-26.vercel.app/';
+        message = formatCustomPlanShareMessage(plan);
+      } else {
+        heading = 'Share Puja Plan';
+        subTitle = `${plan.title} • Listed Festival Plan`;
+        label = 'Direct Plan Link';
+        shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
 
-      heading = 'Share Puja Plan';
-      subTitle = `${plan.title} • Listed Festival Plan`;
-      label = 'Direct Plan Link';
-      shareUrl = `${window.location.origin}${window.location.pathname}?plan=${encodeURIComponent(plan.id)}`;
+        const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
+        const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
 
-      const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
-      const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
-
-      message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
+        message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
 ✨ Curated Festival Plan: Akalbodhon
 🏛️ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
 🪔 View the full itinerary, map directions & food pit-stops on Akalbodhon:`;
+      }
 
     } else if (type === 'pandal') {
       const pandal = item || PANDALS_DATA.find(p => p.id === id);
@@ -7102,30 +7180,35 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const inputEl = document.getElementById('share-link-input');
     if (inputEl) inputEl.value = shareUrl;
 
-    // WhatsApp Button
+    // WhatsApp Button (Synchronous user gesture preserves native window.open popup permission)
     const waBtn = document.getElementById('share-wa-btn');
     if (waBtn) {
-      waBtn.onclick = () => shareToWhatsApp(message, shareUrl);
+      waBtn.onclick = () => {
+        const fullMessage = isCustomPlan ? message : `${message}\n\n👉 Open here: ${shareUrl}`;
+        copyTextToClipboard(fullMessage);
+        showToast('Plan details copied! Opening WhatsApp...', 'send');
+        shareToWhatsApp(fullMessage, isCustomPlan ? '' : shareUrl);
+      };
     }
 
     // Copy Link Buttons
     const copyBtn = document.getElementById('share-copy-btn');
     if (copyBtn) {
       copyBtn.onclick = () => {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          showToast('Share link copied to clipboard!', 'link');
-        });
+        const fullMessage = isCustomPlan ? message : `${message}\n\n👉 Open here: ${shareUrl}`;
+        copyTextToClipboard(fullMessage);
+        showToast(isCustomPlan ? 'Plan details copied to clipboard!' : 'Share link copied to clipboard!', 'check');
       };
     }
 
     const inlineCopyBtn = document.getElementById('copy-link-inline-btn');
     if (inlineCopyBtn) {
       inlineCopyBtn.onclick = () => {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-          inlineCopyBtn.textContent = 'Copied!';
-          setTimeout(() => inlineCopyBtn.textContent = 'Copy', 2000);
-          showToast('Direct URL copied!', 'link');
-        });
+        const fullMessage = isCustomPlan ? message : shareUrl;
+        copyTextToClipboard(fullMessage);
+        inlineCopyBtn.textContent = 'Copied!';
+        setTimeout(() => inlineCopyBtn.textContent = 'Copy', 2000);
+        showToast(isCustomPlan ? 'Plan details copied to clipboard!' : 'Direct URL copied!', 'link');
       };
     }
 
@@ -7136,21 +7219,33 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
   // Aliases for convenient caller usage
   window.openSharePlanModal = function (planId) {
+    if (!customPlans || customPlans.length === 0) {
+      loadLocalCustomPlans();
+    }
     let allPlans = [...MASTER_PUJA_PLANS, ...customPlans];
     if (window.__sharedPlansMap && window.__sharedPlansMap.has(planId)) {
       allPlans.push(window.__sharedPlansMap.get(planId));
     }
+    if (currentUser && Array.isArray(currentUser.custom_plans)) {
+      currentUser.custom_plans.forEach(cp => {
+        if (cp && cp.id && !allPlans.some(p => p.id === cp.id)) {
+          allPlans.push(cp);
+        }
+      });
+    }
     const plan = allPlans.find(p => p.id === planId);
     if (!plan) return;
 
-    // Disallow sharing custom plans of user
-    const isMaster = plan.is_template || MASTER_PUJA_PLANS.some(mp => mp.id === plan.id);
-    if (!isMaster) {
-      showToast('Custom plans cannot be shared.', 'info');
-      return;
-    }
-
     window.openShareModal({ type: 'plan', id: planId, item: plan });
+  };
+
+  window.closeSharePlanModal = function () {
+    const modal = document.getElementById('share-plan-modal');
+    if (modal) {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('modal-open');
+    }
   };
 
   window.openShareWebsiteModal = function () {
@@ -8488,18 +8583,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     // Share Modal Close
     document.getElementById('close-share-modal-btn')?.addEventListener('click', () => {
-      document.body.classList.remove('modal-open');
-      document.getElementById('share-plan-modal')?.classList.add('hidden');
-      document.getElementById('share-plan-modal')?.classList.remove('flex');
+      window.closeSharePlanModal();
     });
 
     const shareModal = document.getElementById('share-plan-modal');
     if (shareModal) {
       shareModal.addEventListener('click', (e) => {
         if (e.target === shareModal) {
-          document.body.classList.remove('modal-open');
-          shareModal.classList.add('hidden');
-          shareModal.classList.remove('flex');
+          window.closeSharePlanModal();
         }
       });
     }
