@@ -5089,41 +5089,10 @@
   }
 
   function setAuthMode(mode = 'login', presetValue = '') {
-    currentAuthModalMode = mode;
+    currentAuthModalMode = 'login';
     clearAuthModalAlerts();
-
-    const loginTab = document.getElementById('auth-tab-login');
-    const signupTab = document.getElementById('auth-tab-signup');
     const titleEl = document.getElementById('auth-modal-title');
-    const emailNameField = document.getElementById('auth-email-name-field');
-    const emailSubmitLabel = document.getElementById('auth-email-submit-label');
-
-    if (mode === 'signup') {
-      loginTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      loginTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      signupTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      signupTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-
-      emailNameField?.classList.remove('hidden');
-
-      if (emailSubmitLabel) emailSubmitLabel.textContent = 'Create Account with Email';
-      if (titleEl) titleEl.textContent = 'Create Devotee Account';
-    } else {
-      signupTab?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      signupTab?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-      loginTab?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-      loginTab?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-
-      emailNameField?.classList.add('hidden');
-
-      if (emailSubmitLabel) emailSubmitLabel.textContent = 'Sign In with Email';
-      if (titleEl) titleEl.textContent = 'Devotee Sign In';
-    }
-
-    if (presetValue) {
-      const emailInput = document.getElementById('auth-email-address-input');
-      if (emailInput) emailInput.value = presetValue.trim();
-    }
+    if (titleEl) titleEl.textContent = 'Devotee Sign In';
   }
 
   function openAuthModal(mode = 'login') {
@@ -5131,7 +5100,12 @@
     const modal = document.getElementById('auth-modal');
     if (!modal) return;
 
-    setAuthMode(mode);
+    setAuthMode('login');
+
+    const titleEl = document.getElementById('auth-modal-title');
+    if (titleEl) titleEl.textContent = 'Devotee Sign In';
+    const subtitleEl = document.getElementById('auth-modal-subtitle');
+    if (subtitleEl) subtitleEl.textContent = 'Sign in with Google to save custom plans, pandals, and sacred itineraries.';
 
     const googleBtn = document.getElementById('google-auth-btn');
     if (googleBtn) googleBtn.disabled = false;
@@ -5140,11 +5114,6 @@
 
     modal.classList.remove('hidden');
     modal.classList.add('flex');
-
-    const emailInput = document.getElementById('auth-email-address-input');
-    const emailNameInput = document.getElementById('auth-email-name-input');
-    if (mode === 'signup' && emailNameInput) emailNameInput.focus();
-    else if (emailInput) emailInput.focus();
   }
   window.openAuthModal = openAuthModal;
 
@@ -7886,81 +7855,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
   // Initialize Page Section Login
   function initPageAuthSection() {
-    const pageTabLogin = document.getElementById('page-tab-login');
-    const pageTabSignup = document.getElementById('page-tab-signup');
-    const pageNameField = document.getElementById('page-name-field');
-    const pageHeading = document.getElementById('page-auth-heading');
-    const pageSubheading = document.getElementById('page-auth-subheading');
-    const pageSubmitLabel = document.getElementById('page-submit-label');
-    const pageErrorAlert = document.getElementById('page-error-alert');
-    const pageSuccessAlert = document.getElementById('page-success-alert');
-    const pageUseridInput = document.getElementById('page-userid-input');
-    const pageUseridCounter = document.getElementById('page-userid-counter');
-    const pagePwdInput = document.getElementById('page-password-input');
-    const pagePwdCounter = document.getElementById('page-password-counter');
-    const pageTogglePwd = document.getElementById('page-toggle-pwd-btn');
-    const pageSubmitBtn = document.getElementById('page-submit-btn');
-    const pageForm = document.getElementById('page-login-form');
-
-    function clearPageAlerts() {
-      pageErrorAlert?.classList.add('hidden');
-      pageSuccessAlert?.classList.add('hidden');
+    const pageGoogleBtn = document.getElementById('page-google-auth-btn');
+    if (pageGoogleBtn) {
+      pageGoogleBtn.addEventListener('click', handleGoogleSignIn);
     }
-
-    function setPageAuthMode(mode) {
-      clearPageAlerts();
-      if (mode === 'signup') {
-        pageTabLogin?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageTabLogin?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageTabSignup?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageTabSignup?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageNameField?.classList.remove('hidden');
-        if (pageHeading) pageHeading.textContent = 'Create Devotee Account';
-        if (pageSubheading) pageSubheading.textContent = 'Join the Akalbodhon festival community to design and save custom Puja itineraries.';
-        if (pageSubmitLabel) pageSubmitLabel.textContent = 'Create Account';
-      } else {
-        pageTabSignup?.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageTabSignup?.classList.add('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageTabLogin?.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
-        pageTabLogin?.classList.remove('text-on-surface-variant', 'dark:text-[#ded5c7]');
-        pageNameField?.classList.add('hidden');
-        if (pageHeading) pageHeading.textContent = 'Devotee Sign In';
-        if (pageSubheading) pageSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
-        if (pageSubmitLabel) pageSubmitLabel.textContent = 'Sign In';
-      }
-    }
-
-    pageTabLogin?.addEventListener('click', () => setPageAuthMode('login'));
-    pageTabSignup?.addEventListener('click', () => setPageAuthMode('signup'));
-
-    // Dynamic counters for page inputs
-    pageUseridInput?.addEventListener('input', () => {
-      updateDynamicCounter(pageUseridInput, pageUseridCounter, 10, 'length');
-    });
-
-    pagePwdInput?.addEventListener('input', () => {
-      updateDynamicCounter(pagePwdInput, pagePwdCounter, 5, 'alphanumeric');
-    });
-
-    pageTogglePwd?.addEventListener('click', () => {
-      if (!pagePwdInput) return;
-      const isPwd = pagePwdInput.type === 'password';
-      pagePwdInput.type = isPwd ? 'text' : 'password';
-      const icon = document.getElementById('page-toggle-pwd-icon');
-      const text = document.getElementById('page-toggle-pwd-text');
-      if (icon) icon.textContent = isPwd ? 'visibility_off' : 'visibility';
-      if (text) text.textContent = isPwd ? 'Hide' : 'Show';
-    });
-
-    pageSubmitBtn?.addEventListener('click', () => handleAuthSubmit(true));
-    pageForm?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleAuthSubmit(true);
-    });
-
-    // Initialize initial counter states
-    if (pageUseridInput && pageUseridCounter) updateDynamicCounter(pageUseridInput, pageUseridCounter, 10, 'length');
-    if (pagePwdInput && pagePwdCounter) updateDynamicCounter(pagePwdInput, pagePwdCounter, 5, 'alphanumeric');
   }
 
   // ========================================================
@@ -8041,31 +7939,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('google-auth-btn')?.addEventListener('click', handleGoogleSignIn);
     document.getElementById('save-auth-google-btn')?.addEventListener('click', handleGoogleSignIn);
     document.getElementById('close-auth-modal-btn')?.addEventListener('click', closeAuthModal);
-    document.getElementById('auth-tab-login')?.addEventListener('click', () => setAuthMode('login'));
-    document.getElementById('auth-tab-signup')?.addEventListener('click', () => setAuthMode('signup'));
-
-    // Email & Password Form Events
-    document.getElementById('auth-email-form')?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      handleEmailAuthModal();
-    });
-    document.getElementById('auth-email-submit-btn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      handleEmailAuthModal();
-    });
-
-    // Password Visibility Toggle for Email Form
-    document.getElementById('auth-email-toggle-pwd-btn')?.addEventListener('click', function () {
-      const pwdInput = document.getElementById('auth-email-password-input');
-      const icon = document.getElementById('auth-email-toggle-pwd-icon');
-      const text = document.getElementById('auth-email-toggle-pwd-text');
-      if (pwdInput) {
-        const isPwd = pwdInput.type === 'password';
-        pwdInput.type = isPwd ? 'text' : 'password';
-        if (icon) icon.textContent = isPwd ? 'visibility_off' : 'visibility';
-        if (text) text.textContent = isPwd ? 'Hide' : 'Show';
-      }
-    });
 
     // Profile Modal Handlers
     document.getElementById('close-profile-modal-btn')?.addEventListener('click', closeProfileModal);

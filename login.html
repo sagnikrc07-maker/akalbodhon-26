@@ -193,20 +193,9 @@
 
       <!-- ---------------- AUTH CONTAINER ---------------- -->
       <div id="auth-flow-container" class="space-y-5">
-        
-        <!-- Auth Mode Switcher (Sign In vs Create Account) -->
-        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-          <button id="tab-login" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">
-            Sign In
-          </button>
-          <button id="tab-signup" type="button" class="flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">
-            Create Account
-          </button>
-        </div>
-
         <!-- 1. Google Sign In -->
-        <div class="space-y-3">
-          <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+        <div class="space-y-3 pt-2">
+          <button id="google-auth-btn" type="button" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -215,59 +204,7 @@
             </svg>
             <span id="google-auth-btn-label">Continue with Google</span>
           </button>
-
-          <div class="flex items-center gap-3">
-            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with email</span>
-            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          </div>
         </div>
-
-        <!-- 2. EMAIL & PASSWORD SECTION -->
-        <div id="email-auth-section" class="space-y-4">
-          <form id="email-auth-form" class="space-y-4" onsubmit="return false;">
-            <!-- Name (Only in Create Account mode) -->
-            <div id="email-name-field" class="space-y-1 hidden">
-              <label for="email-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
-                <input type="text" id="email-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-            </div>
-
-            <!-- Email Address Input -->
-            <div class="space-y-1">
-              <label for="email-address-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">mail</span>
-                <input type="email" id="email-address-input" autocomplete="email" placeholder="e.g. devotee@example.com" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-            </div>
-
-            <!-- Password Input -->
-            <div class="space-y-1">
-              <label for="email-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
-                <input type="password" id="email-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-              <div class="flex items-center justify-between pt-0.5">
-                <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Condition: Min 6 characters (letters & numbers)</span>
-                <button type="button" id="email-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                  <span class="material-symbols-outlined text-[15px]" id="email-toggle-pwd-icon">visibility</span>
-                  <span id="email-toggle-pwd-text">Show</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Submit Button -->
-            <button id="email-submit-btn" type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">login</span>
-              <span id="email-submit-label">Sign In with Email</span>
-            </button>
-          </form>
-        </div>
-
       </div>
 
       <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">
@@ -318,23 +255,6 @@
 
     const authHeading = document.getElementById('auth-heading');
     const authSubheading = document.getElementById('auth-subheading');
-    const tabLogin = document.getElementById('tab-login');
-    const tabSignup = document.getElementById('tab-signup');
-
-    // Email elements
-    const emailAuthSection = document.getElementById('email-auth-section');
-    const emailAuthForm = document.getElementById('email-auth-form');
-    const emailNameField = document.getElementById('email-name-field');
-    const emailNameInput = document.getElementById('email-name-input');
-    const emailAddressInput = document.getElementById('email-address-input');
-    const emailPasswordInput = document.getElementById('email-password-input');
-    const emailTogglePwdBtn = document.getElementById('email-toggle-pwd-btn');
-    const emailTogglePwdIcon = document.getElementById('email-toggle-pwd-icon');
-    const emailTogglePwdText = document.getElementById('email-toggle-pwd-text');
-    const emailSubmitBtn = document.getElementById('email-submit-btn');
-    const emailSubmitLabel = document.getElementById('email-submit-label');
-
-    let currentMode = 'login'; // 'login' | 'signup'
 
     function showAlert(msg, isError = true, actionBtn = null) {
       if (isError) {
@@ -359,50 +279,6 @@
       errorAlert.classList.add('hidden');
       if (errorActionContainer) errorActionContainer.classList.add('hidden');
       successAlert.classList.add('hidden');
-    }
-
-    // Toggle Password Visibility
-    emailTogglePwdBtn?.addEventListener('click', () => {
-      const isPwd = emailPasswordInput.type === 'password';
-      emailPasswordInput.type = isPwd ? 'text' : 'password';
-      if (emailTogglePwdIcon) emailTogglePwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
-      if (emailTogglePwdText) emailTogglePwdText.textContent = isPwd ? 'Hide' : 'Show';
-    });
-
-    // Switch Mode (Sign In vs Create Account)
-    function setAuthMode(mode, presetValue = '') {
-      currentMode = mode;
-      clearAlerts();
-
-      if (mode === 'signup') {
-        tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
-        tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        emailNameField?.classList.remove('hidden');
-        authHeading.textContent = 'Create Devotee Account';
-        authSubheading.textContent = 'Join Akalbodhon to save custom Puja itineraries, pandal trails, and sacred bookmarks.';
-        emailSubmitLabel.textContent = 'Create Account with Email';
-      } else {
-        tabSignup.className = "flex-1 py-2 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer";
-        tabLogin.className = "flex-1 py-2 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer";
-        emailNameField?.classList.add('hidden');
-        authHeading.textContent = 'Devotee Sign In';
-        authSubheading.textContent = 'Access your personal Puja itineraries, pandals, and saved details.';
-        emailSubmitLabel.textContent = 'Sign In with Email';
-      }
-
-      if (presetValue && emailAddressInput) {
-        emailAddressInput.value = presetValue.trim();
-        if (mode === 'signup' && emailNameInput) emailNameInput.focus();
-        else emailPasswordInput?.focus();
-      }
-    }
-
-    tabLogin.addEventListener('click', () => setAuthMode('login'));
-    tabSignup.addEventListener('click', () => setAuthMode('signup'));
-
-    // Check if hash requested signup
-    if (window.location.hash === '#signup') {
-      setAuthMode('signup');
     }
 
     // Kinetic Loading & Top Progress Bar Helpers
@@ -568,146 +444,6 @@
       return null;
     }
 
-    // -------------------------------------------------------------
-    // EMAIL & PASSWORD AUTH HANDLERS
-    // -------------------------------------------------------------
-    emailAuthForm?.addEventListener('submit', handleEmailAuth);
-
-    async function handleEmailAuth() {
-      clearAlerts();
-      const rawEmail = emailAddressInput.value.trim().toLowerCase();
-      const rawPassword = emailPasswordInput.value;
-      const rawName = emailNameInput.value.trim();
-
-      if (!rawEmail || !rawEmail.includes('@') || !rawEmail.includes('.')) {
-        showAlert('Please enter a valid email address.');
-        emailAddressInput.focus();
-        return;
-      }
-
-      if (rawPassword.length < 6) {
-        showAlert('Password must be at least 6 characters (letters and numbers recommended).');
-        emailPasswordInput.focus();
-        return;
-      }
-
-      if (currentMode === 'signup' && !rawName) {
-        showAlert('Please enter your name so we know what to call you.');
-        emailNameInput.focus();
-        return;
-      }
-
-      emailSubmitBtn.disabled = true;
-      emailSubmitLabel.innerHTML = `<span class="btn-loading-spinner mr-2"></span> ${currentMode === 'signup' ? 'Creating Account...' : 'Signing In...'}`;
-      showGlobalLoader(
-        currentMode === 'signup' ? 'Creating Account...' : 'Signing In...',
-        'Authenticating with devotee sanctuary...',
-        '🪔',
-        'Securing session...'
-      );
-
-      try {
-        if (currentMode === 'signup') {
-          // --- CREATE ACCOUNT WITH EMAIL & PASSWORD ---
-          let profile = null;
-          try {
-            profile = await window.AkalbodhonFirebase.registerWithEmailPassword(rawEmail, rawPassword, rawName);
-          } catch (regErr) {
-            if (regErr.code === 'auth/email-already-in-use') {
-              hideGlobalLoader();
-              emailSubmitBtn.disabled = false;
-              emailSubmitLabel.textContent = 'Create Account with Email';
-
-              const actionBtn = document.createElement('button');
-              actionBtn.type = 'button';
-              actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:opacity-90 transition-all flex items-center gap-1.5 cursor-pointer';
-              actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">login</span> Sign In with this Email';
-              actionBtn.onclick = () => {
-                setAuthMode('login', rawEmail, 'email');
-              };
-
-              showAlert(`An account with <strong>${rawEmail}</strong> already exists. Please sign in instead.`, true, actionBtn);
-              return;
-            }
-            throw regErr;
-          }
-
-          if (profile) {
-            hideGlobalLoader();
-            showLoggedInState(profile);
-            showAlert(`Welcome, ${profile.username}! Your devotee account has been created. Redirecting...`, false);
-            setTimeout(() => { window.location.href = 'index.html'; }, 700);
-          }
-
-        } else {
-          // --- SIGN IN WITH EMAIL & PASSWORD ---
-          // 1. First check if account exists in database
-          const existing = await checkDevoteeAccountExists(rawEmail);
-          if (!existing) {
-            hideGlobalLoader();
-            emailSubmitBtn.disabled = false;
-            emailSubmitLabel.textContent = 'Sign In with Email';
-
-            const actionBtn = document.createElement('button');
-            actionBtn.type = 'button';
-            actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
-            actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
-            actionBtn.onclick = () => {
-              setAuthMode('signup', rawEmail, 'email');
-            };
-
-            showAlert(
-              `No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`,
-              true,
-              actionBtn
-            );
-            return;
-          }
-
-          // 2. Authenticate with Firebase Email & Password
-          let profile = null;
-          try {
-            profile = await window.AkalbodhonFirebase.signInWithEmailPassword(rawEmail, rawPassword);
-          } catch (signInErr) {
-            console.warn('Firebase email sign in error:', signInErr);
-            if (signInErr.code === 'auth/wrong-password' || signInErr.code === 'auth/invalid-credential') {
-              hideGlobalLoader();
-              emailSubmitBtn.disabled = false;
-              emailSubmitLabel.textContent = 'Sign In with Email';
-              showAlert('Incorrect password. Please verify your password and try again.');
-              return;
-            } else if (signInErr.code === 'auth/user-not-found') {
-              hideGlobalLoader();
-              emailSubmitBtn.disabled = false;
-              emailSubmitLabel.textContent = 'Sign In with Email';
-
-              const actionBtn = document.createElement('button');
-              actionBtn.type = 'button';
-              actionBtn.className = 'mt-2 px-3.5 py-1.5 rounded-xl bg-amber-400 text-black font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer';
-              actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
-              actionBtn.onclick = () => { setAuthMode('signup', rawEmail, 'email'); };
-
-              showAlert(`No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`, true, actionBtn);
-              return;
-            }
-            throw signInErr;
-          }
-
-          if (profile) {
-            hideGlobalLoader();
-            showLoggedInState(profile);
-            showAlert(`Welcome, ${profile.username}! Signed in successfully. Redirecting to home...`, false);
-            setTimeout(() => { window.location.href = 'index.html'; }, 700);
-          }
-        }
-      } catch (err) {
-        console.error('Email auth error:', err);
-        hideGlobalLoader();
-        emailSubmitBtn.disabled = false;
-        emailSubmitLabel.textContent = currentMode === 'signup' ? 'Create Account with Email' : 'Sign In with Email';
-        showAlert(err.message || 'Authentication error occurred. Please try again.');
-      }
-    }
 
     // -------------------------------------------------------------
     // SESSION STATE & SIGN OUT

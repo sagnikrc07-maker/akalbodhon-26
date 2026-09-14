@@ -899,14 +899,8 @@
             Devotee Sign In
           </h2>
           <p id="page-auth-subheading" class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-xs mx-auto">
-            Access your personal Puja itineraries, enjoy sacred festival emblems, and invite friends.
+            Sign in with Google to save custom plans, pandals, and sacred itineraries.
           </p>
-        </div>
-
-        <!-- Tab Switcher (Sign In / Create Account) -->
-        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-          <button id="page-tab-login" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
-          <button id="page-tab-signup" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
         </div>
 
         <!-- Error Alert Box -->
@@ -919,49 +913,22 @@
           <span id="page-success-msg">Success</span>
         </div>
 
-        <!-- Form -->
-        <form id="page-login-form" class="space-y-4" onsubmit="return false;">
-          <!-- Name Field (Visible during Create Account) -->
-          <div id="page-name-field" class="space-y-1 hidden">
-            <label for="page-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Name</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">person</span>
-              <input type="text" id="page-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-          </div>
-
-          <!-- Email Address Input -->
-          <div id="page-userid-field" class="space-y-1">
-            <label for="page-userid-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">mail</span>
-              <input type="email" id="page-userid-input" autocomplete="username" placeholder="e.g. devotee@example.com" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <p class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Example: devotee@example.com</p>
-          </div>
-
-          <!-- Password Input with Conditions & Show Button under the field -->
-          <div id="page-password-field" class="space-y-1">
-            <label for="page-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[20px]">lock</span>
-              <input type="password" id="page-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-            </div>
-            <div class="flex items-center justify-between pt-0.5">
-              <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Condition: Min 6 characters (letters & numbers)</span>
-              <button type="button" id="page-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                <span class="material-symbols-outlined text-[15px]" id="page-toggle-pwd-icon">visibility</span>
-                <span id="page-toggle-pwd-text">Show</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Submit Button -->
-          <button type="submit" id="page-submit-btn" class="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">login</span>
-            <span id="page-submit-label">Sign In</span>
+        <!-- Single Action: Continue with Google -->
+        <div class="pt-2">
+          <button id="page-google-auth-btn" type="button" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span>Continue with Google</span>
           </button>
-        </form>
+        </div>
+
+        <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 leading-relaxed pt-2">
+          Your saved pandals, sacred food stops, and custom itineraries sync automatically across your devices.
+        </p>
       </div>
     </section>
 
@@ -1025,23 +992,15 @@
         <span class="material-symbols-outlined text-[20px]">close</span>
       </button>
 
-      <!-- Scrollable Inner Content Area -->
-      <div class="modal-scrollable overflow-y-auto p-6 sm:p-8 space-y-5 flex-1">
-        <!-- Modal Header -->
-        <div class="text-center space-y-1.5 pt-2">
+            <!-- Modal Header -->
+        <div class="text-center space-y-2 pt-2">
           <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border border-secondary-container dark:border-amber-400/40 flex items-center justify-center mx-auto shadow-lg">
             <span class="text-3xl">🪔</span>
           </div>
-          <h3 id="auth-modal-title" class="font-display text-2xl font-bold crimson-gradient-text">Welcome to Akalbodhon</h3>
-          <p id="auth-modal-subtitle" class="text-xs text-on-surface-variant dark:text-[#ded5c7]">
-            Sign in or create an account to save custom plans, pandals, and sacred itineraries.
+          <h3 id="auth-modal-title" class="font-display text-2xl font-bold crimson-gradient-text">Devotee Sign In</h3>
+          <p id="auth-modal-subtitle" class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-xs mx-auto">
+            Sign in with Google to save custom plans, pandals, and sacred itineraries.
           </p>
-        </div>
-
-        <!-- Auth Tab Switcher (Sign In vs Create Account) -->
-        <div class="flex rounded-2xl bg-surface-container-high dark:bg-[#252016] p-1 border border-outline-variant/30 dark:border-amber-400/20">
-          <button id="auth-tab-login" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold bg-primary text-white dark:bg-amber-400 dark:text-black shadow-sm transition-all cursor-pointer">Sign In</button>
-          <button id="auth-tab-signup" type="button" class="flex-1 py-1.5 rounded-xl text-xs font-bold text-on-surface-variant dark:text-[#ded5c7] hover:text-on-surface transition-all cursor-pointer">Create Account</button>
         </div>
 
         <!-- Notification Alert with dynamic helper action -->
@@ -1057,9 +1016,9 @@
           <span id="auth-success-msg">Success</span>
         </div>
 
-        <!-- Option 1: Continue with Google -->
-        <div class="space-y-3">
-          <button id="google-auth-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+        <!-- Single Action: Continue with Google -->
+        <div class="pt-2">
+          <button id="google-auth-btn" type="button" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
               <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1068,58 +1027,11 @@
             </svg>
             <span id="google-auth-btn-label">Continue with Google</span>
           </button>
-
-          <div class="flex items-center gap-3">
-            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-            <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with email</span>
-            <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          </div>
         </div>
 
-        <!-- Email & Password Section -->
-        <div id="auth-email-section" class="space-y-4">
-          <form id="auth-email-form" class="space-y-3.5" onsubmit="return false;">
-            <!-- Name (Only in Create Account mode) -->
-            <div id="auth-email-name-field" class="space-y-1 hidden">
-              <label for="auth-email-name-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Your Name</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">person</span>
-                <input type="text" id="auth-email-name-input" autocomplete="name" placeholder="What should the website call you?" class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-            </div>
-
-            <!-- Email Address Input -->
-            <div class="space-y-1">
-              <label for="auth-email-address-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Email Address</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">mail</span>
-                <input type="email" id="auth-email-address-input" autocomplete="email" placeholder="e.g. devotee@example.com" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-            </div>
-
-            <!-- Password Input -->
-            <div class="space-y-1">
-              <label for="auth-email-password-input" class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Password</label>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant/60 dark:text-amber-300/60 text-[18px]">lock</span>
-                <input type="password" id="auth-email-password-input" autocomplete="current-password" placeholder="e.g. MaaDurga@2026" required class="w-full pl-9 pr-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" />
-              </div>
-              <div class="flex items-center justify-between pt-0.5">
-                <span class="text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">Min 6 characters (letters & numbers)</span>
-                <button type="button" id="auth-email-toggle-pwd-btn" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 cursor-pointer">
-                  <span class="material-symbols-outlined text-[15px]" id="auth-email-toggle-pwd-icon">visibility</span>
-                  <span id="auth-email-toggle-pwd-text">Show</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Submit Button -->
-            <button id="auth-email-submit-btn" type="submit" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-              <span class="material-symbols-outlined text-[18px]">login</span>
-              <span id="auth-email-submit-label">Sign In with Email</span>
-            </button>
-          </form>
-        </div>
+        <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 leading-relaxed pt-2">
+          Your saved pandals, sacred food stops, and custom itineraries sync automatically across your devices.
+        </p>
       </div>
     </div>
   </div>
@@ -1438,14 +1350,14 @@
         </span>
         <h3 id="save-auth-prompt-title" class="font-display text-2xl font-bold text-on-surface dark:text-white">Sign In to Save</h3>
         <p id="save-auth-prompt-desc" class="text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed pt-1">
-          Please log in to your account, or create a new account if you don't have one, before saving items to your personal Puja itinerary.
+          Please sign in with Google to save items to your personal Puja itinerary.
         </p>
       </div>
 
-      <!-- Quick Action Buttons: Sign In / Create Account / Google / Later -->
+      <!-- Quick Action: Continue with Google / Later -->
       <div class="w-full space-y-2.5 pt-2">
         <!-- Sign in with Google Option in Prompt Modal -->
-        <button id="save-auth-google-btn" type="button" class="w-full py-2.5 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+        <button id="save-auth-google-btn" type="button" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
           <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -1453,20 +1365,6 @@
             <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
           </svg>
           <span id="save-auth-google-btn-label">Continue with Google</span>
-        </button>
-
-        <div class="flex items-center gap-3 py-0.5">
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-          <span class="text-[11px] uppercase tracking-wider font-semibold text-on-surface-variant/60 dark:text-amber-300/60">or continue with User ID</span>
-          <div class="flex-1 h-px bg-outline-variant/30 dark:border-amber-400/20"></div>
-        </div>
-
-        <button id="save-auth-login-btn" type="button" class="w-full py-3 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-sm shadow-md hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">login</span> Sign In to My Account
-        </button>
-
-        <button id="save-auth-signup-btn" type="button" class="w-full py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/40 text-on-surface dark:text-[#f3ede2] hover:border-primary dark:hover:border-amber-300 font-bold text-xs shadow-xs hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">person_add</span> Don't have an account? Create One
         </button>
 
         <button id="save-auth-dismiss-btn" type="button" class="w-full py-2 rounded-xl text-on-surface-variant dark:text-[#ded5c7] text-xs hover:underline cursor-pointer">
