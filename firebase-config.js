@@ -84,18 +84,21 @@ export function getRandomPujaIcon() {
 }
 
 
-// Helper to extract all possible docId keys (raw, lowercase, safeDocId, phone digits) for a user
+// Helper to extract all possible docId keys (exact case, lowercase, safeDocId, phone digits) for a user
 function getPossibleUserDocIds(userOrId) {
   const ids = new Set();
   if (!userOrId) return [];
   if (typeof userOrId === 'object') {
-    ['id', 'user_id', 'uid', 'identifier', 'email', 'phone'].forEach(k => {
+    ['id', 'user_id', 'uid', 'firebase_uid', 'identifier', 'email', 'phone'].forEach(k => {
       const val = userOrId[k];
       if (val && typeof val === 'string') {
-        const clean = val.trim().toLowerCase();
-        if (clean) {
+        const raw = val.trim();
+        if (raw) {
+          ids.add(raw); // EXACT CASE (essential for Firebase UIDs like "AbCd123...")
+          const clean = raw.toLowerCase();
           ids.add(clean);
           ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+          ids.add(raw.replace(/[^a-zA-Z0-9]/g, '_'));
           const digits = clean.replace(/[^0-9]/g, '');
           if (digits.length >= 7) {
             ids.add(digits);
@@ -110,10 +113,13 @@ function getPossibleUserDocIds(userOrId) {
       }
     });
   } else if (typeof userOrId === 'string') {
-    const clean = userOrId.trim().toLowerCase();
-    if (clean) {
+    const raw = userOrId.trim();
+    if (raw) {
+      ids.add(raw); // EXACT CASE
+      const clean = raw.toLowerCase();
       ids.add(clean);
       ids.add(clean.replace(/[^a-z0-9]/g, '_'));
+      ids.add(raw.replace(/[^a-zA-Z0-9]/g, '_'));
       const digits = clean.replace(/[^0-9]/g, '');
       if (digits.length >= 7) {
         ids.add(digits);
@@ -140,30 +146,108 @@ export const AkalbodhonFirebase = {
   async buildAndStoreProfile(user) {
     if (!user) throw new Error("No user credentials provided.");
     const cleanUid = String(user.uid);
+    const email = user.email ? String(user.email).trim().toLowerCase() : '';
 
-    // Fetch existing user data under this specific user's credentials with timeout
+    // Fetch existing user data under this specific user's credentials across all possible keys
     let existingData = {};
     if (db) {
       try {
-        const userDocRef = doc(db, "users", cleanUid);
-        const userSnap = await withTimeout(getDoc(userDocRef), 2000);
-        if (userSnap && userSnap.exists()) {
-          existingData = userSnap.data() || {};
-        } else {
-          // Check profiles collection fallback
-          const profDocRef = doc(db, "profiles", cleanUid);
-          const profSnap = await withTimeout(getDoc(profDocRef), 1500);
-          if (profSnap && profSnap.exists()) {
-            existingData = profSnap.data() || {};
-          }
+        const candidateDocIds = [cleanUid, cleanUid.toLowerCase()];
+        if (email) {
+          candidateDocIds.push(email.replace(/[^a-z0-9]/g, '_'));
+          candidateDocIds.push(email);
+        }
+
+        for (const docId of candidateDocIds) {
+          // Check users/{docId}
+          try {
+            const userSnap = await withTimeout(getDoc(doc(db, "users", docId)), 2500);
+            if (userSnap && userSnap.exists()) {
+              const data = userSnap.data() || {};
+              existingData = { ...data, ...existingData };
+              if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
+                existingData.saved_items = data.saved_items;
+              }
+              if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
+                existingData.custom_plans = data.custom_plans;
+              }
+            }
+          } catch (_) {}
+
+          // Check profiles/{docId}
+          try {
+            const profSnap = await withTimeout(getDoc(doc(db, "profiles", docId)), 2000);
+            if (profSnap && profSnap.exists()) {
+              const data = profSnap.data() || {};
+              existingData = { ...data, ...existingData };
+              if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
+                existingData.saved_items = data.saved_items;
+              }
+              if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
+                existingData.custom_plans = data.custom_plans;
+              }
+            }
+          } catch (_) {}
+        }
+
+        // Also query users collection where email == email or identifier == email
+        if (email) {
+          try {
+            const q = query(collection(db, "users"), where("email", "==", email));
+            const qSnap = await withTimeout(getDocs(q), 2500);
+            if (qSnap && !qSnap.empty) {
+              qSnap.forEach(dSnap => {
+                const d = dSnap.data();
+                if (d) {
+                  existingData = { ...d, ...existingData };
+                  if (Array.isArray(d.saved_items) && d.saved_items.length > 0) existingData.saved_items = d.saved_items;
+                  if (Array.isArray(d.custom_plans) && d.custom_plans.length > 0) existingData.custom_plans = d.custom_plans;
+                }
+              });
+            }
+          } catch (_) {}
         }
       } catch (e) {
         console.warn("Notice checking existing user data in Firestore:", e.message || e);
       }
     }
 
-    const restoredSavedItems = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
-    const restoredPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
+    // Call deep fetchers to ensure all cloud saved items and custom plans are found
+    let restoredSavedItems = Array.isArray(existingData.saved_items) ? existingData.saved_items : [];
+    let restoredPlans = Array.isArray(existingData.custom_plans) ? existingData.custom_plans : [];
+
+    try {
+      if (restoredSavedItems.length === 0) {
+        const fetchedSaved = await this.fetchUserSavedItems({ id: cleanUid, uid: cleanUid, email: email });
+        if (Array.isArray(fetchedSaved) && fetchedSaved.length > 0) {
+          restoredSavedItems = fetchedSaved;
+        }
+      }
+      if (restoredPlans.length === 0) {
+        const fetchedPlans = await this.fetchUserPlans({ id: cleanUid, uid: cleanUid, email: email });
+        if (Array.isArray(fetchedPlans) && fetchedPlans.length > 0) {
+          restoredPlans = fetchedPlans;
+        }
+      }
+    } catch (_) {}
+
+    // Also check local storage for items saved before sign-in so we merge them rather than dropping
+    try {
+      const localBookmarks = JSON.parse(localStorage.getItem("akalbodhon_bookmarks") || "[]");
+      if (Array.isArray(localBookmarks) && localBookmarks.length > 0) {
+        const map = new Map();
+        restoredSavedItems.forEach(b => { if (b && b.id) map.set(b.id, b); });
+        localBookmarks.forEach(b => { if (b && b.id) map.set(b.id, b); });
+        restoredSavedItems = Array.from(map.values());
+      }
+      const localPlans = JSON.parse(localStorage.getItem("akalbodhon_custom_plans") || "[]");
+      if (Array.isArray(localPlans) && localPlans.length > 0) {
+        const pMap = new Map();
+        restoredPlans.forEach(p => { if (p && p.id) pMap.set(p.id, p); });
+        localPlans.forEach(p => { if (p && p.id) pMap.set(p.id, p); });
+        restoredPlans = Array.from(pMap.values());
+      }
+    } catch (_) {}
 
     const googlePhoto = user.photoURL || existingData.google_photo_url || existingData.custom_avatar_url || null;
     const profile = {
@@ -184,17 +268,17 @@ export const AkalbodhonFirebase = {
       updated_at: new Date().toISOString()
     };
 
-    // Store/Update user credentials and profile in Firestore under their own UID (non-blocking)
-    this.syncProfile(profile).catch(() => {});
+    // Store/Update user credentials and profile in Firestore
+    // SAFE UPDATE: Only sync saved_items and custom_plans if we actually have items, to prevent erasing remote data with []!
+    const syncPayload = { ...profile };
+    if (restoredSavedItems.length === 0) delete syncPayload.saved_items;
+    if (restoredPlans.length === 0) delete syncPayload.custom_plans;
+    this.syncProfile(syncPayload).catch(() => {});
 
     // Restore to localStorage for active user session
     localStorage.setItem("akalbodhon_user_profile", JSON.stringify(profile));
-    if (restoredSavedItems.length > 0) {
-      localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(restoredSavedItems));
-    }
-    if (restoredPlans.length > 0) {
-      localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(restoredPlans));
-    }
+    localStorage.setItem("akalbodhon_bookmarks", JSON.stringify(restoredSavedItems));
+    localStorage.setItem("akalbodhon_custom_plans", JSON.stringify(restoredPlans));
 
     return profile;
   },
@@ -554,20 +638,30 @@ export const AkalbodhonFirebase = {
   // 2. Sync Profile with Firestore database ('users' and 'profiles' collections)
   async syncProfile(profile) {
     if (!db || !profile) return;
-    const docId = String(profile.id || profile.user_id || profile.uid || profile.identifier).toLowerCase();
-    if (!docId) return;
+    const docIds = getPossibleUserDocIds(profile);
+    if (docIds.length === 0) return;
     const payload = {
       ...profile,
       updated_at: new Date().toISOString()
     };
-    try {
-      // 1. Primary: users/{userId}
-      const userRef = doc(db, "users", docId);
-      await withTimeout(setDoc(userRef, payload, { merge: true }), 2500);
+    // Guard: Do not wipe remote saved_items or custom_plans during general profile updates
+    if (!payload.saved_items || payload.saved_items.length === 0) {
+      delete payload.saved_items;
+    }
+    if (!payload.custom_plans || payload.custom_plans.length === 0) {
+      delete payload.custom_plans;
+    }
 
-      // 2. Secondary/Legacy compatibility: profiles/{userId}
-      const profRef = doc(db, "profiles", docId);
-      await withTimeout(setDoc(profRef, payload, { merge: true }), 2000).catch(() => {});
+    try {
+      for (const docId of docIds) {
+        // 1. Primary: users/{docId}
+        const userRef = doc(db, "users", docId);
+        await withTimeout(setDoc(userRef, payload, { merge: true }), 2500).catch(() => {});
+
+        // 2. Secondary/Legacy compatibility: profiles/{docId}
+        const profRef = doc(db, "profiles", docId);
+        await withTimeout(setDoc(profRef, payload, { merge: true }), 1500).catch(() => {});
+      }
     } catch (err) {
       console.warn("Firestore profile sync notice:", err.message || err);
     }
@@ -664,11 +758,21 @@ export const AkalbodhonFirebase = {
     const docIds = getPossibleUserDocIds(userOrId);
     if (docIds.length === 0) return false;
     const list = Array.isArray(bookmarks) ? bookmarks : [];
+    let userEmail = '';
+    if (typeof userOrId === 'object') {
+      userEmail = (userOrId.email || userOrId.user_id || userOrId.identifier || '').trim().toLowerCase();
+    } else if (typeof userOrId === 'string' && userOrId.includes('@')) {
+      userEmail = userOrId.trim().toLowerCase();
+    }
+
     try {
       const payload = {
         saved_items: list,
         updated_at: new Date().toISOString()
       };
+      if (userEmail && userEmail.includes('@')) {
+        payload.email = userEmail;
+      }
 
       for (const docId of docIds) {
         // 1. Write to users/{docId}
@@ -708,18 +812,39 @@ export const AkalbodhonFirebase = {
         }
       }
 
-      // Query by identifier or email if contains '@'
-      for (const docId of docIds) {
-        if (docId.includes('@')) {
-          try {
-            const q = query(collection(db, "users"), where("identifier", "==", docId));
-            const snap = await withTimeout(getDocs(q), 2000).catch(() => null);
-            if (snap && !snap.empty) {
-              const d = snap.docs[0].data();
-              if (Array.isArray(d.saved_items) && d.saved_items.length > 0) return d.saved_items;
-            }
-          } catch (e) {}
+      // Query by identifier or email
+      let userEmail = '';
+      if (typeof userOrId === 'string' && userOrId.includes('@')) {
+        userEmail = userOrId.trim().toLowerCase();
+      } else if (userOrId && typeof userOrId === 'object') {
+        userEmail = (userOrId.email || userOrId.identifier || '').trim().toLowerCase();
+        if (!userEmail.includes('@') && typeof userOrId.user_id === 'string' && userOrId.user_id.includes('@')) {
+          userEmail = userOrId.user_id.trim().toLowerCase();
         }
+      }
+
+      if (userEmail && userEmail.includes('@')) {
+        try {
+          const qEmail = query(collection(db, "users"), where("email", "==", userEmail));
+          const snapEmail = await withTimeout(getDocs(qEmail), 2000).catch(() => null);
+          if (snapEmail && !snapEmail.empty) {
+            for (const dSnap of snapEmail.docs) {
+              const d = dSnap.data();
+              if (Array.isArray(d?.saved_items) && d.saved_items.length > 0) return d.saved_items;
+            }
+          }
+        } catch (e) {}
+
+        try {
+          const qIdent = query(collection(db, "users"), where("identifier", "==", userEmail));
+          const snapIdent = await withTimeout(getDocs(qIdent), 2000).catch(() => null);
+          if (snapIdent && !snapIdent.empty) {
+            for (const dSnap of snapIdent.docs) {
+              const d = dSnap.data();
+              if (Array.isArray(d?.saved_items) && d.saved_items.length > 0) return d.saved_items;
+            }
+          }
+        } catch (e) {}
       }
 
       return [];
@@ -734,8 +859,20 @@ export const AkalbodhonFirebase = {
     if (!db || !planData?.id) return false;
     const planId = String(planData.id);
     const creatorIds = getPossibleUserDocIds(planData.creator_id || planData.user_id);
+    let creatorEmail = planData.creator_email || '';
+    if (!creatorEmail) {
+      if (auth && auth.currentUser && auth.currentUser.email) {
+        creatorEmail = auth.currentUser.email.toLowerCase().trim();
+      } else {
+        try {
+          const prof = JSON.parse(localStorage.getItem('akalbodhon_user_profile') || '{}');
+          if (prof.email) creatorEmail = prof.email.toLowerCase().trim();
+        } catch (_) {}
+      }
+    }
     const payload = {
       ...planData,
+      creator_email: creatorEmail || undefined,
       saved_at: new Date().toISOString()
     };
 
@@ -745,9 +882,15 @@ export const AkalbodhonFirebase = {
       await setDoc(planRef, payload, { merge: true });
 
       // 2. Non-blocking update under creator's credentials & profile
-      if (creatorIds.length > 0) {
+      const allTargetIds = new Set(creatorIds);
+      if (creatorEmail) {
+        allTargetIds.add(creatorEmail);
+        allTargetIds.add(creatorEmail.replace(/[^a-z0-9]/g, '_'));
+      }
+
+      if (allTargetIds.size > 0) {
         (async () => {
-          for (const creatorId of creatorIds) {
+          for (const creatorId of allTargetIds) {
             try {
               const userPlanRef = doc(db, "users", creatorId, "plans", planId);
               setDoc(userPlanRef, payload, { merge: true }).catch(() => {});
@@ -781,6 +924,16 @@ export const AkalbodhonFirebase = {
   async fetchUserPlans(userOrId) {
     if (!db || !userOrId) return [];
     const creatorIds = getPossibleUserDocIds(userOrId);
+    let userEmail = '';
+    if (typeof userOrId === 'string' && userOrId.includes('@')) {
+      userEmail = userOrId.toLowerCase().trim();
+    } else if (userOrId && typeof userOrId === 'object') {
+      userEmail = (userOrId.email || userOrId.identifier || '').toLowerCase().trim();
+      if (!userEmail.includes('@') && typeof userOrId.user_id === 'string' && userOrId.user_id.includes('@')) {
+        userEmail = userOrId.user_id.toLowerCase().trim();
+      }
+    }
+
     try {
       const plansMap = new Map();
 
@@ -809,13 +962,27 @@ export const AkalbodhonFirebase = {
         } catch (e) {}
       }
 
-      // Also check top-level plans created by this user
+      // Also check top-level plans created by this user by creator_id
       for (const creatorId of creatorIds) {
         try {
           const q = query(collection(db, "plans"), where("creator_id", "==", creatorId));
           const snap = await withTimeout(getDocs(q), 2000);
           if (snap && !snap.empty) {
             snap.forEach(docSnap => {
+              const p = docSnap.data();
+              if (p && p.id) plansMap.set(p.id, p);
+            });
+          }
+        } catch (e) {}
+      }
+
+      // Also check top-level plans created by this user by creator_email
+      if (userEmail && userEmail.includes('@')) {
+        try {
+          const qEmail = query(collection(db, "plans"), where("creator_email", "==", userEmail));
+          const snapEmail = await withTimeout(getDocs(qEmail), 2500);
+          if (snapEmail && !snapEmail.empty) {
+            snapEmail.forEach(docSnap => {
               const p = docSnap.data();
               if (p && p.id) plansMap.set(p.id, p);
             });

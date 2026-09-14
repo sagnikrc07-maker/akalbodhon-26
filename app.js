@@ -4714,13 +4714,20 @@
         }
         // Ensure user-specific itinerary items are restored if active store was empty
         const specificData = loadUserSpecificItinerary(currentUser);
-        if (specificData) {
-          const curBm = Storage.getBookmarks() || [];
-          if (curBm.length === 0 && Array.isArray(specificData.bookmarks) && specificData.bookmarks.length > 0) {
+        const curBm = Storage.getBookmarks() || [];
+        if (curBm.length === 0) {
+          if (Array.isArray(currentUser.saved_items) && currentUser.saved_items.length > 0) {
+            Storage.setBookmarks(currentUser.saved_items);
+          } else if (specificData && Array.isArray(specificData.bookmarks) && specificData.bookmarks.length > 0) {
             Storage.setBookmarks(specificData.bookmarks);
           }
-          if ((!customPlans || customPlans.length === 0) && Array.isArray(specificData.custom_plans) && specificData.custom_plans.length > 0) {
-            customPlans = specificData.custom_plans;
+        }
+        if (!customPlans || customPlans.length === 0) {
+          if (Array.isArray(currentUser.custom_plans) && currentUser.custom_plans.length > 0) {
+            customPlans = [...currentUser.custom_plans];
+            localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+          } else if (specificData && Array.isArray(specificData.custom_plans) && specificData.custom_plans.length > 0) {
+            customPlans = [...specificData.custom_plans];
             localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
           }
         }
@@ -4755,7 +4762,10 @@
           localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
           saveUserSpecificItinerary(currentUser, mergedBm, customPlans);
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          if (typeof renderSavedSection === 'function') renderSavedSection();
           if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
+          if (typeof renderPandals === 'function') renderPandals();
+          if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
         } else if ((Storage.getBookmarks() || []).length > 0) {
           // If remote is empty, push local bookmarks to remote
           window.AkalbodhonFirebase.saveBookmarks(currentUser, Storage.getBookmarks()).catch(() => {});
@@ -4771,9 +4781,11 @@
           saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
           if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter || 'all');
           if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
+          if (typeof renderSavedSection === 'function') renderSavedSection();
         } else if (customPlans && customPlans.length > 0) {
           const targetUid = currentUser.id || currentUser.user_id;
           window.AkalbodhonFirebase.syncProfile({
+            ...currentUser,
             id: targetUid,
             custom_plans: customPlans
           }).catch(() => {});
@@ -4922,6 +4934,7 @@
           } else if (customPlans && customPlans.length > 0) {
             const targetUid = user.id || user.user_id;
             window.AkalbodhonFirebase.syncProfile({
+              ...currentUser,
               id: targetUid,
               custom_plans: customPlans
             }).catch(() => {});
@@ -4929,6 +4942,38 @@
         } catch (fbErr) {
           console.warn('Firestore session sync notice:', fbErr);
         }
+      }
+
+      // Also sync from Supabase if available
+      if (supabaseClient) {
+        try {
+          const targetId = (currentUser.id || '').toLowerCase();
+          const targetUid = currentUser.user_id || currentUser.id;
+          const orFilter = [`id.eq.${targetId}`, `identifier.eq.${targetId}`, `user_id.eq.${targetUid}`];
+          if (currentUser.email) orFilter.push(`email.eq.${currentUser.email.toLowerCase()}`);
+          const { data, error } = await supabaseClient
+            .from('profiles')
+            .select('saved_items, custom_plans')
+            .or(orFilter.join(','))
+            .maybeSingle();
+          if (!error && data) {
+            if (Array.isArray(data.saved_items) && data.saved_items.length > 0) {
+              const merged = mergeBookmarks(Storage.getBookmarks() || [], data.saved_items);
+              Storage.setBookmarks(merged);
+              currentUser.saved_items = merged;
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+              saveUserSpecificItinerary(currentUser, merged, customPlans);
+            }
+            if (Array.isArray(data.custom_plans) && data.custom_plans.length > 0) {
+              const mergedP = mergePlans(customPlans || [], data.custom_plans);
+              customPlans = mergedP;
+              currentUser.custom_plans = mergedP;
+              localStorage.setItem('akalbodhon_custom_plans', JSON.stringify(customPlans));
+              localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
+              saveUserSpecificItinerary(currentUser, Storage.getBookmarks(), customPlans);
+            }
+          }
+        } catch (_) {}
       }
     } else {
       if (currentUser) {
@@ -4946,6 +4991,8 @@
     if (typeof renderSavedSection === 'function') renderSavedSection();
     if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
     if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+    if (typeof renderPandals === 'function') renderPandals();
+    if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
 
     if (user && typeof pendingSaveAction === 'function') {
       try {
@@ -5304,14 +5351,28 @@
 
       if (!supabaseClient) return;
 
-      // 1. Update in Supabase PostgreSQL Database (profiles table)
-      await supabaseClient
-        .from('profiles')
-        .update({
-          saved_items: savedItems,
-          updated_at: new Date().toISOString()
-        })
-        .or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+      // 1. Update/Upsert in Supabase PostgreSQL Database (profiles table)
+      try {
+        await supabaseClient
+          .from('profiles')
+          .upsert({
+            id: targetId,
+            user_id: targetUid,
+            identifier: currentUser.identifier || currentUser.email || targetUid,
+            email: currentUser.email || null,
+            username: currentUser.username || 'Devotee',
+            saved_items: savedItems,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+      } catch (_) {
+        await supabaseClient
+          .from('profiles')
+          .update({
+            saved_items: savedItems,
+            updated_at: new Date().toISOString()
+          })
+          .or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+      }
 
       // 2. Cloud storage backup in Supabase Storage (devotee-data bucket)
       try {
@@ -5659,13 +5720,16 @@
       const profile = await window.AkalbodhonFirebase.signInWithGoogle();
       if (profile) {
         hideGlobalLoader();
-        saveUserSession(profile);
+        await saveUserSession(profile);
         closeAuthModal();
         closeSaveAuthPromptModal();
 
         if (typeof renderSavedSection === 'function') renderSavedSection();
+        if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
         if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
         if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+        if (typeof renderPandals === 'function') renderPandals();
+        if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
 
         // Bring devotee to home page & top
         window.location.hash = '';
@@ -5673,6 +5737,7 @@
 
         showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
         resetGoogleButtons();
+        setTimeout(syncAllRemoteData, 60);
         return;
       }
     } catch (fbErr) {
@@ -5845,14 +5910,16 @@
         }
       }
 
-      // B. Supabase sync: fetch only plans where creator_id belongs to current user
+      // B. Supabase sync: fetch only plans where creator_id or creator_email belongs to current user
       if (supabaseClient && candidateIds.length > 0) {
         try {
-          const { data, error } = await supabaseClient
-            .from('puja_plans')
-            .select('*')
-            .in('creator_id', candidateIds)
-            .order('created_at', { ascending: false });
+          let supaQuery = supabaseClient.from('puja_plans').select('*');
+          if (currentUser.email) {
+            supaQuery = supaQuery.or(`creator_id.in.(${candidateIds.join(',')}),creator_email.eq.${currentUser.email.toLowerCase()}`);
+          } else {
+            supaQuery = supaQuery.in('creator_id', candidateIds);
+          }
+          const { data, error } = await supaQuery.order('created_at', { ascending: false });
 
           if (!error && Array.isArray(data)) {
             const remotePlans = data
@@ -5952,6 +6019,12 @@
       }
       if (typeof renderSavedItinerary === 'function') {
         renderSavedItinerary();
+      }
+      if (typeof renderSavedSection === 'function') {
+        renderSavedSection();
+      }
+      if (typeof updateBookmarkCount === 'function') {
+        updateBookmarkCount();
       }
     }
   }
@@ -6679,6 +6752,7 @@
       const newPlan = {
         id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
         creator_id: creatorUserId,
+        creator_email: (currentUser?.email || '').toLowerCase().trim(),
         creator_name: creatorDisplayName,
         creator_avatar: creatorAvatar,
         title: title,
@@ -6764,6 +6838,7 @@
             await supabaseClient.from('puja_plans').insert([{
               id: newPlan.id,
               creator_id: newPlan.creator_id,
+              creator_email: newPlan.creator_email || null,
               creator_name: newPlan.creator_name,
               creator_avatar: newPlan.creator_avatar,
               title: newPlan.title,
@@ -6783,10 +6858,13 @@
             try {
               const targetId = (currentUser.id || '').toLowerCase();
               const targetUid = currentUser.user_id || currentUser.id;
-              await supabaseClient.from('profiles').update({
+              await supabaseClient.from('profiles').upsert({
+                id: targetId,
+                user_id: targetUid,
+                email: currentUser.email || null,
                 custom_plans: customPlans,
                 updated_at: new Date().toISOString()
-              }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`);
+              }, { onConflict: 'id' });
             } catch (_) {}
           }
         }
@@ -6802,6 +6880,7 @@
           if (currentUser) {
             try {
               await window.AkalbodhonFirebase.syncProfile({
+                ...currentUser,
                 id: currentUser.id || currentUser.user_id,
                 custom_plans: customPlans
               });
@@ -7586,6 +7665,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       // Update devotee's own profile without touching the plan in the database!
       if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
         window.AkalbodhonFirebase.syncProfile({
+          ...currentUser,
           id: targetUid,
           custom_plans: customPlans
         }).catch(() => {});
@@ -7593,10 +7673,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if (supabaseClient) {
         const targetId = (currentUser.id || '').toLowerCase();
-        supabaseClient.from('profiles').update({
+        supabaseClient.from('profiles').upsert({
+          id: targetId,
+          user_id: targetUid,
+          email: currentUser.email || null,
           custom_plans: customPlans,
           updated_at: new Date().toISOString()
-        }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+        }, { onConflict: 'id' }).then(() => {});
       }
     }
 
@@ -7640,7 +7723,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         ...plan,
         saved_to_itinerary: true,
         saved_at: new Date().toISOString(),
-        creator_id: plan.creator_id || (currentUser ? (currentUser.id || currentUser.user_id) : 'devotee')
+        creator_id: plan.creator_id || (currentUser ? (currentUser.id || currentUser.user_id) : 'devotee'),
+        creator_email: (plan.creator_email || currentUser?.email || '').toLowerCase().trim()
       };
 
       customPlans.unshift(planToSave);
@@ -7660,6 +7744,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
             window.AkalbodhonFirebase.savePlan(planToSave).catch(() => {});
           }
           window.AkalbodhonFirebase.syncProfile({
+            ...currentUser,
             id: targetUid,
             custom_plans: customPlans
           }).catch(() => {});
@@ -7667,10 +7752,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
         if (supabaseClient) {
           const targetId = (currentUser.id || '').toLowerCase();
-          supabaseClient.from('profiles').update({
+          supabaseClient.from('profiles').upsert({
+            id: targetId,
+            user_id: targetUid,
+            email: currentUser.email || null,
             custom_plans: customPlans,
             updated_at: new Date().toISOString()
-          }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+          }, { onConflict: 'id' }).then(() => {});
         }
       }
 
@@ -8686,15 +8774,19 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     initScrollReveal();
 
     // Google Redirect Sign-In Session Recovery
-    function handleRedirectAuthSuccess(profile) {
+    async function handleRedirectAuthSuccess(profile) {
       if (!profile) return;
-      saveUserSession(profile);
+      await saveUserSession(profile);
       closeAuthModal();
       closeSaveAuthPromptModal();
       if (typeof renderSavedSection === 'function') renderSavedSection();
+      if (typeof renderSavedItinerary === 'function') renderSavedItinerary();
       if (typeof updateBookmarkCount === 'function') updateBookmarkCount();
       if (typeof renderFestivalPlans === 'function') renderFestivalPlans(activePlanFilter);
+      if (typeof renderPandals === 'function') renderPandals();
+      if (typeof renderFoodAndShopping === 'function') renderFoodAndShopping();
       showToast(`Welcome, ${profile.username}! Signed in with Google.`, 'celebration');
+      setTimeout(syncAllRemoteData, 60);
     }
 
     window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
