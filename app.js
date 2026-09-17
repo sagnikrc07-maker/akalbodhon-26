@@ -1257,6 +1257,140 @@
         this.dhakTimer = null;
       }
     }
+
+    // --- DHAAK TAL RHYTHMIC ENGINE FOR SPECIFIC PUJA DAYS ---
+    playRitualTal(day, onBeatCallback) {
+      this.init();
+      if (this.activeTalDay === day && this.isTalLooping) {
+        this.stopRitualTal();
+        return false;
+      }
+      this.stopRitualTal();
+      this.stopDhakLoop();
+
+      const TAL_CONFIGS = {
+        'Mahalaya': {
+          name: 'Agomoni Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 220 },
+            { type: 'kuti', delay: 380 },
+            { type: 'dha', delay: 560 },
+            { type: 'kanshi', delay: 780 },
+            { type: 'dha', delay: 780 },
+            { type: 'kuti', delay: 1000 },
+            { type: 'dha', delay: 1200 }
+          ]
+        },
+        'Maha Shasthi': {
+          name: 'Bodhon Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 190 },
+            { type: 'kuti', delay: 350 },
+            { type: 'dha', delay: 520 },
+            { type: 'dha', delay: 700 },
+            { type: 'kuti', delay: 880 },
+            { type: 'kanshi', delay: 1060 },
+            { type: 'dha', delay: 1060 }
+          ]
+        },
+        'Maha Saptami': {
+          name: 'Nabapatrika Triplet Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 160 },
+            { type: 'kuti', delay: 300 },
+            { type: 'dha', delay: 450 },
+            { type: 'kuti', delay: 600 },
+            { type: 'dha', delay: 750 },
+            { type: 'kanshi', delay: 900 },
+            { type: 'dha', delay: 900 }
+          ]
+        },
+        'Maha Ashtami': {
+          name: 'Sandhi Puja Grand Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 140 },
+            { type: 'dha', delay: 280 },
+            { type: 'kuti', delay: 420 },
+            { type: 'kanshi', delay: 560 },
+            { type: 'dha', delay: 560 },
+            { type: 'dha', delay: 700 },
+            { type: 'kuti', delay: 840 },
+            { type: 'kuti', delay: 980 }
+          ]
+        },
+        'Maha Navami': {
+          name: 'Dhunuchi Naach Fast Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 120 },
+            { type: 'kuti', delay: 220 },
+            { type: 'dha', delay: 320 },
+            { type: 'kuti', delay: 420 },
+            { type: 'kanshi', delay: 520 },
+            { type: 'dha', delay: 520 },
+            { type: 'dha', delay: 620 },
+            { type: 'kuti', delay: 720 },
+            { type: 'kuti', delay: 820 }
+          ]
+        },
+        'Vijaya Dashami': {
+          name: 'Bisarjan / Bhasan Tal',
+          pattern: [
+            { type: 'kanshi', delay: 0 },
+            { type: 'dha', delay: 0 },
+            { type: 'kuti', delay: 180 },
+            { type: 'dha', delay: 340 },
+            { type: 'kuti', delay: 500 },
+            { type: 'kanshi', delay: 680 },
+            { type: 'dha', delay: 680 },
+            { type: 'kuti', delay: 860 },
+            { type: 'dha', delay: 1040 }
+          ]
+        }
+      };
+
+      const config = TAL_CONFIGS[day] || TAL_CONFIGS['Mahalaya'];
+      this.activeTalDay = day;
+      this.isTalLooping = true;
+      const pattern = config.pattern;
+
+      let step = 0;
+      const playStep = () => {
+        if (!this.isTalLooping || this.activeTalDay !== day) return;
+        const current = pattern[step];
+        if (current.type === 'kanshi') {
+          this.playKanshi();
+        } else {
+          this.playDhakBeat(current.type);
+        }
+        if (onBeatCallback) onBeatCallback(current.type, step);
+
+        step = (step + 1) % pattern.length;
+        const nextDelay = step === 0 ? 300 : (pattern[step].delay - pattern[step - 1].delay);
+        this.talTimer = setTimeout(playStep, Math.max(100, nextDelay));
+      };
+
+      playStep();
+      return true;
+    }
+
+    stopRitualTal() {
+      this.isTalLooping = false;
+      this.activeTalDay = null;
+      if (this.talTimer) {
+        clearTimeout(this.talTimer);
+        this.talTimer = null;
+      }
+    }
   }
 
   const soundEngine = new SacredSoundEngine();
@@ -2456,13 +2590,29 @@
           ${idx + 1}
         </div>
         <div class="glass-panel p-4 sm:p-6 md:p-7 rounded-2xl border border-outline-variant/30 dark:border-amber-400/25 hover:shadow-lg transition-all space-y-4">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/20 dark:border-amber-400/15 pb-3">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/20 dark:border-amber-400/15 pb-3">
             <div>
               <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">${rit.tithi}</span>
               <h3 class="font-headline-md text-2xl text-on-surface dark:text-white font-bold">${rit.day}</h3>
             </div>
-            <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-200 text-xs font-bold self-start sm:self-auto border border-secondary-container/40 dark:border-amber-400/30 shadow-sm">
-              <span class="material-symbols-outlined text-[16px]">calendar_month</span> ${rit.date}
+            <div class="flex items-center gap-2 flex-wrap self-start sm:self-auto">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-200 text-xs font-bold border border-secondary-container/40 dark:border-amber-400/30 shadow-sm">
+                <span class="material-symbols-outlined text-[15px]">calendar_month</span> ${rit.date}
+              </div>
+              <button 
+                type="button"
+                class="play-dhaak-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white dark:bg-amber-400/20 dark:hover:bg-amber-400 dark:text-amber-300 dark:hover:text-black border border-primary/30 dark:border-amber-400/30 text-xs font-bold transition-all shadow-sm cursor-pointer group active:scale-95 shrink-0"
+                data-day="${rit.day}"
+                title="Play authentic ${rit.day} Dhaak Tal"
+              >
+                <span class="material-symbols-outlined text-[16px] dhaak-icon group-hover:scale-110 transition-transform">music_note</span>
+                <span class="dhaak-btn-label">Play Dhaak</span>
+                <span class="dhaak-playing-bars hidden items-end gap-0.5 h-3 ml-0.5">
+                  <span class="w-0.5 bg-current dhaak-bar-1"></span>
+                  <span class="w-0.5 bg-current dhaak-bar-2"></span>
+                  <span class="w-0.5 bg-current dhaak-bar-3"></span>
+                </span>
+              </button>
             </div>
           </div>
           
@@ -2494,6 +2644,52 @@
         </div>
       </div>
     `).join('');
+
+    function updateAllDhaakButtons() {
+      container.querySelectorAll('.play-dhaak-btn').forEach(btn => {
+        const day = btn.dataset.day;
+        const isThisPlaying = soundEngine.isTalLooping && soundEngine.activeTalDay === day;
+        const icon = btn.querySelector('.dhaak-icon');
+        const label = btn.querySelector('.dhaak-btn-label');
+        const bars = btn.querySelector('.dhaak-playing-bars');
+
+        if (isThisPlaying) {
+          btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'scale-105', 'shadow-md');
+          btn.classList.remove('bg-primary/10', 'text-primary', 'dark:bg-amber-400/20', 'dark:text-amber-300');
+          if (icon) icon.textContent = 'pause';
+          if (label) label.textContent = 'Pause Dhaak';
+          if (bars) {
+            bars.classList.remove('hidden');
+            bars.classList.add('flex');
+          }
+        } else {
+          btn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'scale-105', 'shadow-md');
+          btn.classList.add('bg-primary/10', 'text-primary', 'dark:bg-amber-400/20', 'dark:text-amber-300');
+          if (icon) icon.textContent = 'music_note';
+          if (label) label.textContent = 'Play Dhaak';
+          if (bars) {
+            bars.classList.add('hidden');
+            bars.classList.remove('flex');
+          }
+        }
+      });
+    }
+
+    container.querySelectorAll('.play-dhaak-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const day = btn.dataset.day;
+        const isNowPlaying = soundEngine.playRitualTal(day);
+        updateAllDhaakButtons();
+        if (isNowPlaying) {
+          showToast(`Playing ${day} Dhaak Tal 🪘`, 'music_note');
+        } else {
+          showToast('Dhaak paused', 'pause');
+        }
+      };
+    });
+    updateAllDhaakButtons();
 
     // Attach click listeners to all ceremony accordion buttons
     container.querySelectorAll('.ceremony-toggle-btn').forEach(btn => {
@@ -4385,7 +4581,58 @@
     }
   }
 
-  // --- 14. THEME TOGGLE (LIGHT / DARK) ---
+  // --- 14. THEME TOGGLE (LIGHT / DARK) & CENTER-SCREEN ANIMATION ---
+  function playCenterThemeAnimation(isDark) {
+    const container = document.getElementById('theme-switch-anim-container');
+    const badge = document.getElementById('theme-switch-anim-badge');
+    if (!container || !badge) return;
+
+    badge.className = 'relative flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 transition-transform';
+
+    if (isDark) {
+      badge.classList.add('bg-[#140f09]', 'border-amber-400', 'text-amber-300');
+      badge.style.boxShadow = '0 0 30px rgba(251, 191, 36, 0.28)';
+      badge.innerHTML = `
+        <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+          <svg class="absolute inset-1 w-[calc(100%-8px)] h-[calc(100%-8px)] text-amber-400/40 anim-ray-spin" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 6"/>
+            <circle cx="50" cy="6" r="2.5" fill="currentColor"/>
+            <circle cx="50" cy="94" r="2.5" fill="currentColor"/>
+            <circle cx="6" cy="50" r="2.5" fill="currentColor"/>
+            <circle cx="94" cy="50" r="2.5" fill="currentColor"/>
+          </svg>
+          <span class="material-symbols-outlined text-5xl sm:text-6xl text-amber-300">dark_mode</span>
+        </div>
+      `;
+    } else {
+      badge.classList.add('bg-[#fffdf7]', 'border-amber-500', 'text-amber-500');
+      badge.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.25)';
+      badge.innerHTML = `
+        <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+          <svg class="absolute inset-1 w-[calc(100%-8px)] h-[calc(100%-8px)] text-amber-500/40 anim-ray-spin" viewBox="0 0 100 100" fill="none">
+            <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="1.5" stroke-dasharray="6 6"/>
+            <circle cx="50" cy="6" r="2.5" fill="currentColor"/>
+            <circle cx="50" cy="94" r="2.5" fill="currentColor"/>
+            <circle cx="6" cy="50" r="2.5" fill="currentColor"/>
+            <circle cx="94" cy="50" r="2.5" fill="currentColor"/>
+          </svg>
+          <span class="material-symbols-outlined text-5xl sm:text-6xl text-amber-500">light_mode</span>
+        </div>
+      `;
+    }
+
+    container.classList.remove('hidden');
+    badge.classList.remove('theme-burst-active');
+    void badge.offsetWidth;
+    badge.classList.add('theme-burst-active');
+
+    clearTimeout(container._hideTimeout);
+    container._hideTimeout = setTimeout(() => {
+      container.classList.add('hidden');
+      badge.classList.remove('theme-burst-active');
+    }, 850);
+  }
+
   function initTheme() {
     const themeBtn = document.getElementById('theme-toggle-btn');
     const savedTheme = localStorage.getItem(Storage.KEY_THEME) || 'light';
@@ -4421,6 +4668,10 @@
         document.documentElement.classList.toggle('dark', isDark);
         document.documentElement.classList.toggle('light', !isDark);
         localStorage.setItem(Storage.KEY_THEME, isDark ? 'dark' : 'light');
+
+        // Play Center Screen Theme Burst Animation
+        playCenterThemeAnimation(isDark);
+
         showToast(isDark ? 'Pandal Night View activated' : 'Day View activated', isDark ? 'dark_mode' : 'light_mode');
       });
     }
@@ -7905,12 +8156,404 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
   }
 
   // ========================================================
+  // 17. LATERAL FESTIVE SLIDE ANIMATION (KAASH & DHAKIS)
+  // ========================================================
+  function initFestiveLateralSlider() {
+    const slider = document.getElementById('festive-lateral-slider');
+    const replayBtn = document.getElementById('festive-unveil-replay-btn');
+    if (!slider) return;
+
+    let cleanupTimeout = null;
+
+    function triggerUnveil() {
+      clearTimeout(cleanupTimeout);
+
+      slider.style.display = 'flex';
+      slider.classList.remove('festive-fade-out');
+
+      // Restart flower & aura animations
+      const leftFlower = slider.querySelector('#festive-kaash-left');
+      const rightFlower = slider.querySelector('#festive-kaash-right');
+      const centerEmblem = slider.querySelector('#festive-center-emblem');
+
+      if (leftFlower) {
+        leftFlower.classList.remove('kaash-anim-left');
+        void leftFlower.offsetWidth;
+        leftFlower.classList.add('kaash-anim-left');
+      }
+      if (rightFlower) {
+        rightFlower.classList.remove('kaash-anim-right');
+        void rightFlower.offsetWidth;
+        rightFlower.classList.add('kaash-anim-right');
+      }
+      if (centerEmblem) {
+        centerEmblem.classList.remove('emblem-aura-anim');
+        void centerEmblem.offsetWidth;
+        centerEmblem.classList.add('emblem-aura-anim');
+      }
+
+      // No sound played per user preference
+
+      // Clean up after slide animation finishes (2.35s animation + 0.6s fade)
+      cleanupTimeout = setTimeout(() => {
+        slider.classList.add('festive-fade-out');
+        setTimeout(() => {
+          slider.style.display = 'none';
+        }, 600);
+      }, 2350);
+    }
+
+    window.triggerFestiveLateralReveal = triggerUnveil;
+
+    if (replayBtn) {
+      replayBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        triggerUnveil();
+      });
+    }
+
+    // Automatically trigger the animation when opening the website
+    setTimeout(triggerUnveil, 350);
+  }
+
+  // ========================================================
+  // 18. DURGA PUJA AI CHATBOT (SHAROD.AI - GEMINI POWERED)
+  // ========================================================
+  function initPujaAIChatbot() {
+    const triggerBtn = document.getElementById('puja-ai-trigger-btn');
+    const chatWindow = document.getElementById('puja-ai-chat-window');
+    const closeBtn = document.getElementById('ai-chat-close-btn');
+    const clearBtn = document.getElementById('ai-chat-clear-btn');
+    const settingsBtn = document.getElementById('ai-chat-settings-btn');
+    const settingsDrawer = document.getElementById('ai-chat-settings-drawer');
+    const apiKeyInput = document.getElementById('ai-api-key-input');
+    const apiKeySaveBtn = document.getElementById('ai-api-key-save-btn');
+    const chatForm = document.getElementById('ai-chat-form');
+    const chatInput = document.getElementById('ai-chat-input');
+    const messagesContainer = document.getElementById('ai-chat-messages');
+
+    if (!triggerBtn || !chatWindow || !messagesContainer) return;
+
+    let chatHistory = [];
+    let isWaitingResponse = false;
+    const STORAGE_API_KEY = 'akalbodhon_gemini_api_key';
+
+    if (apiKeyInput) {
+      apiKeyInput.value = localStorage.getItem(STORAGE_API_KEY) || '';
+    }
+
+    if (apiKeySaveBtn && apiKeyInput) {
+      apiKeySaveBtn.onclick = (e) => {
+        e.preventDefault();
+        const val = apiKeyInput.value.trim();
+        if (val) {
+          localStorage.setItem(STORAGE_API_KEY, val);
+          showToast('Gemini API key saved in browser!', 'check_circle');
+        } else {
+          localStorage.removeItem(STORAGE_API_KEY);
+          showToast('Using local knowledge fallback engine', 'info');
+        }
+        if (settingsDrawer) settingsDrawer.classList.add('hidden');
+      };
+    }
+
+    if (settingsBtn && settingsDrawer) {
+      settingsBtn.onclick = () => {
+        settingsDrawer.classList.toggle('hidden');
+      };
+    }
+
+    function renderGreeting() {
+      messagesContainer.innerHTML = '';
+      appendAIMessage(
+        `Joy Maa Durga! 🌺 Welcome to **Akalbodhon**!\n\n` +
+        `I am **sharod.ai**, your personal festival concierge and Durga Puja AI Guide modeled with the intelligence of Gemini. I am here to help you navigate our website, answer your questions, and guide your festive journey.\n\n` +
+        `I can guide you with:\n` +
+        `• 🏛️ **World-famous Pandals & Transit** (North, South, East circuits)\n` +
+        `• 🪔 **Sacred Vedic Rituals & Timings** (Bodhon to Dashami)\n` +
+        `• 🍲 **Iconic Kolkata Street Food & Dining** (Biryani, Kathi rolls, Kabiraji)\n` +
+        `• 🚇 **Kolkata Metro Timings & Midnight Special Trains**\n` +
+        `• 🌐 **Any questions**: Culture, science, coding, or personalized festival itineraries!\n\n` +
+        `*Feel free to ask for opinions, comparisons, or recommendations below!*`
+      );
+    }
+
+    function openChat() {
+      chatWindow.classList.remove('hidden');
+      void chatWindow.offsetWidth;
+      chatWindow.classList.add('chat-open');
+      if (messagesContainer.children.length === 0) {
+        renderGreeting();
+      }
+      setTimeout(() => chatInput?.focus(), 150);
+    }
+
+    function closeChat() {
+      chatWindow.classList.remove('chat-open');
+      setTimeout(() => chatWindow.classList.add('hidden'), 250);
+    }
+
+    triggerBtn.onclick = (e) => {
+      e.stopPropagation();
+      if (chatWindow.classList.contains('chat-open')) {
+        closeChat();
+      } else {
+        openChat();
+      }
+    };
+
+    closeBtn?.addEventListener('click', closeChat);
+    clearBtn?.addEventListener('click', () => {
+      chatHistory = [];
+      renderGreeting();
+      showToast('Conversation refreshed', 'refresh');
+    });
+
+    // Handle Quick Chips
+    document.querySelectorAll('.ai-quick-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const text = chip.textContent.trim().replace(/^[^\w\s]+/, '').trim();
+        handleUserSend(text);
+      });
+    });
+
+    chatForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (text) {
+        chatInput.value = '';
+        handleUserSend(text);
+      }
+    });
+
+    function appendUserMessage(text) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'ai-message-bubble ai-bubble-user px-4 py-2.5 shadow-sm text-right';
+      msgDiv.textContent = text;
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Global Section & Filter Navigator (callable from AI chat & links)
+    window.navigateToAppSection = function(section, filter = '') {
+      if (!section) return;
+
+      // 1. Switch active view via hash router
+      window.location.hash = section;
+
+      // 2. Filter pandals and scroll cleanly
+      if (section === 'pandals') {
+        setTimeout(() => {
+          const dropdown = document.getElementById('pandal-filter-dropdown');
+          if (dropdown) {
+            const f = (filter || '').toLowerCase();
+            if (f.includes('south')) dropdown.value = 'zone-South';
+            else if (f.includes('north')) dropdown.value = 'zone-North';
+            else if (f.includes('central')) dropdown.value = 'zone-Central';
+            else if (f.includes('east') || f.includes('salt')) dropdown.value = 'zone-East';
+            else if (f.includes('rajbari') || f.includes('bonedi')) dropdown.value = 'rajbari';
+            else if (f.includes('all')) dropdown.value = 'all';
+            else dropdown.value = 'recommended';
+            dropdown.dispatchEvent(new Event('change'));
+          }
+
+          const grid = document.getElementById('pandals-grid-container');
+          if (grid) {
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            grid.classList.add('ring-2', 'ring-amber-400', 'ring-offset-4', 'transition-all');
+            setTimeout(() => grid.classList.remove('ring-2', 'ring-amber-400', 'ring-offset-4'), 2500);
+          }
+        }, 120);
+      } else if (section === 'food-shopping') {
+        setTimeout(() => {
+          const el = document.getElementById('section-food-shopping');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      } else if (section === 'rituals') {
+        setTimeout(() => {
+          const el = document.getElementById('section-rituals');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      } else if (section === 'audio') {
+        setTimeout(() => {
+          const el = document.getElementById('section-audio');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      } else if (section === 'saved') {
+        setTimeout(() => {
+          const el = document.getElementById('section-saved');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      } else if (section === 'plans') {
+        setTimeout(() => {
+          const el = document.getElementById('section-plans');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 120);
+      }
+
+      const label = filter ? `${filter} ${section}` : section;
+      if (typeof showToast === 'function') {
+        showToast(`📍 Directing you to ${label}!`, 'explore');
+      }
+    };
+
+    function appendAIMessage(markdownText, groundedWeb = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+      
+      let badgeHtml = '';
+      if (groundedWeb) {
+        badgeHtml = '<div class="ai-web-badge"><span class="material-symbols-outlined text-[13px]">travel_explore</span> Grounded with Web Search</div>';
+      }
+
+      msgDiv.innerHTML = badgeHtml + formatPujaMarkdown(markdownText);
+      messagesContainer.appendChild(msgDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+      const id = 'ai-typing-indicator';
+      const existing = document.getElementById(id);
+      if (existing) existing.remove();
+
+      const typingDiv = document.createElement('div');
+      typingDiv.id = id;
+      typingDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-2.5 shadow-sm flex items-center gap-1.5 w-20';
+      typingDiv.innerHTML = `
+        <span class="w-2 h-2 rounded-full bg-primary dark:bg-amber-400 ai-typing-dot"></span>
+        <span class="w-2 h-2 rounded-full bg-primary dark:bg-amber-400 ai-typing-dot" style="animation-delay: 0.2s"></span>
+        <span class="w-2 h-2 rounded-full bg-primary dark:bg-amber-400 ai-typing-dot" style="animation-delay: 0.4s"></span>
+      `;
+      messagesContainer.appendChild(typingDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const el = document.getElementById('ai-typing-indicator');
+      if (el) el.remove();
+    }
+
+    async function handleUserSend(text) {
+      if (isWaitingResponse) return;
+      appendUserMessage(text);
+      showTypingIndicator();
+      isWaitingResponse = true;
+
+      const apiKey = localStorage.getItem(STORAGE_API_KEY) || '';
+
+      try {
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            history: chatHistory,
+            apiKey: apiKey
+          })
+        });
+
+        const data = await resp.json();
+        removeTypingIndicator();
+
+        if (data.success && data.response) {
+          appendAIMessage(data.response, Boolean(data.grounded_web));
+          chatHistory.push({ role: 'user', text: text });
+          chatHistory.push({ role: 'model', text: data.response });
+        } else {
+          appendAIMessage("Joy Maa Durga! 🌺 How may I assist you with your Puja planning today?");
+        }
+      } catch (err) {
+        removeTypingIndicator();
+        appendAIMessage("Joy Maa Durga! 🌺 I am here to help you explore Kolkata's iconic pandals, sacred rituals, authentic food, and transit routes. What would you like to discover?");
+      } finally {
+        isWaitingResponse = false;
+      }
+    }
+
+    function formatPujaMarkdown(text) {
+      let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Markdown formatting
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<li class="ml-4 list-disc">$1</li>');
+      html = html.replace(/^\d+\.\s+(.*)$/gm, '<li class="ml-4 list-decimal">$1</li>');
+      html = html.replace(/\n\n/g, '<div class="h-2"></div>');
+      html = html.replace(/\n/g, '<br/>');
+
+      // Convert action links into interactive buttons
+      // [Label](action:nav:section:filter)
+      html = html.replace(
+        /\[(.*?)\]\(action:nav:([^:\)]+)(?::([^:\)]+))?\)/g,
+        function(match, label, section, filter) {
+          const filterArg = filter ? `'${filter}'` : "''";
+          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${section}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
+        }
+      );
+
+      // Convert standard hash links [Label](#section?zone=filter)
+      html = html.replace(
+        /\[(.*?)\]\(#(pandals|food-shopping|rituals|audio|saved|plans)(?:\?(?:zone=)?([^:\)]+))?\)/g,
+        function(match, label, section, filter) {
+          const filterArg = filter ? `'${filter}'` : "''";
+          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${section}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
+        }
+      );
+
+      // Add contextual navigation buttons if relevant topics appear in response
+      const lower = text.toLowerCase();
+      const actionButtons = [];
+
+      if (lower.includes('south') && (lower.includes('pandal') || lower.includes('kolkata')) && !html.includes("navigateToAppSection('pandals', 'South')")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('pandals', 'South')"><span class="material-symbols-outlined text-[14px]">explore</span> View South Pandals</button>`);
+      }
+      if (lower.includes('north') && (lower.includes('pandal') || lower.includes('kolkata')) && !html.includes("navigateToAppSection('pandals', 'North')")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('pandals', 'North')"><span class="material-symbols-outlined text-[14px]">explore</span> View North Pandals</button>`);
+      }
+      if (lower.includes('east') && (lower.includes('pandal') || lower.includes('sreebhumi') || lower.includes('salt lake')) && !html.includes("navigateToAppSection('pandals', 'East')")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('pandals', 'East')"><span class="material-symbols-outlined text-[14px]">explore</span> View East Pandals</button>`);
+      }
+      if ((lower.includes('ritual') || lower.includes('sandhi') || lower.includes('dhaak') || lower.includes('dhak')) && !html.includes("navigateToAppSection('rituals'")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('rituals')"><span class="material-symbols-outlined text-[14px]">calendar_month</span> Explore Rituals & Dhaak</button>`);
+      }
+      if ((lower.includes('food') || lower.includes('biryani') || lower.includes('roll') || lower.includes('sweet') || lower.includes('restaurant')) && !html.includes("navigateToAppSection('food-shopping'")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('food-shopping')"><span class="material-symbols-outlined text-[14px]">restaurant</span> Food Guide</button>`);
+      }
+      if ((lower.includes('itinerary') || lower.includes('bookmark') || lower.includes('saved')) && !html.includes("navigateToAppSection('saved'")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('saved')"><span class="material-symbols-outlined text-[14px]">bookmark</span> Open Itinerary</button>`);
+      }
+      if ((lower.includes('radio') || lower.includes('song') || lower.includes('audio') || lower.includes('playlist')) && !html.includes("navigateToAppSection('audio'")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('audio')"><span class="material-symbols-outlined text-[14px]">radio</span> Puja Radio</button>`);
+      }
+
+      if (actionButtons.length > 0) {
+        html += '<div class="mt-2.5 pt-2 border-t border-outline-variant/20 dark:border-amber-400/15 flex flex-wrap gap-1 items-center">' +
+          actionButtons.join('') +
+          '</div>';
+      }
+
+      return html;
+    }
+  }
+
+  // ========================================================
   // 19. GLOBAL INITIALIZATION & ROBUST ROUTING
   // ========================================================
   async function initApp() {
     try {
       initTheme();
     } catch (e) { console.warn('initTheme error:', e); }
+
+    try {
+      initFestiveLateralSlider();
+    } catch (e) { console.warn('initFestiveLateralSlider error:', e); }
+
+    try {
+      initPujaAIChatbot();
+    } catch (e) { console.warn('initPujaAIChatbot error:', e); }
 
     try {
       initDevoteesCounter();
