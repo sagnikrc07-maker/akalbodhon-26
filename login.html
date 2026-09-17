@@ -504,12 +504,29 @@
     };
 
     function formatPujaMarkdown(text) {
+      if (!text) return '';
       let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      // 1. Headers (###, ##, #)
+      html = html.replace(/^###\s+(.*)$/gm, '<div class="font-bold text-xs sm:text-sm text-primary dark:text-amber-300 mt-2.5 mb-1 pb-0.5 border-b border-primary/15 dark:border-amber-400/20 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^##\s+(.*)$/gm, '<div class="font-bold text-sm text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^#\s+(.*)$/gm, '<div class="font-bold text-base text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+
+      // 2. Bold and Italics
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<li class="ml-4 list-disc">$1</li>');
-      html = html.replace(/\n\n/g, '<div class="h-2"></div>');
+
+      // 3. Numbered lists: render explicit number from markdown ($1.) without relying on browser CSS counters
+      html = html.replace(/^(\d+)\.\s+(.*)$/gm, '<div class="ai-list-item flex items-start gap-1.5 my-1 ml-0.5"><span class="font-bold text-primary dark:text-amber-400 select-none shrink-0">$1.</span><div class="flex-1">$2</div></div>');
+
+      // 4. Bullet points (•, -, *)
+      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<div class="ai-bullet-item flex items-start gap-2 my-0.5 ml-3"><span class="text-primary dark:text-amber-400 text-xs shrink-0 select-none leading-relaxed">•</span><div class="flex-1">$1</div></div>');
+
+      // 5. Paragraph breaks and newlines
+      html = html.replace(/\n\n+/g, '<div class="h-2"></div>');
       html = html.replace(/\n/g, '<br/>');
+      html = html.replace(/<br\/>\s*(<div[\s>])/g, '$1');
+      html = html.replace(/(<\/div>)\s*<br\/>/g, '$1');
 
       html = html.replace(
         /\[(.*?)\]\(action:nav:([^:\)]+)(?::([^:\)]+))?\)/g,

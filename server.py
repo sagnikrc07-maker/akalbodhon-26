@@ -338,11 +338,11 @@ def generate_local_puja_response(query, web_snippets=None):
             "Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n"
             "I am **sharod.ai**, your personal AI Guide modeled with the intelligence of Gemini. I am here to help you with:\n"
             "• 🏛️ **Finding & Filtering Pandals**: North, South, East, or Central Kolkata circuits\n"
-            "• 🪔 **Vedic Rituals & Timings**: Sandhi Puja, Pushpanjali, Dhunuchi Naach, live Dhaak Tal\n"
+            "• 🪔 **Vedic Rituals & Timings**: Sandhi Puja, Pushpanjali, Dhunuchi Naach\n"
             "• 🍲 **Kolkata Culinary Guide**: Legendary Biryani, Rolls, Kabiraji, and Sweets\n"
             "• 🚇 **Kolkata Metro & Transit**: Timings, nearest stations, and night schedules\n"
             "• 🌐 **Any general questions**: Culture, science, history, coding, or festival planning!\n\n"
-            "👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals & Dhaak](action:nav:rituals) | [Food Guide](action:nav:food-shopping)"
+            "👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals](action:nav:rituals) | [Food Guide](action:nav:food-shopping)"
         )
 
     # South Pandals Query
@@ -400,17 +400,16 @@ def generate_local_puja_response(query, web_snippets=None):
             "• [Explore Heritage Rajbari Pujas](action:nav:pandals:rajbari)"
         )
 
-    # Rituals & Dhaak
-    if 'ritual' in q or 'sandhi' in q or 'dhaak' in q or 'dhak' in q or 'pushpanjali' in q or 'ashtami' in q or 'shasthi' in q or 'navami' in q or 'dashami' in q:
+    # Rituals
+    if 'ritual' in q or 'sandhi' in q or 'pushpanjali' in q or 'ashtami' in q or 'shasthi' in q or 'navami' in q or 'dashami' in q:
         return (
-            "**Sacred Vedic Rituals & Dhaak Tal Schedule** 🪔\n\n"
+            "**Sacred Vedic Rituals Schedule** 🪔\n\n"
             "• **Maha Shasthi**: *Devi Bodhon* under the Bel tree awakening the Divine Mother.\n"
             "• **Maha Saptami**: *Nabapatrika Snan* (Kola Bou bathing at dawn in the holy Ganges) and *Prana Pratishtha*.\n"
             "• **Maha Ashtami**: Morning **Pushpanjali** followed by the celestial climax **Sandhi Puja** (108 blue lotuses & 108 diyas).\n"
-            "• **Maha Navami**: Electrifying **Dhunuchi Naach** to thunderous live Dhaak rhythms, Maha Yajna, and Bhog.\n"
+            "• **Maha Navami**: Electrifying **Dhunuchi Naach**, Maha Yajna, and festive Bhog.\n"
             "• **Vijaya Dashami**: *Devi Baran*, vibrant *Sindoor Khela*, and bittersweet immersion (*Bhashan*).\n\n"
-            "🎵 *Tip: You can listen to the authentic live Dhaak Tal for every single day right on our website!*\n\n"
-            "👉 **[Click Here to Explore Rituals & Play Dhaak Tal](action:nav:rituals)**"
+            "👉 **[Click Here to Explore Rituals on Akalbodhon](action:nav:rituals)**"
         )
 
     # Food & Dining
@@ -454,7 +453,7 @@ def generate_local_puja_response(query, web_snippets=None):
         "👉 **Quick Navigation Links**:\n"
         "• [View South Kolkata Pandals](action:nav:pandals:South)\n"
         "• [View North Kolkata Pandals](action:nav:pandals:North)\n"
-        "• [Listen to Live Dhaak Tal](action:nav:rituals)\n"
+        "• [Explore Sacred Rituals](action:nav:rituals)\n"
         "• [Browse Kolkata Food Spots](action:nav:food-shopping)"
     )
 
@@ -485,14 +484,15 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
         "   - East / Salt Lake Pandals: `👉 [Explore East Pandals](action:nav:pandals:East)`\n"
         "   - Central Pandals: `👉 [Explore Central Pandals](action:nav:pandals:Central)`\n"
         "   - Heritage Rajbari: `👉 [Explore Heritage Rajbari](action:nav:pandals:rajbari)`\n"
-        "   - Rituals & Dhaak: `👉 [Explore Rituals & Play Dhaak](action:nav:rituals)`\n"
+        "   - Rituals: `👉 [Explore Rituals](action:nav:rituals)`\n"
         "   - Food & Shopping: `👉 [Browse Food & Shopping](action:nav:food-shopping)`\n"
         "   - Saved Itinerary: `👉 [Open My Itinerary](action:nav:saved)`\n"
         "   - Curated Plans: `👉 [View Curated Plans](action:nav:plans)`\n"
         "   - Puja Radio: `👉 [Tune into Puja Radio](action:nav:audio)`\n"
         "4. OPINIONS & COMPARISONS: When asked for opinions (e.g. North vs South pandals, best time for Maddox Square, "
         "Biryani recommendations), provide insightful, nuanced, and culturally authentic advice.\n"
-        "5. TONE: Warm, intelligent, engaging, structured with markdown bolding, bullet points, and festive Bengali warmth."
+        "5. TONE: Warm, intelligent, engaging, structured with markdown bolding, bullet points, and festive Bengali warmth.\n"
+        "6. FORMATTING: Use conversational paragraphs, bold highlights, and clean bullet points (•). Avoid excessive or high-numbered lists (e.g. 1., 2., 3., ...) unless the user specifically asks for step-by-step instructions or ranked top-N lists."
     )
 
     if web_snippets:

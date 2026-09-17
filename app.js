@@ -2599,20 +2599,6 @@
               <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary-container/30 dark:bg-amber-400/20 text-secondary dark:text-amber-200 text-xs font-bold border border-secondary-container/40 dark:border-amber-400/30 shadow-sm">
                 <span class="material-symbols-outlined text-[15px]">calendar_month</span> ${rit.date}
               </div>
-              <button 
-                type="button"
-                class="play-dhaak-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white dark:bg-amber-400/20 dark:hover:bg-amber-400 dark:text-amber-300 dark:hover:text-black border border-primary/30 dark:border-amber-400/30 text-xs font-bold transition-all shadow-sm cursor-pointer group active:scale-95 shrink-0"
-                data-day="${rit.day}"
-                title="Play authentic ${rit.day} Dhaak Tal"
-              >
-                <span class="material-symbols-outlined text-[16px] dhaak-icon group-hover:scale-110 transition-transform">music_note</span>
-                <span class="dhaak-btn-label">Play Dhaak</span>
-                <span class="dhaak-playing-bars hidden items-end gap-0.5 h-3 ml-0.5">
-                  <span class="w-0.5 bg-current dhaak-bar-1"></span>
-                  <span class="w-0.5 bg-current dhaak-bar-2"></span>
-                  <span class="w-0.5 bg-current dhaak-bar-3"></span>
-                </span>
-              </button>
             </div>
           </div>
           
@@ -2645,51 +2631,10 @@
       </div>
     `).join('');
 
-    function updateAllDhaakButtons() {
-      container.querySelectorAll('.play-dhaak-btn').forEach(btn => {
-        const day = btn.dataset.day;
-        const isThisPlaying = soundEngine.isTalLooping && soundEngine.activeTalDay === day;
-        const icon = btn.querySelector('.dhaak-icon');
-        const label = btn.querySelector('.dhaak-btn-label');
-        const bars = btn.querySelector('.dhaak-playing-bars');
-
-        if (isThisPlaying) {
-          btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'scale-105', 'shadow-md');
-          btn.classList.remove('bg-primary/10', 'text-primary', 'dark:bg-amber-400/20', 'dark:text-amber-300');
-          if (icon) icon.textContent = 'pause';
-          if (label) label.textContent = 'Pause Dhaak';
-          if (bars) {
-            bars.classList.remove('hidden');
-            bars.classList.add('flex');
-          }
-        } else {
-          btn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'scale-105', 'shadow-md');
-          btn.classList.add('bg-primary/10', 'text-primary', 'dark:bg-amber-400/20', 'dark:text-amber-300');
-          if (icon) icon.textContent = 'music_note';
-          if (label) label.textContent = 'Play Dhaak';
-          if (bars) {
-            bars.classList.add('hidden');
-            bars.classList.remove('flex');
-          }
-        }
-      });
+    // Ensure any running ritual sound loop is cleanly stopped
+    if (soundEngine && typeof soundEngine.stopLoop === 'function') {
+      soundEngine.stopLoop();
     }
-
-    container.querySelectorAll('.play-dhaak-btn').forEach(btn => {
-      btn.onclick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        const day = btn.dataset.day;
-        const isNowPlaying = soundEngine.playRitualTal(day);
-        updateAllDhaakButtons();
-        if (isNowPlaying) {
-          showToast(`Playing ${day} Dhaak Tal 🪘`, 'music_note');
-        } else {
-          showToast('Dhaak paused', 'pause');
-        }
-      };
-    });
-    updateAllDhaakButtons();
 
     // Attach click listeners to all ceremony accordion buttons
     container.querySelectorAll('.ceremony-toggle-btn').forEach(btn => {
@@ -8499,18 +8444,32 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     function formatPujaMarkdown(text) {
+      if (!text) return '';
       let html = text
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 
-      // Markdown formatting
+      // 1. Headers (###, ##, #)
+      html = html.replace(/^###\s+(.*)$/gm, '<div class="font-bold text-xs sm:text-sm text-primary dark:text-amber-300 mt-2.5 mb-1 pb-0.5 border-b border-primary/15 dark:border-amber-400/20 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^##\s+(.*)$/gm, '<div class="font-bold text-sm text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^#\s+(.*)$/gm, '<div class="font-bold text-base text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+
+      // 2. Bold and Italics
       html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
       html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<li class="ml-4 list-disc">$1</li>');
-      html = html.replace(/^\d+\.\s+(.*)$/gm, '<li class="ml-4 list-decimal">$1</li>');
-      html = html.replace(/\n\n/g, '<div class="h-2"></div>');
+
+      // 3. Numbered lists: render explicit number from markdown ($1.) without relying on browser CSS counters
+      html = html.replace(/^(\d+)\.\s+(.*)$/gm, '<div class="ai-list-item flex items-start gap-1.5 my-1 ml-0.5"><span class="font-bold text-primary dark:text-amber-400 select-none shrink-0">$1.</span><div class="flex-1">$2</div></div>');
+
+      // 4. Bullet points (•, -, *)
+      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<div class="ai-bullet-item flex items-start gap-2 my-0.5 ml-3"><span class="text-primary dark:text-amber-400 text-xs shrink-0 select-none leading-relaxed">•</span><div class="flex-1">$1</div></div>');
+
+      // 5. Paragraph breaks and newlines
+      html = html.replace(/\n\n+/g, '<div class="h-2"></div>');
       html = html.replace(/\n/g, '<br/>');
+      html = html.replace(/<br\/>\s*(<div[\s>])/g, '$1');
+      html = html.replace(/(<\/div>)\s*<br\/>/g, '$1');
 
       // Convert action links into interactive buttons
       // [Label](action:nav:section:filter)
@@ -8544,8 +8503,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (lower.includes('east') && (lower.includes('pandal') || lower.includes('sreebhumi') || lower.includes('salt lake')) && !html.includes("navigateToAppSection('pandals', 'East')")) {
         actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('pandals', 'East')"><span class="material-symbols-outlined text-[14px]">explore</span> View East Pandals</button>`);
       }
-      if ((lower.includes('ritual') || lower.includes('sandhi') || lower.includes('dhaak') || lower.includes('dhak')) && !html.includes("navigateToAppSection('rituals'")) {
-        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('rituals')"><span class="material-symbols-outlined text-[14px]">calendar_month</span> Explore Rituals & Dhaak</button>`);
+      if ((lower.includes('ritual') || lower.includes('sandhi') || lower.includes('pushpanjali')) && !html.includes("navigateToAppSection('rituals'")) {
+        actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('rituals')"><span class="material-symbols-outlined text-[14px]">calendar_month</span> Explore Rituals</button>`);
       }
       if ((lower.includes('food') || lower.includes('biryani') || lower.includes('roll') || lower.includes('sweet') || lower.includes('restaurant')) && !html.includes("navigateToAppSection('food-shopping'")) {
         actionButtons.push(`<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('food-shopping')"><span class="material-symbols-outlined text-[14px]">restaurant</span> Food Guide</button>`);
