@@ -8169,10 +8169,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const chatWindow = document.getElementById('puja-ai-chat-window');
     const closeBtn = document.getElementById('ai-chat-close-btn');
     const clearBtn = document.getElementById('ai-chat-clear-btn');
-    const settingsBtn = document.getElementById('ai-chat-settings-btn');
-    const settingsDrawer = document.getElementById('ai-chat-settings-drawer');
-    const apiKeyInput = document.getElementById('ai-api-key-input');
-    const apiKeySaveBtn = document.getElementById('ai-api-key-save-btn');
     const chatForm = document.getElementById('ai-chat-form');
     const chatInput = document.getElementById('ai-chat-input');
     const messagesContainer = document.getElementById('ai-chat-messages');
@@ -8182,31 +8178,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     let chatHistory = [];
     let isWaitingResponse = false;
     const STORAGE_API_KEY = 'akalbodhon_gemini_api_key';
-
-    if (apiKeyInput) {
-      apiKeyInput.value = localStorage.getItem(STORAGE_API_KEY) || '';
-    }
-
-    if (apiKeySaveBtn && apiKeyInput) {
-      apiKeySaveBtn.onclick = (e) => {
-        e.preventDefault();
-        const val = apiKeyInput.value.trim();
-        if (val) {
-          localStorage.setItem(STORAGE_API_KEY, val);
-          showToast('Gemini API key saved in browser!', 'check_circle');
-        } else {
-          localStorage.removeItem(STORAGE_API_KEY);
-          showToast('Using local knowledge fallback engine', 'info');
-        }
-        if (settingsDrawer) settingsDrawer.classList.add('hidden');
-      };
-    }
-
-    if (settingsBtn && settingsDrawer) {
-      settingsBtn.onclick = () => {
-        settingsDrawer.classList.toggle('hidden');
-      };
-    }
 
     function renderGreeting() {
       messagesContainer.innerHTML = '';
