@@ -8439,7 +8439,8 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       showTypingIndicator();
       isWaitingResponse = true;
 
-      const apiKey = localStorage.getItem(STORAGE_API_KEY) || '';
+      const defaultKey = 'AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA';
+      const apiKey = localStorage.getItem(STORAGE_API_KEY) || defaultKey;
 
       try {
         const resp = await fetch('/api/chat', {
@@ -8452,19 +8453,46 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           })
         });
 
-        const data = await resp.json();
-        removeTypingIndicator();
+        if (resp.ok) {
+          const data = await resp.json();
+          removeTypingIndicator();
 
-        if (data.success && data.response) {
-          appendAIMessage(data.response, Boolean(data.grounded_web));
-          chatHistory.push({ role: 'user', text: text });
-          chatHistory.push({ role: 'model', text: data.response });
-        } else {
-          appendAIMessage("Joy Maa Durga! 🌺 How may I assist you with your Puja planning today?");
+          if (data.success && data.response) {
+            appendAIMessage(data.response, Boolean(data.grounded_web));
+            chatHistory.push({ role: 'user', text: text });
+            chatHistory.push({ role: 'model', text: data.response });
+            return;
+          }
         }
+        throw new Error('Server response not ok');
       } catch (err) {
+        // Direct browser-level Gemini 3.8 Flash fallback for static hosts / serverless
+        try {
+          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+          const gResp = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ role: 'user', parts: [{ text: text }] }]
+            })
+          });
+          if (gResp.ok) {
+            const gData = await gResp.json();
+            const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (reply) {
+              removeTypingIndicator();
+              appendAIMessage(reply, false);
+              chatHistory.push({ role: 'user', text: text });
+              chatHistory.push({ role: 'model', text: reply });
+              return;
+            }
+          }
+        } catch (clientErr) {
+          console.warn('Direct Gemini API fallback error:', clientErr);
+        }
+
         removeTypingIndicator();
-        appendAIMessage("Joy Maa Durga! 🌺 I am here to help you explore Kolkata's iconic pandals, sacred rituals, authentic food, and transit routes. What would you like to discover?");
+        appendAIMessage("Joy Maa Durga! 🌺 I am **sharod.ai**, here to help you explore Kolkata's iconic pandals, sacred rituals, authentic food, and transit routes.\n\n👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals & Dhaak](action:nav:rituals) | [Food Guide](action:nav:food-shopping)");
       } finally {
         isWaitingResponse = false;
       }

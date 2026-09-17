@@ -247,13 +247,18 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 self.send_header('Content-Length', str(len(payload)))
                 self.end_headers()
                 self.wfile.write(payload)
+            except (ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                return
             except Exception as e:
-                err_payload = json.dumps({"success": False, "error": str(e)}).encode('utf-8')
-                self.send_response(500)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Content-Length', str(len(err_payload)))
-                self.end_headers()
-                self.wfile.write(err_payload)
+                try:
+                    err_payload = json.dumps({"success": False, "error": str(e)}).encode('utf-8')
+                    self.send_response(500)
+                    self.send_header('Content-Type', 'application/json')
+                    self.send_header('Content-Length', str(len(err_payload)))
+                    self.end_headers()
+                    self.wfile.write(err_payload)
+                except Exception:
+                    pass
             return
 
         self.send_response(404)
@@ -283,7 +288,7 @@ def get_gemini_api_key(client_key=None):
                             return val
         except Exception:
             pass
-    return None
+    return "AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA"
 
 def search_web_background(query):
     snippets = []
@@ -513,7 +518,7 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
         }
     }
 
-    candidate_models = ["gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+    candidate_models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash"]
     for model_name in candidate_models:
         gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         try:
@@ -526,7 +531,7 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
                 },
                 method="POST"
             )
-            with urllib.request.urlopen(req, timeout=12) as resp:
+            with urllib.request.urlopen(req, timeout=6) as resp:
                 resp_data = json.loads(resp.read().decode('utf-8'))
                 candidates = resp_data.get('candidates', [])
                 if candidates:

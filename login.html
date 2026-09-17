@@ -601,27 +601,56 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         isWaiting = true;
+        const defaultKey = 'AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA';
         try {
           const resp = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text, history: chatHistory })
+            body: JSON.stringify({ message: text, history: chatHistory, apiKey: defaultKey })
           });
-          const data = await resp.json();
-          typingDiv.remove();
+          if (resp.ok) {
+            const data = await resp.json();
+            typingDiv.remove();
 
-          const botDiv = document.createElement('div');
-          botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
-          const reply = (data.success && data.response) ? data.response : 'Joy Maa Durga! 🌺 How may I assist your Durga Puja celebrations today?';
-          
-          let badgeHtml = '';
-          if (data.grounded_web) {
-            badgeHtml = '<div class="ai-web-badge"><span class="material-symbols-outlined text-[13px]">travel_explore</span> Grounded with Web Search</div>';
+            const botDiv = document.createElement('div');
+            botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+            const reply = (data.success && data.response) ? data.response : 'Joy Maa Durga! 🌺 How may I assist your Durga Puja celebrations today?';
+            
+            let badgeHtml = '';
+            if (data.grounded_web) {
+              badgeHtml = '<div class="ai-web-badge"><span class="material-symbols-outlined text-[13px]">travel_explore</span> Grounded with Web Search</div>';
+            }
+            botDiv.innerHTML = badgeHtml + formatPujaMarkdown(reply);
+            messagesContainer.appendChild(botDiv);
+            chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+            return;
           }
-          botDiv.innerHTML = badgeHtml + formatPujaMarkdown(reply);
-          messagesContainer.appendChild(botDiv);
-          chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+          throw new Error('Server not ok');
         } catch (err) {
+          try {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${defaultKey}`;
+            const gResp = await fetch(geminiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: text }] }]
+              })
+            });
+            if (gResp.ok) {
+              const gData = await gResp.json();
+              const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (reply) {
+                typingDiv.remove();
+                const botDiv = document.createElement('div');
+                botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+                botDiv.innerHTML = formatPujaMarkdown(reply);
+                messagesContainer.appendChild(botDiv);
+                chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+                return;
+              }
+            }
+          } catch (cErr) {}
+
           typingDiv.remove();
           const botDiv = document.createElement('div');
           botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
