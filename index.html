@@ -121,7 +121,7 @@
   </script>
 
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=2.2" />
 </head>
 <body class="bg-surface dark:bg-[#12100a] text-on-surface dark:text-[#f7f2ea] font-body min-h-screen antialiased selection:bg-primary selection:text-white kash-phool-bg pb-28 md:pb-12 transition-colors duration-300">
 
@@ -157,12 +157,12 @@
   <!-- ======================================================== -->
   <!-- FESTIVE WELCOME ANIMATION (30% BLUR, AURA EMBLEM & KAASH) -->
   <!-- ======================================================== -->
-  <div id="festive-lateral-slider" class="fixed inset-0 z-[150] pointer-events-none overflow-hidden flex items-center justify-center transition-all duration-700" aria-hidden="true">
+  <div id="festive-lateral-slider" style="display: none;" class="fixed inset-0 z-[150] pointer-events-none overflow-hidden flex items-center justify-center transition-all duration-700" aria-hidden="true">
     <!-- Center Emblem & Aura Wrapper -->
-    <div id="festive-center-emblem" class="relative flex flex-col items-center justify-center z-30 emblem-aura-anim">
+    <div id="festive-center-emblem" class="relative flex flex-col items-center justify-center z-30">
       <!-- Radiant Aura Halo (Outer pulsing ring, spinning rays) -->
-      <div class="absolute w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-gradient-to-tr from-amber-500/30 via-yellow-400/40 to-amber-300/20 blur-xl animate-pulse"></div>
-      <svg class="absolute w-40 h-40 sm:w-52 sm:h-52 text-amber-400/50 anim-ray-spin" viewBox="0 0 100 100" fill="none">
+      <div class="absolute festive-aura-halo rounded-full bg-gradient-to-tr from-amber-500/30 via-yellow-400/40 to-amber-300/20 blur-xl animate-pulse"></div>
+      <svg class="absolute festive-aura-halo text-amber-400/50 anim-ray-spin" viewBox="0 0 100 100" fill="none">
         <circle cx="50" cy="50" r="46" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 6"/>
         <circle cx="50" cy="4" r="2.5" fill="currentColor"/>
         <circle cx="50" cy="96" r="2.5" fill="currentColor"/>
@@ -171,7 +171,7 @@
       </svg>
       
       <!-- Website Emblem (logo.jpg) with Golden Glowing Border -->
-      <div class="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 sm:border-3 border-amber-400 shadow-[0_0_40px_rgba(251,191,36,0.65)] bg-black">
+      <div class="relative festive-emblem-circle bg-black">
         <img src="logo.jpg" alt="Akalbodhon Emblem" class="w-full h-full object-cover"/>
       </div>
       
@@ -185,7 +185,7 @@
     </div>
 
     <!-- Left Kaash Flower Cluster (Drops, opens & slides out to the left) -->
-    <div id="festive-kaash-left" class="absolute left-1/2 bottom-12 sm:bottom-16 -translate-x-[110%] sm:-translate-x-[130%] z-20 kaash-anim-left pointer-events-none">
+    <div id="festive-kaash-left" class="absolute left-1/2 bottom-12 sm:bottom-16 -translate-x-[110%] sm:-translate-x-[130%] z-20 pointer-events-none">
       <svg class="w-36 sm:w-52 md:w-64 h-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]" viewBox="0 0 180 260" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g class="kaash-stalk-1">
           <path d="M90 250 Q80 140 60 40" stroke="#ca8a04" stroke-width="3" stroke-linecap="round"/>
@@ -216,7 +216,7 @@
     </div>
 
     <!-- Right Kaash Flower Cluster (Drops, opens & slides out to the right) -->
-    <div id="festive-kaash-right" class="absolute left-1/2 bottom-12 sm:bottom-16 translate-x-[10%] sm:translate-x-[30%] z-20 kaash-anim-right pointer-events-none transform scale-x-[-1]">
+    <div id="festive-kaash-right" class="absolute left-1/2 bottom-12 sm:bottom-16 translate-x-[10%] sm:translate-x-[30%] z-20 pointer-events-none transform scale-x-[-1]">
       <svg class="w-36 sm:w-52 md:w-64 h-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)]" viewBox="0 0 180 260" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g class="kaash-stalk-1">
           <path d="M90 250 Q80 140 60 40" stroke="#ca8a04" stroke-width="3" stroke-linecap="round"/>
@@ -2026,7 +2026,8 @@
     <button 
       id="puja-ai-trigger-btn"
       type="button"
-      class="relative w-13 h-13 sm:w-14 sm:h-14 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-primary to-amber-300 shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer group flex items-center justify-center"
+      class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-primary to-amber-300 shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer group flex items-center justify-center shrink-0"
+      style="width: 56px; height: 56px; min-width: 56px; min-height: 56px; aspect-ratio: 1 / 1;"
       title="Chat with sharod.ai"
       aria-label="Open sharod.ai Chatbot"
     >
@@ -2055,6 +2056,6 @@
   <script type="module" src="firebase-config.js"></script>
 
   <!-- Application Logic -->
-  <script src="app.js"></script>
+  <script src="app.js?v=2.2"></script>
 </body>
 </html>

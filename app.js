@@ -8184,12 +8184,17 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (!slider) return;
 
     let cleanupTimeout = null;
+    let isAnimating = false;
 
-    function triggerUnveil() {
+    function triggerUnveil(force = false) {
+      if (isAnimating && !force) return;
+      isAnimating = true;
       clearTimeout(cleanupTimeout);
 
       slider.style.display = 'flex';
       slider.classList.remove('festive-fade-out');
+      void slider.offsetWidth;
+      slider.classList.add('festive-active');
 
       // Restart flower & aura animations
       const leftFlower = slider.querySelector('#festive-kaash-left');
@@ -8212,28 +8217,40 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         centerEmblem.classList.add('emblem-aura-anim');
       }
 
-      // No sound played per user preference
-
-      // Clean up after slide animation finishes (2.35s animation + 0.6s fade)
+      // Clean up after slide animation finishes (2.2s animation + 0.65s fade)
       cleanupTimeout = setTimeout(() => {
         slider.classList.add('festive-fade-out');
+        slider.classList.remove('festive-active');
         setTimeout(() => {
           slider.style.display = 'none';
-        }, 600);
-      }, 2350);
+          if (leftFlower) leftFlower.classList.remove('kaash-anim-left');
+          if (rightFlower) rightFlower.classList.remove('kaash-anim-right');
+          if (centerEmblem) centerEmblem.classList.remove('emblem-aura-anim');
+          isAnimating = false;
+        }, 650);
+      }, 2200);
     }
 
-    window.triggerFestiveLateralReveal = triggerUnveil;
+    window.triggerFestiveLateralReveal = (force = true) => triggerUnveil(force);
 
     if (replayBtn) {
       replayBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        triggerUnveil();
+        triggerUnveil(true);
       });
     }
 
-    // Automatically trigger the animation when opening the website
-    setTimeout(triggerUnveil, 350);
+    const urlParams = new URLSearchParams(window.location.search);
+    const forceFromUrl = urlParams.has('welcome');
+
+    // Trigger ONCE smoothly per browser session (avoids double animation on load/refresh)
+    if (forceFromUrl || !sessionStorage.getItem('akalbodhon_welcome_shown')) {
+      sessionStorage.setItem('akalbodhon_welcome_shown', '1');
+      setTimeout(() => triggerUnveil(false), 200);
+    } else {
+      slider.style.display = 'none';
+      slider.classList.add('festive-fade-out');
+    }
   }
 
   // ========================================================
@@ -8257,12 +8274,11 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     function renderGreeting() {
       messagesContainer.innerHTML = '';
       appendAIMessage(
-        `Joy Maa Durga! 🌺 Welcome to **Akalbodhon**!\n\n` +
-        `I am **sharod.ai**, your personal festival concierge and Durga Puja AI Guide modeled with the intelligence of Gemini. I am here to help you navigate our website, answer your questions, and guide your festive journey.\n\n` +
-        `I can guide you with:\n` +
-        `• 🏛️ **World-famous Pandals & Transit** (North, South, East circuits)\n` +
-        `• 🪔 **Sacred Vedic Rituals & Timings** (Bodhon to Dashami)\n` +
-        `• 🍲 **Iconic Kolkata Street Food & Dining** (Biryani, Kathi rolls, Kabiraji)\n` +
+        `🙏 **Nomoshkar! Welcome to Akalbodhon AI (sharod.ai)**\n\n` +
+        `I am your dedicated 24/7 Kolkata Durga Puja Companion. Ask me anything about:\n` +
+        `• 🏛️ **Top Pandals & Crowd Forecasts** (North, South & Heritage Bonedi Bari circuits)\n` +
+        `• 🪔 **Puja Rituals & Mahashtami Sandhi Puja Timings**\n` +
+        `• 🍲 **Midnight Street Food Guides & Dhaba Recommendations**\n` +
         `• 🚇 **Kolkata Metro Timings & Midnight Special Trains**\n` +
         `• 🌐 **Any questions**: Culture, science, coding, or personalized festival itineraries!\n\n` +
         `*Feel free to ask for opinions, comparisons, or recommendations below!*`
@@ -8270,6 +8286,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     function openChat() {
+      document.body.classList.add('ai-chat-opened');
+      if (triggerBtn) {
+        triggerBtn.style.setProperty('display', 'none', 'important');
+      }
       chatWindow.classList.remove('hidden');
       void chatWindow.offsetWidth;
       chatWindow.classList.add('chat-open');
@@ -8280,6 +8300,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     }
 
     function closeChat() {
+      document.body.classList.remove('ai-chat-opened');
+      if (triggerBtn) {
+        triggerBtn.style.removeProperty('display');
+      }
       chatWindow.classList.remove('chat-open');
       setTimeout(() => chatWindow.classList.add('hidden'), 250);
     }
@@ -8293,7 +8317,26 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       }
     };
 
-    closeBtn?.addEventListener('click', closeChat);
+    closeBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeChat();
+    });
+
+    // Close chat on click outside
+    document.addEventListener('click', (e) => {
+      if (!chatWindow.classList.contains('chat-open')) return;
+      if (!chatWindow.contains(e.target) && !triggerBtn.contains(e.target)) {
+        closeChat();
+      }
+    });
+
+    // Close chat on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && chatWindow.classList.contains('chat-open')) {
+        closeChat();
+      }
+    });
+
     clearBtn?.addEventListener('click', () => {
       chatHistory = [];
       renderGreeting();

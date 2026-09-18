@@ -123,7 +123,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
             self.send_response(200)
             self.send_header('Content-Type', ctype)
             
-            if ext in {'.html', '.htm'}:
+            if ext in {'.html', '.htm', '.js', '.css'}:
                 self.send_header('Cache-Control', 'no-cache, must-revalidate')
             else:
                 self.send_header('Cache-Control', 'public, max-age=86400')

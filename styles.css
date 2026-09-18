@@ -928,15 +928,72 @@ header,
 /* 1. FESTIVE WELCOME ANIMATION (30% BLUR, KAASH & AURA)    */
 /* ======================================================== */
 #festive-lateral-slider {
-  background: rgba(12, 8, 4, 0.35);
-  backdrop-filter: blur(5px) brightness(0.92);
-  -webkit-backdrop-filter: blur(5px) brightness(0.92);
-  transition: opacity 0.6s ease;
+  background: rgba(12, 8, 4, 0.4);
+  backdrop-filter: blur(6px) brightness(0.92);
+  -webkit-backdrop-filter: blur(6px) brightness(0.92);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#festive-lateral-slider.festive-active {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 #festive-lateral-slider.festive-fade-out {
   opacity: 0;
   pointer-events: none;
+}
+
+.festive-emblem-circle {
+  width: 108px !important;
+  height: 108px !important;
+  min-width: 108px !important;
+  min-height: 108px !important;
+  max-width: 108px !important;
+  max-height: 108px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 2.5px solid #fbbf24 !important;
+  box-shadow: 0 0 32px rgba(251, 191, 36, 0.65) !important;
+  background-color: #000000 !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .festive-emblem-circle {
+    width: 130px !important;
+    height: 130px !important;
+    min-width: 130px !important;
+    min-height: 130px !important;
+    max-width: 130px !important;
+    max-height: 130px !important;
+    border-width: 3px !important;
+  }
+}
+
+.festive-emblem-circle img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.festive-aura-halo {
+  width: 170px !important;
+  height: 170px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .festive-aura-halo {
+    width: 220px !important;
+    height: 220px !important;
+  }
 }
 
 @keyframes kaashDropOpenSlideLeft {
@@ -988,38 +1045,38 @@ header,
 @keyframes centerEmblemAura {
   0% {
     opacity: 0;
-    transform: scale(0.55);
+    transform: scale(0.82);
   }
-  25% {
+  18% {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.03);
   }
-  48% {
+  36% {
     opacity: 1;
     transform: scale(1);
   }
-  72% {
+  75% {
     opacity: 1;
     transform: scale(1);
   }
   100% {
     opacity: 0;
-    transform: scale(1.08);
+    transform: scale(1.05);
   }
 }
 
 .kaash-anim-left {
-  animation: kaashDropOpenSlideLeft 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: kaashDropOpenSlideLeft 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
 .kaash-anim-right {
-  animation: kaashDropOpenSlideRight 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: kaashDropOpenSlideRight 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
 .emblem-aura-anim {
-  animation: centerEmblemAura 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: centerEmblemAura 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -1084,6 +1141,65 @@ header,
   display: flex !important;
   opacity: 1 !important;
   transform: scale(1) !important;
+}
+
+/* Whenever chat is open, completely hide the floating trigger button across all views */
+body.ai-chat-opened #puja-ai-trigger-btn,
+#puja-ai-widget-container:has(#puja-ai-chat-window.chat-open) #puja-ai-trigger-btn,
+#puja-ai-chat-window.chat-open ~ #puja-ai-trigger-btn,
+#puja-ai-chat-window.chat-open + #puja-ai-trigger-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Mobile viewport fit for sharod.ai Chat Window */
+@media (max-width: 639px) {
+  #puja-ai-widget-container {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #puja-ai-trigger-btn {
+    position: fixed !important;
+    bottom: 72px !important; /* Above 54px mobile bottom dock */
+    right: 14px !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
+    aspect-ratio: 1 / 1 !important;
+    pointer-events: auto !important;
+    z-index: 90 !important;
+  }
+
+  #puja-ai-chat-window {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 70px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: min(520px, calc(100dvh - 100px)) !important;
+    max-height: calc(100dvh - 100px) !important;
+    border-radius: 22px !important;
+    margin-bottom: 0 !important;
+    transform-origin: bottom right;
+    pointer-events: auto !important;
+    z-index: 95 !important;
+  }
+}
+
+@media (min-width: 640px) {
+  #puja-ai-chat-window {
+    width: 400px !important;
+    height: 540px !important;
+    max-height: calc(100vh - 100px) !important;
+  }
 }
 
 .ai-message-bubble {
