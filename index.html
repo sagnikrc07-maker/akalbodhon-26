@@ -1177,10 +1177,10 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center gap-3 pt-3 border-t border-outline-variant/30 dark:border-amber-400/20">
-          <button id="save-profile-btn" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer">
+          <button id="save-profile-btn" type="button" onclick="if(window.handleSaveProfile){window.handleSaveProfile(event);}" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-container dark:from-amber-400 dark:to-amber-500 text-white dark:text-black font-bold text-sm shadow-md hover:scale-[1.01] transition-all flex items-center justify-center gap-2 cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">check_circle</span> Save Profile
           </button>
-          <button id="auth-logout-btn" class="px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all flex items-center gap-1.5 cursor-pointer" title="Log Out">
+          <button id="auth-logout-btn" type="button" onclick="if(window.handleLogout){window.handleLogout();}" class="px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 hover:bg-red-500/10 font-bold text-sm transition-all flex items-center gap-1.5 cursor-pointer" title="Log Out">
             <span class="material-symbols-outlined text-[18px]">logout</span> Log Out
           </button>
         </div>

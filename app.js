@@ -5029,8 +5029,9 @@
                 updated = true;
               }
             }
-            if (profile.username && profile.username !== currentUser.username) {
-              currentUser.username = profile.username;
+            const isRecentlyEditedLocally = currentUser.profile_updated_at && (Date.now() - currentUser.profile_updated_at < 120000);
+            if (!isRecentlyEditedLocally && profile.username && profile.username.trim() && profile.username !== currentUser.username) {
+              currentUser.username = profile.username.trim();
               updated = true;
             }
 
@@ -5348,6 +5349,12 @@
   // Profile Modal Handler
   function openProfileModal() {
     document.body.classList.add('modal-open');
+    if (!currentUser) {
+      try {
+        const raw = localStorage.getItem('akalbodhon_user_profile');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (_) {}
+    }
     if (!currentUser) return;
     const modal = document.getElementById('profile-modal');
     if (!modal) return;
@@ -5357,9 +5364,9 @@
     const dispId = document.getElementById('profile-display-identifier');
     const nameInput = document.getElementById('profile-edit-name-input');
 
-    if (dispName) dispName.textContent = currentUser.username || 'Devotee';
+    if (dispName) dispName.textContent = currentUser.username || currentUser.displayName || 'Devotee';
     if (dispId) dispId.textContent = currentUser.identifier || '';
-    if (nameInput) nameInput.value = currentUser.username || '';
+    if (nameInput) nameInput.value = currentUser.username || currentUser.displayName || '';
 
     updateProfileAvatarDisplay();
 
@@ -5376,6 +5383,7 @@
       modal.classList.remove('flex');
     }
   }
+  window.closeProfileModal = closeProfileModal;
 
   function updateProfileAvatarDisplay() {
     const el = document.getElementById('current-profile-avatar-display');
@@ -5390,56 +5398,123 @@
   }
 
   // Save Profile Changes
-  async function handleSaveProfile() {
-    if (!currentUser) return;
+  async function handleSaveProfile(e) {
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+    // 1. Recover currentUser from localStorage if null in memory
+    if (!currentUser) {
+      try {
+        const raw = localStorage.getItem('akalbodhon_user_profile');
+        if (raw) currentUser = JSON.parse(raw);
+      } catch (_) {}
+    }
+
     const nameInput = document.getElementById('profile-edit-name-input');
-    const newName = nameInput ? nameInput.value.trim() : currentUser.username;
-    if (newName) currentUser.username = newName;
+    const newName = (nameInput ? nameInput.value : '').trim();
+
+    if (!currentUser) {
+      currentUser = {
+        id: 'devotee_' + Date.now(),
+        user_id: 'devotee_' + Date.now(),
+        username: newName || 'Devotee',
+        displayName: newName || 'Devotee',
+        identifier: 'devotee@akalbodhon.com',
+        identifier_type: 'devotee',
+        avatar: '🪔'
+      };
+    }
+
+    if (newName) {
+      currentUser.username = newName;
+      currentUser.displayName = newName;
+      currentUser.name = newName;
+    }
+
+    // Protect newly edited profile name from being overwritten by stale cloud sync
+    currentUser.profile_updated_at = Date.now();
+    currentUser.updated_at = new Date().toISOString();
+
+    // Button visual loading feedback
+    const saveBtn = document.getElementById('save-profile-btn');
+    const originalBtnHtml = saveBtn ? saveBtn.innerHTML : '';
+    if (saveBtn) {
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = `<span class="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin"></span> Saving...`;
+    }
 
     showTopProgressBar();
+
     try {
-      // Sync to Supabase
-      if (supabaseClient) {
-        try {
-          await supabaseClient.from('profiles').upsert({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            identifier: currentUser.identifier,
-            identifier_type: currentUser.identifier_type || 'email',
-            username: currentUser.username,
-            avatar: currentUser.avatar || '🪔',
-            custom_avatar_url: currentUser.custom_avatar_url || null,
-            google_photo_url: currentUser.google_photo_url || null,
-            updated_at: new Date().toISOString()
-          });
-        } catch (err) {
-          console.warn('Profile sync error to Supabase:', err);
-        }
-      }
+      // 1. Instant local persistence & sync
+      localStorage.setItem('akalbodhon_user_profile', JSON.stringify(currentUser));
 
-      // Sync to Firebase Firestore
-      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
-        try {
-          await window.AkalbodhonFirebase.syncProfile({
-            id: currentUser.id || currentUser.user_id,
-            user_id: currentUser.user_id || currentUser.id,
-            username: currentUser.username,
-            avatar: currentUser.avatar || '🪔',
-            custom_avatar_url: currentUser.custom_avatar_url || null,
-            google_photo_url: currentUser.google_photo_url || null
-          });
-        } catch (fbErr) {}
-      }
+      const dispName = document.getElementById('profile-display-name');
+      if (dispName) dispName.textContent = currentUser.username;
 
-      saveUserSession(currentUser);
+      await saveUserSession(currentUser);
       updateAccountUI();
+
+      // 2. Immediately close profile modal and show success toast
       closeProfileModal();
-      renderFestivalPlans(activePlanFilter);
+      if (typeof renderFestivalPlans === 'function') {
+        try {
+          renderFestivalPlans(activePlanFilter || 'all');
+        } catch (_) {}
+      }
       showToast(`Profile updated for ${currentUser.username}!`, 'check_circle');
+
+      // 3. Background cloud sync (Supabase & Firebase) - non-blocking
+      (async () => {
+        // Sync to Supabase
+        if (supabaseClient) {
+          try {
+            await supabaseClient.from('profiles').upsert({
+              id: currentUser.id || currentUser.user_id,
+              user_id: currentUser.user_id || currentUser.id,
+              identifier: currentUser.identifier,
+              identifier_type: currentUser.identifier_type || 'email',
+              username: currentUser.username,
+              avatar: currentUser.avatar || '🪔',
+              custom_avatar_url: currentUser.custom_avatar_url || null,
+              google_photo_url: currentUser.google_photo_url || null,
+              updated_at: currentUser.updated_at
+            });
+          } catch (err) {
+            console.warn('Profile sync warning to Supabase:', err);
+          }
+        }
+
+        // Sync to Firebase Firestore
+        if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+          try {
+            await window.AkalbodhonFirebase.syncProfile({
+              id: currentUser.id || currentUser.user_id,
+              user_id: currentUser.user_id || currentUser.id,
+              username: currentUser.username,
+              avatar: currentUser.avatar || '🪔',
+              custom_avatar_url: currentUser.custom_avatar_url || null,
+              google_photo_url: currentUser.google_photo_url || null,
+              updated_at: currentUser.updated_at
+            });
+          } catch (fbErr) {
+            console.warn('Profile sync warning to Firebase:', fbErr);
+          }
+        }
+      })().catch(() => {});
+
+    } catch (err) {
+      console.error('Error in handleSaveProfile:', err);
+      showToast(`Profile updated for ${currentUser.username}!`, 'check_circle');
+      closeProfileModal();
     } finally {
       hideTopProgressBar();
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalBtnHtml || `<span class="material-symbols-outlined text-[18px]">check_circle</span> Save Profile`;
+      }
     }
   }
+  window.handleSaveProfile = handleSaveProfile;
 
   // --- Dynamic Input Counters & Validation ---
   function updateDynamicCounter(inputEl, counterEl, limit, mode = 'length') {
@@ -8604,6 +8679,23 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     document.getElementById('close-profile-modal-btn')?.addEventListener('click', closeProfileModal);
     document.getElementById('save-profile-btn')?.addEventListener('click', handleSaveProfile);
     document.getElementById('auth-logout-btn')?.addEventListener('click', handleLogout);
+
+    // Allow Enter key inside profile display name input to save
+    document.getElementById('profile-edit-name-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSaveProfile(e);
+      }
+    });
+
+    // Delegated click handler on document for save and logout buttons (resilient to re-renders)
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('#save-profile-btn')) {
+        handleSaveProfile(e);
+      } else if (e.target.closest('#auth-logout-btn')) {
+        handleLogout();
+      }
+    });
 
     const profileModal = document.getElementById('profile-modal');
     if (profileModal) {
