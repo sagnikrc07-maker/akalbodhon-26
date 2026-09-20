@@ -21,7 +21,14 @@ export default async function handler(req, res) {
 
     const apiKey = (clientKey && clientKey.length > 10)
       ? clientKey.trim()
-      : (process.env.GEMINI_API_KEY || 'AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA');
+      : (process.env.GEMINI_API_KEY || '');
+
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        error: 'Gemini API key is not configured. Please set GEMINI_API_KEY in your Vercel project environment variables.'
+      });
+    }
 
     const systemInstruction = `You are sharod.ai, the intelligent AI Assistant and festival concierge powered by Google Gemini (gemini-3.8-flash) on Akalbodhon (the premier Kolkata Durga Puja web platform).
 

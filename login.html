@@ -218,13 +218,13 @@
   </footer>
 
   <script>
-    // Supabase Configuration
-    const SUPABASE_URL = 'https://yagvczdnfyhdtvggkclj.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA';
+    // Supabase Configuration (safely loaded from runtime config / firebase-secrets.js)
+    const SUPABASE_URL = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.url || window.__SUPABASE_CONFIG__?.url)) || '';
+    const SUPABASE_ANON_KEY = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.anonKey || window.__SUPABASE_CONFIG__?.anonKey)) || '';
     
     let supabaseClient = null;
     try {
-      if (window.supabase && typeof window.supabase.createClient === 'function') {
+      if (window.supabase && typeof window.supabase.createClient === 'function' && SUPABASE_URL && SUPABASE_ANON_KEY) {
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
     } catch (e) {
@@ -618,12 +618,12 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         isWaiting = true;
-        const defaultKey = 'AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA';
+        const apiKey = localStorage.getItem('akalbodhon_gemini_api_key') || '';
         try {
           const resp = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text, history: chatHistory, apiKey: defaultKey })
+            body: JSON.stringify({ message: text, history: chatHistory, apiKey: apiKey })
           });
           if (resp.ok) {
             const data = await resp.json();

@@ -14,21 +14,6 @@ PUJA_ICONS = ['🪔', '🪘', '🌺', '🔱', '📿', '🪷', '💃', '🦚', '�
 if sys.stdout and hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8')
 
-PORT = 8080
-MAX_BODY_SIZE = 1048576  # 1 MB maximum payload protection against DoS
-SUPABASE_URL = "https://yagvczdnfyhdtvggkclj.supabase.co"
-SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA"
-
-ALLOWED_STATIC_EXTS = {
-    '.html', '.htm', '.css', '.js', '.jpg', '.jpeg', '.png',
-    '.webp', '.avif', '.svg', '.ico', '.woff', '.woff2'
-}
-COMPRESSIBLE_EXTS = {'.html', '.htm', '.js', '.css', '.json', '.svg', '.txt', '.xml'}
-
-class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
-    daemon_threads = True
-    allow_reuse_address = True
-
 def get_env_setting(key, default=""):
     val = os.environ.get(key)
     if val:
@@ -44,6 +29,21 @@ def get_env_setting(key, default=""):
         except Exception:
             pass
     return default
+
+PORT = int(get_env_setting('PORT', '8080'))
+MAX_BODY_SIZE = 1048576  # 1 MB maximum payload protection against DoS
+SUPABASE_URL = get_env_setting("SUPABASE_URL", "https://yagvczdnfyhdtvggkclj.supabase.co")
+SUPABASE_ANON_KEY = get_env_setting("SUPABASE_ANON_KEY", "")
+
+ALLOWED_STATIC_EXTS = {
+    '.html', '.htm', '.css', '.js', '.jpg', '.jpeg', '.png',
+    '.webp', '.avif', '.svg', '.ico', '.woff', '.woff2'
+}
+COMPRESSIBLE_EXTS = {'.html', '.htm', '.js', '.css', '.json', '.svg', '.txt', '.xml'}
+
+class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    daemon_threads = True
+    allow_reuse_address = True
 
 class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
@@ -94,7 +94,11 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 "storageBucket": get_env_setting('FIREBASE_STORAGE_BUCKET', 'akalbodhon-6a71a.firebasestorage.app'),
                 "messagingSenderId": get_env_setting('FIREBASE_MESSAGING_SENDER_ID', '562011001158'),
                 "appId": get_env_setting('FIREBASE_APP_ID', '1:562011001158:web:b3cd9b5a526accd2659547'),
-                "measurementId": get_env_setting('FIREBASE_MEASUREMENT_ID', 'G-R9CGW4P7NZ')
+                "measurementId": get_env_setting('FIREBASE_MEASUREMENT_ID', 'G-R9CGW4P7NZ'),
+                "supabase": {
+                    "url": SUPABASE_URL,
+                    "anonKey": SUPABASE_ANON_KEY
+                }
             }
             payload = json.dumps(fb_config).encode('utf-8')
             self.send_response(200)
@@ -324,7 +328,7 @@ def get_gemini_api_key(client_key=None):
                             return val
         except Exception:
             pass
-    return "AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA"
+    return ""
 
 def search_web_background(query):
     snippets = []

@@ -4678,12 +4678,12 @@
   // ========================================================
   // 16. SUPABASE CLIENT & AUTHENTICATION MODULE
   // ========================================================
-  const SUPABASE_URL = 'https://yagvczdnfyhdtvggkclj.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhZ3ZjemRuZnloZHR2Z2drY2xqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwODM2MDcsImV4cCI6MjEwMzY1OTYwN30.VsaIdEh9PZGdFfVuJy1KMAISkl8yhRepxAXNGGMxibA';
+  const SUPABASE_URL = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.url || window.__SUPABASE_CONFIG__?.url)) || '';
+  const SUPABASE_ANON_KEY = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.anonKey || window.__SUPABASE_CONFIG__?.anonKey)) || '';
 
   let supabaseClient = null;
   try {
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
+    if (window.supabase && typeof window.supabase.createClient === 'function' && SUPABASE_URL && SUPABASE_ANON_KEY) {
       supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       
       // Listen for OAuth session callbacks (e.g. Google Sign-In)
@@ -8473,8 +8473,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       showTypingIndicator();
       isWaitingResponse = true;
 
-      const defaultKey = 'AQ.Ab8RN6KaQj-5qNUVjCbGfgxtLL7PAPv_VWPUSq_iL2p1OUw5kA';
-      const apiKey = localStorage.getItem(STORAGE_API_KEY) || defaultKey;
+      const apiKey = localStorage.getItem(STORAGE_API_KEY) || '';
 
       try {
         const resp = await fetch('/api/chat', {

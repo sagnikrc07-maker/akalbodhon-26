@@ -106,3 +106,4 @@ secrets.js
 # Safe Templates Whitelist (Always Track Templates)
 !.env.example
 !firebase-secrets.example.js
+!.vercelignore

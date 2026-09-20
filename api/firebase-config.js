@@ -20,7 +20,11 @@ export default async function handler(req, res) {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "akalbodhon-6a71a.firebasestorage.app",
     messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "562011001158",
     appId: process.env.FIREBASE_APP_ID || "1:562011001158:web:b3cd9b5a526accd2659547",
-    measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-R9CGW4P7NZ"
+    measurementId: process.env.FIREBASE_MEASUREMENT_ID || "G-R9CGW4P7NZ",
+    supabase: {
+      url: process.env.SUPABASE_URL || "",
+      anonKey: process.env.SUPABASE_ANON_KEY || ""
+    }
   };
 
   return res.status(200).json(config);

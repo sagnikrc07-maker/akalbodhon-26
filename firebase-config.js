@@ -37,9 +37,9 @@ import {
 
 // Resolve Firebase Web Client Config for akalbodhon-6a71a securely
 // 1. Checks gitignored local secrets (window.__AKALBODHON_FIREBASE_CONFIG__ or window.__FIREBASE_CONFIG__)
-// 2. Checks local storage overrides
-// 3. Fallback runtime decoder to prevent plain-text key exposure in Git while ensuring zero website disruption
-function resolveFirebaseConfig() {
+// 2. Checks local storage cache
+// 3. Fetches from /api/firebase-config (Vercel Serverless Function or Python dev server)
+async function resolveFirebaseConfig() {
   const win = typeof window !== "undefined" ? window : null;
   if (win && win.__AKALBODHON_FIREBASE_CONFIG__ && win.__AKALBODHON_FIREBASE_CONFIG__.apiKey) {
     return win.__AKALBODHON_FIREBASE_CONFIG__;
@@ -55,16 +55,28 @@ function resolveFirebaseConfig() {
     }
   } catch (e) {}
 
-  const decodeVal = (b64) => {
-    try {
-      return (typeof atob === 'function') ? atob(b64) : '';
-    } catch (_) {
-      return '';
+  // Dynamic fetch from /api/firebase-config
+  try {
+    const resp = await fetch('/api/firebase-config');
+    if (resp.ok) {
+      const remoteConfig = await resp.json();
+      if (remoteConfig && remoteConfig.apiKey) {
+        try {
+          win && win.localStorage && win.localStorage.setItem('akalbodhon_firebase_config', JSON.stringify(remoteConfig));
+        } catch (_) {}
+        if (remoteConfig.supabase && win) {
+          win.__AKALBODHON_SUPABASE_CONFIG__ = remoteConfig.supabase;
+          win.__SUPABASE_CONFIG__ = remoteConfig.supabase;
+        }
+        return remoteConfig;
+      }
     }
-  };
+  } catch (err) {
+    console.debug("Remote firebase config fetch notice:", err);
+  }
 
   return {
-    apiKey: decodeVal("QUl6YVN5RDMzd0wxNUdGdV8tZGxHMGpWNmNzQWVIeE9UeGM5VEFZ"),
+    apiKey: "",
     authDomain: "akalbodhon-6a71a.firebaseapp.com",
     projectId: "akalbodhon-6a71a",
     storageBucket: "akalbodhon-6a71a.firebasestorage.app",
@@ -74,7 +86,7 @@ function resolveFirebaseConfig() {
   };
 }
 
-export const firebaseConfig = resolveFirebaseConfig();
+export const firebaseConfig = await resolveFirebaseConfig();
 
 // Initialize Firebase Core Instances
 let app = null;
@@ -83,18 +95,22 @@ let db = null;
 let googleProvider = null;
 
 try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  try {
-    db = initializeFirestore(app, {
-      experimentalAutoDetectLongPolling: true
-    });
-  } catch (e) {
-    db = getFirestore(app);
+  if (firebaseConfig && firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    try {
+      db = initializeFirestore(app, {
+        experimentalAutoDetectLongPolling: true
+      });
+    } catch (e) {
+      db = getFirestore(app);
+    }
+    googleProvider = new GoogleAuthProvider();
+    googleProvider.setCustomParameters({ prompt: 'select_account' });
+    console.debug("Firebase initialized for akalbodhon-6a71a");
+  } else {
+    console.warn("Firebase apiKey not configured. Set FIREBASE_API_KEY in Vercel environment variables or local firebase-secrets.js.");
   }
-  googleProvider = new GoogleAuthProvider();
-  googleProvider.setCustomParameters({ prompt: 'select_account' });
-  console.debug("Firebase initialized for akalbodhon-6a71a");
 } catch (err) {
   console.error("Firebase init error:", err);
 }

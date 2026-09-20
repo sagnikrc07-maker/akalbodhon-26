@@ -1,10 +1,10 @@
 // =========================================================================
-// Akalbodhon Kolkata Durga Puja 2026 - Firebase Configuration Template
+// Akalbodhon Kolkata Durga Puja 2026 - Local Secrets & Credentials Template
 // Example file - Safe to commit to version control
 //
 // Usage:
 // 1. Copy this file to `firebase-secrets.js` (which is gitignored)
-// 2. Insert your Firebase credentials below
+// 2. Insert your Firebase and Supabase credentials below
 // =========================================================================
 
 (function() {
@@ -18,8 +18,15 @@
     measurementId: "YOUR_MEASUREMENT_ID"
   };
 
+  const supabaseConfig = {
+    url: "https://your-project.supabase.co",
+    anonKey: "YOUR_SUPABASE_ANON_KEY"
+  };
+
   if (typeof window !== "undefined") {
     window.__AKALBODHON_FIREBASE_CONFIG__ = firebaseConfig;
     window.__FIREBASE_CONFIG__ = firebaseConfig;
+    window.__AKALBODHON_SUPABASE_CONFIG__ = supabaseConfig;
+    window.__SUPABASE_CONFIG__ = supabaseConfig;
   }
 })();
