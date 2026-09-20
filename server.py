@@ -32,7 +32,7 @@ def get_env_setting(key, default=""):
 
 PORT = int(get_env_setting('PORT', '8080'))
 MAX_BODY_SIZE = 1048576  # 1 MB maximum payload protection against DoS
-SUPABASE_URL = get_env_setting("SUPABASE_URL", "https://yagvczdnfyhdtvggkclj.supabase.co")
+SUPABASE_URL = get_env_setting("SUPABASE_URL", "")
 SUPABASE_ANON_KEY = get_env_setting("SUPABASE_ANON_KEY", "")
 
 ALLOWED_STATIC_EXTS = {
@@ -75,7 +75,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
             payload = json.dumps({
                 "status": "online",
                 "festival": "Akalbodhon Sharodiya Durga Puja 2026",
-                "supabase_project": "yagvczdnfyhdtvggkclj"
+                "supabase_project": get_env_setting('SUPABASE_PROJECT_ID', '')
             }).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
@@ -89,12 +89,12 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
         if clean_path == '/api/firebase-config':
             fb_config = {
                 "apiKey": get_env_setting('FIREBASE_API_KEY', ''),
-                "authDomain": get_env_setting('FIREBASE_AUTH_DOMAIN', 'akalbodhon-6a71a.firebaseapp.com'),
-                "projectId": get_env_setting('FIREBASE_PROJECT_ID', 'akalbodhon-6a71a'),
-                "storageBucket": get_env_setting('FIREBASE_STORAGE_BUCKET', 'akalbodhon-6a71a.firebasestorage.app'),
-                "messagingSenderId": get_env_setting('FIREBASE_MESSAGING_SENDER_ID', '562011001158'),
-                "appId": get_env_setting('FIREBASE_APP_ID', '1:562011001158:web:b3cd9b5a526accd2659547'),
-                "measurementId": get_env_setting('FIREBASE_MEASUREMENT_ID', 'G-R9CGW4P7NZ'),
+                "authDomain": get_env_setting('FIREBASE_AUTH_DOMAIN', ''),
+                "projectId": get_env_setting('FIREBASE_PROJECT_ID', ''),
+                "storageBucket": get_env_setting('FIREBASE_STORAGE_BUCKET', ''),
+                "messagingSenderId": get_env_setting('FIREBASE_MESSAGING_SENDER_ID', ''),
+                "appId": get_env_setting('FIREBASE_APP_ID', ''),
+                "measurementId": get_env_setting('FIREBASE_MEASUREMENT_ID', ''),
                 "supabase": {
                     "url": SUPABASE_URL,
                     "anonKey": SUPABASE_ANON_KEY

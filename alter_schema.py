@@ -5,6 +5,7 @@ import os
 
 sys.stdout.reconfigure(encoding='utf-8')
 token = os.environ.get('SUPABASE_ACCESS_TOKEN', '')
+project_ref = os.environ.get('SUPABASE_PROJECT_REF', 'your-project-ref')
 
 sql_statements = [
     # Alter id column to TEXT if it was UUID so it can take both UUID and custom slug IDs
@@ -26,7 +27,7 @@ sql_statements = [
 for idx, stmt in enumerate(sql_statements):
     payload = json.dumps({'query': stmt}).encode()
     req = urllib.request.Request(
-        'https://api.supabase.com/v1/projects/yagvczdnfyhdtvggkclj/database/query',
+        f'https://api.supabase.com/v1/projects/{project_ref}/database/query',
         data=payload,
         headers={
             'Authorization': f'Bearer {token}',

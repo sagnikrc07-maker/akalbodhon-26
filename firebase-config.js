@@ -1,6 +1,5 @@
 // =========================================================================
 // Akalbodhon Kolkata Durga Puja 2026 - Firebase Configuration & Services
-// Project: akalbodhon-6a71a
 // =========================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -35,7 +34,7 @@ import {
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Resolve Firebase Web Client Config for akalbodhon-6a71a securely
+// Resolve Firebase Web Client Config securely
 // 1. Checks gitignored local secrets (window.__AKALBODHON_FIREBASE_CONFIG__ or window.__FIREBASE_CONFIG__)
 // 2. Checks local storage cache
 // 3. Fetches from /api/firebase-config (Vercel Serverless Function or Python dev server)
@@ -77,12 +76,12 @@ async function resolveFirebaseConfig() {
 
   return {
     apiKey: "",
-    authDomain: "akalbodhon-6a71a.firebaseapp.com",
-    projectId: "akalbodhon-6a71a",
-    storageBucket: "akalbodhon-6a71a.firebasestorage.app",
-    messagingSenderId: "562011001158",
-    appId: "1:562011001158:web:b3cd9b5a526accd2659547",
-    measurementId: "G-R9CGW4P7NZ"
+    authDomain: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
   };
 }
 
@@ -107,7 +106,7 @@ try {
     }
     googleProvider = new GoogleAuthProvider();
     googleProvider.setCustomParameters({ prompt: 'select_account' });
-    console.debug("Firebase initialized for akalbodhon-6a71a");
+    console.debug("Firebase initialized successfully");
   } else {
     console.warn("Firebase apiKey not configured. Set FIREBASE_API_KEY in Vercel environment variables or local firebase-secrets.js.");
   }

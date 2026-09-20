@@ -133,10 +133,12 @@ sql_statements = [
     """
 ]
 
+project_ref = os.environ.get('SUPABASE_PROJECT_REF', 'your-project-ref')
+
 for idx, stmt in enumerate(sql_statements):
     payload = json.dumps({'query': stmt}).encode()
     req = urllib.request.Request(
-        'https://api.supabase.com/v1/projects/yagvczdnfyhdtvggkclj/database/query',
+        f'https://api.supabase.com/v1/projects/{project_ref}/database/query',
         data=payload,
         headers={
             'Authorization': f'Bearer {token}',
