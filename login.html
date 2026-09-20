@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In & Register | Akalbodhon - Kolkata Durga Puja 2026</title>
+  <meta name="description" content="Sign in or create your Akalbodhon devotee account with Google or Email & Password to save your Puja itineraries, pandals, and sacred plans." />
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" />
+
+  <!-- Anti-FOUT Cloaking Script -->
+  <script>
+    (function() {
+      document.documentElement.classList.add('wf-loading');
+      if ('fonts' in document) {
+        Promise.all([
+          document.fonts.load('24px "Material Symbols Outlined"'),
+          document.fonts.load('16px "Inter"')
+        ]).then(function() {
+          document.documentElement.classList.remove('wf-loading');
+          document.documentElement.classList.add('wf-active');
+        }).catch(function() {
+          document.documentElement.classList.remove('wf-loading');
+        });
+        setTimeout(function() {
+          document.documentElement.classList.remove('wf-loading');
+        }, 500);
+      } else {
+        document.documentElement.classList.remove('wf-loading');
+      }
+    })();
+  </script>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          borderRadius: {
+            "2.5xl": "1.25rem"
+          },
+          colors: {
+            "primary": "#83000a",
+            "primary-container": "#a71b1d",
+            "secondary": "#775932",
+            "secondary-container": "#e9c349",
+            "tertiary": "#8c4e28",
+            "surface": "#fff8f5",
+            "surface-container": "#fceee7",
+            "surface-container-high": "#f6e2d9",
+            "surface-container-low": "#fff1eb",
+            "on-surface": "#231917",
+            "on-surface-variant": "#534340",
+            "outline": "#857370",
+            "outline-variant": "#d8c2be"
+          },
+          fontFamily: {
+            "display": ["Playfair Display", "serif"],
+            "body": ["Inter", "sans-serif"]
+          }
+        }
+      }
+    };
+  </script>
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-surface dark:bg-[#12100a] text-on-surface dark:text-[#f7f2ea] font-body min-h-screen antialiased selection:bg-primary selection:text-white kash-phool-bg flex flex-col justify-between transition-colors duration-300">
+
+  <!-- Top Horizontal Network & Cloud Sync Progress Bar -->
+  <div id="top-sync-progress-bar" class="hidden-progress" role="progressbar" aria-label="Loading and syncing content"></div>
+
+  <!-- Global High-Priority Kinetic Loading Interface Modal -->
+  <div id="global-loading-overlay" class="hidden-loader" role="dialog" aria-modal="true" aria-live="polite">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col items-center text-center max-w-xs sm:max-w-sm mx-4 space-y-4 transform transition-all duration-300 scale-100 bg-[#1e1912]/95 backdrop-blur-md text-white">
+      <!-- Concentric Sacred Glowing Rings & Pulse -->
+      <div class="diya-spinner-container">
+        <div class="diya-spin-ring"></div>
+        <div class="diya-spin-ring-inner"></div>
+        <span class="diya-pulsing-icon" id="loading-spinner-emoji">🪔</span>
+      </div>
+      <!-- Text Status -->
+      <div class="space-y-1.5 w-full">
+        <h3 id="loading-overlay-title" class="font-display text-base sm:text-lg font-bold text-amber-300 tracking-wide">
+          Connecting to Sanctuary...
+        </h3>
+        <p id="loading-overlay-desc" class="text-xs text-[#ded5c7] leading-relaxed">
+          Please wait a moment while we authenticate your devotee account.
+        </p>
+      </div>
+      <!-- Subtle Pulsing Pill -->
+      <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/25 text-[11px] text-amber-200">
+        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+        <span id="loading-overlay-status" class="font-medium">Securing Cloud Session...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="w-full h-16 glass-nav flex items-center justify-between px-4 md:px-12 fixed top-0 left-0 z-50">
+    <a href="index.html#home" class="flex items-center gap-3 group shrink-0">
+      <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-secondary-container dark:border-amber-400 shadow-md group-hover:scale-105 transition-all shrink-0">
+        <img src="logo.jpg" alt="Akalbodhon Logo" class="w-full h-full object-cover" />
+      </div>
+      <span class="font-display font-bold text-xl sm:text-2xl text-primary dark:text-amber-300 tracking-tight whitespace-nowrap shrink-0">Akalbodhon</span>
+    </a>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <button id="theme-btn" class="w-9 h-9 rounded-xl border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 flex items-center justify-center text-on-surface-variant dark:text-amber-300 hover:bg-surface-container-low dark:hover:bg-amber-400/10 transition-all cursor-pointer shrink-0" title="Toggle Dark/Light View">
+        <span class="material-symbols-outlined text-[20px] dark:hidden">dark_mode</span>
+        <span class="material-symbols-outlined text-[20px] hidden dark:inline">light_mode</span>
+      </button>
+      <a href="index.html" class="text-xs font-semibold text-primary dark:text-amber-300 hover:underline flex items-center gap-1 shrink-0 whitespace-nowrap">
+        <span class="material-symbols-outlined text-[16px]">arrow_back</span> Back to Festival
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Auth Container -->
+  <main class="pt-24 pb-12 px-4 flex items-center justify-center flex-1">
+    <div class="w-full max-w-md bg-surface/95 dark:bg-[#1a160f]/95 backdrop-blur-2xl rounded-3xl border border-outline-variant/40 dark:border-amber-400/30 shadow-2xl p-6 sm:p-8 space-y-6 animate-scale-up">
+      
+      <!-- Top Sacred Emblem -->
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 border-2 border-secondary-container dark:border-amber-400 flex items-center justify-center mx-auto text-4xl shadow-xl">
+          🪔
+        </div>
+        <h1 id="auth-heading" class="font-display text-2xl sm:text-3xl font-bold crimson-gradient-text tracking-tight">
+          Devotee Sign In
+        </h1>
+        <p id="auth-subheading" class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-xs mx-auto">
+          Access your personal Puja itineraries, pandals, and saved details.
+        </p>
+      </div>
+
+      <!-- Error Alert Box -->
+      <div id="error-alert" class="hidden p-3.5 rounded-2xl bg-red-500/10 border border-red-500/30 text-red-600 dark:text-red-400 text-xs space-y-2">
+        <div class="flex items-start gap-2">
+          <span class="material-symbols-outlined text-[18px] shrink-0 mt-0.5">error</span>
+          <div id="error-msg" class="flex-1 leading-relaxed">Error occurred</div>
+        </div>
+        <div id="error-action-container" class="hidden pt-1 border-t border-red-500/20"></div>
+      </div>
+
+      <!-- Success Alert Box -->
+      <div id="success-alert" class="hidden p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] shrink-0">check_circle</span>
+        <span id="success-msg">Success</span>
+      </div>
+
+      <!-- ---------------- LOGGED-IN PROFILE VIEW ---------------- -->
+      <div id="logged-in-view" class="hidden space-y-5 text-center">
+        <!-- Devotee Current Avatar Container -->
+        <div class="relative inline-block mx-auto">
+          <div id="logged-avatar-container" class="w-20 h-20 mx-auto rounded-2xl overflow-hidden border-2 border-amber-400 shadow-xl flex items-center justify-center bg-gradient-to-tr from-amber-500/20 via-red-500/20 to-primary/20 text-4xl text-white">
+            <span id="logged-avatar-emoji">🪔</span>
+          </div>
+          <span class="absolute -bottom-1 -right-1 px-1.5 py-0.5 rounded-md bg-primary dark:bg-amber-400 text-white dark:text-black text-[9px] font-bold shadow">AVATAR</span>
+        </div>
+
+        <div>
+          <h3 id="logged-name" class="font-display text-xl font-bold text-on-surface dark:text-white">Devotee</h3>
+          <p id="logged-identifier" class="text-xs text-on-surface-variant dark:text-[#ded5c7] font-mono">user_id</p>
+          <div class="flex items-center justify-center gap-2 mt-2 flex-wrap">
+            <span class="inline-block px-3 py-0.5 rounded-full text-[10px] font-bold bg-amber-400/20 text-amber-700 dark:text-amber-300 border border-amber-400/30">
+              Authenticated • Cloud Synced
+            </span>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-outline-variant/30 dark:border-amber-400/20 flex flex-col sm:flex-row gap-2.5">
+          <a href="index.html" class="flex-1 py-2.5 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">home</span> Enter Sanctuary
+          </a>
+          <a href="index.html#saved" class="flex-1 py-2.5 rounded-xl bg-surface-container-high dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/30 dark:border-amber-400/30 font-bold text-xs shadow hover:scale-[1.01] transition-all flex items-center justify-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">bookmark</span> Saved Itinerary
+          </a>
+          <button id="signout-btn" class="sm:flex-none px-4 py-2.5 rounded-xl border border-red-500/40 text-red-600 dark:text-red-400 font-bold text-xs hover:bg-red-500/10 transition-all flex items-center justify-center gap-1 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">logout</span> Sign Out
+          </button>
+        </div>
+      </div>
+
+      <!-- ---------------- AUTH CONTAINER ---------------- -->
+      <div id="auth-flow-container" class="space-y-5">
+        <!-- 1. Google Sign In -->
+        <div class="space-y-3 pt-2">
+          <button id="google-auth-btn" type="button" class="w-full py-3 px-4 rounded-xl bg-white dark:bg-[#252016] border border-outline-variant/40 dark:border-amber-400/30 hover:border-primary dark:hover:border-amber-400 font-semibold text-sm shadow-sm hover:shadow-md flex items-center justify-center gap-3 cursor-pointer transition-all hover:scale-[1.01] active:scale-95 text-neutral-800 dark:text-neutral-100">
+            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span id="google-auth-btn-label">Continue with Google</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="text-center text-[11px] text-on-surface-variant/70 dark:text-[#ded5c7]/60">
+        Your saved pandals, sacred food stops, and itineraries sync across all devices with your devotee account.
+      </p>
+    </div>
+  </main>
+
+  <footer class="text-center py-4 text-xs text-on-surface-variant/60 dark:text-[#ded5c7]/50">
+    Akalbodhon Sharodiya Durga Puja 2026 • Kolkata
+  </footer>
+
+  <script>
+    // Supabase Configuration (safely loaded from runtime config / firebase-secrets.js)
+    const SUPABASE_URL = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.url || window.__SUPABASE_CONFIG__?.url)) || '';
+    const SUPABASE_ANON_KEY = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.anonKey || window.__SUPABASE_CONFIG__?.anonKey)) || '';
+    
+    let supabaseClient = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function' && SUPABASE_URL && SUPABASE_ANON_KEY) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.warn('Supabase initialization notice:', e);
+    }
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-btn');
+    const savedTheme = localStorage.getItem('akalbodhon_theme') || 'light';
+    if (savedTheme === 'dark') document.documentElement.classList.add('dark');
+    themeBtn?.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('akalbodhon_theme', isDark ? 'dark' : 'light');
+    });
+
+    // Elements
+    const errorAlert = document.getElementById('error-alert');
+    const errorMsg = document.getElementById('error-msg');
+    const errorActionContainer = document.getElementById('error-action-container');
+    const successAlert = document.getElementById('success-alert');
+    const successMsg = document.getElementById('success-msg');
+    const authFlowContainer = document.getElementById('auth-flow-container');
+    const loggedInView = document.getElementById('logged-in-view');
+    const loggedAvatarContainer = document.getElementById('logged-avatar-container');
+    const loggedName = document.getElementById('logged-name');
+    const loggedIdentifier = document.getElementById('logged-identifier');
+    const signoutBtn = document.getElementById('signout-btn');
+
+    const authHeading = document.getElementById('auth-heading');
+    const authSubheading = document.getElementById('auth-subheading');
+
+    function showAlert(msg, isError = true, actionBtn = null) {
+      if (isError) {
+        errorMsg.innerHTML = msg;
+        if (actionBtn && errorActionContainer) {
+          errorActionContainer.innerHTML = '';
+          errorActionContainer.appendChild(actionBtn);
+          errorActionContainer.classList.remove('hidden');
+        } else if (errorActionContainer) {
+          errorActionContainer.classList.add('hidden');
+        }
+        errorAlert.classList.remove('hidden');
+        successAlert.classList.add('hidden');
+      } else {
+        successMsg.innerHTML = msg;
+        successAlert.classList.remove('hidden');
+        errorAlert.classList.add('hidden');
+      }
+    }
+
+    function clearAlerts() {
+      errorAlert.classList.add('hidden');
+      if (errorActionContainer) errorActionContainer.classList.add('hidden');
+      successAlert.classList.add('hidden');
+    }
+
+    // Kinetic Loading & Top Progress Bar Helpers
+    function showTopProgressBar() {
+      const bar = document.getElementById('top-sync-progress-bar');
+      if (bar) bar.classList.remove('hidden-progress');
+    }
+    function hideTopProgressBar() {
+      const bar = document.getElementById('top-sync-progress-bar');
+      if (bar) bar.classList.add('hidden-progress');
+    }
+    function showGlobalLoader(title, desc, emoji = '🪔', status = 'Securing Cloud Session...') {
+      const overlay = document.getElementById('global-loading-overlay');
+      if (!overlay) return;
+      const titleEl = document.getElementById('loading-overlay-title');
+      const descEl = document.getElementById('loading-overlay-desc');
+      const emojiEl = document.getElementById('loading-spinner-emoji');
+      const statusEl = document.getElementById('loading-overlay-status');
+
+      if (titleEl && title) titleEl.textContent = title;
+      if (descEl && desc) descEl.textContent = desc;
+      if (emojiEl && emoji) {
+        if (emoji === 'google' || emoji.includes('<svg')) {
+          emojiEl.innerHTML = emoji === 'google' 
+            ? `<svg class="w-7 h-7 sm:w-8 sm:h-8 shrink-0 drop-shadow-sm" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>`
+            : emoji;
+        } else {
+          emojiEl.textContent = emoji;
+        }
+      }
+      if (statusEl && status) statusEl.textContent = status;
+
+      overlay.classList.remove('hidden-loader');
+      showTopProgressBar();
+    }
+    function hideGlobalLoader() {
+      const overlay = document.getElementById('global-loading-overlay');
+      if (overlay) overlay.classList.add('hidden-loader');
+      hideTopProgressBar();
+    }
+
+    // Google Auth Button
+    const googleAuthBtn = document.getElementById('google-auth-btn');
+    const googleAuthBtnLabel = document.getElementById('google-auth-btn-label');
+    let isGoogleAuthInProgress = false;
+
+    async function handleGoogleSignIn() {
+      if (isGoogleAuthInProgress) return;
+      isGoogleAuthInProgress = true;
+      clearAlerts();
+
+      if (googleAuthBtn) googleAuthBtn.disabled = true;
+      if (googleAuthBtnLabel) googleAuthBtnLabel.innerHTML = '<span class="btn-loading-spinner mr-2"></span> Connecting to Google...';
+
+      showGlobalLoader(
+        'Connecting to Google...',
+        'Please authenticate your devotee Google account in the popup window...',
+        'google',
+        'Authenticating with Google...'
+      );
+
+      // Wait for Firebase
+      if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+        await new Promise(resolve => {
+          if (window.__akalbodhonFirebaseReady && window.AkalbodhonFirebase) return resolve();
+          const h = () => { resolve(); window.removeEventListener('akalbodhon:firebase-ready', h); };
+          window.addEventListener('akalbodhon:firebase-ready', h);
+          setTimeout(resolve, 1000);
+        });
+      }
+
+      if (!window.AkalbodhonFirebase || !window.AkalbodhonFirebase.isAvailable()) {
+        showAlert('Firebase Authentication is initializing. Please try again in a few seconds.');
+        isGoogleAuthInProgress = false;
+        hideGlobalLoader();
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Continue with Google';
+        return;
+      }
+
+      try {
+        const profile = await window.AkalbodhonFirebase.signInWithGoogle();
+        if (profile) {
+          // Immediately log user and bring them to the page!
+          window.location.replace('index.html');
+          return;
+        }
+      } catch (fbErr) {
+        console.warn('Firebase Google Sign-In notice:', fbErr);
+        hideGlobalLoader();
+        isGoogleAuthInProgress = false;
+        if (googleAuthBtn) googleAuthBtn.disabled = false;
+        if (googleAuthBtnLabel) googleAuthBtnLabel.textContent = 'Continue with Google';
+
+        if (fbErr.code === 'auth/popup-closed-by-user') return;
+        if (fbErr.code === 'auth/popup-blocked') {
+          window.AkalbodhonFirebase.signInWithGoogleRedirect().catch(() => {});
+          return;
+        }
+        showAlert(fbErr.message || 'Google sign-in could not be completed. Please try again or use Email.');
+      }
+    }
+
+    if (googleAuthBtn) googleAuthBtn.addEventListener('click', handleGoogleSignIn);
+
+    // Google Redirect Sign-In Session Recovery
+    function handleRedirectSuccess(profile) {
+      if (!profile) return;
+      // Immediately bring user to the page upon redirect authentication
+      window.location.replace('index.html');
+    }
+    window.addEventListener('akalbodhon:auth-redirect-success', (e) => {
+      handleRedirectSuccess(e.detail);
+    });
+    if (window.__akalbodhonRedirectProfile) {
+      handleRedirectSuccess(window.__akalbodhonRedirectProfile);
+    }
+
+    // Helper: Check if devotee account exists in database
+    async function checkDevoteeAccountExists(identifier) {
+      if (!identifier) return null;
+      const clean = String(identifier).trim().toLowerCase();
+      const safeDocId = clean.replace(/[^a-z0-9]/g, '_');
+
+      // 1. Check Firebase Firestore
+      if (window.AkalbodhonFirebase && typeof window.AkalbodhonFirebase.getProfileByIdentifier === 'function') {
+        try {
+          const fbProf = await window.AkalbodhonFirebase.getProfileByIdentifier(clean);
+          if (fbProf) return fbProf;
+        } catch (_) {}
+      }
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try {
+          const p = await window.AkalbodhonFirebase.getProfile(safeDocId) || await window.AkalbodhonFirebase.getProfile(clean);
+          if (p) return p;
+        } catch (_) {}
+      }
+
+      // 2. Check Supabase
+      if (supabaseClient) {
+        try {
+          const orQuery = `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+          const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
+          if (data && data.length > 0) return data[0];
+        } catch (_) {}
+      }
+
+      // 3. Check persistent localStorage
+      const candidates = [`akalbodhon_user_data_email_${safeDocId}`, `akalbodhon_user_data_id_${safeDocId}`];
+      for (const cand of candidates) {
+        const raw = localStorage.getItem(cand);
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed) return parsed;
+          } catch (_) {}
+        }
+      }
+
+      return null;
+    }
+
+
+    // -------------------------------------------------------------
+    // SESSION STATE & SIGN OUT
+    // -------------------------------------------------------------
+    function showLoggedInState(user) {
+      authFlowContainer.classList.add('hidden');
+      loggedInView.classList.remove('hidden');
+      loggedName.textContent = user.username || user.full_name || 'Devotee';
+      loggedIdentifier.textContent = user.identifier || user.email || user.phone || user.id || 'User';
+
+      if (loggedAvatarContainer) {
+        if (user.custom_avatar_url || user.google_photo_url) {
+          const photoSrc = user.custom_avatar_url || user.google_photo_url;
+          loggedAvatarContainer.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
+        } else {
+          loggedAvatarContainer.innerHTML = `<span id="logged-avatar-emoji">${user.avatar || '🪔'}</span>`;
+        }
+      }
+    }
+
+    function checkActiveSession() {
+      const raw = localStorage.getItem('akalbodhon_user_profile');
+      if (raw) {
+        try {
+          const u = JSON.parse(raw);
+          if (u && (u.id || u.user_id || u.identifier)) {
+            showLoggedInState(u);
+          }
+        } catch (_) {}
+      }
+    }
+
+    checkActiveSession();
+
+    signoutBtn?.addEventListener('click', async () => {
+      localStorage.removeItem('akalbodhon_user_profile');
+      localStorage.removeItem('akalbodhon_bookmarks');
+      localStorage.removeItem('akalbodhon_custom_plans');
+
+      if (window.AkalbodhonFirebase && window.AkalbodhonFirebase.isAvailable()) {
+        try { await window.AkalbodhonFirebase.signOutUser(); } catch (_) {}
+      }
+      if (supabaseClient) {
+        try { await supabaseClient.auth.signOut(); } catch (_) {}
+      }
+
+      loggedInView.classList.add('hidden');
+      authFlowContainer.classList.remove('hidden');
+      showAlert('Signed out of Akalbodhon.', false);
+    });
+
+    // ========================================================
+    // DURGA PUJA AI CHATBOT CONTROLLER (LOGIN PAGE)
+    // ========================================================
+    window.navigateToAppSection = function(section, filter = '') {
+      if (section === 'pandals' && filter) {
+        window.location.href = `index.html#pandals?zone=${encodeURIComponent(filter)}`;
+      } else if (section) {
+        window.location.href = `index.html#${section}`;
+      }
+    };
+
+    function formatPujaMarkdown(text) {
+      if (!text) return '';
+      let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      // 1. Headers (###, ##, #)
+      html = html.replace(/^###\s+(.*)$/gm, '<div class="font-bold text-xs sm:text-sm text-primary dark:text-amber-300 mt-2.5 mb-1 pb-0.5 border-b border-primary/15 dark:border-amber-400/20 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^##\s+(.*)$/gm, '<div class="font-bold text-sm text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+      html = html.replace(/^#\s+(.*)$/gm, '<div class="font-bold text-base text-primary dark:text-amber-300 mt-3 mb-1 flex items-center gap-1.5">$1</div>');
+
+      // 2. Bold and Italics
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+      // 3. Numbered lists: render explicit number from markdown ($1.) without relying on browser CSS counters
+      html = html.replace(/^(\d+)\.\s+(.*)$/gm, '<div class="ai-list-item flex items-start gap-1.5 my-1 ml-0.5"><span class="font-bold text-primary dark:text-amber-400 select-none shrink-0">$1.</span><div class="flex-1">$2</div></div>');
+
+      // 4. Bullet points (•, -, *)
+      html = html.replace(/^[•\-\*]\s+(.*)$/gm, '<div class="ai-bullet-item flex items-start gap-2 my-0.5 ml-3"><span class="text-primary dark:text-amber-400 text-xs shrink-0 select-none leading-relaxed">•</span><div class="flex-1">$1</div></div>');
+
+      // 5. Paragraph breaks and newlines
+      html = html.replace(/\n\n+/g, '<div class="h-2"></div>');
+      html = html.replace(/\n/g, '<br/>');
+      html = html.replace(/<br\/>\s*(<div[\s>])/g, '$1');
+      html = html.replace(/(<\/div>)\s*<br\/>/g, '$1');
+
+      html = html.replace(
+        /\[(.*?)\]\(action:nav:([^:\)]+)(?::([^:\)]+))?\)/g,
+        function(match, label, section, filter) {
+          const filterArg = filter ? `'${filter}'` : "''";
+          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${section}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
+        }
+      );
+
+      return html;
+    }
+
+    function initLoginChatbot() {
+      const triggerBtn = document.getElementById('puja-ai-trigger-btn');
+      const chatWindow = document.getElementById('puja-ai-chat-window');
+      const closeBtn = document.getElementById('ai-chat-close-btn');
+      const clearBtn = document.getElementById('ai-chat-clear-btn');
+      const chatForm = document.getElementById('ai-chat-form');
+      const chatInput = document.getElementById('ai-chat-input');
+      const messagesContainer = document.getElementById('ai-chat-messages');
+
+      if (!triggerBtn || !chatWindow || !messagesContainer) return;
+
+      let chatHistory = [];
+      let isWaiting = false;
+
+      function renderGreeting() {
+        messagesContainer.innerHTML = `
+          <div class="ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md">
+            Joy Maa Durga! 🌺 Welcome to <strong>Akalbodhon</strong>!<br/><br/>
+            I am <strong>sharod.ai</strong>, your personal Durga Puja AI Guide modeled after Gemini. Ask me about pandals, rituals, transit, food, or any question you have!<br/><br/>
+            <em>Ask any question below.</em>
+          </div>
+        `;
+      }
+
+      function openChat() {
+        chatWindow.classList.remove('hidden');
+        void chatWindow.offsetWidth;
+        chatWindow.classList.add('chat-open');
+        if (messagesContainer.children.length === 0) renderGreeting();
+        setTimeout(() => chatInput?.focus(), 150);
+      }
+
+      function closeChat() {
+        chatWindow.classList.remove('chat-open');
+        setTimeout(() => chatWindow.classList.add('hidden'), 250);
+      }
+
+      triggerBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (chatWindow.classList.contains('chat-open')) closeChat();
+        else openChat();
+      };
+
+      closeBtn?.addEventListener('click', closeChat);
+      clearBtn?.addEventListener('click', () => {
+        chatHistory = [];
+        renderGreeting();
+      });
+
+      document.querySelectorAll('.ai-quick-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const text = chip.textContent.trim().replace(/^[^\w\s]+/, '').trim();
+          handleSend(text);
+        });
+      });
+
+      chatForm?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const text = chatInput.value.trim();
+        if (text) {
+          chatInput.value = '';
+          handleSend(text);
+        }
+      });
+
+      async function handleSend(text) {
+        if (isWaiting) return;
+        const userDiv = document.createElement('div');
+        userDiv.className = 'ai-message-bubble ai-bubble-user px-4 py-2.5 shadow-sm text-right';
+        userDiv.textContent = text;
+        messagesContainer.appendChild(userDiv);
+
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-2 shadow-sm flex items-center gap-1.5 w-16';
+        typingDiv.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span><span class="text-[10px] text-primary">...</span>';
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        isWaiting = true;
+        const apiKey = localStorage.getItem('akalbodhon_gemini_api_key') || '';
+        try {
+          const resp = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text, history: chatHistory, apiKey: apiKey })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            typingDiv.remove();
+
+            const botDiv = document.createElement('div');
+            botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+            const reply = (data.success && data.response) ? data.response : 'Joy Maa Durga! 🌺 How may I assist your Durga Puja celebrations today?';
+            
+            let badgeHtml = '';
+            if (data.grounded_web) {
+              badgeHtml = '<div class="ai-web-badge"><span class="material-symbols-outlined text-[13px]">travel_explore</span> Grounded with Web Search</div>';
+            }
+            botDiv.innerHTML = badgeHtml + formatPujaMarkdown(reply);
+            messagesContainer.appendChild(botDiv);
+            chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+            return;
+          }
+          throw new Error('Server not ok');
+        } catch (err) {
+          try {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${defaultKey}`;
+            const gResp = await fetch(geminiUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ role: 'user', parts: [{ text: text }] }]
+              })
+            });
+            if (gResp.ok) {
+              const gData = await gResp.json();
+              const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (reply) {
+                typingDiv.remove();
+                const botDiv = document.createElement('div');
+                botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+                botDiv.innerHTML = formatPujaMarkdown(reply);
+                messagesContainer.appendChild(botDiv);
+                chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+                return;
+              }
+            }
+          } catch (cErr) {}
+
+          typingDiv.remove();
+          const botDiv = document.createElement('div');
+          botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+          botDiv.innerHTML = 'Joy Maa Durga! 🌺 Please feel free to ask about pandals, rituals, food, transit, or account sync.';
+          messagesContainer.appendChild(botDiv);
+        } finally {
+          isWaiting = false;
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLoginChatbot);
+    } else {
+      setTimeout(initLoginChatbot, 100);
+    }
+  </script>
+
+  <!-- ==================== DURGA PUJA AI CHATBOT WIDGET ==================== -->
+  <div id="puja-ai-widget-container" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end">
+    <!-- Chat Window Modal -->
+    <div 
+      id="puja-ai-chat-window" 
+      class="hidden mb-3 w-[92vw] sm:w-[380px] h-[480px] max-h-[80vh] rounded-3xl glass-panel bg-surface/95 dark:bg-[#1a160f]/95 border border-primary/30 dark:border-amber-400/35 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right"
+    >
+      <div class="px-4 py-3 bg-gradient-to-r from-primary/15 via-surface-container to-primary/5 dark:from-amber-400/20 dark:via-[#252016] dark:to-transparent border-b border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-2.5">
+          <div class="relative w-8 h-8 rounded-full overflow-hidden border-2 border-primary/40 dark:border-amber-400/60 shadow-xs shrink-0 bg-black">
+            <img src="logo.jpg" alt="Akalbodhon AI" class="w-full h-full object-cover" />
+            <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 border border-white"></span>
+          </div>
+          <div>
+            <h3 class="font-display text-xs sm:text-sm font-bold text-on-surface dark:text-white leading-tight">sharod.ai</h3>
+            <p class="text-[9px] text-on-surface-variant dark:text-[#ded5c7] leading-none mt-0.5">Durga Puja & Akalbodhon AI Guide</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <button id="ai-chat-clear-btn" type="button" class="w-7 h-7 rounded-lg hover:bg-surface-container dark:hover:bg-amber-400/10 text-on-surface-variant dark:text-amber-300 flex items-center justify-center transition-colors cursor-pointer" title="Restart">
+            <span class="material-symbols-outlined text-[16px]">refresh</span>
+          </button>
+          <button id="ai-chat-close-btn" type="button" class="w-7 h-7 rounded-lg hover:bg-surface-container dark:hover:bg-amber-400/10 text-on-surface-variant dark:text-amber-300 flex items-center justify-center transition-colors cursor-pointer" title="Close">
+            <span class="material-symbols-outlined text-[16px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3 text-xs text-on-surface dark:text-[#f3ede2]">
+      </div>
+
+      <div class="px-3 py-1.5 border-t border-outline-variant/15 dark:border-amber-400/10 bg-surface-container-lowest/50 dark:bg-[#15120c]/50 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+        <button type="button" class="ai-quick-chip shrink-0 px-2 py-0.5 rounded-full bg-surface-container dark:bg-[#262016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 text-[10px] whitespace-nowrap">
+          🏛️ Top Pandals
+        </button>
+        <button type="button" class="ai-quick-chip shrink-0 px-2 py-0.5 rounded-full bg-surface-container dark:bg-[#262016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 text-[10px] whitespace-nowrap">
+          🪔 Rituals & Dates
+        </button>
+        <button type="button" class="ai-quick-chip shrink-0 px-2 py-0.5 rounded-full bg-surface-container dark:bg-[#262016] text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 text-[10px] whitespace-nowrap">
+          🍲 Famous Food
+        </button>
+      </div>
+
+      <form id="ai-chat-form" class="p-2 border-t border-outline-variant/30 dark:border-amber-400/20 bg-surface-container-low dark:bg-[#1f1a12] flex items-center gap-2 shrink-0">
+        <input 
+          id="ai-chat-input" 
+          type="text" 
+          autocomplete="off"
+          placeholder="Ask sharod.ai anything..." 
+          class="flex-1 px-3 py-1.5 rounded-xl bg-surface dark:bg-[#12100a] border border-outline-variant/40 dark:border-amber-400/30 text-xs text-on-surface dark:text-white focus:outline-none focus:border-primary"
+        />
+        <button 
+          type="submit" 
+          class="w-8 h-8 rounded-xl bg-primary text-white dark:bg-amber-400 dark:text-black flex items-center justify-center cursor-pointer shrink-0"
+        >
+          <span class="material-symbols-outlined text-[16px]">send</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Trigger Button -->
+    <button 
+      id="puja-ai-trigger-btn" 
+      type="button"
+      class="relative w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-primary to-amber-300 shadow-2xl hover:scale-105 active:scale-95 transition-all cursor-pointer group flex items-center justify-center"
+      title="Chat with sharod.ai"
+      aria-label="Open sharod.ai Chatbot"
+    >
+      <span class="absolute -inset-1 rounded-full bg-gradient-to-r from-red-600 via-amber-400 to-amber-600 opacity-60 blur-sm animate-pulse"></span>
+      <div class="relative w-full h-full rounded-full overflow-hidden border-2 border-white dark:border-amber-300 bg-black flex items-center justify-center">
+        <img src="logo.jpg" alt="Akalbodhon AI" class="w-full h-full object-cover" />
+      </div>
+    </button>
+  </div>
+
+  <!-- Firebase Configuration & Database Module -->
+  <script src="firebase-secrets.js" onerror="this.onerror=null;"></script>
+  <script type="module" src="firebase-config.js"></script>
+</body>
+</html>

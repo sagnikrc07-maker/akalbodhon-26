@@ -1,0 +1,1344 @@
+/* Akalbodhon - Theme & Custom Styles */
+
+@layer base {
+  :root {
+    --color-primary: #801812;
+    --color-primary-container: #5c0f0a;
+    --color-secondary: #7e5c08;
+    --color-secondary-container: #deb038;
+    --color-tertiary: #9c2215;
+    --color-surface: #f7f2e8; /* Soothing, eye-friendly off-white warm parchment */
+    --color-surface-dim: #ede6d8;
+    --color-on-surface: #241e17;
+    --color-on-surface-variant: #594c40;
+    --color-outline: #9c8c7f;
+    --color-outline-variant: #ded3c4;
+  }
+
+  /* Vibrant, Luminous Dark Mode Palette - Maximum Contrast & Clarity */
+  .dark {
+    --color-primary: #ff8e7e;
+    --color-primary-container: #b52619;
+    --color-secondary: #ffe088;
+    --color-secondary-container: #d4af37;
+    --color-tertiary: #ff9081;
+    --color-surface: #16130d;
+    --color-surface-dim: #100e09;
+    --color-on-surface: #ffffff;
+    --color-on-surface-variant: #e8e0d5;
+    --color-outline: #bba998;
+    --color-outline-variant: rgba(254, 214, 91, 0.22);
+  }
+}
+
+/* Material Symbols Default Settings & Anti-FOUT Cloaking */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  user-select: none;
+
+  /* STRICT BOX CONSTRAINTS: Prevents wide ligature words (e.g. 'restaurant') from pushing nav items or overflowing */
+  width: 1.25em;
+  height: 1.25em;
+  max-width: 1.25em;
+  max-height: 1.25em;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* Hide fallback text ligatures while web fonts are in flight on first device load */
+.wf-loading .material-symbols-outlined {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+.material-symbols-filled,
+.material-symbols-outlined[data-filled="true"] {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+/* Atmospheric Background Texture with Rich Ambient Lighting (GPU Compositor Accelerated) */
+.kash-phool-bg {
+  position: relative;
+  background-color: #f7f2e8;
+}
+
+.dark .kash-phool-bg {
+  background-color: #12100a;
+}
+
+.kash-phool-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(circle at 20% 15%, rgba(222, 176, 56, 0.18) 0%, transparent 45%),
+                    radial-gradient(circle at 80% 80%, rgba(156, 34, 21, 0.10) 0%, transparent 50%),
+                    radial-gradient(circle at 50% 40%, rgba(240, 205, 120, 0.12) 0%, transparent 60%),
+                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%239c2215" stroke-width="0.75" fill="none" opacity="0.04" stroke-dasharray="3,3"/></svg>');
+  transition: opacity 0.35s ease;
+  will-change: transform;
+}
+
+.dark .kash-phool-bg::before {
+  background-image: radial-gradient(circle at 50% 15%, rgba(181, 38, 25, 0.22) 0%, transparent 60%),
+                    radial-gradient(circle at 80% 80%, rgba(254, 214, 91, 0.12) 0%, transparent 50%),
+                    url('data:image/svg+xml;utf8,<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M20,100 C30,40 60,30 100,20 M20,100 C40,70 70,60 100,50 M20,100 C50,80 80,80 110,80" stroke="%23fed65b" stroke-width="0.75" fill="none" opacity="0.06" stroke-dasharray="3,3"/></svg>');
+}
+
+/* ======================================================== */
+/* SCROLL DISPLAY (NO BLURRING - CRISP & IMMEDIATELY CLEAR)  */
+/* ======================================================== */
+.reveal-on-scroll {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+.reveal-on-scroll.is-revealed {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Staggered Delay Utilities for Grid Elements */
+.reveal-delay-1 { transition-delay: 0ms; }
+.reveal-delay-2 { transition-delay: 0ms; }
+.reveal-delay-3 { transition-delay: 0ms; }
+.reveal-delay-4 { transition-delay: 0ms; }
+.reveal-delay-5 { transition-delay: 0ms; }
+.reveal-delay-6 { transition-delay: 0ms; }
+
+/* Glassmorphism Divine Veil */
+.glass-panel {
+  background: rgba(247, 242, 232, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(222, 211, 196, 0.6);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.3s ease, 
+              border-color 0.3s ease, 
+              background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  /* GPU paint containment — each card lives in its own compositor layer */
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+.dark .glass-panel {
+  background: rgba(26, 22, 16, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(254, 214, 91, 0.25);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel:hover {
+  border-color: rgba(222, 176, 56, 0.6);
+  box-shadow: 0 12px 32px rgba(156, 34, 21, 0.12);
+}
+
+.dark .glass-panel:hover {
+  border-color: rgba(254, 214, 91, 0.55);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 20px rgba(254, 214, 91, 0.15);
+}
+
+/* ======================================================== */
+/* CLEAN & SMOOTH THEME TRANSITIONS                         */
+/* ======================================================== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, select, input, textarea {
+  touch-action: manipulation;
+}
+
+body,
+header,
+nav,
+.app-section,
+footer {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#theme-toggle-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#theme-toggle-btn:hover {
+  transform: scale(1.08);
+}
+
+#theme-toggle-btn:active {
+  transform: scale(0.92) rotate(15deg);
+}
+
+#theme-toggle-btn .material-symbols-outlined {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* Modal Body Scroll Locking & Reachable Scrollbars */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+.modal-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 34, 21, 0.45) transparent;
+  max-height: calc(88vh - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  clip-path: inset(0 round 1.5rem);
+}
+
+.dark .modal-scrollable {
+  scrollbar-color: rgba(254, 214, 91, 0.45) transparent;
+}
+
+.modal-scrollable::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-scrollable::-webkit-scrollbar-track {
+  margin-top: 54px;
+  margin-bottom: 32px;
+  background: transparent;
+  border-radius: 9999px;
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(142, 112, 107, 0.4);
+  border-radius: 9999px;
+}
+
+.dark .modal-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(254, 214, 91, 0.45);
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(181, 38, 25, 0.6);
+}
+
+.dark .modal-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(254, 214, 91, 0.8);
+}
+
+/* Navigation Blur Header */
+.glass-nav {
+  background: rgba(255, 248, 239, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(227, 190, 184, 0.4);
+}
+
+.dark .glass-nav {
+  background: rgba(20, 17, 12, 0.94);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(254, 214, 91, 0.2);
+}
+
+/* Crimson & Gold Flourishes with Ample Descender Room */
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #610000 0%, #b52619 60%, #8b0000 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.16em;
+  display: inline-block;
+  line-height: 1.25;
+}
+
+.dark .crimson-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ffb4a8 50%, #fed65b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  padding-bottom: 0.16em;
+  display: inline-block;
+  line-height: 1.25;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #d4af37 0%, #fed65b 50%, #9a7b1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.dark .gold-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #ffe088 60%, #fed65b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Sound Wave Ring for Interactive Dhak */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.dhak-playing .soundwave-ring {
+  animation: pulse-ring 1.2s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+/* Equalizer Visualizer Bars */
+.visualizer-bar {
+  width: 4px;
+  background: linear-gradient(to top, #b52619, #fed65b);
+  border-radius: 2px;
+  transition: height 0.1s ease;
+}
+
+.dark .visualizer-bar {
+  background: linear-gradient(to top, #ff7b6b, #ffe088);
+}
+
+.is-playing .visualizer-bar {
+  animation: audioPulse 0.75s infinite alternate ease-in-out;
+}
+
+.is-playing .visualizer-bar:nth-child(2n) {
+  animation-duration: 0.55s;
+}
+
+.is-playing .visualizer-bar:nth-child(3n) {
+  animation-duration: 0.9s;
+}
+
+.is-playing .visualizer-bar:nth-child(4n) {
+  animation-duration: 0.65s;
+}
+
+@keyframes audioPulse {
+  0% { height: 4px; }
+  50% { height: 26px; }
+  100% { height: 36px; }
+}
+
+/* Ceremonial Soundboard Pad */
+.soundboard-pad {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.soundboard-pad:active,
+.soundboard-pad.is-triggered {
+  transform: scale(0.94);
+  box-shadow: 0 0 24px rgba(254, 214, 91, 0.5);
+}
+
+/* Dark Mode Text Enhancements - High Contrast Overrides */
+.dark h1, .dark h2, .dark h3, .dark h4 {
+  color: #ffffff;
+}
+
+.dark .text-on-surface-variant {
+  color: #e5ded4;
+}
+
+.dark .text-outline-variant {
+  color: #d1c7b8;
+}
+
+/* Custom Scrollbars */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+}
+.dark ::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(142, 112, 107, 0.3);
+  border-radius: 4px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(254, 214, 91, 0.4);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(181, 38, 25, 0.5);
+}
+
+/* Tab Transitions */
+.tab-content {
+  animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Toast Notifications */
+#toast-notification {
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Pre-promote to compositor layer for jank-free slide animation */
+  will-change: transform, opacity;
+}
+
+/* App sections: skip rendering off-screen content for faster scroll */
+.app-section {
+  min-height: calc(100vh - 80px);
+  content-visibility: auto;
+  contain-intrinsic-size: 0 800px;
+}
+
+/* Typography & Layout Flow */
+* {
+  overflow-wrap: break-word;
+}
+
+.break-words {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.font-headline-md, .font-display, h1, h2, h3, h4, p, span, a, button {
+  text-wrap: pretty;
+}
+
+/* (min-height merged into .app-section rule above) */
+
+/* Modal scaling animation */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Puja Avatar Selector Items */
+.avatar-option {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.avatar-option:hover {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.avatar-option.is-selected {
+  border-color: #b52619 !important;
+  background-color: rgba(181, 38, 25, 0.15) !important;
+  box-shadow: 0 0 16px rgba(181, 38, 25, 0.3);
+}
+
+.dark .avatar-option.is-selected {
+  border-color: #fed65b !important;
+  background-color: rgba(254, 214, 91, 0.2) !important;
+  box-shadow: 0 0 16px rgba(254, 214, 91, 0.35);
+}
+
+/* Creator Crown / Host Badge */
+.creator-badge {
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.4);
+}
+
+/* Member Avatar Overlap Stack */
+.avatar-stack {
+  display: flex;
+  align-items: center;
+}
+
+.avatar-stack > * {
+  margin-left: -8px;
+  transition: transform 0.2s ease;
+}
+
+.avatar-stack > *:first-child {
+  margin-left: 0;
+}
+
+.avatar-stack > *:hover {
+  transform: translateY(-4px) scale(1.15);
+  z-index: 10;
+}
+
+/* Plan Route Steps */
+.route-step-indicator {
+  position: relative;
+}
+
+.route-step-indicator::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -16px;
+  width: 2px;
+  height: 16px;
+  background-color: rgba(181, 38, 25, 0.3);
+  transform: translateX(-50%);
+}
+
+.dark .route-step-indicator::after {
+  background-color: rgba(254, 214, 91, 0.3);
+}
+
+.route-step-indicator.last-step::after {
+  display: none;
+}
+
+/* Social Share Button Styles */
+.share-btn-wa:hover {
+  background-color: #25D366 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+.share-btn-gmail:hover {
+  background-color: #EA4335 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(234, 67, 53, 0.35);
+}
+
+.share-btn-ig:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(225, 48, 108, 0.35);
+}
+
+.share-btn-snap:hover {
+  background-color: #FFFC00 !important;
+  color: #000000 !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(255, 252, 0, 0.4);
+}
+
+.share-btn-dc:hover {
+  background-color: #5865F2 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(88, 101, 242, 0.35);
+}
+
+.share-btn-copy:hover {
+  background-color: #b52619 !important;
+  color: #ffffff !important;
+  border-color: transparent !important;
+  box-shadow: 0 8px 20px rgba(181, 38, 25, 0.35);
+}
+
+.dark .share-btn-copy:hover {
+  background-color: #fed65b !important;
+  color: #000000 !important;
+}
+
+/* Timer active countdown pulsing */
+@keyframes timerPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.03); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.timer-running {
+  animation: timerPulse 2s infinite ease-in-out;
+}
+
+/* Modern Tabular Countdown Number Typography - Sacred Epigraphic Roman Aesthetic */
+.countdown-number {
+  font-family: 'Cinzel', 'Playfair Display', Georgia, serif !important;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.02em;
+}
+
+/* Ensure Toast Notification always renders on top of all dialogs */
+#toast-notification {
+  z-index: 100 !important;
+}
+
+/* Saved Itinerary Grid: 2 columns on mobile/tablet, at least 3 side-by-side on laptop view (>= 1024px) */
+.saved-itinerary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 1024px) {
+  .saved-itinerary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .saved-itinerary-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ======================================================== */
+/* HIGHLIGHTED CREATOR BAR & CREATOR SPOTLIGHT STYLES       */
+/* ======================================================== */
+.creator-bar {
+  background: rgba(245, 158, 11, 0.1) !important;
+  border: 1px solid rgba(217, 119, 6, 0.35) !important;
+  box-shadow: 0 1px 4px rgba(217, 119, 6, 0.1);
+  white-space: nowrap !important;
+}
+
+.dark .creator-bar {
+  background: rgba(251, 191, 36, 0.12) !important;
+  border: 1px solid rgba(251, 191, 36, 0.35) !important;
+  box-shadow: 0 1px 6px rgba(251, 191, 36, 0.15);
+  white-space: nowrap !important;
+}
+
+.creator-name-pill {
+  background: transparent !important;
+  color: #b45309 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.01em;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.dark .creator-name-pill {
+  background: transparent !important;
+  color: #fbbf24 !important;
+  font-weight: 800 !important;
+}
+
+/* Deep link card pulse animation */
+@keyframes planHighlightPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+  50% { transform: scale(1.02); box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+}
+
+.plan-highlight-focus {
+  animation: planHighlightPulse 1.8s ease-in-out infinite;
+  border-color: #f59e0b !important;
+}
+
+.player-active-pulse {
+  animation: planHighlightPulse 1.8s ease-in-out;
+  border-color: #f59e0b !important;
+}
+
+/* ======================================================== */
+/* KINETIC SACRED LOADING INTERFACE & SPINNERS             */
+/* ======================================================== */
+
+/* 1. Global Loading Overlay */
+#global-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 16, 10, 0.76);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#global-loading-overlay.hidden-loader {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Glowing Diya / Sacred Ring Loader */
+.diya-spinner-container {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diya-spin-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(245, 158, 11, 0.2);
+  border-top-color: #f59e0b;
+  border-right-color: #fbbf24;
+  animation: sacredSpin 1s linear infinite;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.4);
+}
+
+.diya-spin-ring-inner {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(239, 68, 68, 0.18);
+  border-bottom-color: #ef4444;
+  border-left-color: #f59e0b;
+  animation: sacredSpinReverse 1.4s linear infinite;
+}
+
+.diya-pulsing-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  line-height: 1;
+  animation: diyaGlowPulse 1.6s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 8px rgba(251, 191, 36, 0.8));
+  user-select: none;
+}
+
+@keyframes sacredSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sacredSpinReverse {
+  to { transform: rotate(-360deg); }
+}
+
+@keyframes diyaGlowPulse {
+  0% { transform: scale(0.92); opacity: 0.85; filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5)); }
+  100% { transform: scale(1.12); opacity: 1; filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.95)); }
+}
+
+/* 2. Micro Button Spinners */
+.btn-loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: sacredSpin 0.75s linear infinite;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* 3. Top Horizontal Progress Bar (Global Network & Sync indicator) */
+#top-sync-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 100000;
+  background: linear-gradient(90deg, #f59e0b, #ef4444, #fbbf24, #f59e0b);
+  background-size: 200% 100%;
+  animation: progressShimmer 1.5s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#top-sync-progress-bar.hidden-progress {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-4px);
+}
+
+@keyframes progressShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+/* 4. Skeleton Shimmer Loading States for Cards and Grids */
+.skeleton-card {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .skeleton-card {
+  background: rgba(37, 32, 22, 0.6);
+  border: 1px solid rgba(251, 191, 36, 0.12);
+}
+
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-shimmer::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.08) 20%,
+    rgba(255, 255, 255, 0.18) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 1.8s infinite;
+  content: '';
+}
+
+.dark .skeleton-shimmer::after {
+  background-image: linear-gradient(
+    90deg,
+    rgba(251, 191, 36, 0) 0,
+    rgba(251, 191, 36, 0.06) 20%,
+    rgba(251, 191, 36, 0.14) 60%,
+    rgba(251, 191, 36, 0)
+  );
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Rituals Timeline Mobile Safety & Alignment */
+#rituals-timeline-container {
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  #rituals-timeline-container {
+    padding-left: 0.5rem;
+    padding-right: 0.25rem;
+  }
+}
+
+/* ======================================================== */
+/* ULTRA-SMOOTH RENDERING, HARDWARE ACCELERATION & CONTAINMENT */
+/* ======================================================== */
+
+/* Off-screen card rendering skip (silky 60/120fps scrolling on mobile & desktop) */
+.pandal-card-item,
+.food-card-item,
+.shop-card-item,
+.plan-card-item {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 420px;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Isolate grid repaints from rest of the DOM tree */
+#pandals-grid-container,
+#food-cards-container,
+#shopping-cards-container,
+#plans-list-container,
+#saved-itinerary-container {
+  contain: layout style;
+}
+
+/* Smooth native momentum scrolling for horizontal chips & scroll views */
+.overflow-x-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Hardware accelerated modals and sticky bars */
+#bottom-nav,
+header,
+.glass-panel {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* ======================================================== */
+/* 1. FESTIVE WELCOME ANIMATION (30% BLUR, KAASH & AURA)    */
+/* ======================================================== */
+#festive-lateral-slider {
+  background: rgba(12, 8, 4, 0.4);
+  backdrop-filter: blur(6px) brightness(0.92);
+  -webkit-backdrop-filter: blur(6px) brightness(0.92);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#festive-lateral-slider.festive-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#festive-lateral-slider.festive-fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.festive-emblem-circle {
+  width: 108px !important;
+  height: 108px !important;
+  min-width: 108px !important;
+  min-height: 108px !important;
+  max-width: 108px !important;
+  max-height: 108px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  border: 2.5px solid #fbbf24 !important;
+  box-shadow: 0 0 32px rgba(251, 191, 36, 0.65) !important;
+  background-color: #000000 !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .festive-emblem-circle {
+    width: 130px !important;
+    height: 130px !important;
+    min-width: 130px !important;
+    min-height: 130px !important;
+    max-width: 130px !important;
+    max-height: 130px !important;
+    border-width: 3px !important;
+  }
+}
+
+.festive-emblem-circle img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+.festive-aura-halo {
+  width: 170px !important;
+  height: 170px !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 640px) {
+  .festive-aura-halo {
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+
+@keyframes kaashDropOpenSlideLeft {
+  0% {
+    opacity: 0;
+    transform: translate(60px, -130px) scale(0.35) rotate(-22deg);
+  }
+  28% {
+    opacity: 1;
+    transform: translate(15px, -15px) scale(0.9) rotate(-8deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-100vw, 30px) scale(0.92) rotate(-15deg);
+  }
+}
+
+@keyframes kaashDropOpenSlideRight {
+  0% {
+    opacity: 0;
+    transform: translate(-60px, -130px) scale(0.35) rotate(22deg) scaleX(-1);
+  }
+  28% {
+    opacity: 1;
+    transform: translate(-15px, -15px) scale(0.9) rotate(8deg) scaleX(-1);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg) scaleX(-1);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg) scaleX(-1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(100vw, 30px) scale(0.92) rotate(15deg) scaleX(-1);
+  }
+}
+
+@keyframes centerEmblemAura {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  18% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  36% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+.kaash-anim-left {
+  animation: kaashDropOpenSlideLeft 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.kaash-anim-right {
+  animation: kaashDropOpenSlideRight 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.emblem-aura-anim {
+  animation: centerEmblemAura 2.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* ======================================================== */
+/* 2. THEME SWITCH CENTER-SCREEN ANIMATION                 */
+/* ======================================================== */
+@keyframes themeCenterBurst {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  22% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+  45% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  75% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.12);
+  }
+}
+
+.theme-burst-active {
+  animation: themeCenterBurst 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes rayRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.anim-ray-spin {
+  animation: rayRotate 8s linear infinite;
+}
+
+/* ======================================================== */
+/* 3. AI CHAT LIST & TYPOGRAPHY ENHANCEMENTS               */
+/* ======================================================== */
+.ai-list-item {
+  line-height: 1.5;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.ai-bullet-item {
+  line-height: 1.45;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+/* ======================================================== */
+/* 4. DURGA PUJA AI CHATBOT WIDGET & MESSAGING             */
+/* ======================================================== */
+#puja-ai-chat-window.chat-open {
+  display: flex !important;
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Whenever chat is open, completely hide the floating trigger button across all views */
+body.ai-chat-opened #puja-ai-trigger-btn,
+#puja-ai-widget-container:has(#puja-ai-chat-window.chat-open) #puja-ai-trigger-btn,
+#puja-ai-chat-window.chat-open ~ #puja-ai-trigger-btn,
+#puja-ai-chat-window.chat-open + #puja-ai-trigger-btn {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Mobile viewport fit for sharod.ai Chat Window */
+@media (max-width: 639px) {
+  #puja-ai-widget-container {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    pointer-events: none !important;
+  }
+
+  #puja-ai-trigger-btn {
+    position: fixed !important;
+    bottom: 72px !important; /* Above 54px mobile bottom dock */
+    right: 14px !important;
+    width: 56px !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    min-height: 56px !important;
+    aspect-ratio: 1 / 1 !important;
+    pointer-events: auto !important;
+    z-index: 90 !important;
+  }
+
+  #puja-ai-chat-window {
+    position: fixed !important;
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 70px !important;
+    top: auto !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    height: min(520px, calc(100dvh - 100px)) !important;
+    max-height: calc(100dvh - 100px) !important;
+    border-radius: 22px !important;
+    margin-bottom: 0 !important;
+    transform-origin: bottom right;
+    pointer-events: auto !important;
+    z-index: 95 !important;
+  }
+}
+
+@media (min-width: 640px) {
+  #puja-ai-chat-window {
+    width: 400px !important;
+    height: 540px !important;
+    max-height: calc(100vh - 100px) !important;
+  }
+}
+
+.ai-message-bubble {
+  max-width: 88%;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.ai-bubble-bot {
+  background: rgba(245, 240, 230, 0.95);
+  color: #261f18;
+  border: 1px solid rgba(217, 119, 6, 0.25);
+  border-radius: 18px 18px 18px 4px;
+}
+
+.dark .ai-bubble-bot {
+  background: rgba(38, 32, 22, 0.95);
+  color: #f3ede2;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+.ai-bubble-user {
+  background: #b91c1c;
+  color: #ffffff;
+  border-radius: 18px 18px 4px 18px;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.dark .ai-bubble-user {
+  background: #d97706;
+  color: #000000;
+}
+
+.ai-typing-dot {
+  animation: typingBounce 1s infinite;
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); }
+}
+
+.ai-message-bubble strong {
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.dark .ai-message-bubble strong {
+  color: #fcd34d;
+}
+
+.ai-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  margin: 3px 2px;
+  border-radius: 8px;
+  background: rgba(185, 28, 28, 0.12);
+  color: #b91c1c;
+  font-weight: 600;
+  font-size: 11px;
+  text-decoration: none;
+  border: 1px solid rgba(185, 28, 28, 0.25);
+  transition: all 0.2s ease;
+}
+
+.dark .ai-link-btn {
+  background: rgba(251, 191, 36, 0.15);
+  color: #fcd34d;
+  border-color: rgba(251, 191, 36, 0.3);
+}
+
+.ai-link-btn:hover {
+  transform: translateY(-1px);
+  background: #b91c1c;
+  color: white;
+}
+
+.dark .ai-link-btn:hover {
+  background: #fcd34d;
+  color: black;
+}
+
+.ai-nav-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  margin: 4px 3px;
+  border-radius: 9999px;
+  background: rgba(185, 28, 28, 0.08);
+  color: #b91c1c;
+  font-weight: 700;
+  font-size: 11px;
+  border: 1px solid rgba(185, 28, 28, 0.3);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.dark .ai-nav-chip {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.35);
+}
+
+.ai-nav-chip:hover {
+  transform: translateY(-1px) scale(1.02);
+  background: #b91c1c;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.25);
+}
+
+.dark .ai-nav-chip:hover {
+  background: #f59e0b;
+  color: #000000;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+}
+
+.ai-web-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  margin-bottom: 6px;
+}
+
+.dark .ai-web-badge {
+  background: rgba(52, 211, 153, 0.15);
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+
