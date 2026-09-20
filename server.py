@@ -29,6 +29,22 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     daemon_threads = True
     allow_reuse_address = True
 
+def get_env_setting(key, default=""):
+    val = os.environ.get(key)
+    if val:
+        return val.strip()
+    env_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env')
+    if os.path.exists(env_file):
+        try:
+            with open(env_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    if line.startswith(f'{key}='):
+                        return line.split('=', 1)[1].strip(' "\'')
+        except Exception:
+            pass
+    return default
+
 class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
@@ -61,6 +77,26 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
                 "festival": "Akalbodhon Sharodiya Durga Puja 2026",
                 "supabase_project": "yagvczdnfyhdtvggkclj"
             }).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Content-Length', str(len(payload)))
+            self.end_headers()
+            self.wfile.write(payload)
+            return
+
+        # API: Get Firebase Client Configuration
+        if clean_path == '/api/firebase-config':
+            fb_config = {
+                "apiKey": get_env_setting('FIREBASE_API_KEY', ''),
+                "authDomain": get_env_setting('FIREBASE_AUTH_DOMAIN', 'akalbodhon-6a71a.firebaseapp.com'),
+                "projectId": get_env_setting('FIREBASE_PROJECT_ID', 'akalbodhon-6a71a'),
+                "storageBucket": get_env_setting('FIREBASE_STORAGE_BUCKET', 'akalbodhon-6a71a.firebasestorage.app'),
+                "messagingSenderId": get_env_setting('FIREBASE_MESSAGING_SENDER_ID', '562011001158'),
+                "appId": get_env_setting('FIREBASE_APP_ID', '1:562011001158:web:b3cd9b5a526accd2659547'),
+                "measurementId": get_env_setting('FIREBASE_MEASUREMENT_ID', 'G-R9CGW4P7NZ')
+            }
+            payload = json.dumps(fb_config).encode('utf-8')
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Cache-Control', 'no-cache')

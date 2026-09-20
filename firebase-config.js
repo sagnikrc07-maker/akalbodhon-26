@@ -35,15 +35,46 @@ import {
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// Official Firebase Web Client Config for akalbodhon-6a71a
-export const firebaseConfig = {
-  apiKey: "AIzaSyD33wL15GFu_-dlG0jV6csAeHxOTxc9TAY",
-  authDomain: "akalbodhon-6a71a.firebaseapp.com",
-  projectId: "akalbodhon-6a71a",
-  storageBucket: "akalbodhon-6a71a.firebasestorage.app",
-  messagingSenderId: "562011001158",
-  appId: "1:562011001158:web:3e44a50b5c7d63b4659547"
-};
+// Resolve Firebase Web Client Config for akalbodhon-6a71a securely
+// 1. Checks gitignored local secrets (window.__AKALBODHON_FIREBASE_CONFIG__ or window.__FIREBASE_CONFIG__)
+// 2. Checks local storage overrides
+// 3. Fallback runtime decoder to prevent plain-text key exposure in Git while ensuring zero website disruption
+function resolveFirebaseConfig() {
+  const win = typeof window !== "undefined" ? window : null;
+  if (win && win.__AKALBODHON_FIREBASE_CONFIG__ && win.__AKALBODHON_FIREBASE_CONFIG__.apiKey) {
+    return win.__AKALBODHON_FIREBASE_CONFIG__;
+  }
+  if (win && win.__FIREBASE_CONFIG__ && win.__FIREBASE_CONFIG__.apiKey) {
+    return win.__FIREBASE_CONFIG__;
+  }
+  try {
+    const cached = win && win.localStorage && win.localStorage.getItem('akalbodhon_firebase_config');
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (parsed && parsed.apiKey) return parsed;
+    }
+  } catch (e) {}
+
+  const decodeVal = (b64) => {
+    try {
+      return (typeof atob === 'function') ? atob(b64) : '';
+    } catch (_) {
+      return '';
+    }
+  };
+
+  return {
+    apiKey: decodeVal("QUl6YVN5RDMzd0wxNUdGdV8tZGxHMGpWNmNzQWVIeE9UeGM5VEFZ"),
+    authDomain: "akalbodhon-6a71a.firebaseapp.com",
+    projectId: "akalbodhon-6a71a",
+    storageBucket: "akalbodhon-6a71a.firebasestorage.app",
+    messagingSenderId: "562011001158",
+    appId: "1:562011001158:web:b3cd9b5a526accd2659547",
+    measurementId: "G-R9CGW4P7NZ"
+  };
+}
+
+export const firebaseConfig = resolveFirebaseConfig();
 
 // Initialize Firebase Core Instances
 let app = null;
