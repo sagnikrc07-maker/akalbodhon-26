@@ -46,13 +46,9 @@ async function resolveFirebaseConfig() {
   if (win && win.__FIREBASE_CONFIG__ && win.__FIREBASE_CONFIG__.apiKey) {
     return win.__FIREBASE_CONFIG__;
   }
-  try {
-    const cached = win && win.localStorage && win.localStorage.getItem('akalbodhon_firebase_config');
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (parsed && parsed.apiKey) return parsed;
-    }
-  } catch (e) {}
+  // NOTE: We intentionally do NOT cache Firebase config in localStorage.
+  // Storing API keys/tokens in localStorage makes them accessible to XSS and
+  // browser extensions. The /api/firebase-config fetch is fast and safe.
 
   // Dynamic fetch from /api/firebase-config
   try {
@@ -60,9 +56,6 @@ async function resolveFirebaseConfig() {
     if (resp.ok) {
       const remoteConfig = await resp.json();
       if (remoteConfig && remoteConfig.apiKey) {
-        try {
-          win && win.localStorage && win.localStorage.setItem('akalbodhon_firebase_config', JSON.stringify(remoteConfig));
-        } catch (_) {}
         if (remoteConfig.supabase && win) {
           win.__AKALBODHON_SUPABASE_CONFIG__ = remoteConfig.supabase;
           win.__SUPABASE_CONFIG__ = remoteConfig.supabase;
@@ -495,8 +488,9 @@ export const AkalbodhonFirebase = {
 
       // Handle Firebase auth/billing-not-enabled gracefully
       if (err.code === 'auth/billing-not-enabled' || (err.message && err.message.includes('billing-not-enabled'))) {
-        console.warn("Firebase SMS billing is not enabled for this project. Activating fallback OTP verification code (123456).");
-        const fallbackCode = "123456";
+        console.warn("Firebase SMS billing is not enabled for this project. Activating fallback OTP simulation mode.");
+        // Generate a cryptographically random 6-digit code per session — never hardcoded
+        const fallbackCode = String(Math.floor(100000 + (crypto.getRandomValues(new Uint32Array(1))[0] % 900000)));
         const fallbackConfirmationResult = {
           verificationId: `mock_${Date.now()}`,
           isSimulation: true,
@@ -511,7 +505,7 @@ export const AkalbodhonFirebase = {
                 }
               };
             } else {
-              const verifyErr = new Error("Invalid verification code. Please enter the 6-digit test code: 123456.");
+              const verifyErr = new Error("Invalid verification code. Please try again.");
               verifyErr.code = 'auth/invalid-verification-code';
               throw verifyErr;
             }
@@ -522,8 +516,8 @@ export const AkalbodhonFirebase = {
           success: true,
           confirmationResult: fallbackConfirmationResult,
           formattedPhone,
-          isSimulation: true,
-          simulationCode: fallbackCode
+          isSimulation: true
+          // NOTE: simulationCode is intentionally NOT returned to caller
         };
       }
 
