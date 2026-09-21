@@ -9119,8 +9119,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         let emailDelivered = false;
         try {
           // FormData payload is the official and most reliable format for Web3Forms
+          // Web3Forms public access key - can be overridden via window.__AKALBODHON_WEB3FORMS_KEY__
+          const web3FormsKey = (typeof window !== 'undefined' && window.__AKALBODHON_WEB3FORMS_KEY__) || '61c7f9d3-94bb-42e4-8353-a70f98af0434';
           const formData = new FormData();
-          formData.append('access_key', '61c7f9d3-94bb-42e4-8353-a70f98af0434');
+          formData.append('access_key', web3FormsKey);
           formData.append('name', senderName);
           formData.append('email', senderEmail);
           formData.append('phone_or_identifier', userContact);
@@ -9145,7 +9147,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
               body: JSON.stringify({
-                access_key: '61c7f9d3-94bb-42e4-8353-a70f98af0434',
+                access_key: web3FormsKey,
                 name: senderName,
                 email: senderEmail,
                 phone_or_identifier: userContact,

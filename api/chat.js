@@ -14,14 +14,13 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, history, apiKey: clientKey } = req.body || {};
+    const { message, history } = req.body || {};
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ success: false, error: 'Message is required' });
     }
 
-    const apiKey = (clientKey && clientKey.length > 10)
-      ? clientKey.trim()
-      : (process.env.GEMINI_API_KEY || '');
+    // SECURITY: Never accept API keys from client requests — always use server env var only
+    const apiKey = process.env.GEMINI_API_KEY || '';
 
     if (!apiKey) {
       return res.status(500).json({
