@@ -31,6 +31,26 @@
   }
 }
 
+/* Base Media & Header Logo Defensive Constraints */
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+header.glass-nav img {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  max-width: 2.5rem !important;
+  max-height: 2.5rem !important;
+  object-fit: cover !important;
+  border-radius: 9999px !important;
+}
+
+header.glass-nav {
+  height: 4rem;
+  max-height: 4rem;
+}
+
 /* Material Symbols Default Settings & Anti-FOUT Cloaking */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined' !important;
