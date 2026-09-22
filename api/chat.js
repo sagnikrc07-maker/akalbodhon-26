@@ -19,6 +19,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ success: false, error: 'Message is required' });
     }
 
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) {
+      return res.status(400).json({ success: false, error: 'Message cannot be empty.' });
+    }
+    if (trimmedMessage.length > 2000) {
+      return res.status(400).json({ success: false, error: 'Message exceeds maximum permitted length of 2000 characters.' });
+    }
+
     // SECURITY: Never accept API keys from client requests — always use server env var only
     const apiKey = process.env.GEMINI_API_KEY || '';
 
@@ -53,11 +61,11 @@ UNCONSTRAINED AI CAPABILITIES:
     if (Array.isArray(history)) {
       for (const h of history.slice(-6)) {
         const role = h.role === 'user' ? 'user' : 'model';
-        const text = h.text || h.content || '';
+        const text = typeof (h.text || h.content) === 'string' ? (h.text || h.content).slice(0, 2000) : '';
         if (text) contents.push({ role, parts: [{ text }] });
       }
     }
-    contents.push({ role: 'user', parts: [{ text: message }] });
+    contents.push({ role: 'user', parts: [{ text: trimmedMessage }] });
 
     const payload = {
       system_instruction: { parts: [{ text: systemInstruction }] },
@@ -103,6 +111,6 @@ UNCONSTRAINED AI CAPABILITIES:
     });
   } catch (error) {
     console.error('Chat API Error:', error);
-    return res.status(500).json({ success: false, error: error.message });
+    return res.status(500).json({ success: false, error: 'Internal server error processing chat request.' });
   }
 }

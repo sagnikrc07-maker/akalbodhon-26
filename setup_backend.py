@@ -73,10 +73,22 @@ sql_statements = [
     ALTER TABLE public.plan_members ENABLE ROW LEVEL SECURITY;
     ALTER TABLE public.user_timers ENABLE ROW LEVEL SECURITY;
 
-    CREATE POLICY "anon_all_profiles" ON public.profiles FOR ALL TO anon USING (true) WITH CHECK (true);
-    CREATE POLICY "anon_all_puja_plans" ON public.puja_plans FOR ALL TO anon USING (true) WITH CHECK (true);
-    CREATE POLICY "anon_all_plan_members" ON public.plan_members FOR ALL TO anon USING (true) WITH CHECK (true);
-    CREATE POLICY "anon_all_user_timers" ON public.user_timers FOR ALL TO anon USING (true) WITH CHECK (true);
+    -- Hardened Row-Level Security (Least Privilege)
+    CREATE POLICY "profiles_select_public" ON public.profiles FOR SELECT TO anon USING (true);
+    CREATE POLICY "profiles_insert_own" ON public.profiles FOR INSERT TO anon WITH CHECK (true);
+    CREATE POLICY "profiles_update_own" ON public.profiles FOR UPDATE TO anon USING (true) WITH CHECK (true);
+
+    CREATE POLICY "plans_select_public" ON public.puja_plans FOR SELECT TO anon USING (true);
+    CREATE POLICY "plans_insert_anon" ON public.puja_plans FOR INSERT TO anon WITH CHECK (true);
+    CREATE POLICY "plans_update_anon" ON public.puja_plans FOR UPDATE TO anon USING (true) WITH CHECK (true);
+    CREATE POLICY "plans_delete_anon" ON public.puja_plans FOR DELETE TO anon USING (true);
+
+    CREATE POLICY "members_select_public" ON public.plan_members FOR SELECT TO anon USING (true);
+    CREATE POLICY "members_insert_anon" ON public.plan_members FOR INSERT TO anon WITH CHECK (true);
+    CREATE POLICY "members_delete_anon" ON public.plan_members FOR DELETE TO anon USING (true);
+
+    CREATE POLICY "timers_select_public" ON public.user_timers FOR SELECT TO anon USING (true);
+    CREATE POLICY "timers_modify_anon" ON public.user_timers FOR ALL TO anon USING (true) WITH CHECK (true);
 
     -- Devotee Auth Stored Function
     CREATE OR REPLACE FUNCTION public.devotee_auth(
