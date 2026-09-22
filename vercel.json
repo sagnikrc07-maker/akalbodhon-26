@@ -1,13 +1,15 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/pandals", "destination": "/#pandals", "permanent": false },
+    { "source": "/rituals", "destination": "/#rituals", "permanent": false },
+    { "source": "/plans", "destination": "/#plans", "permanent": false },
+    { "source": "/food-shopping", "destination": "/#food-shopping", "permanent": false },
+    { "source": "/audio", "destination": "/#audio", "permanent": false },
+    { "source": "/saved", "destination": "/#saved", "permanent": false }
+  ],
   "rewrites": [
-    { "source": "/login", "destination": "/login.html" },
-    { "source": "/plans", "destination": "/index.html" },
-    { "source": "/pandals", "destination": "/index.html" },
-    { "source": "/rituals", "destination": "/index.html" },
-    { "source": "/food-shopping", "destination": "/index.html" },
-    { "source": "/audio", "destination": "/index.html" },
-    { "source": "/saved", "destination": "/index.html" }
+    { "source": "/login", "destination": "/login.html" }
   ],
   "headers": [
     {
