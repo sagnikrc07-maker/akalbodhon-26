@@ -8506,7 +8506,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       } catch (err) {
         // Direct browser-level Gemini fallback if client has custom key
         if (apiKey) {
-          const clientModels = ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash'];
+          const clientModels = ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.1-flash-lite', 'gemini-3.6-flash'];
           for (const cModel of clientModels) {
             try {
               const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${cModel}:generateContent?key=${apiKey}`;

@@ -4,7 +4,85 @@
 function generateLocalResponse(query) {
   const q = (query || '').toLowerCase().trim();
 
-  // 1. Attire, Dress Code & Fashion Queries (e.g., "can i wear suit on ashthami")
+  // 1. TRANSIT, DIRECTIONS & ROUTE NAVIGATION (Checked first to avoid keyword collision)
+  const isTransit = (
+    q.includes('how to get') ||
+    q.includes('how to reach') ||
+    q.includes('how do i get') ||
+    q.includes('how do i reach') ||
+    q.includes('how can i go') ||
+    q.includes('how to go') ||
+    q.includes('direction') ||
+    q.includes('route') ||
+    q.includes('travel') ||
+    q.includes('distance') ||
+    (q.includes('from') && q.includes('to')) ||
+    q.includes('station') ||
+    q.includes('sealdah') ||
+    q.includes('howrah') ||
+    q.includes('airport') ||
+    q.includes('metro to') ||
+    q.includes('bus to') ||
+    q.includes('taxi to') ||
+    q.includes('cab to')
+  );
+
+  if (isTransit) {
+    // Specific Route: Maddox Square <-> Sealdah Station
+    if (q.includes('maddox') && (q.includes('sealdah') || q.includes('station'))) {
+      return (
+        `**Directions from Maddox Square to Sealdah Station** 🚇🚕\n\n` +
+        `Getting from **Maddox Square** (Ritchie Road / Ballygunge) to **Sealdah Railway Station** is quick and convenient during Durga Puja with these travel options:\n\n` +
+        `1. 🚇 **By Kolkata Metro (Recommended & Fastest during Puja)**:\n` +
+        `   • **Step 1**: Walk or take an auto/toto (approx. 1 km / 8–10 mins) from Maddox Square to **Netaji Bhavan** or **Jatin Das Park** Metro Station (Blue Line).\n` +
+        `   • **Step 2**: Board the Northbound train to **Esplanade** (approx. 7 mins).\n` +
+        `   • **Step 3**: At Esplanade, take the direct underground interchange to the **Green Line** train heading to **Sealdah Station** (just 1 stop / 4 mins).\n` +
+        `   • *Total Time*: ~20 to 30 minutes, completely bypassing surface road gridlock.\n\n` +
+        `2. 🚕 **By Yellow Taxi / App-Cab (Uber, Ola, Rapido)**:\n` +
+        `   • **Route**: Ballygunge Circular Rd / Sarat Bose Rd ➔ AJC Bose Road Flyover ➔ Moulali Crossing ➔ Sealdah (~6.2 km).\n` +
+        `   • *Travel Time*: ~25 to 40 minutes depending on festival crowd control.\n` +
+        `   • *Puja Pro-Tip*: Roads directly around Maddox Square are barricaded for pedestrian movement in the evening. Walk out to Sarat Bose Road or Lansdowne Road to hail a cab without driver cancellations.\n\n` +
+        `3. 🚌 **By Public Bus**:\n` +
+        `   • Walk to the Sarat Bose Road or Exide crossing and board buses towards Sealdah (e.g., route 24A, 42A, 47/1, or Sealdah-bound minibuses).\n\n` +
+        `👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Nearest Metro Connections](action:nav:pandals:all)`
+      );
+    }
+
+    // Specific Route: Howrah Station connections
+    if (q.includes('howrah')) {
+      return (
+        `**Transit Guide to & from Howrah Railway Station** 🚆🌊\n\n` +
+        `• 🚇 **Underwater Green Line Metro (Fastest)**: Board the Green Line at Howrah Station to travel under the Hooghly river directly to **Esplanade** in just minutes! From Esplanade, you can switch to the Blue Line for North (Bagbazar/Kumartuli) or South (Kalighat/Maddox Sq) pandals.\n` +
+        `• ⛴️ **Heritage River Ferry**: Ferries operate from Howrah Ghat to Fairlie Place, Babughat, and Bagbazar Ghat—a breathtaking scenic trip across the Ganges.\n` +
+        `• 🚕 **Prepaid Taxi & App Cabs**: Available at the Howrah Station taxi stand; anticipate heavy traffic on Howrah Bridge during evening rush.\n\n` +
+        `👉 [Explore Pandals by Metro](action:nav:pandals:all)`
+      );
+    }
+
+    // Specific Route: Kolkata Airport (CCU / Netaji Subhash Chandra Bose)
+    if (q.includes('airport') || q.includes('dum dum airport') || q.includes('ccu')) {
+      return (
+        `**Transit Guide to & from Kolkata Airport (CCU)** ✈️🚕\n\n` +
+        `• 🚕 **Yellow Taxi & App-Cabs**: Available 24/7 at the arrival terminal. Take the VIP Road / Maa Flyover corridor for South/Central Kolkata, or the Rajarhat Expressway for Salt Lake.\n` +
+        `• 🚌 **AC Airport Express Buses (VS-series)**: Direct luxury Volvo buses connect CCU to Howrah, Esplanade, Tollygunge, and Gariahat.\n` +
+        `• 🏛️ **Nearby Mega Pandals**: Sreebhumi Sporting Club and Dum Dum Park are just 15–20 minutes from the airport along VIP Road!\n\n` +
+        `👉 [Explore East & Salt Lake Pandals](action:nav:pandals:East)`
+      );
+    }
+
+    // General Transit & Metro Guide
+    return (
+      `**Kolkata Metro & Transit Guide for Durga Puja** 🚇🎫\n\n` +
+      `Kolkata Metro is the ultimate lifeline for seamless pandal hopping during the festive season:\n\n` +
+      `• **Blue Line (North-South)**: Connects Dakshineswar ➔ Dum Dum ➔ Sovabazar (Bagbazar/Kumartuli) ➔ MG Road (College Square) ➔ Esplanade ➔ Netaji Bhavan / Jatin Das Park (Maddox Square) ➔ Kalighat (Tridhara/Badamtala) ➔ Rabindra Sarobar.\n` +
+      `• **Green Line (East-West)**: Connects Howrah Railway Station ➔ underwater tunnel ➔ Esplanade ➔ Sealdah Station ➔ Salt Lake Sector V.\n` +
+      `• **All-Night Special Trains**: Kolkata Metro operates overnight services with trains every 12–15 minutes until 4:00 AM on Saptami, Ashtami, and Navami!\n` +
+      `• **Smart Card & Token**: Metro QR ticketing via official apps helps avoid long counter queues at busy stations like Kalighat and Sovabazar.\n\n` +
+      `👉 [Explore Pandals with Nearest Metro Stations](action:nav:pandals:all)`
+    );
+  }
+
+  // 2. ATTIRE, DRESS CODE & FASHION QUERIES (e.g., "can i wear suit on ashtami")
   if (
     q.includes('suit') ||
     q.includes('wear') ||
@@ -46,7 +124,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 2. Greetings
+  // 3. GREETINGS
   if (
     q.match(/^(hi|hello|hey|namaste|nomoshkar|pranam|joy maa durga|subho mahalaya)/) ||
     (q.split(/\s+/).length <= 3 && (q.includes('hi') || q.includes('hello') || q.includes('hey')))
@@ -63,17 +141,84 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 3. South Pandals
-  if (
-    (q.includes('south') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route'))) ||
-    q.includes('tridhara') ||
-    q.includes('suruchi') ||
-    q.includes('maddox') ||
-    q.includes('ekdalia') ||
-    q.includes('mudiali') ||
-    q.includes('badamtala') ||
-    q.includes('ballygunge')
-  ) {
+  // 4. SPECIFIC PANDAL SPOTLIGHTS (Answer targeted questions about an individual pandal)
+  if (q.includes('maddox')) {
+    return (
+      `**Maddox Square Durga Puja Spotlight** 🌳🥁\n\n` +
+      `• **The Vibe**: Maddox Square (Ritchie Road / Ballygunge) is Kolkata's most celebrated open-lawn community Puja and the epicenter of youth *adda*, music, and lively social reunions.\n` +
+      `• **The Pratima**: Classic, timeless *Ekchala Sabeki Pratima* with traditional Daaker Saaj, bathed in radiant warmth.\n` +
+      `• **Signature Experience**: Rolling rhythm of traditional Dhaakis, relaxed open park seating, midnight rolls, and passionate cultural discussions under the canopy of festive lights.\n` +
+      `• **Nearest Metro**: **Netaji Bhavan** or **Jatin Das Park** (Blue Line, ~10 mins walk / auto).\n` +
+      `• **Nearby Circuit**: Pair your visit with Ballygunge Cultural, Tridhara Sammilani, and Ekdalia Evergreen.\n\n` +
+      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South)`
+    );
+  }
+
+  if (q.includes('tridhara')) {
+    return (
+      `**Tridhara Sammilani Spotlight** 🏛️✨\n\n` +
+      `• **Location**: Manohar Pukur Road / Rashbehari Crossing (Ballygunge).\n` +
+      `• **Specialty**: World-renowned for cutting-edge conceptual architecture, immersive sensory experiences, and philosophical themes blending avant-garde art with Vedic sanctity.\n` +
+      `• **Nearest Metro**: **Kalighat Metro Station** (Blue Line, 5 mins walk).\n\n` +
+      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South)`
+    );
+  }
+
+  if (q.includes('ekdalia')) {
+    return (
+      `**Ekdalia Evergreen Club Spotlight** 🏰🕯️\n\n` +
+      `• **Location**: Gariahat (Near Pantaloons / Ekdalia Road).\n` +
+      `• **Specialty**: Majestic replicas of famous ancient Indian temples, monumental European crystal chandeliers, and magnificent traditional Sabeki idol.\n` +
+      `• **Nearest Metro**: **Kalighat** or **Gariahat Junction** (10 mins by auto).\n\n` +
+      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South)`
+    );
+  }
+
+  if (q.includes('suruchi')) {
+    return (
+      `**Suruchi Sangha Spotlight** 🎨🕊️\n\n` +
+      `• **Location**: New Alipore (Near petrol pump / block SB).\n` +
+      `• **Specialty**: Acclaimed thematic cultural masterworks spotlighting diverse Indian states, indigenous folk arts, social unity, and original musical compositions.\n` +
+      `• **Nearest Metro**: **Rabindra Sarobar** or **Majerhat Railway/Metro Station**.\n\n` +
+      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South)`
+    );
+  }
+
+  if (q.includes('bagbazar')) {
+    return (
+      `**Bagbazar Sarbojanin Spotlight** 🌺🪔\n\n` +
+      `• **Location**: Bagbazar Ghat / North Kolkata.\n` +
+      `• **Specialty**: Kolkata's benchmark centenary traditional Sabeki idol with sublime serene eyes, adorned in pure Daaker Saaj. Renowned for authentic rituals, Birashtami exhibition, and emotional *Sindoor Khela* on Dashami by the Ganges.\n` +
+      `• **Nearest Metro**: **Shyambazar** or **Sovabazar Sutanuti** (Blue Line).\n\n` +
+      `👉 [Explore North Kolkata Pandals](action:nav:pandals:North)`
+    );
+  }
+
+  if (q.includes('kumartuli')) {
+    return (
+      `**Kumartuli Park & Artisans Colony** 🏺✨\n\n` +
+      `• **Location**: Kumartuli (Potters' Colony by the Hooghly River).\n` +
+      `• **Specialty**: Walk through the centuries-old narrow lanes where master sculptors mold clay from the Ganges into divine deities. Kumartuli Park features spectacular contemporary conceptual art installations adjacent to the heritage quarters.\n` +
+      `• **Nearest Metro**: **Sovabazar Sutanuti** Metro Station.\n\n` +
+      `👉 [Explore North Kolkata Pandals](action:nav:pandals:North)`
+    );
+  }
+
+  if (q.includes('sreebhumi')) {
+    return (
+      `**Sreebhumi Sporting Club Spotlight** 👑💎\n\n` +
+      `• **Location**: Lake Town / VIP Road (East Kolkata).\n` +
+      `• **Specialty**: Colossal, life-sized architectural replicas of world-famous royal palaces and temples, dazzling Chandannagar illuminations, and idols draped in real gold jewelry.\n` +
+      `• **Nearest Metro / Transit**: **Dum Dum Metro** or direct VIP Road cabs from Airport/Salt Lake.\n\n` +
+      `👉 [Explore East & Salt Lake Pandals](action:nav:pandals:East)`
+    );
+  }
+
+  // 5. REGIONAL PANDAL LISTS (Triggered ONLY when explicitly asking for lists, recommendations, or zones)
+  const isSouthList = (
+    q.includes('south') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('top') || q.includes('list') || q.includes('circuit'))
+  );
+  if (isSouthList) {
     return (
       `**Top South Kolkata Durga Puja Pandals (2026)** 🏛️✨\n\n` +
       `South Kolkata is the epicenter of monumental architectural innovation, conceptual art installations, and vibrant youth carnival energy:\n\n` +
@@ -87,16 +232,10 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 4. North Pandals
-  if (
-    (q.includes('north') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route'))) ||
-    q.includes('bagbazar') ||
-    q.includes('kumartuli') ||
-    q.includes('sovabazar') ||
-    q.includes('ahiritola') ||
-    q.includes('tala prattoy') ||
-    q.includes('college square')
-  ) {
+  const isNorthList = (
+    q.includes('north') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('top') || q.includes('list') || q.includes('circuit'))
+  );
+  if (isNorthList) {
     return (
       `**Top North Kolkata Durga Puja Pandals (2026)** 🏛️🪔\n\n` +
       `North Kolkata is the soul of authentic heritage, colonial aristocracy, and classical Bengali sabeki craftsmanship:\n\n` +
@@ -109,8 +248,10 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 5. East & Salt Lake Pandals
-  if (q.includes('east') || q.includes('salt lake') || q.includes('sreebhumi') || q.includes('fd block') || q.includes('dum dum')) {
+  const isEastList = (
+    (q.includes('east') || q.includes('salt lake')) && (q.includes('pandal') || q.includes('list') || q.includes('best') || q.includes('top'))
+  );
+  if (isEastList) {
     return (
       `**Top East Kolkata & Salt Lake Pandals (2026)** 🏛️💎\n\n` +
       `1. **Sreebhumi Sporting Club** (Lake Town / VIP Road): Spectacular royal palace replicas adorned with glittering Chandannagar illumination and real jewelry.\n` +
@@ -120,7 +261,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 6. Rajbari / Bonedi Bari Pujas
+  // 6. RAJBARI / BONEDI BARI PUJAS
   if (q.includes('rajbari') || q.includes('bonedi') || q.includes('heritage') || q.includes('sabarna') || q.includes('ancestral')) {
     return (
       `**Heritage Bonedi Bari (Aristocratic Family) Pujas** 👑🪔\n\n` +
@@ -133,7 +274,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 7. Rituals & Timings
+  // 7. RITUALS & TIMINGS
   if (
     q.includes('ritual') ||
     q.includes('sandhi') ||
@@ -163,7 +304,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 8. Food, Restaurants, Biryani, Bhog
+  // 8. FOOD, RESTAURANTS, BIRYANI, BHOG
   if (
     q.includes('food') ||
     q.includes('eat') ||
@@ -187,27 +328,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 9. Metro & Transit
-  if (
-    q.includes('metro') ||
-    q.includes('transit') ||
-    q.includes('train') ||
-    q.includes('transport') ||
-    q.includes('bus') ||
-    q.includes('route') ||
-    q.includes('traffic')
-  ) {
-    return (
-      `**Kolkata Metro & Transit Guide for Durga Puja** 🚇🎫\n\n` +
-      `The Kolkata Metro is the quickest way to beat surface road closures and massive festive traffic:\n\n` +
-      `• **Blue Line (North-South)**: Connects Sovabazar (Bagbazar/Kumartuli), MG Road (College Square/Central), Kalighat (Tridhara/Badamtala), and Jatin Das Park/Rabindra Sarobar (Maddox Sq & South Pandals).\n` +
-      `• **Green Line (East-West)**: Connects Howrah Railway Station beneath the Hooghly river directly to Esplanade and Salt Lake pandals.\n` +
-      `• **All-Night Special Trains**: Kolkata Metro runs overnight train frequencies until 4:00 AM on Saptami, Ashtami, and Navami!\n\n` +
-      `👉 **[View Pandals with Nearest Metro Stations](action:nav:pandals:all)**`
-    );
-  }
-
-  // 10. General Knowledge / Fallback synthesis
+  // 9. GENERAL KNOWLEDGE / CONTEXTUAL FALLBACK
   return (
     `Thank you for asking: **"${query}"**! 🌟\n\n` +
     `I am **sharod.ai**, your AI companion on Akalbodhon. Here is some helpful guidance:\n\n` +
@@ -263,13 +384,13 @@ export default async function handler(req, res) {
       });
     }
 
-    const systemInstruction = `You are sharod.ai, the intelligent AI Assistant and festival concierge powered by Google Gemini on Akalbodhon (the premier Kolkata Durga Puja web platform).
+    const systemInstruction = `You are sharod.ai, the premier, highly intelligent AI Assistant and festival concierge powered by Google Gemini on Akalbodhon (the premier Kolkata Durga Puja web platform).
 
-UNCONSTRAINED AI CAPABILITIES:
-1. VERSATILE & BROAD: You can answer ANY question the user asks—including general knowledge, festival fashion, attire, science, coding, lifestyle, history, mathematics, philosophy, creative writing, or opinions. Do NOT restrict yourself or refuse questions simply because they are outside Durga Puja. Answer with Gemini's signature clarity, depth, and helpfulness.
-2. FESTIVAL ATTIRE & TRADITIONS: When asked about what to wear (e.g. suits on Ashtami, sarees, traditional vs modern attire), give culturally rich, practical, and enthusiastic advice covering both traditional customs (morning Pushpanjali) and modern festival glamor (evening pandal hopping and dining).
-3. DURGA PUJA & BENGALI CULTURE EXPERTISE: While versatile on all topics, you have profound, vivid expertise in Kolkata Durga Puja 2026, Vedic rituals, Bonedi Bari traditions, idol sculpting in Kumartuli, culinary trails, and transit.
-4. DIRECT WEBSITE NAVIGATION ACTIONS: When answering questions regarding pandals, zones, food, rituals, radio, or itinerary, you MUST include direct clickable navigation actions in your markdown:
+CORE CAPABILITIES & EXPERTISE:
+1. VERSATILE & ACCURATE: You answer EVERY question directly and accurately—whether about Kolkata Durga Puja 2026, transit directions, stations, routes, dress codes, culture, science, coding, philosophy, or lifestyle.
+2. DIRECT RELEVANCE: When the user asks for directions or transit (e.g. how to get from location A to B, or to Sealdah/Howrah station), provide clear, actionable, step-by-step navigation instructions (Metro lines, interchanges, app-cabs, buses, walking directions, and festival crowd advisories). NEVER give an irrelevant pandal list when asked for directions or transit!
+3. FESTIVAL ATTIRE & TRADITIONS: When asked what to wear (e.g. suits on Ashtami, sarees, dhoti, traditional vs modern attire), give culturally rich, practical advice covering both traditional customs (morning Pushpanjali) and modern festival evening glamor.
+4. DIRECT WEBSITE NAVIGATION ACTIONS: When answering questions regarding pandals, zones, food, rituals, radio, or itinerary, include direct clickable navigation actions in your markdown:
    - South Pandals: 👉 [Explore South Kolkata Pandals](action:nav:pandals:South)
    - North Pandals: 👉 [Explore North Kolkata Pandals](action:nav:pandals:North)
    - East / Salt Lake Pandals: 👉 [Explore East Pandals](action:nav:pandals:East)
@@ -280,9 +401,7 @@ UNCONSTRAINED AI CAPABILITIES:
    - Saved Itinerary: 👉 [Open My Itinerary](action:nav:saved)
    - Curated Plans: 👉 [View Curated Plans](action:nav:plans)
    - Puja Radio: 👉 [Tune into Puja Radio](action:nav:audio)
-5. OPINIONS & COMPARISONS: When asked for opinions, provide insightful, nuanced, and culturally authentic advice.
-6. TONE: Warm, intelligent, engaging, structured with markdown bolding, bullet points, and festive Bengali warmth.
-7. FORMATTING: Use conversational paragraphs, bold highlights, and clean bullet points (•). Avoid excessive or high-numbered lists unless the user specifically asks for step-by-step instructions or ranked top-N lists.`;
+5. TONE: Warm, intelligent, engaging, structured with markdown bolding, bullet points, and festive Bengali warmth.`;
 
     const contents = [];
     if (Array.isArray(history)) {
@@ -303,12 +422,15 @@ UNCONSTRAINED AI CAPABILITIES:
       }
     };
 
-    // Candidate models in order of stability and verified availability:
-    // gemini-3.6-flash is officially active, fast, and verified responsive.
+    // Candidate models in order of verified real-time availability and speed:
+    // flash-lite models have massive quota headroom and zero queue latency.
     const models = [
+      'gemini-3.5-flash-lite',
+      'gemini-flash-lite-latest',
+      'gemini-3.1-flash-lite',
       'gemini-3.6-flash',
       'gemini-3.7-flash',
-      'gemini-3.8-flash',
+      'gemini-3-flash-preview',
       'gemini-3.5-flash',
       'gemini-flash-latest'
     ];
@@ -317,7 +439,7 @@ UNCONSTRAINED AI CAPABILITIES:
       try {
         const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
         
-        // Use AbortController with 5500ms timeout per candidate model to avoid Vercel serverless budget exhaustion
+        // Use AbortController with 5500ms timeout per candidate model
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), 5500);
 
@@ -340,8 +462,8 @@ UNCONSTRAINED AI CAPABILITIES:
               grounded_web: false
             });
           }
-        } else if (resp.status === 503) {
-          console.warn(`Model ${model} returned 503 (high demand). Trying next candidate.`);
+        } else if (resp.status === 503 || resp.status === 429) {
+          console.warn(`Model ${model} returned ${resp.status}. Trying next candidate.`);
         } else {
           console.warn(`Model ${model} returned status ${resp.status}`);
         }
@@ -350,8 +472,8 @@ UNCONSTRAINED AI CAPABILITIES:
       }
     }
 
-    // Resilient Fallback: If all models are experiencing temporary demand spikes (503),
-    // deliver an intelligent, contextual answer instead of an unhelpful static greeting.
+    // Resilient Fallback: If all remote API calls encounter temporary network limits,
+    // deliver an intelligent, contextual answer instead of an irrelevant pandal list.
     const fallbackAnswer = generateLocalResponse(trimmedMessage);
     return res.status(200).json({
       success: true,
