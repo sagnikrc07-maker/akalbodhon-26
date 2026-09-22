@@ -372,6 +372,34 @@ def search_web_background(query):
 def generate_local_puja_response(query, web_snippets=None):
     q = query.lower()
 
+    # 1. Attire, Dress Code & Fashion Queries (e.g. "can i wear suit on ashthami")
+    if any(k in q for k in ['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion']):
+        if 'ashtami' in q or 'ashthami' in q:
+            return (
+                "**Wearing a Suit on Maha Ashtami — Complete Style & Tradition Guide** 👗✨\n\n"
+                "**Yes, absolutely! You can definitely wear a suit on Ashtami.** Durga Puja in Kolkata is an exhilarating celebration of personal style, culture, and joyous devotion. Here is the ideal breakdown:\n\n"
+                "• **Ethnic Suits (Salwar, Anarkali & Sharara)**:\n"
+                "  - Traditional Indian ethnic suits (such as an embroidered Anarkali, mirror-work Sharara, or silk Salwar Kameez) are hugely popular on Ashtami. Festive hues like crimson red, rani pink, mustard yellow, royal blue, or ivory-gold look stunning.\n"
+                "  - They are extraordinarily comfortable for long hours of pandal-hopping while honoring traditional festive aesthetics.\n\n"
+                "• **Western Suits / Blazers**:\n"
+                "  - Modern western suits, tailored blazers, or smart Indo-Western tuxedos/jackets look very chic for evening celebrations, club events, and high-end restaurant dinners.\n"
+                "  - *Pro-Tip for Kolkata Weather*: Pandal grounds get very crowded and humid. If you choose a western suit or blazer, opt for lightweight, breathable fabrics like linen or cotton-blends, or wear a sleek waist-coat/Nehru jacket instead of a heavy woolen coat.\n\n"
+                "• **Morning Pushpanjali Tradition**:\n"
+                "  - For morning Pushpanjali (sacred flower offering), traditional ethnic attire is customary. Men traditionally wear crisp cotton/tussar Dhoti-Panjabi or Kurta-Pyjama; women wear Lal-Paad Shada Saree (white with red border) or elegant ethnic suits.\n"
+                "  - In the evening and night, fashion rules are free and modern!\n\n"
+                "👉 [Explore Rituals & Pushpanjali](action:nav:rituals) | [Explore South Kolkata Pandals](action:nav:pandals:South) | [Browse Food & Nightlife](action:nav:food-shopping)"
+            )
+        return (
+            "**Durga Puja Fashion & Dress Code Guide** 🥻👔\n\n"
+            "Each day of Durga Puja has its own distinctive sartorial vibe:\n\n"
+            "• **Maha Shasthi**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n"
+            "• **Maha Saptami**: Vibrant handloom sarees, printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n"
+            "• **Maha Ashtami**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Silk, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion or blazers for night pandal hopping.\n"
+            "• **Maha Navami**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n"
+            "• **Vijaya Dashami**: Red & white sarees for *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n"
+            "👉 [Explore Rituals](action:nav:rituals) | [View Pandals](action:nav:pandals:all)"
+        )
+
     # Greetings
     if any(g in q for g in ['hi', 'hello', 'hey', 'namaste', 'nomoshkar', 'joy maa durga', 'pranam']) and len(q.split()) <= 4:
         return (
@@ -381,6 +409,7 @@ def generate_local_puja_response(query, web_snippets=None):
             "• 🪔 **Vedic Rituals & Timings**: Sandhi Puja, Pushpanjali, Dhunuchi Naach\n"
             "• 🍲 **Kolkata Culinary Guide**: Legendary Biryani, Rolls, Kabiraji, and Sweets\n"
             "• 🚇 **Kolkata Metro & Transit**: Timings, nearest stations, and night schedules\n"
+            "• 👗 **Festival Etiquette & Attire**: What to wear, traditions, and style advice\n"
             "• 🌐 **Any general questions**: Culture, science, history, coding, or festival planning!\n\n"
             "👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals](action:nav:rituals) | [Food Guide](action:nav:food-shopping)"
         )
@@ -558,7 +587,7 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
         }
     }
 
-    candidate_models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-flash-latest", "gemini-2.5-flash"]
+    candidate_models = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-latest"]
     for model_name in candidate_models:
         gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         try:

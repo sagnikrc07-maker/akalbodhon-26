@@ -666,39 +666,73 @@
           }
           throw new Error('Server not ok');
         } catch (err) {
-          try {
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${defaultKey}`;
-            const gResp = await fetch(geminiUrl, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ role: 'user', parts: [{ text: text }] }]
-              })
-            });
-            if (gResp.ok) {
-              const gData = await gResp.json();
-              const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (reply) {
-                typingDiv.remove();
-                const botDiv = document.createElement('div');
-                botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
-                botDiv.innerHTML = formatPujaMarkdown(reply);
-                messagesContainer.appendChild(botDiv);
-                chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
-                return;
+          if (apiKey) {
+            try {
+              const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
+              const gResp = await fetch(geminiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: text }] }]
+                })
+              });
+              if (gResp.ok) {
+                const gData = await gResp.json();
+                const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (reply) {
+                  typingDiv.remove();
+                  const botDiv = document.createElement('div');
+                  botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+                  botDiv.innerHTML = formatPujaMarkdown(reply);
+                  messagesContainer.appendChild(botDiv);
+                  chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+                  return;
+                }
               }
-            }
-          } catch (cErr) {}
+            } catch (cErr) {}
+          }
 
           typingDiv.remove();
           const botDiv = document.createElement('div');
           botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
-          botDiv.innerHTML = 'Joy Maa Durga! 🌺 Please feel free to ask about pandals, rituals, food, transit, or account sync.';
+          const smartReply = getLoginSmartResponse(text);
+          botDiv.innerHTML = formatPujaMarkdown(smartReply);
           messagesContainer.appendChild(botDiv);
+          chatHistory.push({ role: 'user', text: text }, { role: 'model', text: smartReply });
         } finally {
           isWaiting = false;
           messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+      }
+
+      function getLoginSmartResponse(query) {
+        const q = (query || '').toLowerCase().trim();
+        if (['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion'].some(k => q.includes(k))) {
+          if (q.includes('ashtami') || q.includes('ashthami')) {
+            return (
+              `**Wearing a Suit on Maha Ashtami — Style & Tradition Guide** 👗✨\n\n` +
+              `**Yes, absolutely! You can definitely wear a suit on Ashtami.** Durga Puja in Kolkata is an exhilarating celebration of personal style, culture, and joyous devotion:\n\n` +
+              `• **Ethnic Suits (Salwar, Anarkali & Sharara)**: Traditional embroidered Anarkalis and silk Salwar Kameez are hugely popular on Ashtami in festive shades like crimson, yellow, royal blue, or ivory.\n` +
+              `• **Western Suits / Blazers**: Smart blazers and tailored suits look great for evening dinners and gatherings. Lightweight linens or cotton blends are best suited for Kolkata's pleasant October weather.\n` +
+              `• **Morning Pushpanjali**: Traditional ethnic wear (Dhoti-Kurta, Saree, or ethnic suits) is customary for the morning flower offerings.`
+            );
+          }
+          return `**Durga Puja Fashion Guide**: Saptami favors vibrant kurtas & handlooms; Ashtami is the showcase of traditional sarees, kurtas, and elegant ethnic suits; Navami is for royal evening glamor; and Dashami is celebrated with red-and-white sarees for *Sindoor Khela*.`;
+        }
+
+        if (['south', 'tridhara', 'suruchi', 'maddox', 'ekdalia'].some(k => q.includes(k))) {
+          return `**Top South Kolkata Pandals**: Tridhara Sammilani (Kalighat), Suruchi Sangha (New Alipore), Ekdalia Evergreen (Gariahat), and Maddox Square (Ritchie Road).`;
+        }
+
+        if (['north', 'bagbazar', 'kumartuli', 'sovabazar', 'ahiritola'].some(k => q.includes(k))) {
+          return `**Top North Kolkata Pandals**: Bagbazar Sarbojanin, Kumartuli Park, Tala Prattoy, and Sovabazar Rajbari.`;
+        }
+
+        if (['ritual', 'sandhi', 'pushpanjali', 'anjali', 'dhunuchi'].some(k => q.includes(k))) {
+          return `**Durga Puja Rituals**: Maha Ashtami features morning Pushpanjali and the sacred Sandhi Puja (108 lotuses and lamps), followed by Maha Navami's electrifying Dhunuchi Naach.`;
+        }
+
+        return `Joy Maa Durga! 🌺 I am **sharod.ai**, your Kolkata Durga Puja companion. Feel free to ask about pandals, rituals, transit, food, or festival attire!`;
       }
     }
 
