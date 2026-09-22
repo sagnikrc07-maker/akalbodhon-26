@@ -8503,36 +8503,176 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
         throw new Error('Server response not ok');
       } catch (err) {
-        // Direct browser-level Gemini 3.8 Flash fallback for static hosts / serverless
-        try {
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
-          const gResp = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{ role: 'user', parts: [{ text: text }] }]
-            })
-          });
-          if (gResp.ok) {
-            const gData = await gResp.json();
-            const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (reply) {
-              removeTypingIndicator();
-              appendAIMessage(reply, false);
-              chatHistory.push({ role: 'user', text: text });
-              chatHistory.push({ role: 'model', text: reply });
-              return;
+        // Direct browser-level Gemini fallback if client has custom key
+        if (apiKey) {
+          const clientModels = ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-3.8-flash'];
+          for (const cModel of clientModels) {
+            try {
+              const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${cModel}:generateContent?key=${apiKey}`;
+              const gResp = await fetch(geminiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  contents: [{ role: 'user', parts: [{ text: text }] }]
+                })
+              });
+              if (gResp.ok) {
+                const gData = await gResp.json();
+                const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (reply) {
+                  removeTypingIndicator();
+                  appendAIMessage(reply, false);
+                  chatHistory.push({ role: 'user', text: text });
+                  chatHistory.push({ role: 'model', text: reply });
+                  return;
+                }
+              }
+            } catch (clientErr) {
+              console.warn(`Direct Gemini API fallback (${cModel}) error:`, clientErr);
             }
           }
-        } catch (clientErr) {
-          console.warn('Direct Gemini API fallback error:', clientErr);
         }
 
         removeTypingIndicator();
-        appendAIMessage("Joy Maa Durga! 🌺 I am **sharod.ai**, here to help you explore Kolkata's iconic pandals, sacred rituals, authentic food, and transit routes.\n\n👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals & Dhaak](action:nav:rituals) | [Food Guide](action:nav:food-shopping)");
+        const smartFallback = getClientSmartResponse(text);
+        appendAIMessage(smartFallback, false);
+        chatHistory.push({ role: 'user', text: text });
+        chatHistory.push({ role: 'model', text: smartFallback });
       } finally {
         isWaitingResponse = false;
       }
+    }
+
+    function getClientSmartResponse(query) {
+      const q = (query || '').toLowerCase().trim();
+
+      // Attire, Dress Code & Fashion
+      if (['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion'].some(k => q.includes(k))) {
+        if (q.includes('ashtami') || q.includes('ashthami')) {
+          return (
+            `**Wearing a Suit on Maha Ashtami — Style & Tradition Guide** 👗✨\n\n` +
+            `**Yes, absolutely! You can definitely wear a suit on Ashtami.** Durga Puja in Kolkata is an exhilarating celebration of personal style, culture, and joyous devotion:\n\n` +
+            `• **Ethnic Suits (Salwar, Anarkali & Sharara)**:\n` +
+            `  - Traditional Indian ethnic suits (such as an embroidered Anarkali, mirror-work Sharara, or silk Salwar Kameez) are hugely popular on Ashtami. Festive hues like crimson red, rani pink, mustard yellow, royal blue, or ivory-gold look stunning.\n` +
+            `  - They are extraordinarily comfortable for long hours of pandal-hopping while honoring traditional festive aesthetics.\n\n` +
+            `• **Western Suits / Blazers**:\n` +
+            `  - Modern western suits, tailored blazers, or smart Indo-Western tuxedos/jackets look very chic for evening celebrations, club events, and high-end restaurant dinners.\n` +
+            `  - *Pro-Tip for Kolkata Weather*: Pandal grounds get very crowded and humid. If you choose a western suit or blazer, opt for lightweight, breathable fabrics like linen or cotton-blends, or wear a sleek waist-coat/Nehru jacket instead of a heavy woolen coat.\n\n` +
+            `• **Morning Pushpanjali Tradition**:\n` +
+            `  - For morning Pushpanjali (sacred flower offering), traditional ethnic attire is customary. Men traditionally wear crisp cotton/tussar Dhoti-Panjabi or Kurta-Pyjama; women wear Lal-Paad Shada Saree (white with red border) or elegant ethnic suits.\n` +
+            `  - In the evening and night, fashion rules are free and modern!\n\n` +
+            `👉 [Explore Rituals & Pushpanjali](action:nav:rituals) | [Explore South Kolkata Pandals](action:nav:pandals:South) | [Browse Food & Nightlife](action:nav:food-shopping)`
+          );
+        }
+        return (
+          `**Durga Puja Fashion & Dress Code Guide** 🥻👔\n\n` +
+          `Each day of Durga Puja has its own distinctive sartorial vibe:\n\n` +
+          `• **Maha Shasthi**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n` +
+          `• **Maha Saptami**: Vibrant handloom sarees, printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n` +
+          `• **Maha Ashtami**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Silk, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion or blazers for night pandal hopping.\n` +
+          `• **Maha Navami**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n` +
+          `• **Vijaya Dashami**: Red & white sarees for *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n` +
+          `👉 [Explore Rituals](action:nav:rituals) | [View Pandals](action:nav:pandals:all)`
+        );
+      }
+
+      // Greetings
+      if (['hi', 'hello', 'hey', 'namaste', 'nomoshkar', 'joy maa durga', 'pranam'].some(g => q.includes(g)) && q.split(/\s+/).length <= 4) {
+        return (
+          `Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n` +
+          `I am **sharod.ai**, your personal AI Guide. I am here to help you navigate Kolkata's greatest celebration:\n\n` +
+          `• 🏛️ **Pandals & Routes**: North, South, East/Salt Lake, Central circuits and Rajbari heritage\n` +
+          `• 🪔 **Vedic Rituals & Timings**: Pushpanjali, Sandhi Puja, Dhunuchi Naach, Kumari Puja\n` +
+          `• 🍲 **Culinary Guide**: Iconic Kolkata Biryani, Street Food, and authentic Bhog\n` +
+          `• 🚇 **Kolkata Metro & Transit**: Station mappings, overnight train schedules\n` +
+          `• 👗 **Festival Etiquette & Attire**: What to wear, traditions, and style advice\n\n` +
+          `👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Sacred Rituals](action:nav:rituals) | [Kolkata Food Guide](action:nav:food-shopping)`
+        );
+      }
+
+      // South Pandals
+      if ((q.includes('south') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route'))) || ['tridhara', 'suruchi', 'maddox', 'ekdalia', 'mudiali', 'badamtala'].some(p => q.includes(p))) {
+        return (
+          `**Top South Kolkata Durga Puja Pandals (2026)** 🏛️✨\n\n` +
+          `South Kolkata is the epicenter of monumental architectural innovation, conceptual art installations, and vibrant youth carnival energy:\n\n` +
+          `1. **Tridhara Sammilani** (Ballygunge / Kalighat Metro): Avant-garde sensory concepts blending contemporary architecture with timeless spiritual reverence.\n` +
+          `2. **Suruchi Sangha** (New Alipore): Acclaimed thematic spectacles spotlighting diverse Indian regional traditions.\n` +
+          `3. **Ekdalia Evergreen Club** (Gariahat): Heritage classic showcasing jaw-dropping temple replicas with colossal German crystal chandeliers.\n` +
+          `4. **Maddox Square** (Ritchie Road): The legendary heartbeat of youth adda, massive open park lawns, and rolling dhaak beats.\n` +
+          `5. **Mudiali Club & Shiv Mandir** (Southern Avenue): Breathtaking eco-art decor, lake-side serenity, and mesmerizing illumination.\n\n` +
+          `👉 **[Explore South Kolkata Pandals on Akalbodhon](action:nav:pandals:South)**`
+        );
+      }
+
+      // North Pandals
+      if ((q.includes('north') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route'))) || ['bagbazar', 'kumartuli', 'sovabazar', 'ahiritola', 'tala prattoy'].some(p => q.includes(p))) {
+        return (
+          `**Top North Kolkata Durga Puja Pandals (2026)** 🏛️🪔\n\n` +
+          `North Kolkata is the soul of authentic heritage, colonial aristocracy, and classical Bengali sabeki craftsmanship:\n\n` +
+          `1. **Bagbazar Sarbojanin**: The centenary benchmark of pure traditional Sabeki idol draped in shimmering Daaker Saaj.\n` +
+          `2. **Kumartuli Park**: Cutting-edge creative brilliance nestled inside the centuries-old idol-sculptors' quarters.\n` +
+          `3. **Sovabazar Rajbari**: Historic 1757 Bonedi Bari celebration founded by Raja Nabakrishna Deb in the grand open Natmandir.\n` +
+          `4. **Tala Prattoy**: Internationally recognized contemporary installation that elevates pandal art into a world-class outdoor gallery.\n` +
+          `5. **Ahiritola Sarbojanin**: Riverside heritage festival celebrated for socially resonant themes and rich community spirit.\n\n` +
+          `👉 **[Explore North Kolkata Pandals on Akalbodhon](action:nav:pandals:North)**`
+        );
+      }
+
+      // East & Salt Lake
+      if (['east', 'salt lake', 'sreebhumi', 'fd block', 'dum dum'].some(k => q.includes(k))) {
+        return (
+          `**Top East Kolkata & Salt Lake Pandals (2026)** 🏛️💎\n\n` +
+          `1. **Sreebhumi Sporting Club** (Lake Town / VIP Road): Spectacular royal palace replicas adorned with glittering Chandannagar illumination.\n` +
+          `2. **FD Block & BJ Block** (Salt Lake): Sprawling park pavilions showcasing imaginative visual arts and peaceful walkways.\n` +
+          `3. **Dum Dum Park Tarun Sangha & Bharat Chakra**: High-concept fine art installations featuring exquisite rural handicrafts.\n\n` +
+          `👉 **[Explore East & Salt Lake Pandals on Akalbodhon](action:nav:pandals:East)**`
+        );
+      }
+
+      // Rituals
+      if (['ritual', 'sandhi', 'pushpanjali', 'anjali', 'kumari', 'dhunuchi', 'ashtami', 'shasthi', 'navami', 'dashami', 'sindoor', 'bhashan'].some(k => q.includes(k))) {
+        return (
+          `**Sacred Vedic Durga Puja Rituals Schedule** 🪔🕊️\n\n` +
+          `• **Maha Shasthi (*Devi Bodhon*)**: Awakening the Divine Mother under the sacred Bel tree.\n` +
+          `• **Maha Saptami (*Nabapatrika Snan*)**: Dawn bathing of *Kola Bou* in the holy Hooghly river followed by *Prana Pratishtha*.\n` +
+          `• **Maha Ashtami (*Pushpanjali & Sandhi Puja*)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n` +
+          `• **Maha Navami (*Maha Yajna & Dhunuchi Naach*)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n` +
+          `• **Vijaya Dashami (*Devi Baran & Sindoor Khela*)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n` +
+          `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+        );
+      }
+
+      // Food & Dining
+      if (['food', 'eat', 'restaurant', 'biryani', 'roll', 'sweet', 'mishti', 'kabiraji', 'bhog'].some(k => q.includes(k))) {
+        return (
+          `**Iconic Kolkata Durga Puja Culinary Trail** 🍲🍗\n\n` +
+          `• **Kolkata Biryani & Mughlai**: Arsalan (Park Circus), Oudh 1590 (Deshapriya Park), Aminia, and Royal Indian Hotel (Barabazar).\n` +
+          `• **Legendary Street Bites**: Kusum Rolls (Park Street), Mitra Cafe (Shyambazar Mutton Kabiraji), and Paramount Sharbat.\n` +
+          `• **Sacred Puja Bhog**: Hot Gobindobhog khichuri, begun bhaja, spiced labra, chholar dal, and sweet chutney.\n` +
+          `• **Heritage Bengali Sweets**: Balaram Mullick (Baked Rosogolla), Girish Ch. Dey & Nakur Ch. Nandy (Sandesh), and Chittaranjan.\n\n` +
+          `👉 **[Open Food & Shopping Guide on Akalbodhon](action:nav:food-shopping)**`
+        );
+      }
+
+      // Metro & Transit
+      if (['metro', 'transit', 'train', 'transport', 'bus', 'route'].some(k => q.includes(k))) {
+        return (
+          `**Kolkata Metro & Transit Guide for Durga Puja** 🚇🎫\n\n` +
+          `• **Blue Line (North-South)**: Connects Sovabazar (Bagbazar/Kumartuli), MG Road (Central), Kalighat (Tridhara), and Jatin Das Park (Maddox Sq).\n` +
+          `• **Green Line (East-West)**: Connects Howrah Station beneath the Hooghly river directly to Esplanade and Salt Lake pandals.\n` +
+          `• **All-Night Special Trains**: Kolkata Metro runs overnight train frequencies until 4:00 AM on Saptami, Ashtami, and Navami!\n\n` +
+          `👉 **[View Pandals with Nearest Metro Stations](action:nav:pandals:all)**`
+        );
+      }
+
+      // General fallback
+      return (
+        `Thank you for asking: **"${query}"**! 🌟\n\n` +
+        `I am **sharod.ai**, your AI companion on Akalbodhon. Here is how you can explore further:\n\n` +
+        `• You can explore over 45+ premier pandals across North, South, East, and Central Kolkata circuits.\n` +
+        `• Feel free to ask about festival dress codes, ritual timings, transit routes, or iconic Kolkata food spots!\n\n` +
+        `👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Rituals](action:nav:rituals) | [Food Guide](action:nav:food-shopping)`
+      );
     }
 
     function formatPujaMarkdown(text) {
