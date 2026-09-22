@@ -37,7 +37,7 @@ import {
 // Resolve Firebase Web Client Config securely
 // 1. Checks gitignored local secrets (window.__AKALBODHON_FIREBASE_CONFIG__ or window.__FIREBASE_CONFIG__)
 // 2. Checks local storage cache
-// 3. Fetches from /api/firebase-config (Vercel Serverless Function or Python dev server)
+// 3. Fetches from /api/firebase-config (Server environment or local dev server)
 async function resolveFirebaseConfig() {
   const win = typeof window !== "undefined" ? window : null;
   if (win && win.__AKALBODHON_FIREBASE_CONFIG__ && win.__AKALBODHON_FIREBASE_CONFIG__.apiKey) {
@@ -101,7 +101,7 @@ try {
     googleProvider.setCustomParameters({ prompt: 'select_account' });
     console.debug("Firebase initialized successfully");
   } else {
-    console.warn("Firebase apiKey not configured. Set FIREBASE_API_KEY in Vercel environment variables or local firebase-secrets.js.");
+    console.warn("Firebase apiKey not configured. Set FIREBASE_API_KEY in environment variables or local firebase-secrets.js.");
   }
 } catch (err) {
   console.error("Firebase init error:", err);
