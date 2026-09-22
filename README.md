@@ -2,7 +2,19 @@
 
 > A refined, sacred, and immersive festival guide for **Durga Puja & Akalbodhon**, built on the **Kinetic Precision** design system.
 
-![Akalbodhon Banner](https://images.unsplash.com/photo-1544644181-1484b3fdfc62?auto=format&fit=crop&w=1200&q=80)
+![Bagbazar Sarbojanin Durga Puja](pandals/baghbazar.jpg)
+
+---
+
+### 🙏 Welcome to Akalbodhon • শুভ শারদীয়া (Shubho Sharodiya)!
+
+**A warm welcome to Akalbodhon!** 🌸🪔
+
+Durga Puja is not merely a festival — it is the heartbeat of Kolkata, an extraordinary celebration of culture, heritage, togetherness, and devotion. As the resonance of the Kanshi and Dhak fills the autumn air, **Akalbodhon** invites you to experience the Sharodotsav with elegance and ease.
+
+Whether you are embarking on a heritage trail through iconic North Kolkata idols like the centenary Bagbazar Sarbojanin, navigating bustling pandals from North to South, listening to sacred hymns, tracking authentic festive food stops, or curating custom day-wise itineraries with friends and family — we welcome you to immerse yourself in the celebration.
+
+May the divine blessings of Maa Durga bring peace, health, prosperity, and endless happiness to you and your loved ones. ✨
 
 ---
 
@@ -24,37 +36,6 @@
 
 ---
 
-## 🚀 1-Click Deployment to Vercel
-
-### Option A: Using Vercel CLI (Instant)
-
-1. Open your terminal in this repository:
-   ```bash
-   npx vercel
-   ```
-2. Accept default settings and follow the prompt.
-3. Deploy to production:
-   ```bash
-   npx vercel --prod
-   ```
-
-### Option B: Deploy with GitHub & Vercel Web Dashboard
-
-1. Initialize Git and commit:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial release of Akalbodhon"
-   ```
-2. Push to your GitHub repository:
-   ```bash
-   git branch -M main
-   git remote add origin https://github.com/<YOUR_USERNAME>/<REPO_NAME>.git
-   git push -u origin main
-   ```
-3. Visit [vercel.com/new](https://vercel.com/new), select **Import**, and click **Deploy**.
-
----
-
-## 📄 License
-MIT License — Shubho Sharodiya!
+<p align="center">
+  <sub>Crafted with devotion for Durga Puja 2026 • <b>Shubho Sharodiya!</b> 🌺</sub>
+</p>
