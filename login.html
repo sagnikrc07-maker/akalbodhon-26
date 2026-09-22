@@ -667,29 +667,31 @@
           throw new Error('Server not ok');
         } catch (err) {
           if (apiKey) {
-            try {
-              const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-              const gResp = await fetch(geminiUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  contents: [{ role: 'user', parts: [{ text: text }] }]
-                })
-              });
-              if (gResp.ok) {
-                const gData = await gResp.json();
-                const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (reply) {
-                  typingDiv.remove();
-                  const botDiv = document.createElement('div');
-                  botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
-                  botDiv.innerHTML = formatPujaMarkdown(reply);
-                  messagesContainer.appendChild(botDiv);
-                  chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
-                  return;
+            for (const cModel of ['gemini-3.5-flash-lite', 'gemini-flash-lite-latest', 'gemini-3.6-flash']) {
+              try {
+                const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${cModel}:generateContent?key=${apiKey}`;
+                const gResp = await fetch(geminiUrl, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    contents: [{ role: 'user', parts: [{ text: text }] }]
+                  })
+                });
+                if (gResp.ok) {
+                  const gData = await gResp.json();
+                  const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
+                  if (reply) {
+                    typingDiv.remove();
+                    const botDiv = document.createElement('div');
+                    botDiv.className = 'ai-message-bubble ai-bubble-bot px-4 py-3 shadow-md';
+                    botDiv.innerHTML = formatPujaMarkdown(reply);
+                    messagesContainer.appendChild(botDiv);
+                    chatHistory.push({ role: 'user', text: text }, { role: 'model', text: reply });
+                    return;
+                  }
                 }
-              }
-            } catch (cErr) {}
+              } catch (cErr) {}
+            }
           }
 
           typingDiv.remove();
@@ -707,6 +709,16 @@
 
       function getLoginSmartResponse(query) {
         const q = (query || '').toLowerCase().trim();
+
+        // Transit & Directions
+        if (['how to get', 'how to reach', 'how do i', 'directions', 'route', 'station', 'sealdah', 'howrah', 'metro', 'bus', 'taxi'].some(k => q.includes(k))) {
+          if (q.includes('maddox') && (q.includes('sealdah') || q.includes('station'))) {
+            return `**Directions from Maddox Square to Sealdah Station** 🚇🚕\n\n1. 🚇 **By Metro (Fastest during Puja)**: Walk or take an auto to Netaji Bhavan / Jatin Das Park Metro (Blue Line) ➔ Train to Esplanade ➔ Underground interchange to Green Line directly to Sealdah Station (~25 mins).\n2. 🚕 **By Taxi / Cab**: Ballygunge Circular Rd ➔ AJC Bose Rd Flyover ➔ Moulali ➔ Sealdah (~6 km, 25–40 mins).\n3. 🚌 **By Bus**: Walk to Sarat Bose Rd and board buses towards Sealdah (e.g. 24A, 47/1).`;
+          }
+          return `**Kolkata Metro & Transit Guide**: Blue Line (North-South) connects Bagbazar/Sovabazar to Kalighat & Netaji Bhavan. Green Line connects Howrah under the river to Esplanade and Sealdah Station. All-night special trains run until 4 AM on Saptami, Ashtami, and Navami.`;
+        }
+
+        // Fashion & Attire
         if (['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion'].some(k => q.includes(k))) {
           if (q.includes('ashtami') || q.includes('ashthami')) {
             return (
@@ -720,11 +732,17 @@
           return `**Durga Puja Fashion Guide**: Saptami favors vibrant kurtas & handlooms; Ashtami is the showcase of traditional sarees, kurtas, and elegant ethnic suits; Navami is for royal evening glamor; and Dashami is celebrated with red-and-white sarees for *Sindoor Khela*.`;
         }
 
-        if (['south', 'tridhara', 'suruchi', 'maddox', 'ekdalia'].some(k => q.includes(k))) {
+        // Specific Pandal: Maddox Square
+        if (q.includes('maddox')) {
+          return `**Maddox Square (Ritchie Road / Ballygunge)**: Kolkata's premier open park lawn Puja and the heartbeat of youth adda, rolling dhaaki beats, and traditional sabeki idol. Nearest Metro: Netaji Bhavan or Jatin Das Park.`;
+        }
+
+        // Zone lists
+        if (q.includes('south') && ['pandal', 'best', 'top', 'list', 'circuit'].some(k => q.includes(k))) {
           return `**Top South Kolkata Pandals**: Tridhara Sammilani (Kalighat), Suruchi Sangha (New Alipore), Ekdalia Evergreen (Gariahat), and Maddox Square (Ritchie Road).`;
         }
 
-        if (['north', 'bagbazar', 'kumartuli', 'sovabazar', 'ahiritola'].some(k => q.includes(k))) {
+        if (q.includes('north') && ['pandal', 'best', 'top', 'list', 'circuit'].some(k => q.includes(k))) {
           return `**Top North Kolkata Pandals**: Bagbazar Sarbojanin, Kumartuli Park, Tala Prattoy, and Sovabazar Rajbari.`;
         }
 
@@ -732,7 +750,7 @@
           return `**Durga Puja Rituals**: Maha Ashtami features morning Pushpanjali and the sacred Sandhi Puja (108 lotuses and lamps), followed by Maha Navami's electrifying Dhunuchi Naach.`;
         }
 
-        return `Joy Maa Durga! 🌺 I am **sharod.ai**, your Kolkata Durga Puja companion. Feel free to ask about pandals, rituals, transit, food, or festival attire!`;
+        return `Joy Maa Durga! 🌺 I am **sharod.ai**, your Kolkata Durga Puja companion. Feel free to ask about transit routes, pandal locations, rituals, food, or festival attire!`;
       }
     }
 
