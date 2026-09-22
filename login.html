@@ -219,6 +219,17 @@
   </footer>
 
   <script>
+    // HTML Entity Encoder (XSS Defense)
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     // Supabase Configuration (safely loaded from runtime config / firebase-secrets.js)
     const SUPABASE_URL = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.url || window.__SUPABASE_CONFIG__?.url)) || '';
     const SUPABASE_ANON_KEY = (typeof window !== 'undefined' && (window.__AKALBODHON_SUPABASE_CONFIG__?.anonKey || window.__SUPABASE_CONFIG__?.anonKey)) || '';
@@ -421,7 +432,8 @@
       // 2. Check Supabase
       if (supabaseClient) {
         try {
-          const orQuery = `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+          const safeClean = clean.replace(/[^a-zA-Z0-9@._-]/g, '');
+          const orQuery = `identifier.eq.${safeClean},email.eq.${safeClean},id.eq.${safeDocId}`;
           const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
           if (data && data.length > 0) return data[0];
         } catch (_) {}
@@ -454,10 +466,17 @@
 
       if (loggedAvatarContainer) {
         if (user.custom_avatar_url || user.google_photo_url) {
-          const photoSrc = user.custom_avatar_url || user.google_photo_url;
-          loggedAvatarContainer.innerHTML = `<img src="${photoSrc}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.innerHTML='<span id=\\'logged-avatar-emoji\\'>${user.avatar || '🪔'}</span>'" />`;
+          const rawPhoto = user.custom_avatar_url || user.google_photo_url;
+          const isSafeUrl = typeof rawPhoto === 'string' && /^(https?:\/\/|\/|\.\/)/i.test(rawPhoto.trim());
+          if (isSafeUrl) {
+            const safePhoto = escapeHtml(rawPhoto.trim());
+            const safeAvatar = escapeHtml(user.avatar || '🪔');
+            loggedAvatarContainer.innerHTML = `<img src="${safePhoto}" alt="Avatar" class="w-full h-full object-cover rounded-2xl" onerror="this.parentElement.textContent='${safeAvatar}'" />`;
+          } else {
+            loggedAvatarContainer.textContent = user.avatar || '🪔';
+          }
         } else {
-          loggedAvatarContainer.innerHTML = `<span id="logged-avatar-emoji">${user.avatar || '🪔'}</span>`;
+          loggedAvatarContainer.textContent = user.avatar || '🪔';
         }
       }
     }
@@ -532,8 +551,10 @@
       html = html.replace(
         /\[(.*?)\]\(action:nav:([^:\)]+)(?::([^:\)]+))?\)/g,
         function(match, label, section, filter) {
-          const filterArg = filter ? `'${filter}'` : "''";
-          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${section}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
+          const safeSection = String(section || '').replace(/[^a-zA-Z0-9_-]/g, '');
+          const safeFilter = String(filter || '').replace(/[^a-zA-Z0-9_\s-]/g, '').replace(/'/g, "\\'");
+          const filterArg = safeFilter ? `'${safeFilter}'` : "''";
+          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${safeSection}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
         }
       );
 

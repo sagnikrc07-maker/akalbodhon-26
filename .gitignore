@@ -23,6 +23,7 @@ desktop.ini
 *~
 
 # Temporary & Diagnostic Scratch Files
+.github/
 .gemini/
 *.log
 npm-debug.log*

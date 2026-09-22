@@ -1985,7 +1985,7 @@
               <a 
                 href="${toMapsSearchUrl(pandal.locationUrl, pandal.name + ' Durga Puja Kolkata')}" 
                 target="_blank" 
-                rel="noopener"
+                rel="noopener noreferrer"
                 class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                 title="Search Location in Google Maps"
               >
@@ -2246,7 +2246,7 @@
                   <a 
                     href="${toMapsSearchUrl(food.locationUrl, food.name + ' Kolkata')}" 
                     target="_blank" 
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                     title="Search Location in Google Maps"
                   >
@@ -2325,7 +2325,7 @@
                   <a 
                     href="${toMapsSearchUrl(shop.locationUrl, shop.name + ' Kolkata')}" 
                     target="_blank" 
-                    rel="noopener"
+                    rel="noopener noreferrer"
                     class="w-full sm:flex-1 bg-amber-400 hover:bg-amber-300 text-black py-1.5 sm:py-2.5 px-2 sm:px-3 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1 sm:gap-2 shadow-sm hover:shadow"
                     title="Search Location in Google Maps"
                   >
@@ -3035,7 +3035,7 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                    <a href="${toMapsSearchUrl(pandalLink, b.name + ' Durga Puja Kolkata')}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
+                    <a href="${toMapsSearchUrl(pandalLink, b.name + ' Durga Puja Kolkata')}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
                       <img src="maps-pin.png" alt="Open in Maps" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
                       <span class="truncate">Open in Maps</span>
                     </a>
@@ -3101,7 +3101,7 @@
                     </p>
                   </div>
                   <div class="flex items-center justify-between gap-1 sm:gap-2 pt-2 sm:pt-3 border-t border-outline-variant/20 dark:border-amber-400/20 mt-auto">
-                    <a href="${toMapsSearchUrl(spotLink, b.name + ' Kolkata')}" target="_blank" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
+                    <a href="${toMapsSearchUrl(spotLink, b.name + ' Kolkata')}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-amber-400 hover:bg-amber-300 text-black text-[10px] sm:text-xs font-bold py-1.5 px-1.5 sm:px-3 rounded-xl flex items-center justify-center gap-1 shadow-xs hover:shadow active:scale-95 transition-all cursor-pointer truncate" title="Search Location in Google Maps">
                       <img src="maps-pin.png" alt="Open in Maps" class="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0 object-contain" />
                       <span class="truncate">Open in Maps</span>
                     </a>
@@ -5216,7 +5216,7 @@
         const iconHtml = photoSrc 
           ? `<img src="${photoSrc}" alt="Avatar" class="w-5 h-5 object-cover rounded-full inline-block mr-1.5" onerror="this.outerHTML='<span class=\\'text-base\\'>${currentUser.avatar || '🪔'}</span>'" />`
           : `<span class="text-base">${currentUser.avatar || '🪔'}</span>`;
-        heroCta.innerHTML = `${iconHtml} <span class="font-bold">${currentUser.username}</span>`;
+        heroCta.innerHTML = `${iconHtml} <span class="font-bold">${escapeHtml(currentUser.username)}</span>`;
       }
     } else {
       if (avatarPreview) avatarPreview.textContent = '🪔';
@@ -5667,9 +5667,12 @@
     // 2. Check Supabase
     if (supabaseClient) {
       try {
+        const safeClean = clean.replace(/[^a-zA-Z0-9@._-]/g, '');
+        const safeFormatted = String(formatted || '').replace(/[^a-zA-Z0-9+]/g, '');
+        const safeDigits = String(digits || '').replace(/[^0-9]/g, '');
         const orQuery = isPhone 
-          ? `identifier.eq.${formatted},identifier.eq.${digits},phone.eq.${formatted},phone.eq.${digits},id.eq.${digits}`
-          : `identifier.eq.${clean},email.eq.${clean},id.eq.${safeDocId}`;
+          ? `identifier.eq.${safeFormatted},identifier.eq.${safeDigits},phone.eq.${safeFormatted},phone.eq.${safeDigits},id.eq.${safeDigits}`
+          : `identifier.eq.${safeClean},email.eq.${safeClean},id.eq.${safeDocId}`;
         const { data } = await supabaseClient.from('profiles').select('*').or(orQuery).limit(1);
         if (data && data.length > 0) return data[0];
       } catch (_) {}
@@ -5757,7 +5760,7 @@
               setAuthMode('login', rawEmail, 'email');
             };
 
-            showAuthModalError(`An account with <strong>${rawEmail}</strong> already exists. Please sign in instead.`, actionBtn);
+            showAuthModalError(`An account with <strong>${escapeHtml(rawEmail)}</strong> already exists. Please sign in instead.`, actionBtn);
             return;
           }
           throw regErr;
@@ -5803,7 +5806,7 @@
           };
 
           showAuthModalError(
-            `No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`,
+            `No devotee account found with <strong>${escapeHtml(rawEmail)}</strong>. Please create a new account to join Akalbodhon.`,
             actionBtn
           );
           return;
@@ -5832,7 +5835,7 @@
             actionBtn.innerHTML = '<span class="material-symbols-outlined text-[15px]">person_add</span> Create Account with this Email';
             actionBtn.onclick = () => { setAuthMode('signup', rawEmail, 'email'); };
 
-            showAuthModalError(`No devotee account found with <strong>${rawEmail}</strong>. Please create a new account to join Akalbodhon.`, actionBtn);
+            showAuthModalError(`No devotee account found with <strong>${escapeHtml(rawEmail)}</strong>. Please create a new account to join Akalbodhon.`, actionBtn);
             return;
           }
           throw signInErr;
@@ -7857,11 +7860,12 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       }
 
       if (supabaseClient) {
-        const targetId = (currentUser.id || '').toLowerCase();
+        const targetId = (currentUser.id || '').toLowerCase().replace(/[^a-zA-Z0-9@._-]/g, '');
+        const targetSafeUid = String(targetUid || '').replace(/[^a-zA-Z0-9@._-]/g, '');
         supabaseClient.from('profiles').update({
           custom_plans: customPlans,
           updated_at: new Date().toISOString()
-        }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetUid}`).then(() => {});
+        }).or(`id.eq.${targetId},identifier.eq.${targetId},user_id.eq.${targetSafeUid}`).then(() => {});
       }
     }
 
@@ -8564,8 +8568,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       html = html.replace(
         /\[(.*?)\]\(action:nav:([^:\)]+)(?::([^:\)]+))?\)/g,
         function(match, label, section, filter) {
-          const filterArg = filter ? `'${filter}'` : "''";
-          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${section}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
+          const safeSection = String(section || '').replace(/[^a-zA-Z0-9_-]/g, '');
+          const safeFilter = String(filter || '').replace(/[^a-zA-Z0-9_\s-]/g, '').replace(/'/g, "\\'");
+          const filterArg = safeFilter ? `'${safeFilter}'` : "''";
+          return `<button type="button" class="ai-nav-chip" onclick="window.navigateToAppSection('${safeSection}', ${filterArg})"><span class="material-symbols-outlined text-[14px]">explore</span> ${label}</button>`;
         }
       );
 
@@ -9204,7 +9210,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
         // Sync cooldown to Supabase
         if (supabaseClient) {
-          const targetId = (currentUser.id || currentUser.user_id || '').toLowerCase();
+          const targetId = (currentUser.id || currentUser.user_id || '').toLowerCase().replace(/[^a-zA-Z0-9@._-]/g, '');
           supabaseClient.from('profiles').update({
             feedback_cooldown_until: expiryTime,
             updated_at: new Date().toISOString()
