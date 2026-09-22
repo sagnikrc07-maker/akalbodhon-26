@@ -7236,7 +7236,8 @@
     }
 
     // 9. Website Link
-    parts.push(`🌐 *Website:* https://akalbodhon-26.vercel.app/`);
+    const siteUrl = (typeof window !== 'undefined' && window.location && window.location.origin) ? `${window.location.origin}${window.location.pathname}` : 'https://akalbodhon.com';
+    parts.push(`🌐 *Website:* ${siteUrl}`);
 
     return parts.join('\n\n');
   }
@@ -7365,7 +7366,7 @@
         heading = 'Share Custom Puja Plan';
         subTitle = `${plan.title || 'Puja Plan'} • By ${plan.creator_name || 'Devotee'}`;
         label = 'Website Link';
-        shareUrl = 'https://akalbodhon-26.vercel.app/';
+        shareUrl = `${window.location.origin}${window.location.pathname}`;
         message = formatCustomPlanShareMessage(plan);
       } else {
         heading = 'Share Puja Plan';
