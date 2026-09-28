@@ -110,7 +110,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
             return
 
         # Security: Resolve file path and enforce strict sandbox containment
-        root_dir = os.path.abspath(os.getcwd())
+        root_dir = os.path.dirname(os.path.abspath(__file__))
         filepath = self.translate_path(self.path)
 
         if os.path.isdir(filepath):

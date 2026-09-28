@@ -1292,23 +1292,37 @@
         <p id="share-modal-plan-title" class="text-xs text-primary dark:text-amber-300 font-semibold truncate px-4"></p>
       </div>
 
-      <!-- Social Grid (WhatsApp & Copy Link) -->
-      <div class="grid grid-cols-2 gap-3.5">
+      <!-- Social Grid (WhatsApp, Copy Link & QR Code) -->
+      <div class="grid grid-cols-3 gap-2.5">
         <!-- WhatsApp -->
-        <button id="share-wa-btn" type="button" class="share-btn-wa flex flex-col items-center justify-center p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#25D366] active:scale-95 transition-all group cursor-pointer text-center">
-          <svg class="w-6 h-6 fill-[#25D366] group-hover:scale-110 mb-1.5 transition-transform shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <button id="share-wa-btn" type="button" class="share-btn-wa flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-[#25D366] active:scale-95 transition-all group cursor-pointer text-center">
+          <svg class="w-5 h-5 fill-[#25D366] group-hover:scale-110 mb-1 transition-transform shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
           </svg>
           <span class="text-xs font-semibold text-on-surface dark:text-white">WhatsApp</span>
         </button>
 
         <!-- Copy Link -->
-        <button id="share-copy-btn" type="button" class="share-btn-copy flex flex-col items-center justify-center p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 active:scale-95 transition-all group cursor-pointer text-center">
-          <svg class="w-6 h-6 fill-current text-primary dark:text-amber-300 group-hover:scale-110 mb-1.5 transition-transform shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <button id="share-copy-btn" type="button" class="share-btn-copy flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 active:scale-95 transition-all group cursor-pointer text-center">
+          <svg class="w-5 h-5 fill-current text-primary dark:text-amber-300 group-hover:scale-110 mb-1 transition-transform shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
           </svg>
           <span class="text-xs font-semibold text-on-surface dark:text-white">Copy Link</span>
         </button>
+
+        <!-- QR Code Toggle -->
+        <button id="share-qr-toggle-btn" type="button" class="flex flex-col items-center justify-center p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 hover:border-primary dark:hover:border-amber-400 active:scale-95 transition-all group cursor-pointer text-center">
+          <span class="material-symbols-outlined text-[22px] text-primary dark:text-amber-300 group-hover:scale-110 mb-0.5 transition-transform">qr_code_2</span>
+          <span class="text-xs font-semibold text-on-surface dark:text-white">QR Code</span>
+        </button>
+      </div>
+
+      <!-- QR Code Container in Modal (Initially hidden) -->
+      <div id="share-modal-qr-box" class="hidden p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20 text-center space-y-2 animate-scale-up">
+        <div class="relative bg-white p-2.5 rounded-xl shadow-md border border-amber-400/30 inline-flex items-center justify-center mx-auto">
+          <div id="share-modal-qrcode" class="flex items-center justify-center"></div>
+        </div>
+        <p class="text-[11px] text-on-surface-variant dark:text-[#ded5c7]/70">Scan with any phone to open directly</p>
       </div>
 
       <!-- Copyable Link Bar -->
@@ -1720,6 +1734,40 @@
           </div>
         </div>
 
+        <!-- Section 3.5: Akalbodhon QR -->
+        <div class="space-y-3" id="about-qr-section">
+          <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[16px]">qr_code_2</span> Akalbodhon QR
+          </h4>
+
+          <!-- Interactive Trigger Card: clicking on which generates and reveals the QR code -->
+          <div
+            id="about-generate-qr-card"
+            role="button"
+            tabindex="0"
+            class="p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-primary dark:hover:border-amber-400 transition-all group cursor-pointer text-left flex items-center justify-between shadow-xs select-none hover:shadow-md"
+            title="Click to generate Akalbodhon QR"
+          >
+            <div class="flex items-center gap-2.5">
+              <span class="material-symbols-outlined text-primary dark:text-amber-300 text-[20px] group-hover:scale-110 transition-transform">qr_code_2</span>
+              <span class="text-xs font-bold text-on-surface dark:text-white">Akalbodhon QR</span>
+            </div>
+            <span id="qr-card-chevron" class="material-symbols-outlined text-primary dark:text-amber-300 text-[20px] transition-transform duration-300 group-hover:translate-x-0.5">expand_more</span>
+          </div>
+
+          <!-- Generated QR Code: strictly the QR code with title Akalbodhon QR -->
+          <div id="about-qr-display-container" class="hidden p-4 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/25 flex flex-col items-center justify-center text-center space-y-2.5 animate-scale-up">
+            <h5 class="text-xs font-bold text-primary dark:text-amber-300 uppercase tracking-widest">Akalbodhon QR</h5>
+            <div class="relative bg-white p-3 rounded-2xl shadow-xl border-2 border-amber-400/40 inline-flex items-center justify-center">
+              <div id="about-website-qrcode" class="flex items-center justify-center min-w-[200px] min-h-[200px]"></div>
+              <!-- Akalbodhon Center Emblem Overlay -->
+              <div class="absolute inset-0 m-auto w-10 h-10 rounded-full bg-white p-0.5 shadow-md flex items-center justify-center pointer-events-none border border-amber-400/50">
+                <img src="logo.jpg" alt="Akalbodhon Emblem" class="w-full h-full rounded-full object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Section 4: Feedback / Bug Report -->
         <div class="space-y-3">
           <h4 class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold flex items-center gap-1.5">
@@ -2056,6 +2104,16 @@
   <!-- Firebase Configuration & Database Module -->
   <script src="firebase-secrets.js" onerror="this.onerror=null;"></script>
   <script type="module" src="firebase-config.js"></script>
+
+  <!-- QR Code Generator Library -->
+  <script src="qrcode.min.js"></script>
+  <script>
+    if (typeof QRCode === 'undefined') {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js';
+      document.head.appendChild(s);
+    }
+  </script>
 
   <!-- Application Logic -->
   <script src="app.js?v=3.0"></script>

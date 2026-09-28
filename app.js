@@ -7482,6 +7482,43 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       };
     }
 
+    // Modal QR Code Toggle & Generation
+    const modalQrBtn = document.getElementById('share-qr-toggle-btn');
+    const modalQrBox = document.getElementById('share-modal-qr-box');
+    const modalQrContainer = document.getElementById('share-modal-qrcode');
+    if (modalQrBox) {
+      modalQrBox.classList.add('hidden');
+    }
+    if (modalQrBtn && modalQrBox && modalQrContainer) {
+      modalQrBtn.onclick = () => {
+        const isHidden = modalQrBox.classList.contains('hidden');
+        if (isHidden) {
+          modalQrContainer.innerHTML = '';
+          const targetUrl = isCustomPlan ? `${window.location.origin}${window.location.pathname}` : shareUrl;
+          if (typeof QRCode !== 'undefined') {
+            try {
+              new QRCode(modalQrContainer, {
+                text: targetUrl,
+                width: 160,
+                height: 160,
+                colorDark: '#1a160f',
+                colorLight: '#ffffff',
+                correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.H) || 2
+              });
+            } catch (e) {
+              modalQrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(targetUrl)}" alt="QR Code" class="w-[160px] h-[160px] rounded-lg mx-auto" />`;
+            }
+          } else {
+            modalQrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(targetUrl)}" alt="QR Code" class="w-[160px] h-[160px] rounded-lg mx-auto" />`;
+          }
+          modalQrBox.classList.remove('hidden');
+          showToast('QR Code generated for plan sharing!', 'qr_code_2');
+        } else {
+          modalQrBox.classList.add('hidden');
+        }
+      };
+    }
+
     document.body.classList.add('modal-open');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
@@ -9069,6 +9106,97 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     if (aboutModal) {
       aboutModal.addEventListener('click', (e) => {
         if (e.target === aboutModal) closeAbout();
+      });
+    }
+
+    // ==================== AKALBODHON QR SECTION ====================
+    const qrTriggerCard = document.getElementById('about-generate-qr-card');
+    const qrDisplayContainer = document.getElementById('about-qr-display-container');
+    const qrContainer = document.getElementById('about-website-qrcode');
+    const qrChevron = document.getElementById('qr-card-chevron');
+
+    let websiteQRGenerated = false;
+
+    function getWebsiteShareUrl() {
+      if (typeof window !== 'undefined' && window.location) {
+        if (window.location.origin && !window.location.origin.includes('file://')) {
+          return `${window.location.origin}${window.location.pathname}`;
+        }
+        if (window.location.href) {
+          return window.location.href.split('#')[0].split('?')[0];
+        }
+      }
+      return 'https://akalbodhon.com';
+    }
+
+    function renderWebsiteQRCode() {
+      if (!qrContainer) return;
+      const targetUrl = getWebsiteShareUrl();
+      qrContainer.innerHTML = '';
+
+      if (typeof QRCode !== 'undefined') {
+        try {
+          new QRCode(qrContainer, {
+            text: targetUrl,
+            width: 200,
+            height: 200,
+            colorDark: '#1a160f',
+            colorLight: '#ffffff',
+            correctLevel: (QRCode.CorrectLevel && QRCode.CorrectLevel.H) || 2
+          });
+        } catch (err) {
+          console.warn('QRCode generation fallback:', err);
+          qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(targetUrl)}" alt="Akalbodhon QR" class="w-[200px] h-[200px] rounded-lg shadow-sm" />`;
+        }
+      } else {
+        qrContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(targetUrl)}" alt="Akalbodhon QR" class="w-[200px] h-[200px] rounded-lg shadow-sm" />`;
+      }
+      websiteQRGenerated = true;
+    }
+
+    function toggleWebsiteQRSection() {
+      if (!qrDisplayContainer) return;
+      const isHidden = qrDisplayContainer.classList.contains('hidden');
+      if (isHidden) {
+        if (!websiteQRGenerated) {
+          renderWebsiteQRCode();
+        }
+        qrDisplayContainer.classList.remove('hidden');
+        qrDisplayContainer.classList.add('flex');
+        if (qrChevron) qrChevron.classList.add('rotate-180');
+        setTimeout(() => {
+          qrDisplayContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 120);
+      } else {
+        collapseWebsiteQRSection();
+      }
+    }
+
+    function collapseWebsiteQRSection() {
+      if (!qrDisplayContainer) return;
+      qrDisplayContainer.classList.add('hidden');
+      qrDisplayContainer.classList.remove('flex');
+      if (qrChevron) qrChevron.classList.remove('rotate-180');
+    }
+
+    if (qrTriggerCard) {
+      qrTriggerCard.addEventListener('click', toggleWebsiteQRSection);
+      qrTriggerCard.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleWebsiteQRSection();
+        }
+      });
+    }
+
+    if (qrContainer) {
+      qrContainer.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const targetUrl = getWebsiteShareUrl();
+        copyTextToClipboard(targetUrl);
+        if (typeof showToast === 'function') {
+          showToast('Website link copied to clipboard!', 'link');
+        }
       });
     }
 
