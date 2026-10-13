@@ -8304,7 +8304,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const closeBtn = document.getElementById('ai-chat-close-btn');
     const clearBtn = document.getElementById('ai-chat-clear-btn');
     const fullscreenBtn = document.getElementById('ai-chat-fullscreen-btn');
-    const keyBtn = document.getElementById('ai-chat-key-btn');
     const chatForm = document.getElementById('ai-chat-form');
     const chatInput = document.getElementById('ai-chat-input');
     const messagesContainer = document.getElementById('ai-chat-messages');
@@ -8313,7 +8312,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     let chatHistory = [];
     let isWaitingResponse = false;
-    const STORAGE_API_KEY = 'akalbodhon_gemini_api_key';
 
     const widgetContainer = document.getElementById('puja-ai-widget-container');
 
@@ -8347,24 +8345,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     fullscreenBtn?.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFullscreen();
-    });
-
-    keyBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const currentKey = localStorage.getItem(STORAGE_API_KEY) || '';
-      const masked = currentKey ? `${currentKey.slice(0, 4)}...${currentKey.slice(-4)}` : 'None configured';
-      const promptText = `Enter your Google Gemini API Key (optional):\n\nCurrent Key: ${masked}\n\nsharod.ai uses this key directly for real-time Gemini intelligence. Leave empty to use Akalbodhon's built-in intelligent knowledge engine.`;
-      const input = window.prompt(promptText, currentKey);
-      if (input !== null) {
-        const clean = input.trim();
-        if (clean) {
-          localStorage.setItem(STORAGE_API_KEY, clean);
-          if (typeof showToast === 'function') showToast('Gemini API Key saved!', 'check');
-        } else {
-          localStorage.removeItem(STORAGE_API_KEY);
-          if (typeof showToast === 'function') showToast('Using built-in knowledge engine', 'info');
-        }
-      }
     });
 
     function renderGreeting() {
@@ -8574,16 +8554,13 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       showTypingIndicator();
       isWaitingResponse = true;
 
-      const apiKey = localStorage.getItem(STORAGE_API_KEY) || '';
-
       try {
         const resp = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             message: text,
-            history: chatHistory,
-            apiKey: apiKey
+            history: chatHistory
           })
         });
 
@@ -8600,39 +8577,6 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         }
         throw new Error('Server response not ok');
       } catch (err) {
-        // Direct browser-level Gemini fallback if client has custom key
-        if (apiKey) {
-          const clientModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-lite'];
-          for (const cModel of clientModels) {
-            try {
-              const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${cModel}:generateContent?key=${apiKey}`;
-              const gResp = await fetch(geminiUrl, {
-                method: 'POST',
-                headers: { 
-                  'Content-Type': 'application/json',
-                  'x-goog-api-key': apiKey
-                },
-                body: JSON.stringify({
-                  contents: [{ role: 'user', parts: [{ text: text }] }]
-                })
-              });
-              if (gResp.ok) {
-                const gData = await gResp.json();
-                const reply = gData?.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (reply) {
-                  removeTypingIndicator();
-                  appendAIMessage(reply, false);
-                  chatHistory.push({ role: 'user', text: text });
-                  chatHistory.push({ role: 'model', text: reply });
-                  return;
-                }
-              }
-            } catch (clientErr) {
-              console.warn(`Direct Gemini API fallback (${cModel}) error:`, clientErr);
-            }
-          }
-        }
-
         removeTypingIndicator();
         const smartFallback = getClientSmartResponse(text);
         appendAIMessage(smartFallback, false);

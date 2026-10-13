@@ -567,7 +567,6 @@
       const closeBtn = document.getElementById('ai-chat-close-btn');
       const clearBtn = document.getElementById('ai-chat-clear-btn');
       const fullscreenBtn = document.getElementById('ai-chat-fullscreen-btn');
-      const keyBtn = document.getElementById('ai-chat-key-btn');
       const chatForm = document.getElementById('ai-chat-form');
       const chatInput = document.getElementById('ai-chat-input');
       const messagesContainer = document.getElementById('ai-chat-messages');
@@ -576,7 +575,6 @@
 
       let chatHistory = [];
       let isWaiting = false;
-      const STORAGE_API_KEY = 'akalbodhon_gemini_api_key';
 
       const widgetContainer = document.getElementById('puja-ai-widget-container');
 
@@ -608,24 +606,6 @@
       fullscreenBtn?.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleFullscreen();
-      });
-
-      keyBtn?.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const currentKey = localStorage.getItem(STORAGE_API_KEY) || '';
-        const masked = currentKey ? `${currentKey.slice(0, 4)}...${currentKey.slice(-4)}` : 'None configured';
-        const promptText = `Enter your Google Gemini API Key (optional):\n\nCurrent Key: ${masked}\n\nsharod.ai uses this key directly for real-time Gemini intelligence. Leave empty to use Akalbodhon's built-in intelligent knowledge engine.`;
-        const input = window.prompt(promptText, currentKey);
-        if (input !== null) {
-          const clean = input.trim();
-          if (clean) {
-            localStorage.setItem(STORAGE_API_KEY, clean);
-            alert('Gemini API Key saved!');
-          } else {
-            localStorage.removeItem(STORAGE_API_KEY);
-            alert('Using built-in knowledge engine');
-          }
-        }
       });
 
       function renderGreeting() {
@@ -704,12 +684,11 @@
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
         isWaiting = true;
-        const apiKey = localStorage.getItem('akalbodhon_gemini_api_key') || '';
         try {
           const resp = await fetch('/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text, history: chatHistory, apiKey: apiKey })
+            body: JSON.stringify({ message: text, history: chatHistory })
           });
           if (resp.ok) {
             const data = await resp.json();
@@ -1081,9 +1060,6 @@
           </div>
         </div>
         <div class="flex items-center gap-1">
-          <button id="ai-chat-key-btn" type="button" class="w-7 h-7 rounded-lg hover:bg-surface-container dark:hover:bg-amber-400/10 text-on-surface-variant dark:text-amber-300 flex items-center justify-center transition-colors cursor-pointer" title="Configure Gemini API Key" aria-label="Configure Gemini API Key">
-            <span class="material-symbols-outlined text-[16px]">key</span>
-          </button>
           <button id="ai-chat-fullscreen-btn" type="button" class="w-7 h-7 rounded-lg hover:bg-surface-container dark:hover:bg-amber-400/10 text-on-surface-variant dark:text-amber-300 flex items-center justify-center transition-colors cursor-pointer" title="Toggle Full Screen Mode" aria-label="Toggle Full Screen Mode">
             <span class="material-symbols-outlined text-[16px]">open_in_full</span>
           </button>
