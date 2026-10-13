@@ -372,6 +372,96 @@ def search_web_background(query):
 def generate_local_puja_response(query, web_snippets=None):
     q = query.lower()
 
+    # Transit & Directions Solver
+    is_transit = any(k in q for k in ['how to get', 'how to reach', 'how do i', 'how can i', 'direction', 'route', 'station', 'sealdah', 'howrah', 'airport', 'metro to', 'bus to', 'taxi to'])
+    if is_transit:
+        # Chetla Agrani
+        if 'chetla' in q or ('agrani' in q and 'bagbazar' not in q):
+            is_sealdah = 'sealdah' in q or 'sealda' in q
+            is_howrah = 'howrah' in q
+            is_airport = 'airport' in q or 'ccu' in q
+            origin = "Sealdah Railway Station" if is_sealdah else ("Howrah Railway Station" if is_howrah else ("Kolkata Airport (CCU)" if is_airport else "Your Location"))
+            
+            if is_sealdah:
+                metro_info = (
+                    "1. 🚇 **By Kolkata Metro (Fastest & Guaranteed Traffic-Free)**:\n"
+                    "   • **Step 1 (Green Line)**: Board the East-West Green Line train at **Sealdah Metro Station** heading to **Esplanade** (1 stop / 4 mins).\n"
+                    "   • **Step 2 (Underground Interchange at Esplanade)**: Follow the direct subway interchange passage to the North-South **Blue Line** platform.\n"
+                    "   • **Step 3 (Blue Line Southbound)**: Board the Southbound train (towards Kavi Subhash) and disembark at **Kalighat Metro Station** (approx. 9 mins, 5 stops: Esplanade ➔ Park St ➔ Maidan ➔ Rabindra Sadan ➔ Netaji Bhavan ➔ Jatin Das Park ➔ Kalighat).\n"
+                    "   • **Step 4 (Final Stretch)**: Take the exit towards **Rashbehari Crossing / Chetla Central Road**. Chetla Agrani is just a **7–9 minute walk (~650m)** down Chetla Central Road, or a quick Toto/Auto.\n"
+                    "   • ⏱️ *Total Travel Time*: ~22–28 minutes, completely bypassing festive surface congestion!"
+                )
+            elif is_howrah:
+                metro_info = (
+                    "1. 🚇 **By Kolkata Metro (Underwater River Tunnel)**:\n"
+                    "   • Board Green Line Metro at **Howrah Station** traveling under the Hooghly river directly to **Esplanade** in 5 minutes!\n"
+                    "   • Take the underground interchange to the Blue Line Southbound and disembark at **Kalighat Metro Station**.\n"
+                    "   • Walk 7 mins down Chetla Central Road to the pandal."
+                )
+            elif is_airport:
+                metro_info = "1. 🚕 **By Taxi / Cab**: Take VIP Road ➔ Maa Flyover ➔ AJC Bose Flyover ➔ Hazra / Chetla (approx. 22 km, 45–60 mins)."
+            else:
+                metro_info = "1. 🚇 **By Metro**: Take the Blue Line to **Kalighat Metro Station** (Rashbehari exit) and walk 7 mins down Chetla Central Road."
+
+            return (
+                f"**Directions from {origin} to Chetla Agrani Club** 🚇🚕\n\n"
+                f"{metro_info}\n\n"
+                "---\n\n"
+                "2. 🚕 **By Yellow Taxi / App-Cab (Uber, Ola, Yatri Sathi)**:\n"
+                "   • **Corridor**: AJC Bose Road Flyover ➔ Exide Crossing / Asutosh Mukherjee Road ➔ Hazra Road or Rashbehari Avenue ➔ Chetla Central Road (~8.5 km, 25–35 mins).\n"
+                "   • 💡 *Puja Pro-Tip*: After 4:00 PM, vehicular traffic on Chetla Central Road is restricted for pedestrian pandal hoppers. Ask your driver to drop you near Rashbehari Crossing or Chetla Bridge and walk the last 300 meters.\n\n"
+                "3. 🚌 **By Public Bus**:\n"
+                "   • Board buses towards Kalighat / Hazra / Behala (e.g. 218, 47/1 or Taratala minibuses) to Rashbehari Crossing.\n\n"
+                "---\n\n"
+                "### 🚶 Nearby Mega Pandals to Hop Next (Walking Cluster)\n"
+                "• **Suruchi Sangha (New Alipore - right across Chetla bridge)**\n"
+                "• **Badamtala Ashar Sangha**\n"
+                "• **66 Pally**\n"
+                "• **Mudiali Club & Shiv Mandir**\n\n"
+                "👉 **[Explore South Kolkata Pandals](action:nav:pandals:South)** | 🗺️ [Open Google Maps Directions](https://www.google.com/maps/search/?api=1&query=Chetla+Agrani+Club+Durga+Puja+Kolkata)"
+            )
+
+        # Maddox Square
+        if 'maddox' in q:
+            return (
+                "**Directions to Maddox Square (Ritchie Road / Ballygunge)** 🚇🚕\n\n"
+                "1. 🚇 **By Metro**: Take the Blue Line to **Netaji Bhavan** or **Jatin Das Park** Station ➔ 8–10 minute walk down Lansdowne / Ritchie Road.\n"
+                "   • *From Sealdah*: Green Line to Esplanade (1 stop) ➔ Blue Line Southbound to Netaji Bhavan (~20 mins).\n"
+                "2. 🚕 **By Taxi / Cab**: Sarat Bose Road ➔ Ritchie Road entrance (~6.2 km from Sealdah).\n"
+                "3. 🌳 **The Vibe**: Celebrated open park lawns, youth adda, and timeless Ekchala Sabeki Pratima with Daaker Saaj.\n\n"
+                "👉 **[Explore South Kolkata Pandals](action:nav:pandals:South)**"
+            )
+
+        # Suruchi Sangha
+        if 'suruchi' in q:
+            return (
+                "**Directions to Suruchi Sangha (New Alipore)** 🎨🕊️\n\n"
+                "1. 🚇 **By Metro**: Take Blue Line to **Rabindra Sarobar** or **Kalighat** Metro ➔ 10 min auto to New Alipore Petrol Pump / Block SB.\n"
+                "2. 🚶 **Hop from Chetla Agrani**: Suruchi Sangha is just 600m across the Chetla Lock Gate Bridge from Chetla Agrani!\n"
+                "3. 🎨 **The Theme**: Famous for state-based indigenous art, vibrant cultural craftsmanship, and original musical compositions.\n\n"
+                "👉 **[Explore South Kolkata Pandals](action:nav:pandals:South)**"
+            )
+
+        # Bagbazar
+        if 'bagbazar' in q or 'baghbazar' in q:
+            return (
+                "**Directions to Bagbazar Sarbojanin Durgotsav** 🌺🪔\n\n"
+                "1. 🚇 **By Metro**: Take Blue Line to **Shyambazar Metro Station** ➔ 6–8 minute walk down Bagbazar Street towards the Launch Ghat.\n"
+                "   • *From Sealdah*: Green Line to Esplanade ➔ Blue Line Northbound to Shyambazar (approx. 20 mins); or direct APC Road bus.\n"
+                "2. 🌺 **The Pratima**: Centenary benchmark of pure traditional Sabeki idol with serene eyes, draped in pure snow-white Daaker Saaj.\n\n"
+                "👉 **[Explore North Kolkata Pandals](action:nav:pandals:North)**"
+            )
+
+        # General Transit & Metro Guide
+        return (
+            "**Kolkata Metro & Transit Guide for Durga Puja** 🚇🎫\n\n"
+            "The Kolkata Metro is the fastest lifeline for pandal hopping without getting caught in road traffic:\n"
+            "• **Blue Line (North-South)**: Connects Dakshineswar ➔ Dum Dum ➔ Sovabazar (Bagbazar/Kumartuli) ➔ MG Road (College Sq) ➔ Esplanade ➔ Netaji Bhavan (Maddox Sq) ➔ Kalighat (Chetla Agrani / Tridhara / Badamtala) ➔ Rabindra Sarobar (Mudiali/Suruchi).\n"
+            "• **Green Line (East-West)**: Connects Howrah Railway Station under the Hooghly river directly to Esplanade, Sealdah Station, and Salt Lake.\n"
+            "• **All-Night Trains**: Kolkata Metro operates overnight trains every 12–15 minutes until 4:00 AM on Saptami, Ashtami, and Navami!\n\n"
+            "👉 **[View Pandals with Nearest Metro Stations](action:nav:pandals:all)**"
+        )
+
     # 1. Attire, Dress Code & Fashion Queries (e.g. "can i wear suit on ashthami")
     if any(k in q for k in ['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion']):
         if 'ashtami' in q or 'ashthami' in q:
@@ -587,7 +677,7 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
         }
     }
 
-    candidate_models = ["gemini-3.6-flash", "gemini-3.7-flash", "gemini-3.8-flash", "gemini-3.5-flash", "gemini-flash-latest"]
+    candidate_models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash-lite"]
     for model_name in candidate_models:
         gemini_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={api_key}"
         try:
