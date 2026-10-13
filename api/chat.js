@@ -412,6 +412,133 @@ function generateLocalResponse(query) {
     return (
       `**Durga Puja Fashion & Sartorial Guide (Day-by-Day)** 🥻👔\n\n` +
       `Each day of Durga Puja has its own distinctive sartorial vibe:\n\n` +
+      `• **Maha Shasthi (16 Oct)**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n` +
+      `• **Maha Saptami (17–18 Oct)**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n` +
+      `• **Maha Ashtami (19 Oct)**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Garad, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion, elegant suits or blazers for night pandal hopping.\n` +
+      `• **Maha Navami (20 Oct)**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n` +
+      `• **Bijoya Dashami (21 Oct)**: Red & white sarees for sacred *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n` +
+      `👉 [Explore Rituals](action:nav:rituals) | [View Pandals](action:nav:pandals:all)`
+    );
+  }
+
+  // Domain keyword indicators
+  const isFood = ['food', 'eat', 'dining', 'restaurant', 'biryani', 'roll', 'kathi roll', 'sweet', 'mishti', 'kabiraji', 'bhog', 'cafe', 'dhaba', 'snack', 'phuchka', 'puchka', 'chaap'].some(k => q.includes(k));
+  const isTransit = ['how to get', 'how to reach', 'how do i', 'how can i', 'direction', 'route', 'station', 'sealdah', 'howrah', 'airport', 'metro to', 'bus to', 'taxi to', 'to reach'].some(k => q.includes(k)) || (q.includes(' to ') && !isFood);
+  const isMetroGeneral = ['metro timing', 'midnight metro', 'night metro', 'metro train', 'special train', 'subway', 'metro schedule'].some(k => q.includes(k)) || ((q.includes('metro') || q.includes('train')) && (q.includes('timing') || q.includes('night') || q.includes('midnight') || q.includes('schedule')));
+  const isAttire = ['suit', 'wear', 'outfit', 'dress', 'saree', 'sari', 'dhoti', 'kurta', 'clothes', 'fashion', 'attire'].some(k => q.includes(k));
+  const isRitual = ['ritual', 'sandhi', 'pushpanjali', 'anjali', 'kumari', 'dhunuchi', 'sindoor', 'baran', 'bhashan', 'visarjan', 'bodhon', 'akalbodhon', 'nabapatrika', 'kola bou', 'chakkhudaan', 'mahalaya', 'shashthi', 'sashthi', 'shasthi', 'saptami', 'tithi', 'panjika', 'calendar', 'date', 'dates', 'schedule', 'when'].some(k => q.includes(k));
+  const isPlan = ['1-day', '1 day', 'one day', 'itinerary', 'day plan', 'hop plan', 'curated plan', 'master plan'].some(k => q.includes(k));
+
+  // 1. Special Pandal Hopping Route: Kumartuli to Bagbazar
+  if ((q.includes('kumartuli') && q.includes('bagbazar')) && (q.includes(' to ') || q.includes('walk') || q.includes('hop') || q.includes('route') || isTransit)) {
+    return (
+      `**Pandal Hopping Route: Kumartuli Park ➔ Bagbazar Sarbojanin** 🚶‍♂️🪔\n\n` +
+      `This is one of the most iconic, scenic, and spiritually evocative walking corridors in North Kolkata:\n\n` +
+      `• **Distance & Walking Time**: approx. **700 meters (8–10 minutes on foot)** down Bagbazar Street / Rabindra Sarani.\n` +
+      `• **Step-by-Step Walking Trail**:\n` +
+      `  1. Start at **Kumartuli Park Sarbojanin** (beside the historic Kumartuli idol-makers' colony and launch ghat).\n` +
+      `  2. Walk northwards along Rabindra Sarani or through the riverside lane toward Bagbazar Ghat.\n` +
+      `  3. Turn right into **Bagbazar Street**; you will immediately feel the century-old festival fervor and smell roasted peanuts, ghugni, and hot tea.\n` +
+      `  4. Arrive at **Bagbazar Sarbojanin Durgotsav ground** (near Girish Mancha) to witness the pure white Daaker Saaj Sabeki idol!\n` +
+      `• 🛺 **Local Transit Option**: Hand-pulled rickshaws or shared e-rickshaws (Toto) are available between Kumartuli Ghat and Bagbazar 5-Point Crossing (~₹15–₹20).\n` +
+      `• 🌟 **Bonus Heritage Hop**: From Kumartuli, you can also walk 10 minutes south along Central Avenue to visit the historic **Sovabazar Rajbari** (1757 Natmandir)!\n\n` +
+      `👉 **[Explore North Kolkata Pandals](action:nav:pandals:North)** | 🗺️ [Open Google Maps Walking Trail](https://www.google.com/maps/dir/Kumartuli+Park+Durga+Puja/Bagbazar+Sarbojanin+Durga+Puja)`
+    );
+  }
+
+  // 2. Metro & Midnight Special Trains Schedule
+  if (isMetroGeneral) {
+    return (
+      `**Kolkata Metro & Midnight Special Trains Schedule (2026)** 🚇🎫\n\n` +
+      `Kolkata Metro is the ultimate lifeline for seamless, traffic-free pandal hopping during Durga Puja:\n\n` +
+      `• 🌙 **All-Night Special Midnight Trains**:\n` +
+      `  - **Saptami, Ashtami & Navami**: Overnight trains operate on the **Blue Line (Dakshineswar ➔ Kavi Subhash)** continuously until **4:00 AM**!\n` +
+      `  - **Train Frequency**: Every 12–15 minutes during peak midnight hopping hours (11:00 PM – 3:30 AM).\n` +
+      `• 🌊 **Green Line (East-West Underwater Corridor)**:\n` +
+      `  - Connects **Howrah Railway Station** under the Hooghly river to **Esplanade** in 5 minutes flat, continuing to Sealdah and Salt Lake Sector V.\n` +
+      `• 🔄 **Key Junctions**:\n` +
+      `  - **Esplanade Interchange**: Seamless subterranean connection between Blue Line and Green Line.\n` +
+      `  - **Kalighat Station**: Gateway to Chetla Agrani, Tridhara, Badamtala, and Mudiali.\n` +
+      `  - **Sovabazar & Shyambazar**: Lifeline for Bagbazar, Kumartuli, Ahiritola, and Rajbari circuits.\n` +
+      `• 💡 **Smart Ticketing Tip**: Purchase Metro QR tickets via the official app to bypass long counter queues at busy stations.\n\n` +
+      `👉 **[Explore Pandals with Nearest Metro Stations](action:nav:pandals:all)`
+    );
+  }
+
+  // 3. Food & Dining Trails (checked BEFORE pandal spotlights so "Food near Maddox Square" works properly!)
+  if (isFood) {
+    if (q.includes('maddox')) {
+      return (
+        `**Food & Adda Trail around Maddox Square (Ritchie Road)** 🍲☕\n\n` +
+        `Maddox Square is the epicenter of Kolkata's festive youth adda, and its culinary surroundings are legendary:\n\n` +
+        `• 🎪 **Inside & Around the Park Grounds**:\n` +
+        `  - **Phuchka & Churmur Stalls**: Crisp, tangy gondhoraj-scented phuchka stalls lining the Ritchie Road pavement.\n` +
+        `  - **Kolkata Kathi Rolls & Chowmein**: Sizzling Mughlai parathas, egg-chicken rolls, and spicy street noodles right outside the main gate.\n` +
+        `• 🥛 **Balwant Singh's Eating House (Harish Mukherjee Road, 7 mins walk)**:\n` +
+        `  - The world-famous **Doodh Cola** (sweet condensed milk blended with fizzy cola in tall earthen glasses)!\n` +
+        `  - Hot Kesar Chai served in clay bhars and freshly fried piping hot club kachoris with aloo dum.\n` +
+        `• 🍛 **Sarat Bose Road Dining & Cafes**:\n` +
+        `  - **Oudh 1590 (Deshapriya Park, 10 mins walk)**: Regal Awadhi handi biryani, Galawati kababs, and Raan Biryani.\n` +
+        `  - **Saptapadi (Purna Das Road)**: Authentic Bengali artisanal thali with Ilish, Chingri Malai Curry, and Kosha Mangsho.\n` +
+        `  - **Jai Hind Dhaba (Bhawanipore)**: Midnight Butter Naan, Chicken Bharta, and Tandoori Kebabs.\n\n` +
+        `👉 **[Browse Food & Shopping Guide on Akalbodhon](action:nav:food-shopping)** | [Explore South Kolkata Pandals](action:nav:pandals:South)`
+      );
+    } else if (q.includes('biryani')) {
+      return (
+        `**Legendary Kolkata Biryani & Mughlai Guide** 🍗✨\n\n` +
+        `Kolkata Biryani is characterized by aromatic Awadhi basmati rice, tender meat, and that melt-in-mouth golden ghee-roasted potato (*aloo*):\n\n` +
+        `• **Arsalan (Park Circus 7-Point / Ruby / Hatibagan)**: The gold standard of fragrant long-grain biryani and Mutton Chaap.\n` +
+        `• **Oudh 1590 (Deshapriya Park / Salt Lake / Naktala)**: Period dining with dum-pukht Handi Biryani and melt-in-mouth Galawati Kabab.\n` +
+        `• **Royal Indian Hotel (Barabazar / Park Circus)**: Authentic Lucknowi Biryani (traditionally without potato) and Mutton Pasinda since 1905.\n` +
+        `• **Shiraz Golden Restaurant (Mullick Bazar / Park Street)**: Famous for rich Golden Special Biryani and Chicken Rezala.\n` +
+        `• **Aminia (New Market / Golpark / Behala)**: Heritage Mughlai diner serving stellar Biryani and classic Mutton Awadhi.\n\n` +
+        `👉 **[Open Food & Nightlife Guide](action:nav:food-shopping)**`
+      );
+    } else if (q.includes('bhog')) {
+      return (
+        `**Sacred Durga Puja Bhog — Flavors of Divine Grace** 🪔🍲\n\n` +
+        `Consuming sacred community Bhog on Saptami, Ashtami, and Navami is the spiritual highlight of Durga Puja:\n\n` +
+        `• **Gobindobhog Khichuri**: Aromatic small-grain Gobindobhog rice and roasted yellow moong dal slow-cooked with whole spices and pure desi ghee.\n` +
+        `• **Labra**: A rich, five-spice melange of seasonal vegetables (pumpkin, raw banana, brinjal, radish, and sweet potato).\n` +
+        `• **Begun Bhaja**: Thick slices of eggplant seasoned with turmeric and fried to golden perfection.\n` +
+        `• **Chholar Dal with Narkel**: Bengal gram dal cooked with aromatic cinnamon, cloves, and fried coconut slices.\n` +
+        `• **Tomato-Khejur Plastic Chutney**: Translucent raw papaya and sweet date chutney seasoned with panch phoron.\n` +
+        `• **Payesh & Mishti Doi**: Rich thickened milk kheer and caramelized clay-pot curd.\n\n` +
+        `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    } else {
+      return (
+        `**Iconic Kolkata Durga Puja Culinary Trail** 🍲🍗\n\n` +
+        `• **Kolkata Biryani & Mughlai**: Arsalan (Park Circus), Oudh 1590 (Deshapriya Park), Aminia, and Royal Indian Hotel (Barabazar).\n` +
+        `• **Legendary Street Bites**: Kusum Rolls (Park Street), Mitra Cafe (Shyambazar Mutton Kabiraji), and Paramount Sharbat.\n` +
+        `• **Sacred Puja Bhog**: Hot Gobindobhog khichuri, begun bhaja, spiced labra, chholar dal, and sweet chutney.\n` +
+        `• **Heritage Bengali Sweets**: Balaram Mullick (Baked Rosogolla), Girish Ch. Dey & Nakur Ch. Nandy (Sandesh), and Chittaranjan.\n\n` +
+        `👉 **[Open Food & Shopping Guide on Akalbodhon](action:nav:food-shopping)**`
+      );
+    }
+  }
+
+  // 4. Attire, Dress Code & Fashion
+  if (isAttire) {
+    if (q.includes('ashtami') || q.includes('ashthami') || q.includes('suit')) {
+      return (
+        `**Wearing a Suit on Maha Ashtami — Complete Style & Tradition Guide** 👗✨\n\n` +
+        `**Yes, absolutely! You can definitely wear a suit on Ashtami.** Durga Puja in Kolkata is an exhilarating celebration of personal style, culture, and joyous devotion:\n\n` +
+        `• **Ethnic Suits (Salwar, Anarkali & Sharara)**:\n` +
+        `  - Traditional Indian ethnic suits (such as an embroidered Anarkali, mirror-work Sharara, or silk Salwar Kameez) are hugely popular on Ashtami. Festive hues like crimson red, rani pink, mustard yellow, royal blue, or ivory-gold look stunning.\n` +
+        `  - They are extraordinarily comfortable for long hours of pandal-hopping while honoring traditional festive aesthetics.\n\n` +
+        `• **Western Suits / Blazers**:\n` +
+        `  - Modern western suits, tailored blazers, or smart Indo-Western tuxedos/jackets look very chic for evening celebrations, club events, and high-end restaurant dinners.\n` +
+        `  - *Pro-Tip for Kolkata Weather*: Pandal grounds get very crowded and humid. If you choose a western suit or blazer, opt for lightweight, breathable fabrics like linen or cotton-blends, or wear a sleek waist-coat/Nehru jacket instead of a heavy woolen coat.\n\n` +
+        `• **Morning Pushpanjali Tradition**:\n` +
+        `  - For morning Pushpanjali (sacred flower offering), traditional ethnic attire is customary. Men traditionally wear crisp cotton/tussar Dhoti-Panjabi or Kurta-Pyjama; women wear Lal-Paad Shada Saree (white with red border) or elegant ethnic suits.\n` +
+        `  - In the evening and night, fashion rules are free and modern!\n\n` +
+        `👉 [Explore Rituals & Pushpanjali](action:nav:rituals) | [Explore South Kolkata Pandals](action:nav:pandals:South) | [Browse Food & Nightlife](action:nav:food-shopping)`
+      );
+    }
+    return (
+      `**Durga Puja Fashion & Sartorial Guide (Day-by-Day)** 🥻👔\n\n` +
+      `Each day of Durga Puja has its own distinctive sartorial vibe:\n\n` +
       `• **Maha Shasthi**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n` +
       `• **Maha Saptami**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n` +
       `• **Maha Ashtami**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Garad, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion, elegant suits or blazers for night pandal hopping.\n` +
@@ -421,24 +548,110 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 3. GREETINGS
-  if (
-    q.match(/^(hi|hello|hey|namaste|nomoshkar|pranam|joy maa durga|subho mahalaya)/) ||
-    (q.split(/\s+/).length <= 3 && (q.includes('hi') || q.includes('hello') || q.includes('hey')))
-  ) {
+  // 5. Sacred Vedic Rituals & Official Dates (Checked BEFORE greetings to eliminate false matches!)
+  if (isRitual) {
+    if (q.includes('sandhi')) {
+      return (
+        `**Sandhi Puja — The Divine Climax of Maha Ashtami** 🪔🕊️\n\n` +
+        `• **Astronomical Juncture & Timing**: Sandhi Puja takes place on **Maha Ashtami (Monday, 19 October 2026)** at the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a sacred **48-minute celestial window**).\n` +
+        `• **Mythology & Chamunda Avatara**: At this exact threshold, Devi Durga manifested in Her fierce, all-conquering aspect as **Devi Chamunda** to vanquish the demon chieftains Chanda and Munda.\n` +
+        `• **108 Sacred Blue Lotuses (*Neel Kamal*)**: Exactly 108 lotuses are offered in memory of Lord Rama's devotion during his autumn invocation (*Akalbodhon*).\n` +
+        `• **108 Earthen Diyas**: 108 clay lamps are lit in absolute synchronization as thunderous dhaak beats, conch shells (*shankha*), and Kanshi reverberate through the pandal.\n` +
+        `• **Sacred Balidan**: Symbolic non-violent vegetable sacrifice of sugarcane (*aakh*), chalkumro (wax gourd), and banana is performed before the Deity.\n\n` +
+        `👉 **[Click Here to Explore All Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    } else if (q.includes('pushpanjali') || q.includes('anjali')) {
+      return (
+        `**Maha Ashtami Pushpanjali — Sacred Sanskrit Floral Offering** 🌸🪔\n\n` +
+        `• **Timing**: Performed on the morning of **Maha Ashtami (Monday, 19 October 2026)** typically between **9:00 AM and 11:30 AM**, depending on the tithi.\n` +
+        `• **Ritual & Fasting**: Devotees traditionally observe a fast (*upavasa*) until Pushpanjali is concluded. Offering Bel leaves (*bel pata*), fresh flowers, and sandalwood paste in three sacred rounds.\n` +
+        `• **Sacred Mantra**: Concluded with the revered prayer: *\"Om Jayanti Mangala Kali Bhadrakali Kapalini, Durga Shiva Kshama Dhatri Svaha Svadha Namostute.\"*\n` +
+        `• **Traditional Attire**: Women traditionally wear Lal-Paad Shada Saree or silk ethnic suits; men wear crisp Dhoti-Panjabi or Kurta.\n\n` +
+        `👉 **[View Vedic Rituals Timeline](action:nav:rituals)**`
+      );
+    } else if (q.includes('kumari')) {
+      return (
+        `**Kumari Puja — Honoring the Living Goddess** 👑🌸\n\n` +
+        `• **Spiritual Meaning**: Kumari Puja honors a young pre-pubescent girl (aged between 1 to 16) as the pure, unmanifested living embodiment of Devi Mahamaya / Durga.\n` +
+        `• **Belur Math Landmark**: Popularized in 1901 by **Swami Vivekananda** at Belur Math, where thousands gather on **Maha Ashtami morning (19 Oct 2026)** to witness the serene ritual.\n` +
+        `• **Rituals**: The Kumari is dressed in fine red silk, adorned with flower garlands, and worshipped with sacred mantras, aarti, and bhog offerings.\n\n` +
+        `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    } else if (q.includes('dhunuchi')) {
+      return (
+        `**Dhunuchi Naach — The Ecstatic Rhythm of Maha Navami** 🔥🥁\n\n` +
+        `• **The Tradition**: The exhilarating devotional dance performed during evening Aarti on **Maha Navami (Tuesday, 20 October 2026)** and Vijaya Dashami.\n` +
+        `• **The Chalice (*Dhunuchi*)**: Earthen chalices filled with burning coconut husk, glowing camphor, and fragrant frankincense (*dhuno*), emitting dense, sacred aromatic smoke.\n` +
+        `• **The Dance**: Devotees dance with one, two, or even balancing a burning dhunuchi in their teeth, matching step-for-step with rolling, frenetic dhaak beats and kanshi rhythms.\n\n` +
+        `👉 **[Explore Sacred Rituals](action:nav:rituals)**`
+      );
+    } else if (q.includes('sindoor') || q.includes('baran')) {
+      return (
+        `**Sindoor Khela & Devi Baran — Bittersweet Farewell of Vijaya Dashami** 🌺❤️\n\n` +
+        `• **Devi Baran**: On the morning of **Bijoya Dashami (Wednesday, 21 October 2026)**, married women bid a tearful farewell to Maa Durga by wiping Her tears with betel leaves, feeding Her sweet sandesh, and touching Her feet.\n` +
+        `• **Sindoor Khela**: Women apply vibrant red vermilion (*sindoor*) on the Goddess's forehead, followed by joyously smearing sindoor on each other, praying for marital longevity and happiness.\n` +
+        `• **Subho Bijoya**: Exchanging warm embraces (*kolakoli*), touching the feet of elders, and distributing sweet Rosogollas and Nimki.\n\n` +
+        `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    } else if (q.includes('akalbodhon') || q.includes('bodhon')) {
+      return (
+        `**The Scriptural Origin of Akalbodhon (Untimely Invocation)** 🏹🪔\n\n` +
+        `• **Mythological Root**: According to Krittivasi Ramayana, Lord Rama invoked Devi Durga in the autumn (*Sharad*) season before fighting the demon king Ravana.\n` +
+        `• **Why 'Akal' (Untimely)**: Durga Puja traditionally occurs in spring (*Basanta* - Basanti Puja). Because the Sun was in *Dakshinayana* (the southern solstice, when deities rest), Lord Rama performed an 'untimely' awakening (*Akalbodhon*).\n` +
+        `• **108 Blue Lotuses**: Lord Rama needed 108 Neel Kamal. When one was missing, He prepared to sacrifice His own lotus-like eye (*Padmalochana*), at which point the Divine Mother appeared to grant Him victory.\n\n` +
+        `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    } else if (q.includes('date') || q.includes('when') || q.includes('schedule') || q.includes('calendar') || q.includes('panjika') || q.includes('shashthi') || q.includes('sashthi') || q.includes('shasthi') || q.includes('saptami') || q.includes('tithi')) {
+      return (
+        `**Durga Puja 2026 Official Dates & Ritual Schedule (Web & Panjika)** 📅🪔\n\n` +
+        `According to traditional Bengali Panjika almanacs and official web calendars:\n\n` +
+        `• 🌅 **Mahalaya**: Saturday, 10 October 2026 — Dawn ancestral *Tarpan* along holy river ghats and Birendra Krishna Bhadra's *Mahishasuramardini* recitation at 4:00 AM IST.\n` +
+        `• 🥁 **Maha Shashthi**: Friday, 16 October 2026 — *Devi Bodhon* under the Bilva tree, *Kalparambha*, and formal awakening of Maa Durga (Shashthi tithi commences on Oct 16).\n` +
+        `• 🌿 **Maha Saptami**: Saturday, 17 October & Sunday, 18 October 2026 — *Nabapatrika Snan* (dawn river bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*. The auspicious Saptami tithi commences on Oct 17 and spans across into Oct 18 across panjikas.\n` +
+        `• 🔥 **Maha Ashtami**: Monday, 19 October 2026 — Morning Sanskrit **Pushpanjali**, revered **Kumari Puja** at Belur Math, and the celestial **Sandhi Puja** (48-minute astronomical window with 108 blue lotuses & 108 earthen lamps).\n` +
+        `• ✨ **Maha Navami**: Tuesday, 20 October 2026 — Sacred *Maha Yajna / Homa*, festive community *Bhog*, and electrifying **Dhunuchi Naach** to rolling dhaak rhythms.\n` +
+        `• 🪷 **Bijoya Dashami**: Wednesday, 21 October 2026 — Bittersweet farewell *Devi Baran*, vibrant *Sindoor Khela*, touching elders' feet (*Kolakoli*), and holy Ganga immersion (*Bishorjon*).\n\n` +
+        `👉 **[Explore Sacred Rituals Timeline](action:nav:rituals)**`
+      );
+    } else {
+      return (
+        `**Sacred Vedic Durga Puja Rituals Schedule (2026)** 🪔🕊️\n\n` +
+        `• **Mahalaya (10 Oct 2026)**: Dawn ancestral *Tarpan* along holy river ghats and *Mahishasuramardini* recitation.\n` +
+        `• **Maha Shashthi (16 Oct 2026)**: *Devi Bodhon* under the sacred Bel tree, *Kalparambha*, and formal awakening.\n` +
+        `• **Maha Saptami (17–18 Oct 2026)**: *Nabapatrika Snan* (dawn bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha* spanning the 17th–18th tithi.\n` +
+        `• **Maha Ashtami (19 Oct 2026)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n` +
+        `• **Maha Navami (20 Oct 2026)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n` +
+        `• **Bijoya Dashami (21 Oct 2026)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n` +
+        `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      );
+    }
+  }
+
+  // 6. Curated 1-Day Master Itinerary Solver
+  if (isPlan) {
     return (
-      `Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n` +
-      `I am **sharod.ai**, your personal AI Guide. I am here to help you navigate Kolkata's greatest celebration:\n\n` +
-      `• 🏛️ **Pandals & Routes**: North, South, East/Salt Lake, Central circuits and Rajbari heritage\n` +
-      `• 🪔 **Vedic Rituals & Timings**: Pushpanjali, Sandhi Puja, Dhunuchi Naach, Kumari Puja\n` +
-      `• 🍲 **Culinary Guide**: Iconic Kolkata Biryani, Street Food, and authentic Bhog\n` +
-      `• 🚇 **Kolkata Metro & Transit**: Station mappings, overnight train schedules\n` +
-      `• 👗 **Festival Etiquette & Attire**: What to wear, photography rules, and crowd management\n\n` +
-      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Sacred Rituals](action:nav:rituals) | [Kolkata Food Guide](action:nav:food-shopping)`
+      `**Curated 1-Day Master Pandal Hopping Itinerary (Kolkata 2026)** 🗺️🚶‍♂️\n\n` +
+      `An optimized morning-to-midnight route balancing heritage, art, and iconic culinary pitstops:\n\n` +
+      `• 🌅 **Morning (9:00 AM – 1:00 PM) • North Kolkata Heritage Circuit**:\n` +
+      `  - Start at **Shyambazar Metro** ➔ Walk to centenary **Bagbazar Sarbojanin** (pure Sabeki Daaker Saaj idol).\n` +
+      `  - Hop to **Kumartuli Park** and stroll through the idol-makers' artisan quarter.\n` +
+      `  - Visit the aristocratic 1757 **Sovabazar Rajbari** Natmandir courtyard.\n` +
+      `  - 🍴 *Food Stop*: Original Diamond Fish Fry at **Mitra Cafe** or Kosha Mangsho at **Golbari**.\n\n` +
+      `• ☀️ **Afternoon (3:00 PM – 5:30 PM) • Central Illumination Circuit**:\n` +
+      `  - Metro to **Central / MG Road** ➔ Marvel at the majestic palace reflection over **College Square** lake.\n` +
+      `  - Visit **Mohammad Ali Park**.\n` +
+      `  - 🍴 *Refreshment*: Paramount Cold Sherbats (Daab Sarbat).\n\n` +
+      `• 🌙 **Evening & Night (6:30 PM – Midnight) • South Kolkata Mega Spectacles**:\n` +
+      `  - Metro to **Kalighat Station** ➔ Walk down Chetla Central Road to **Chetla Agrani Club**.\n` +
+      `  - Cross over to **Suruchi Sangha** (New Alipore).\n` +
+      `  - Continue down Rashbehari to avant-garde **Tridhara Sammilani**.\n` +
+      `  - Midnight youth adda at **Maddox Square** open park lawns.\n` +
+      `  - 🥛 *Midnight Snack*: World-famous **Doodh Cola** & Kesar Chai at **Balwant Singh's Eating House**!\n\n` +
+      `👉 **[Open Curated Master Plans](action:nav:plans)** | **[Open My Saved Itinerary](action:nav:saved)**`
     );
   }
 
-  // 4. SPECIFIC PANDAL SPOTLIGHTS
+  // 6. Specific Pandal Spotlight
   const matchedPandal = matchPandalInQuery(q);
   if (matchedPandal) {
     return (
@@ -454,7 +667,7 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 5. REGIONAL PANDAL LISTS
+  // 7. Regional Zone Circuits
   if (q.includes('south') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('top') || q.includes('list') || q.includes('circuit'))) {
     return (
       `**Top South Kolkata Durga Puja Pandals (2026)** 🏛️✨\n\n` +
@@ -484,70 +697,50 @@ function generateLocalResponse(query) {
     );
   }
 
-  // 6. RITUALS & SCRIPTURAL KNOWLEDGE
-  if (
-    q.includes('ritual') ||
-    q.includes('sandhi') ||
-    q.includes('pushpanjali') ||
-    q.includes('anjali') ||
-    q.includes('kumari') ||
-    q.includes('dhunuchi') ||
-    q.includes('ashtami') ||
-    q.includes('shasthi') ||
-    q.includes('saptami') ||
-    q.includes('navami') ||
-    q.includes('dashami') ||
-    q.includes('sindoor') ||
-    q.includes('akalbodhon') ||
-    q.includes('bhashan') ||
-    q.includes('visarjan')
-  ) {
-    if (q.includes('sandhi')) {
-      return (
-        `**Sandhi Puja — The Divine Climax of Maha Ashtami** 🪔🕊️\n\n` +
-        `• **Vedic Significance**: Sandhi Puja marks the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a 48-minute celestial window).\n` +
-        `• **Mythology**: At this exact threshold, Devi Durga manifested as **Devi Chamunda** to slay the demon chieftains Chanda and Munda.\n` +
-        `• **108 Sacred Blue Lotuses (*Neel Kamal*)**: 108 lotuses are offered in memory of Lord Rama's devotion during his untimely autumn invocation (*Akalbodhon*).\n` +
-        `• **108 Earthen Diyas**: 108 clay lamps are lit in absolute synchronization as thunderous dhaak beats, conch shells (*shankha*), and Kanshi reverberate through the pandal.\n` +
-        `• **Sacred Balidan**: Symbolic vegetable sacrifice of sugarcane (*aakh*), chalkumro (wax gourd), and banana is performed.\n\n` +
-        `👉 [Explore Vedic Rituals](action:nav:rituals)`
-      );
-    }
-
+  if ((q.includes('east') || q.includes('salt lake')) && (q.includes('pandal') || q.includes('zone') || q.includes('best'))) {
     return (
-      `**Sacred Vedic Durga Puja Rituals Schedule & Meaning** 🪔🕊️\n\n` +
-      `• **Akalbodhon (*Lord Rama's Invocation*)**: The mythological awakening of Devi Durga by Lord Rama in autumn (*Sharad*) to seek divine blessings before slaying Ravana.\n` +
-      `• **Maha Shasthi (*Devi Bodhon & Amantran*)**: Awakening the Divine Mother under the sacred Bel tree followed by Adhibas.\n` +
-      `• **Maha Saptami (*Nabapatrika Snan*)**: Dawn bathing of *Kola Bou* (nine plants tied to a banana trunk representing nine forms of cosmic energy) in the Ganges, followed by *Prana Pratishtha*.\n` +
-      `• **Maha Ashtami (*Pushpanjali & Kumari Puja*)**: Morning Sanskrit flower offerings, honoring young girls as living embodiments of Mahamaya (*Kumari Puja*), and the celestial **Sandhi Puja** with 108 blue lotuses and 108 lamps.\n` +
-      `• **Maha Navami (*Maha Yajna & Dhunuchi Naach*)**: Sacred Vedic fire oblations followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n` +
-      `• **Vijaya Dashami (*Devi Baran, Sindoor Khela & Bhashan*)**: Poignant farewell to Maa Durga, vibrant vermilion play (*Sindoor Khela*), sweet exchanges (*Subho Bijoya*), and sacred river immersion.\n\n` +
-      `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
+      `**Top East Kolkata & Salt Lake Pandals (2026)** 🏛️\n\n` +
+      `1. **Sreebhumi Sporting Club** (Lake Town / VIP Road): Spectacular royal palace architectural replicas with dazzling Chandannagar illumination.\n` +
+      `2. **FD Block & BJ Block** (Salt Lake): Grand community festivals with spacious park setups and high-concept creative pavilions.\n` +
+      `3. **Dum Dum Park Tarun Sangha & Bharat Chakra**: High-concept fine art installations and innovative socio-cultural themes.\n\n` +
+      `👉 **[Click Here to View All East Zone Pandals on Akalbodhon](action:nav:pandals:East)**`
     );
   }
 
-  // 7. FOOD & DINING
-  if (q.includes('food') || q.includes('eat') || q.includes('restaurant') || q.includes('biryani') || q.includes('roll') || q.includes('sweet') || q.includes('mishti') || q.includes('kabiraji') || q.includes('bhog')) {
+  if (q.includes('rajbari') || q.includes('bonedi') || q.includes('heritage')) {
     return (
-      `**Iconic Kolkata Durga Puja Culinary Trail** 🍲🍗\n\n` +
-      `• **Kolkata Biryani & Mughlai Masterpieces**:\n` +
-      `  - **Arsalan** (Park Circus / Ruby / Hatibagan): Fragrant long-grain rice, melt-in-mouth mutton, and golden ghee-roasted potato.\n` +
-      `  - **Oudh 1590** (Deshapriya Park / Salt Lake): Period dining with Awadhi Handi Biryani and Galawati Kababs.\n` +
-      `  - **Royal Indian Hotel** (Barabazar / Park Circus): Authentic Lucknowi Pasinda and classic Mutton Chaap.\n` +
-      `• **Legendary Heritage Bites & Cabins**:\n` +
-      `  - **Mitra Cafe** (Shyambazar): Iconic crispy Mutton Kabiraji and Fish Diamond Fry.\n` +
-      `  - **Kusum Rolls** (Park Street): Kolkata's legendary flaky paratha Egg-Chicken rolls.\n` +
-      `  - **Golbari** (Shyambazar): Legendary slow-cooked spicy Kosha Mangsho with hot butter parathas.\n` +
-      `• **Sacred Puja Bhog**:\n` +
-      `  - Fragrant Gobindobhog rice khichuri, crispy Begun Bhaja, Labra (mixed spiced vegetables), Chholar Dal, and sweet tomato-khejur chutney.\n` +
-      `• **Heritage Bengali Sweets**:\n` +
-      `  - **Balaram Mullick & Radharaman Mullick** (Bhawanipore): Baked Rosogolla and Mango Sandesh.\n` +
-      `  - **Girish Ch. Dey & Nakur Ch. Nandy** (Hedua): Centuries-old Jolbhora Sandesh.\n\n` +
-      `👉 **[Open Food & Shopping Guide on Akalbodhon](action:nav:food-shopping)**`
+      `**Heritage Bonedi Bari Durga Pujas (Aristocratic Estates)** 🏛️🪔\n\n` +
+      `Experience 250+ years of aristocratic Bengali tradition in classical Natmandir courtyards:\n\n` +
+      `• **Sovabazar Rajbari (1757)**: Founded by Raja Nabakrishna Deb, attended by Lord Clive, timeless Ekchala Daaker Saaj pratima.\n` +
+      `• **Shobhabazar Chhoto Rajbari**: Majestic twin estate across the lane with exquisite classical aarti.\n` +
+      `• **Rani Rashmoni Bari (Janbazar)**: Established by the revered founder of Dakshineswar Kali Temple.\n` +
+      `• **Thanthania Dutta Bari (1855)**: Known for divine Hara-Gauri pratima where Shiva sits beside Durga.\n` +
+      `• **Laha Bari**: Revered for unique idol where Maa Durga sits peacefully in Shiva's lap without weapons.\n\n` +
+      `👉 **[Explore Heritage Rajbari Pujas](action:nav:pandals:rajbari)**`
     );
   }
 
-  // 8. INTELLECTUAL GENERAL KNOWLEDGE / CODE / SCIENCE / PHILOSOPHY FALLBACK
+  // 8. Greetings (STRICT word boundary, only when NO domain keywords exist!)
+  const hasDomain = isFood || isTransit || isMetroGeneral || isAttire || isRitual || isPlan || ['pandal', 'south', 'north', 'east', 'west', 'kolkata'].some(k => q.includes(k));
+  const isGreeting = (
+    /^(hi|hello|hey|namaste|nomoshkar|pranam|joy maa durga|subho mahalaya)\b/i.test(q) ||
+    (q.split(/\s+/).length <= 2 && /\b(hi|hello|hey|namaste|nomoshkar|pranam)\b/i.test(q))
+  ) && !hasDomain;
+
+  if (isGreeting) {
+    return (
+      `Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n` +
+      `I am **sharod.ai**, your personal AI Guide. I am here to help you navigate Kolkata's greatest celebration:\n\n` +
+      `• 🏛️ **Pandals & Routes**: North, South, East/Salt Lake, Central circuits and Rajbari heritage\n` +
+      `• 🪔 **Vedic Rituals & Timings**: Pushpanjali, Sandhi Puja, Dhunuchi Naach, Kumari Puja\n` +
+      `• 🍲 **Culinary Guide**: Iconic Kolkata Biryani, Street Food, and authentic Bhog\n` +
+      `• 🚇 **Kolkata Metro & Transit**: Station mappings, overnight train schedules\n` +
+      `• 👗 **Festival Etiquette & Attire**: What to wear, traditions, and style advice\n\n` +
+      `👉 [Explore South Kolkata Pandals](action:nav:pandals:South) | [View Sacred Rituals](action:nav:rituals) | [Kolkata Food Guide](action:nav:food-shopping)`
+    );
+  }
+
+  // 9. General Fallback
   return (
     `Thank you for asking about **"${query}"**! 🌟\n\n` +
     `As **sharod.ai**, your intelligent guide on Akalbodhon, I am equipped to assist with deep cultural wisdom, festival logistics, and multifaceted knowledge:\n\n` +
@@ -602,6 +795,18 @@ export default async function handler(req, res) {
     }
 
     const systemInstruction = `You are sharod.ai, the premier, highly intellectual AI Guide and festival concierge on Akalbodhon (the definitive Kolkata Durga Puja web platform).
+
+CRITICAL DIRECTIVE ON RESPONSES & ZERO-GREETING RULE:
+1. NEVER output a generic introductory menu, capability checklist, or greeting like "Joy Maa Durga! Nomoshkar and welcome... I am sharod.ai... I am here to help you navigate: Pandals, Rituals, Food..." when the user asks a question or clicks a quick-chip (such as "Sandhi Puja Rituals", "Best South Pandals", "1-Day Itinerary", "Puja Dates 2026", "Food near Maddox", "How to reach Chetla").
+2. ALWAYS provide the direct, deep, comprehensive, and specific answer immediately to the topic requested!
+
+CANONICAL 2026 DURGA PUJA DATES & RITUAL CALENDAR (Official Web & Panjika):
+- Mahalaya: Saturday, 10 October 2026 (Dawn Tarpan & 4:00 AM Birendra Krishna Bhadra Mahishasuramardini)
+- Maha Shashthi: Friday, 16 October 2026 (Devi Bodhon & Kalparambha; Shashthi tithi commences on Oct 16)
+- Maha Saptami: Saturday, 17 October & Sunday, 18 October 2026 (Saptami tithi commences on Oct 17 and spans across into Oct 18 across Bengali panjikas; Nabapatrika / Kola Bou Snan observed across this period)
+- Maha Ashtami: Monday, 19 October 2026 (Morning Pushpanjali, Kumari Puja at Belur Math, and Sandhi Puja 48-minute astronomical juncture with 108 blue lotuses & 108 clay lamps)
+- Maha Navami: Tuesday, 20 October 2026 (Sacred Maha Yajna / Homa, community Bhog, and electrifying evening Dhunuchi Naach)
+- Bijoya Dashami: Wednesday, 21 October 2026 (Devi Baran, sacred Sindoor Khela, Kolakoli, and holy Ganga immersion / Bishorjon)
 
 INTELLECTUAL DEPTH & CORE EXPERTISE:
 1. ACCURATE, INTELLECTUAL & ELOQUENT: Provide sophisticated, articulate, nuanced, and structured responses. Use eloquent English enriched with Bengali cultural terms.
