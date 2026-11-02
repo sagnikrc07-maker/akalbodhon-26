@@ -8794,6 +8794,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       if (triggerBtn) {
         triggerBtn.style.setProperty('display', 'none', 'important');
       }
+      chatWindow.style.display = 'flex';
       chatWindow.classList.remove('hidden');
       void chatWindow.offsetWidth;
       chatWindow.classList.add('chat-open');
@@ -8810,7 +8811,10 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         triggerBtn.style.removeProperty('display');
       }
       chatWindow.classList.remove('chat-open');
-      setTimeout(() => chatWindow.classList.add('hidden'), 250);
+      setTimeout(() => {
+        chatWindow.classList.add('hidden');
+        chatWindow.style.display = 'none';
+      }, 250);
     }
 
     triggerBtn.onclick = (e) => {

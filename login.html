@@ -619,6 +619,7 @@
       }
 
       function openChat() {
+        chatWindow.style.display = 'flex';
         chatWindow.classList.remove('hidden');
         void chatWindow.offsetWidth;
         chatWindow.classList.add('chat-open');
@@ -629,7 +630,10 @@
       function closeChat() {
         toggleFullscreen(false);
         chatWindow.classList.remove('chat-open');
-        setTimeout(() => chatWindow.classList.add('hidden'), 250);
+        setTimeout(() => {
+          chatWindow.classList.add('hidden');
+          chatWindow.style.display = 'none';
+        }, 250);
       }
 
       triggerBtn.onclick = (e) => {
@@ -1289,6 +1293,7 @@ CANONICAL 2027 DATES: Mahalaya: 30 Sep 2027; Maha Shashthi: 5 Oct 2027; Maha Sap
     <!-- Chat Window Modal -->
     <div 
       id="puja-ai-chat-window" 
+      style="display: none;"
       class="hidden mb-3 w-[92vw] sm:w-[380px] h-[480px] max-h-[80vh] rounded-3xl glass-panel bg-surface/95 dark:bg-[#1a160f]/95 border border-primary/30 dark:border-amber-400/35 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 transform scale-95 opacity-0 origin-bottom-right"
     >
       <div class="px-4 py-3 bg-gradient-to-r from-primary/15 via-surface-container to-primary/5 dark:from-amber-400/20 dark:via-[#252016] dark:to-transparent border-b border-outline-variant/30 dark:border-amber-400/20 flex items-center justify-between shrink-0">

@@ -1161,6 +1161,15 @@ header,
   display: flex !important;
   opacity: 1 !important;
   transform: scale(1) !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+}
+
+#puja-ai-chat-window:not(.chat-open) {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 /* Whenever chat is open, completely hide the floating trigger button across all views */
