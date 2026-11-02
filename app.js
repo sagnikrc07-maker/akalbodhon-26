@@ -9954,45 +9954,24 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       });
     }
 
-    // Pandal Filter Dropdown Menu Handler
+    // Pandal Filter Dropdown Menu Handler (Merged Single Dropdown)
     const pandalDropdown = document.getElementById('pandal-filter-dropdown');
-    const pandalMetroDropdown = document.getElementById('pandal-metro-dropdown');
     const searchInput = document.getElementById('pandal-search-input');
 
     if (pandalDropdown) {
       pandalDropdown.addEventListener('change', (e) => {
         const val = e.target.value;
         const q = searchInput ? searchInput.value : '';
-        const metroVal = pandalMetroDropdown ? pandalMetroDropdown.value : 'all';
 
         if (val.startsWith('metro-')) {
           const metroName = val.replace('metro-', '');
-          if (pandalMetroDropdown && [...pandalMetroDropdown.options].some(o => o.value === metroName)) {
-            pandalMetroDropdown.value = metroName;
-          }
           renderPandals('all', 'all', q, metroName);
         } else if (val.startsWith('zone-')) {
           const subzone = val.replace('zone-', '');
-          renderPandals('zones', subzone, q, metroVal);
+          renderPandals('zones', subzone, q, 'all');
         } else {
-          renderPandals(val, 'all', q, metroVal);
+          renderPandals(val, 'all', q, 'all');
         }
-      });
-    }
-
-    // Dedicated Nearest Metro Dropdown Handler
-    if (pandalMetroDropdown) {
-      pandalMetroDropdown.addEventListener('change', (e) => {
-        const metroVal = e.target.value;
-        const q = searchInput ? searchInput.value : '';
-        const catVal = pandalDropdown ? pandalDropdown.value : 'all';
-
-        if (catVal.startsWith('metro-') && catVal !== `metro-${metroVal}`) {
-          if (pandalDropdown) pandalDropdown.value = 'all';
-        } else if (metroVal !== 'all' && catVal === 'recommended') {
-          if (pandalDropdown) pandalDropdown.value = 'all';
-        }
-        renderPandals('all', 'all', q, metroVal);
       });
     }
 
@@ -10008,40 +9987,34 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // Pandal Search (Debounced 150ms)
     const handlePandalSearch = debounce((e) => {
       const query = e.target.value;
-      const metroVal = pandalMetroDropdown ? pandalMetroDropdown.value : 'all';
-      renderPandals(currentPandalFilter, currentSubZone, query, metroVal);
+      const val = pandalDropdown ? pandalDropdown.value : 'all';
+      let metroVal = 'all';
+      let filter = val;
+      let subzone = 'all';
+      if (val.startsWith('metro-')) {
+        metroVal = val.replace('metro-', '');
+        filter = 'all';
+      } else if (val.startsWith('zone-')) {
+        subzone = val.replace('zone-', '');
+        filter = 'zones';
+      }
+      renderPandals(filter, subzone, query, metroVal);
     }, 150);
     document.getElementById('pandal-search-input')?.addEventListener('input', handlePandalSearch);
 
-    // Food & Shopping Dropdown Filter & Metro Filter
+    // Food & Shopping Dropdown Filter (Merged Single Dropdown)
     const foodFilterDropdown = document.getElementById('food-filter-dropdown');
-    const foodMetroDropdown = document.getElementById('food-metro-dropdown');
     if (foodFilterDropdown) {
       foodFilterDropdown.addEventListener('change', (e) => {
         const filter = e.target.value || 'all';
         const searchInput = document.getElementById('food-shop-search-input');
-        const metroVal = foodMetroDropdown ? foodMetroDropdown.value : 'all';
+        const q = searchInput ? searchInput.value : '';
         if (filter.startsWith('metro-')) {
           const metroName = filter.replace('metro-', '');
-          if (foodMetroDropdown && [...foodMetroDropdown.options].some(o => o.value === metroName)) {
-            foodMetroDropdown.value = metroName;
-          }
-          renderFoodAndShopping('all', searchInput ? searchInput.value : '', metroName);
+          renderFoodAndShopping('all', q, metroName);
         } else {
-          renderFoodAndShopping(filter, searchInput ? searchInput.value : '', metroVal);
+          renderFoodAndShopping(filter, q, 'all');
         }
-      });
-    }
-
-    if (foodMetroDropdown) {
-      foodMetroDropdown.addEventListener('change', (e) => {
-        const metroVal = e.target.value || 'all';
-        const searchInput = document.getElementById('food-shop-search-input');
-        const cat = foodFilterDropdown ? foodFilterDropdown.value : 'all';
-        if (cat.startsWith('metro-') && cat !== `metro-${metroVal}`) {
-          if (foodFilterDropdown) foodFilterDropdown.value = 'all';
-        }
-        renderFoodAndShopping(cat.startsWith('metro-') ? 'all' : cat, searchInput ? searchInput.value : '', metroVal);
       });
     }
 
@@ -10049,9 +10022,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const handleFoodShopSearch = debounce((e) => {
       const query = e.target.value;
       const foodDropdown = document.getElementById('food-filter-dropdown');
-      const metroVal = foodMetroDropdown ? foodMetroDropdown.value : 'all';
-      const filter = foodDropdown ? foodDropdown.value : 'all';
-      renderFoodAndShopping(filter, query, metroVal);
+      const val = foodDropdown ? foodDropdown.value : 'all';
+      let metroVal = 'all';
+      let category = val;
+      if (val.startsWith('metro-')) {
+        metroVal = val.replace('metro-', '');
+        category = 'all';
+      }
+      renderFoodAndShopping(category, query, metroVal);
     }, 150);
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 

@@ -492,76 +492,43 @@
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-          <!-- Dedicated Nearest Metro Station Filter Dropdown -->
-          <div class="relative w-full sm:w-64">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">subway</span>
-            <select id="pandal-metro-dropdown" class="w-full appearance-none pl-9 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-              <option value="all">🚇 All Nearest Metros</option>
-              <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
-              <option value="Shyambazar">🚇 Shyambazar</option>
-              <option value="Girish Park">🚇 Girish Park</option>
-              <option value="MG Road">🚇 MG Road</option>
-              <option value="Central">🚇 Central</option>
-              <option value="Esplanade">🚇 Esplanade</option>
-              <option value="Park Street">🚇 Park Street</option>
-              <option value="Netaji Bhavan">🚇 Netaji Bhavan</option>
-              <option value="Kalighat">🚇 Kalighat</option>
-              <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
-              <option value="Tollygunge">🚇 Tollygunge</option>
-              <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
-              <option value="Kavi Subhash">🚇 Kavi Subhash</option>
-              <option value="Taratala">🚇 Taratala</option>
-              <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
-              <option value="Dum Dum">🚇 Dum Dum</option>
-              <option value="Belgachia">🚇 Belgachia</option>
-              <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
-              <option value="Karunamoyee">🚇 Karunamoyee</option>
-              <option value="Ruby Crossing">🚇 Ruby Crossing</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
-              <span class="material-symbols-outlined text-[18px]">expand_more</span>
-            </div>
-          </div>
-
-          <!-- Main Pandal Category Dropdown -->
-          <div class="relative w-full sm:w-60">
-            <select id="pandal-filter-dropdown" class="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-              <option value="recommended" selected>⭐ Recommended Watch</option>
-              <option value="rajbari">🏰 Heritage Rajbari & Bonedi</option>
-              <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
-              <optgroup label="📍 Filter by Zones">
-                <option value="zone-North">North Kolkata</option>
-                <option value="zone-South">South Kolkata</option>
-                <option value="zone-Central">Central Kolkata</option>
-                <option value="zone-East">East & Salt Lake</option>
-              </optgroup>
-              <optgroup label="🚇 Filter by Nearest Metro">
-                <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
-                <option value="metro-Shyambazar">Shyambazar Metro</option>
-                <option value="metro-Girish Park">Girish Park Metro</option>
-                <option value="metro-MG Road">MG Road Metro</option>
-                <option value="metro-Central">Central Metro</option>
-                <option value="metro-Esplanade">Esplanade Metro</option>
-                <option value="metro-Park Street">Park Street Metro</option>
-                <option value="metro-Netaji Bhavan">Netaji Bhavan Metro</option>
-                <option value="metro-Kalighat">Kalighat Metro</option>
-                <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
-                <option value="metro-Tollygunge">Tollygunge Metro</option>
-                <option value="metro-Gitanjali">Gitanjali Metro</option>
-                <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
-                <option value="metro-Taratala">Taratala Metro</option>
-                <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
-                <option value="metro-Dum Dum">Dum Dum Metro</option>
-                <option value="metro-Belgachia">Belgachia Metro</option>
-                <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
-                <option value="metro-Karunamoyee">Karunamoyee Metro</option>
-                <option value="metro-Ruby Crossing">Ruby Crossing Metro</option>
-              </optgroup>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
-              <span class="material-symbols-outlined text-[18px]">expand_more</span>
-            </div>
+        <div class="relative w-full sm:w-80">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">filter_list</span>
+          <select id="pandal-filter-dropdown" class="w-full appearance-none pl-9 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+            <option value="recommended" selected>⭐ Recommended Watch</option>
+            <option value="rajbari">🏰 Heritage Rajbari & Bonedi</option>
+            <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
+            <optgroup label="📍 Filter by Zones">
+              <option value="zone-North">North Kolkata</option>
+              <option value="zone-South">South Kolkata</option>
+              <option value="zone-Central">Central Kolkata</option>
+              <option value="zone-East">East & Salt Lake</option>
+            </optgroup>
+            <optgroup label="🚇 Filter by Nearest Metro">
+              <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
+              <option value="metro-Shyambazar">Shyambazar Metro</option>
+              <option value="metro-Girish Park">Girish Park Metro</option>
+              <option value="metro-MG Road">MG Road Metro</option>
+              <option value="metro-Central">Central Metro</option>
+              <option value="metro-Esplanade">Esplanade Metro</option>
+              <option value="metro-Park Street">Park Street Metro</option>
+              <option value="metro-Netaji Bhavan">Netaji Bhavan Metro</option>
+              <option value="metro-Kalighat">Kalighat Metro</option>
+              <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
+              <option value="metro-Tollygunge">Tollygunge Metro</option>
+              <option value="metro-Gitanjali">Gitanjali (Naktala) Metro</option>
+              <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
+              <option value="metro-Taratala">Taratala Metro</option>
+              <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
+              <option value="metro-Dum Dum">Dum Dum Metro</option>
+              <option value="metro-Belgachia">Belgachia Metro</option>
+              <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
+              <option value="metro-Karunamoyee">Karunamoyee (Salt Lake) Metro</option>
+              <option value="metro-Ruby Crossing">Ruby Crossing (EM Bypass) Metro</option>
+            </optgroup>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+            <span class="material-symbols-outlined text-[18px]">expand_more</span>
           </div>
         </div>
       </div>
@@ -843,73 +810,40 @@
           </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
-          <!-- Food & Shopping Nearest Metro Filter Dropdown -->
-          <div class="relative w-full sm:w-64">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">subway</span>
-            <select id="food-metro-dropdown" class="w-full appearance-none pl-9 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-              <option value="all">🚇 All Nearest Metros</option>
-              <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
-              <option value="Shyambazar">🚇 Shyambazar</option>
-              <option value="Girish Park">🚇 Girish Park</option>
-              <option value="MG Road">🚇 MG Road / Burrabazar</option>
-              <option value="Central">🚇 Central / College Street</option>
-              <option value="Esplanade">🚇 Esplanade (New Market)</option>
-              <option value="Park Street">🚇 Park Street</option>
-              <option value="Netaji Bhavan">🚇 Netaji Bhavan (Bhowanipore)</option>
-              <option value="Kalighat">🚇 Kalighat (Gariahat)</option>
-              <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
-              <option value="Tollygunge">🚇 Tollygunge</option>
-              <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
-              <option value="Kavi Subhash">🚇 Kavi Subhash</option>
-              <option value="Taratala">🚇 Taratala</option>
-              <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
-              <option value="Dum Dum">🚇 Dum Dum</option>
-              <option value="Belgachia">🚇 Belgachia</option>
-              <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
-              <option value="Karunamoyee">🚇 Karunamoyee / City Centre</option>
-              <option value="Ruby Crossing">🚇 Ruby Crossing / Park Circus</option>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
-              <span class="material-symbols-outlined text-[18px]">expand_more</span>
-            </div>
-          </div>
-
-          <!-- Main Food & Shopping Category Dropdown -->
-          <div class="relative w-full sm:w-60">
-            <select id="food-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-              <option value="all" selected>🍽️ All Spots (Food & Shopping)</option>
-              <option value="food">🍲 Food & Dining</option>
-              <option value="shopping">🛍️ Shopping & Markets</option>
-              <option value="biryani">🍗 Biryani & Mughlai</option>
-              <option value="bengali">🐟 Heritage Bengali</option>
-              <option value="sarees">🥻 Traditional Sarees & Apparel</option>
-              <optgroup label="🚇 Filter by Nearest Metro">
-                <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
-                <option value="metro-Shyambazar">Shyambazar Metro</option>
-                <option value="metro-Girish Park">Girish Park Metro</option>
-                <option value="metro-MG Road">MG Road / Burrabazar</option>
-                <option value="metro-Central">Central / College Street</option>
-                <option value="metro-Esplanade">Esplanade (New Market)</option>
-                <option value="metro-Park Street">Park Street Metro</option>
-                <option value="metro-Netaji Bhavan">Netaji Bhavan (Bhowanipore)</option>
-                <option value="metro-Kalighat">Kalighat (Gariahat)</option>
-                <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
-                <option value="metro-Tollygunge">Tollygunge Metro</option>
-                <option value="metro-Gitanjali">Gitanjali (Naktala)</option>
-                <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
-                <option value="metro-Taratala">Taratala Metro</option>
-                <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
-                <option value="metro-Dum Dum">Dum Dum Metro</option>
-                <option value="metro-Belgachia">Belgachia Metro</option>
-                <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
-                <option value="metro-Karunamoyee">Karunamoyee / City Centre</option>
-                <option value="metro-Ruby Crossing">Ruby Crossing / Park Circus</option>
-              </optgroup>
-            </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
-              <span class="material-symbols-outlined text-[20px]">expand_more</span>
-            </div>
+        <div class="relative w-full sm:w-80">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">filter_list</span>
+          <select id="food-filter-dropdown" class="w-full appearance-none pl-9 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+            <option value="all" selected>🍽️ All Spots (Food & Shopping)</option>
+            <option value="food">🍲 Food & Dining</option>
+            <option value="shopping">🛍️ Shopping & Markets</option>
+            <option value="biryani">🍗 Biryani & Mughlai</option>
+            <option value="bengali">🐟 Heritage Bengali</option>
+            <option value="sarees">🥻 Traditional Sarees & Apparel</option>
+            <optgroup label="🚇 Filter by Nearest Metro">
+              <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
+              <option value="metro-Shyambazar">Shyambazar Metro</option>
+              <option value="metro-Girish Park">Girish Park Metro</option>
+              <option value="metro-MG Road">MG Road / Burrabazar</option>
+              <option value="metro-Central">Central / College Street</option>
+              <option value="metro-Esplanade">Esplanade (New Market)</option>
+              <option value="metro-Park Street">Park Street Metro</option>
+              <option value="metro-Netaji Bhavan">Netaji Bhavan (Bhowanipore)</option>
+              <option value="metro-Kalighat">Kalighat (Gariahat)</option>
+              <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
+              <option value="metro-Tollygunge">Tollygunge Metro</option>
+              <option value="metro-Gitanjali">Gitanjali (Naktala)</option>
+              <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
+              <option value="metro-Taratala">Taratala Metro</option>
+              <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
+              <option value="metro-Dum Dum">Dum Dum Metro</option>
+              <option value="metro-Belgachia">Belgachia Metro</option>
+              <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
+              <option value="metro-Karunamoyee">Karunamoyee / City Centre</option>
+              <option value="metro-Ruby Crossing">Ruby Crossing / Park Circus</option>
+            </optgroup>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+            <span class="material-symbols-outlined text-[20px]">expand_more</span>
           </div>
         </div>
       </div>
