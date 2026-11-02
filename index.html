@@ -363,7 +363,7 @@
         
         <h2 class="text-xs uppercase tracking-widest text-on-surface-variant dark:text-amber-300 font-bold mb-6 flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-[18px] text-primary dark:text-amber-300">hourglass_top</span>
-          <span>Countdown to Mahalaya (10 Oct 2026, 4:00 AM IST)</span>
+          <span>Countdown to Mahalaya (30 Sep 2027, 4:00 AM IST)</span>
         </h2>
 
         <div class="grid grid-cols-4 gap-2 sm:gap-4 max-w-xl mx-auto">
@@ -474,14 +474,14 @@
           <input 
             id="pandal-search-input"
             type="text" 
-            placeholder="Search pandal, metro, zone..."
+            placeholder="Search pandal, nearest metro, zone..."
             class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#1e1a12] border border-outline-variant/50 dark:border-amber-400/30 focus:outline-none focus:border-primary dark:focus:border-amber-300 focus:ring-1 focus:ring-primary text-sm text-on-surface dark:text-white placeholder:text-on-surface-variant/60 dark:placeholder:text-[#ded5c7]/60"
           />
         </div>
       </div>
 
-      <!-- Filter By Dropdown Menu -->
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 shadow-sm reveal-on-scroll">
+      <!-- Filter By Dropdown & Metro Filter Menu -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 shadow-sm reveal-on-scroll">
         <div class="flex items-center gap-2">
           <span class="w-8 h-8 rounded-xl bg-primary/10 dark:bg-amber-400/20 flex items-center justify-center text-primary dark:text-amber-300 shrink-0">
             <span class="material-symbols-outlined text-[18px]">tune</span>
@@ -492,20 +492,76 @@
           </div>
         </div>
 
-        <div class="relative w-full sm:w-72">
-          <select id="pandal-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-            <option value="recommended" selected>⭐ Recommended Watch</option>
-            <option value="rajbari">🏰 Heritage Rajbari & Bonedi Bari</option>
-            <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
-            <optgroup label="📍 Filter by Zones">
-              <option value="zone-North">North Kolkata</option>
-              <option value="zone-South">South Kolkata</option>
-              <option value="zone-Central">Central Kolkata</option>
-              <option value="zone-East">East & Salt Lake</option>
-            </optgroup>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
-            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+        <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+          <!-- Dedicated Nearest Metro Station Filter Dropdown -->
+          <div class="relative w-full sm:w-64">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">subway</span>
+            <select id="pandal-metro-dropdown" class="w-full appearance-none pl-9 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+              <option value="all">🚇 All Nearest Metros</option>
+              <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
+              <option value="Shyambazar">🚇 Shyambazar</option>
+              <option value="Girish Park">🚇 Girish Park</option>
+              <option value="MG Road">🚇 MG Road</option>
+              <option value="Central">🚇 Central</option>
+              <option value="Esplanade">🚇 Esplanade</option>
+              <option value="Park Street">🚇 Park Street</option>
+              <option value="Netaji Bhavan">🚇 Netaji Bhavan</option>
+              <option value="Kalighat">🚇 Kalighat</option>
+              <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
+              <option value="Tollygunge">🚇 Tollygunge</option>
+              <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
+              <option value="Kavi Subhash">🚇 Kavi Subhash</option>
+              <option value="Taratala">🚇 Taratala</option>
+              <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
+              <option value="Dum Dum">🚇 Dum Dum</option>
+              <option value="Belgachia">🚇 Belgachia</option>
+              <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
+              <option value="Karunamoyee">🚇 Karunamoyee</option>
+              <option value="Ruby Crossing">🚇 Ruby Crossing</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
+              <span class="material-symbols-outlined text-[18px]">expand_more</span>
+            </div>
+          </div>
+
+          <!-- Main Pandal Category Dropdown -->
+          <div class="relative w-full sm:w-60">
+            <select id="pandal-filter-dropdown" class="w-full appearance-none pl-3.5 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+              <option value="recommended" selected>⭐ Recommended Watch</option>
+              <option value="rajbari">🏰 Heritage Rajbari & Bonedi</option>
+              <option value="all">🌐 All Pandals (Kolkata-Wide)</option>
+              <optgroup label="📍 Filter by Zones">
+                <option value="zone-North">North Kolkata</option>
+                <option value="zone-South">South Kolkata</option>
+                <option value="zone-Central">Central Kolkata</option>
+                <option value="zone-East">East & Salt Lake</option>
+              </optgroup>
+              <optgroup label="🚇 Filter by Nearest Metro">
+                <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
+                <option value="metro-Shyambazar">Shyambazar Metro</option>
+                <option value="metro-Girish Park">Girish Park Metro</option>
+                <option value="metro-MG Road">MG Road Metro</option>
+                <option value="metro-Central">Central Metro</option>
+                <option value="metro-Esplanade">Esplanade Metro</option>
+                <option value="metro-Park Street">Park Street Metro</option>
+                <option value="metro-Netaji Bhavan">Netaji Bhavan Metro</option>
+                <option value="metro-Kalighat">Kalighat Metro</option>
+                <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
+                <option value="metro-Tollygunge">Tollygunge Metro</option>
+                <option value="metro-Gitanjali">Gitanjali Metro</option>
+                <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
+                <option value="metro-Taratala">Taratala Metro</option>
+                <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
+                <option value="metro-Dum Dum">Dum Dum Metro</option>
+                <option value="metro-Belgachia">Belgachia Metro</option>
+                <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
+                <option value="metro-Karunamoyee">Karunamoyee Metro</option>
+                <option value="metro-Ruby Crossing">Ruby Crossing Metro</option>
+              </optgroup>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
+              <span class="material-symbols-outlined text-[18px]">expand_more</span>
+            </div>
           </div>
         </div>
       </div>
@@ -787,17 +843,73 @@
           </div>
         </div>
 
-        <div class="relative w-full sm:w-72">
-          <select id="food-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
-            <option value="all" selected>🍽️ All Spots (Food & Shopping)</option>
-            <option value="food">🍲 Food & Dining</option>
-            <option value="shopping">🛍️ Shopping & Markets</option>
-            <option value="biryani">🍗 Biryani & Mughlai</option>
-            <option value="bengali">🐟 Heritage Bengali</option>
-            <option value="sarees">🥻 Traditional Sarees & Apparel</option>
-          </select>
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
-            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+        <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto">
+          <!-- Food & Shopping Nearest Metro Filter Dropdown -->
+          <div class="relative w-full sm:w-64">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[18px] pointer-events-none">subway</span>
+            <select id="food-metro-dropdown" class="w-full appearance-none pl-9 pr-9 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+              <option value="all">🚇 All Nearest Metros</option>
+              <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
+              <option value="Shyambazar">🚇 Shyambazar</option>
+              <option value="Girish Park">🚇 Girish Park</option>
+              <option value="MG Road">🚇 MG Road / Burrabazar</option>
+              <option value="Central">🚇 Central / College Street</option>
+              <option value="Esplanade">🚇 Esplanade (New Market)</option>
+              <option value="Park Street">🚇 Park Street</option>
+              <option value="Netaji Bhavan">🚇 Netaji Bhavan (Bhowanipore)</option>
+              <option value="Kalighat">🚇 Kalighat (Gariahat)</option>
+              <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
+              <option value="Tollygunge">🚇 Tollygunge</option>
+              <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
+              <option value="Kavi Subhash">🚇 Kavi Subhash</option>
+              <option value="Taratala">🚇 Taratala</option>
+              <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
+              <option value="Dum Dum">🚇 Dum Dum</option>
+              <option value="Belgachia">🚇 Belgachia</option>
+              <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
+              <option value="Karunamoyee">🚇 Karunamoyee / City Centre</option>
+              <option value="Ruby Crossing">🚇 Ruby Crossing / Park Circus</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-primary dark:text-amber-300">
+              <span class="material-symbols-outlined text-[18px]">expand_more</span>
+            </div>
+          </div>
+
+          <!-- Main Food & Shopping Category Dropdown -->
+          <div class="relative w-full sm:w-60">
+            <select id="food-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
+              <option value="all" selected>🍽️ All Spots (Food & Shopping)</option>
+              <option value="food">🍲 Food & Dining</option>
+              <option value="shopping">🛍️ Shopping & Markets</option>
+              <option value="biryani">🍗 Biryani & Mughlai</option>
+              <option value="bengali">🐟 Heritage Bengali</option>
+              <option value="sarees">🥻 Traditional Sarees & Apparel</option>
+              <optgroup label="🚇 Filter by Nearest Metro">
+                <option value="metro-Sovabazar Sutanuti">Sovabazar Sutanuti Metro</option>
+                <option value="metro-Shyambazar">Shyambazar Metro</option>
+                <option value="metro-Girish Park">Girish Park Metro</option>
+                <option value="metro-MG Road">MG Road / Burrabazar</option>
+                <option value="metro-Central">Central / College Street</option>
+                <option value="metro-Esplanade">Esplanade (New Market)</option>
+                <option value="metro-Park Street">Park Street Metro</option>
+                <option value="metro-Netaji Bhavan">Netaji Bhavan (Bhowanipore)</option>
+                <option value="metro-Kalighat">Kalighat (Gariahat)</option>
+                <option value="metro-Rabindra Sarobar">Rabindra Sarobar Metro</option>
+                <option value="metro-Tollygunge">Tollygunge Metro</option>
+                <option value="metro-Gitanjali">Gitanjali (Naktala)</option>
+                <option value="metro-Kavi Subhash">Kavi Subhash Metro</option>
+                <option value="metro-Taratala">Taratala Metro</option>
+                <option value="metro-Behala Chowrasta">Behala Chowrasta Metro</option>
+                <option value="metro-Dum Dum">Dum Dum Metro</option>
+                <option value="metro-Belgachia">Belgachia Metro</option>
+                <option value="metro-Salt Lake Stadium">Salt Lake Stadium Metro</option>
+                <option value="metro-Karunamoyee">Karunamoyee / City Centre</option>
+                <option value="metro-Ruby Crossing">Ruby Crossing / Park Circus</option>
+              </optgroup>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
+              <span class="material-symbols-outlined text-[20px]">expand_more</span>
+            </div>
           </div>
         </div>
       </div>
@@ -806,7 +918,7 @@
       <div id="food-section-block" class="space-y-4">
         <div class="space-y-2 reveal-on-scroll">
           <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary dark:text-amber-300">restaurant_menu</span> Iconic Puja Food Destinations (9 Locations)
+            <span class="material-symbols-outlined text-primary dark:text-amber-300">restaurant_menu</span> Iconic Puja Food Destinations (11 Locations)
           </h3>
           <!-- Friendly Non-Promotion Disclaimer -->
           <div class="flex items-start sm:items-center gap-2.5 p-3 sm:p-3.5 rounded-2xl bg-surface-container-low dark:bg-[#1a160f] border border-outline-variant/30 dark:border-amber-400/20 text-xs text-on-surface-variant dark:text-[#ded5c7] shadow-xs">
@@ -873,12 +985,12 @@
         <div class="relative w-full sm:w-72">
           <select id="plan-filter-dropdown" class="w-full appearance-none pl-3.5 pr-10 py-2.5 rounded-xl bg-surface dark:bg-[#252016] text-on-surface dark:text-white border border-outline-variant/50 dark:border-amber-400/30 text-xs sm:text-sm font-semibold focus:outline-none focus:border-primary dark:focus:border-amber-400 shadow-inner cursor-pointer transition-all">
             <option value="all" selected>🌟 All Festival Plans</option>
-            <option value="mahalaya">🌅 Mahalaya (10 Oct 2026)</option>
-            <option value="shasthi">🥁 Maha Shasthi (16 Oct 2026)</option>
-            <option value="saptami">🌿 Maha Saptami (17–18 Oct 2026)</option>
-            <option value="ashtami">🔥 Maha Ashtami (19 Oct 2026)</option>
-            <option value="navami">✨ Maha Navami (20 Oct 2026)</option>
-            <option value="dashami">🪷 Bijoya Dashami (21 Oct 2026)</option>
+            <option value="mahalaya">🌅 Mahalaya (30 Sep 2027)</option>
+            <option value="shasthi">🥁 Maha Shasthi (5 Oct 2027)</option>
+            <option value="saptami">🌿 Maha Saptami (6 Oct 2027)</option>
+            <option value="ashtami">🔥 Maha Ashtami (7 Oct 2027)</option>
+            <option value="navami">✨ Maha Navami (8–9 Oct 2027)</option>
+            <option value="dashami">🪷 Bijoya Dashami (10 Oct 2027)</option>
           </select>
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-primary dark:text-amber-300">
             <span class="material-symbols-outlined text-[20px]">expand_more</span>
@@ -907,7 +1019,7 @@
       <div class="text-center max-w-2xl mx-auto space-y-2 reveal-on-scroll">
         <span class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Canonical Calendar</span>
         <h2 class="font-display text-3xl md:text-4xl font-bold text-on-surface dark:text-white">Mahalaya to Dashami Rituals</h2>
-        <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Sacred festival dates, Vedic mantras, and ceremonial rituals of Akalbodhon 2026.</p>
+        <p class="text-sm text-on-surface-variant dark:text-[#ded5c7]">Sacred festival dates, Vedic mantras, and ceremonial rituals of Akalbodhon 2027.</p>
       </div>
 
       <div id="rituals-timeline-container" class="max-w-3xl mx-auto pt-4 px-2 sm:px-4 md:px-0"></div>
@@ -1219,12 +1331,12 @@
             <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Select Puja Day <span class="text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-normal">(Optional)</span></label>
             <select id="plan-day-select" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white">
               <option value="">-- Skip / No Specific Day --</option>
-              <option value="Maha Shasthi">Maha Shasthi (16 Oct 2026)</option>
-              <option value="Maha Saptami">Maha Saptami (17–18 Oct 2026)</option>
-              <option value="Maha Ashtami" selected>Maha Ashtami (19 Oct 2026)</option>
-              <option value="Maha Navami">Maha Navami (20 Oct 2026)</option>
-              <option value="Bijoya Dashami">Bijoya Dashami (21 Oct 2026)</option>
-              <option value="Mahalaya">Mahalaya (10 Oct 2026)</option>
+              <option value="Maha Shasthi">Maha Shasthi (5 Oct 2027)</option>
+              <option value="Maha Saptami">Maha Saptami (6 Oct 2027)</option>
+              <option value="Maha Ashtami" selected>Maha Ashtami (7 Oct 2027)</option>
+              <option value="Maha Navami">Maha Navami (8–9 Oct 2027)</option>
+              <option value="Bijoya Dashami">Bijoya Dashami (10 Oct 2027)</option>
+              <option value="Mahalaya">Mahalaya (30 Sep 2027)</option>
               <option value="Custom Festival Day">Custom Festival Day</option>
             </select>
           </div>
@@ -1241,22 +1353,90 @@
             <textarea id="plan-description-input" rows="2" placeholder="e.g. Join our festive pandal trail! Morning Pushpanjali, followed by authentic street food and late-night illumination walks." class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white resize-none"></textarea>
           </div>
 
-          <!-- Pandals Selection -->
-          <div class="space-y-1.5">
-            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 flex items-center justify-between">
-              <span>Select Pandals to Visit</span>
-              <span class="text-[10px] text-primary dark:text-amber-300 font-medium">(Optional)</span>
-            </label>
-            <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
+          <!-- Pandals Selection with Zone Filter & Metro Search -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200">
+                <span>Select Pandals to Visit</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <span id="plan-selected-pandal-count" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300">0 selected</span>
+                <span class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-medium">(Optional)</span>
+              </div>
+            </div>
+
+            <!-- Zone Filter Pills & Metro Filter Controls -->
+            <div class="space-y-1.5 p-2.5 rounded-xl bg-surface-container/60 dark:bg-[#1f1b13] border border-outline-variant/20 dark:border-amber-400/20">
+              <!-- Zone Filter Pills -->
+              <div class="flex items-center gap-1.5 flex-wrap" id="plan-zone-filter-container">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300/80 mr-1">Zone:</span>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-primary text-white dark:bg-amber-400 dark:text-black shadow-xs" data-zone="all">All</button>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="North">North</button>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="South">South</button>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="Central">Central</button>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="East">East</button>
+                <button type="button" class="plan-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="bonedi">🏰 Heritage & Cultural Bonedi Bari</button>
+              </div>
+
+              <!-- Metro Filter & Search inside Custom Plan -->
+              <div class="flex items-center gap-2 pt-1">
+                <div class="relative flex-1">
+                  <select id="plan-metro-filter" class="w-full appearance-none pl-7 pr-7 py-1.5 rounded-lg bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs font-medium focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white cursor-pointer">
+                    <option value="all">🚇 All Nearest Metros</option>
+                    <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
+                    <option value="Shyambazar">🚇 Shyambazar</option>
+                    <option value="Girish Park">🚇 Girish Park</option>
+                    <option value="MG Road">🚇 MG Road</option>
+                    <option value="Central">🚇 Central</option>
+                    <option value="Esplanade">🚇 Esplanade</option>
+                    <option value="Park Street">🚇 Park Street</option>
+                    <option value="Netaji Bhavan">🚇 Netaji Bhavan</option>
+                    <option value="Kalighat">🚇 Kalighat</option>
+                    <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
+                    <option value="Tollygunge">🚇 Tollygunge</option>
+                    <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
+                    <option value="Kavi Subhash">🚇 Kavi Subhash</option>
+                    <option value="Taratala">🚇 Taratala</option>
+                    <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
+                    <option value="Dum Dum">🚇 Dum Dum</option>
+                    <option value="Belgachia">🚇 Belgachia</option>
+                    <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
+                    <option value="Karunamoyee">🚇 Karunamoyee</option>
+                    <option value="Ruby Crossing">🚇 Ruby Crossing</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[14px] pointer-events-none">subway</span>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-primary dark:text-amber-300">
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                  </div>
+                </div>
+                <input type="text" id="plan-pandals-search-input" placeholder="Search pandals..." class="w-32 sm:w-44 px-2.5 py-1.5 rounded-lg bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+              </div>
+            </div>
+
+            <!-- Pandals Selection Grid -->
+            <div id="plan-pandals-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-44 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
               <!-- Injected dynamically -->
             </div>
             <input type="text" id="plan-custom-pandals-input" placeholder="Add custom pandal names (comma separated)" class="w-full px-3 py-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
           </div>
 
-          <!-- Food & Dining Stops -->
-          <div class="space-y-1">
-            <label class="text-xs font-semibold text-on-surface dark:text-amber-200 block">Where to Eat / Food Pit-Stops</label>
-            <input type="text" id="plan-food-input" placeholder="e.g. Golbari Kosha Mangsho, Mitra Cafe Kabiraji, Arsalan Biryani" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-sm focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
+          <!-- Where to Eat / Food Pit-Stops Selection -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-on-surface dark:text-amber-200">
+                <span>Where to Eat / Food Pit-Stops</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <span id="plan-selected-food-count" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 dark:bg-amber-400/20 text-primary dark:text-amber-300">0 selected</span>
+                <span class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 font-medium">(Optional)</span>
+              </div>
+            </div>
+
+            <!-- Food Places Picker Grid -->
+            <div id="plan-food-picker" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto p-2 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/20">
+              <!-- Injected dynamically with iconic Kolkata eateries -->
+            </div>
+            <input type="text" id="plan-food-input" placeholder="Add custom eateries or special dishes (comma separated)" class="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white" />
           </div>
 
           <!-- Rituals & Auspicious Timings -->
@@ -1410,13 +1590,59 @@
         </div>
 
         <!-- 2. Pandals to Visit Section -->
-        <div id="vp-pandals-section" class="space-y-2">
+        <div id="vp-pandals-section" class="space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-[11px] font-bold uppercase tracking-wider text-primary dark:text-amber-300 flex items-center gap-1">
               <span class="material-symbols-outlined text-[15px]">temple_hindu</span> Pandals to Visit
             </span>
             <span id="vp-pandals-count" class="text-[10px] text-on-surface-variant dark:text-[#ded5c7]/70 font-semibold"></span>
           </div>
+
+          <!-- Zone and Nearest Metro Filters for Custom Plan Pandals -->
+          <div id="vp-filters-container" class="space-y-1.5 p-2.5 rounded-xl bg-surface-container/60 dark:bg-[#1f1b13] border border-outline-variant/20 dark:border-amber-400/20">
+            <!-- Zone Filter Buttons -->
+            <div class="flex items-center gap-1.5 flex-wrap" id="vp-zone-filter-container">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant dark:text-amber-300/80 mr-1">Zone:</span>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-primary text-white dark:bg-amber-400 dark:text-black shadow-xs" data-zone="all">All</button>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="North">North</button>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="South">South</button>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="Central">Central</button>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="East">East</button>
+              <button type="button" class="vp-zone-btn px-2.5 py-0.5 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-surface-container-high dark:bg-[#2c261b] text-on-surface-variant dark:text-[#ded5c7] hover:text-primary dark:hover:text-amber-300" data-zone="bonedi">🏰 Heritage & Cultural Bonedi Bari</button>
+            </div>
+
+            <!-- Metro Station Filter -->
+            <div class="relative w-full pt-0.5">
+              <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-primary dark:text-amber-300 text-[14px] pointer-events-none">subway</span>
+              <select id="vp-metro-filter" class="w-full appearance-none pl-8 pr-7 py-1.5 rounded-lg bg-surface-container-low dark:bg-[#252016] border border-outline-variant/30 dark:border-amber-400/30 text-xs font-medium focus:outline-none focus:border-primary dark:focus:border-amber-400 text-on-surface dark:text-white cursor-pointer">
+                <option value="all">🚇 All Nearest Metros</option>
+                <option value="Sovabazar Sutanuti">🚇 Sovabazar Sutanuti</option>
+                <option value="Shyambazar">🚇 Shyambazar</option>
+                <option value="Girish Park">🚇 Girish Park</option>
+                <option value="MG Road">🚇 MG Road</option>
+                <option value="Central">🚇 Central</option>
+                <option value="Esplanade">🚇 Esplanade</option>
+                <option value="Park Street">🚇 Park Street</option>
+                <option value="Netaji Bhavan">🚇 Netaji Bhavan</option>
+                <option value="Kalighat">🚇 Kalighat</option>
+                <option value="Rabindra Sarobar">🚇 Rabindra Sarobar</option>
+                <option value="Tollygunge">🚇 Tollygunge</option>
+                <option value="Gitanjali">🚇 Gitanjali (Naktala)</option>
+                <option value="Kavi Subhash">🚇 Kavi Subhash</option>
+                <option value="Taratala">🚇 Taratala</option>
+                <option value="Behala Chowrasta">🚇 Behala Chowrasta</option>
+                <option value="Dum Dum">🚇 Dum Dum</option>
+                <option value="Belgachia">🚇 Belgachia</option>
+                <option value="Salt Lake Stadium">🚇 Salt Lake Stadium</option>
+                <option value="Karunamoyee">🚇 Karunamoyee</option>
+                <option value="Ruby Crossing">🚇 Ruby Crossing</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-primary dark:text-amber-300">
+                <span class="material-symbols-outlined text-[16px]">expand_more</span>
+              </div>
+            </div>
+          </div>
+
           <div id="vp-pandals-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <!-- Populated dynamically with pandal cards -->
           </div>
@@ -1532,7 +1758,7 @@
       </div>
 
       <div class="space-y-1">
-        <span id="gate-modal-eyebrow" class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Welcome to Kolkata Durga Puja 2026</span>
+        <span id="gate-modal-eyebrow" class="text-xs uppercase tracking-widest text-primary dark:text-amber-300 font-bold">Welcome to Kolkata Durga Puja 2027</span>
         <h3 id="gate-modal-title" class="font-display text-2xl font-bold text-on-surface dark:text-white">Welcome to Akalbodhon</h3>
         <p id="gate-modal-desc" class="text-xs text-on-surface-variant dark:text-[#ded5c7] leading-relaxed pt-1">
           Explore Kolkata's most immersive Durga Puja guide. Discover 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio, and collaborative festival plans.
@@ -1631,7 +1857,7 @@
           </div>
           <h3 class="font-display text-2xl font-bold text-on-surface dark:text-white">Akalbodhon</h3>
           <p class="text-xs text-on-surface-variant dark:text-[#ded5c7] max-w-md mx-auto font-medium">
-            The comprehensive digital festival companion for Sharodiya Durga Puja 2026.
+            The comprehensive digital festival companion for Sharodiya Durga Puja 2027.
           </p>
         </div>
 
@@ -1690,7 +1916,7 @@
                 <span>📅</span> Sacred Rituals Guide
               </span>
               <p class="text-on-surface-variant dark:text-[#ded5c7] leading-relaxed">
-                Specific 2026 Puja dates from Mahalaya to Dashami with interactive ceremonial breakdowns.
+                Specific 2027 Puja dates from Mahalaya to Dashami with interactive ceremonial breakdowns.
               </p>
             </div>
             <div class="p-3 rounded-xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 space-y-1">
@@ -1718,7 +1944,7 @@
           </h4>
           <div class="grid grid-cols-2 gap-3">
             <!-- WhatsApp -->
-            <a id="about-share-wa" href="#" target="_blank" rel="noopener noreferrer" onclick="this.href='https://api.whatsapp.com/send?text='+encodeURIComponent('🌺 Celebrate Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans: '+window.location.href)" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-[#25D366] dark:hover:border-[#25D366] transition-all group cursor-pointer text-center">
+            <a id="about-share-wa" href="#" target="_blank" rel="noopener noreferrer" onclick="this.href='https://api.whatsapp.com/send?text='+encodeURIComponent('🌺 Celebrate Durga Puja 2027 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans: '+window.location.href)" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-surface-container-low dark:bg-[#252016] border border-outline-variant/20 dark:border-amber-400/15 hover:border-[#25D366] dark:hover:border-[#25D366] transition-all group cursor-pointer text-center">
               <svg class="w-5 h-5 fill-[#25D366] shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
               </svg>
@@ -2037,7 +2263,7 @@
 
       <!-- Quick Question Recommendation Chips -->
         <button type="button" class="ai-quick-chip shrink-0 px-2.5 py-1 rounded-full bg-surface-container dark:bg-[#262016] hover:bg-primary/15 dark:hover:bg-amber-400/20 text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/20 text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap">
-          📅 Puja Dates 2026
+          📅 Puja Dates 2027
         </button>
         <button type="button" class="ai-quick-chip shrink-0 px-2.5 py-1 rounded-full bg-surface-container dark:bg-[#262016] hover:bg-primary/15 dark:hover:bg-amber-400/20 text-on-surface dark:text-[#f3ede2] border border-outline-variant/30 dark:border-amber-400/20 text-[11px] font-medium transition-all cursor-pointer whitespace-nowrap">
           🏛️ Best South Pandals
@@ -2121,6 +2347,6 @@
   </script>
 
   <!-- Application Logic -->
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=3.1"></script>
 </body>
 </html>

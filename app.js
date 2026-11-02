@@ -377,8 +377,8 @@
       zone: 'South',
       theme: 'Traditional Bengal Folk Art & Intricate Eco-Craft Architecture',
       image: 'pandals/bosepukur talbagan.jpg',
-      transit: '🚆 Ballygunge Local Train • 🚌 Kasba Bosepukur Bus Stop',
-      transitType: 'bus',
+      transit: '🚇 Kalighat Metro (via auto) / Ruby Crossing Metro • 🚆 Ballygunge Local Train • 🚌 Kasba Bosepukur Bus Stop',
+      transitType: 'metro',
       highlights: 'Celebrated Kasba landmark famed for heritage environmental installations, rural Bengal crafts, and lively festive atmosphere.',
       locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bosepukur+Talbagan+Durga+Puja+Kasba+Kolkata'
     },
@@ -399,8 +399,8 @@
       zone: 'South',
       theme: 'Pioneering Thematic Installations & Indigenous Clay Art',
       image: 'pandals/bosepukur sitalamandir.png',
-      transit: '🚆 Ballygunge Local Train • 🚌 Bosepukur Connector Bus',
-      transitType: 'bus',
+      transit: '🚇 Kalighat Metro (via auto) / Ruby Crossing Metro • 🚆 Ballygunge Local Train • 🚌 Bosepukur Connector Bus',
+      transitType: 'metro',
       highlights: 'Historic trail-blazer of Kolkata theme puja movement with iconic artistic materials, terracotta motifs, and classical deity.',
       locationUrl: 'https://www.google.com/maps/search/?api=1&query=Bosepukur+Sitalamandir+Durga+Puja+Kasba+Kolkata'
     },
@@ -537,8 +537,8 @@
       zone: 'East',
       theme: 'Bold Modern Conceptual Installation & Eco-Friendly Design',
       image: 'pandals/Dum Dum Park Yubak Brinda.webp',
-      transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Bidhan Nagar Road Train',
-      transitType: 'bus',
+      transit: '🚇 Dum Dum Metro (Auto/Bus) • 🚌 VIP Road Dum Dum Park Bus • 🚆 Bidhan Nagar Road Train',
+      transitType: 'metro',
       highlights: 'Striking artistic experiments with innovative materials, modern aesthetics, and ambient lights.',
       locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Yubak+Brinda+Durga+Puja+Kolkata'
     },
@@ -570,8 +570,8 @@
       zone: 'East',
       theme: 'Surrealistic Spatial Architecture & Dynamic Kinetic Art',
       image: 'pandals/dum dum park tarun dal.png',
-      transit: '🚌 VIP Road Dum Dum Park Bus • 🚆 Dum Dum Cantt Train',
-      transitType: 'bus',
+      transit: '🚇 Dum Dum Metro (Auto/Bus) • 🚌 VIP Road Dum Dum Park Bus • 🚆 Dum Dum Cantt Train',
+      transitType: 'metro',
       highlights: 'Mind-bending geometric forms, kinetic wind sculptures, and immersive illuminated pathways.',
       locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dum+Dum+Park+Tarun+Dal+Durga+Puja+Kolkata'
     },
@@ -592,8 +592,8 @@
       zone: 'East',
       theme: 'Monumental Heritage Temple Replica & Chandannagar Lights',
       image: 'pandals/Dakshindari Youth Club.png',
-      transit: '🚌 VIP Road Ultadanga Bus • 🚆 Bidhan Nagar Road Train',
-      transitType: 'bus',
+      transit: '🚇 Belgachia / Dum Dum Metro • 🚌 VIP Road Ultadanga Bus • 🚆 Bidhan Nagar Road Train',
+      transitType: 'metro',
       highlights: 'Giant temple architectural setups along the VIP Road corridor with spectacular night illuminations.',
       locationUrl: 'https://www.google.com/maps/search/?api=1&query=Dakshindari+Youth+Club+Durga+Puja+Kolkata'
     },
@@ -807,6 +807,41 @@
         { name: 'Deshapriya Park', url: 'https://www.google.com/maps/search/?api=1&query=Deshapriya+Park+Durga+Puja+Kolkata' },
         { name: 'Mohammad Ali Park', url: 'https://www.google.com/maps/search/?api=1&query=Mohammad+Ali+Park+Durga+Puja+Kolkata' }
       ]
+    },
+    {
+      id: 'food-balaram',
+      name: 'Balaram Mullick & Radharaman Mullick',
+      category: 'bengali',
+      categoryLabel: 'Centennial Bengali Sweet Institution',
+      location: 'Bhowanipore / Lake Gardens / Kasba',
+      metro: 'Netaji Bhavan Metro (2 min walk)',
+      desc: 'Legendary 1885 sweet makers celebrated for artisanal traditional sandesh, baked rosogolla, and modern festive innovations.',
+      mustTry: 'Baked Rosogolla, Nolen Gur Sandesh, Mango Gelato Sandesh & Mishti Doi',
+      timings: 'Morning to Late Night',
+      image: 'food/Balaram Mullick & Radharaman Mullick.avif',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Balaram+Mullick+Radharaman+Mullick+Bhowanipore+Kolkata',
+      nearbyPandals: [
+        { name: 'Maddox Square', url: 'https://www.google.com/maps/search/?api=1&query=Maddox+Square+Durga+Puja+Kolkata' },
+        { name: 'Badamtala Ashar Sangha', url: 'https://www.google.com/maps/search/?api=1&query=Badamtala+Ashar+Sangha+Durga+Puja+Kolkata' },
+        { name: 'Singhi Park Sarbojanin', url: 'https://www.google.com/maps/search/?api=1&query=Singhi+Park+Sarbojanin+Durga+Puja+Kolkata' }
+      ]
+    },
+    {
+      id: 'food-mocambo',
+      name: 'Mocambo',
+      category: 'food',
+      categoryLabel: 'Heritage Continental & Park Street Dining',
+      location: 'Park Street (Free School Street Crossing)',
+      metro: 'Park Street Metro (3 min walk)',
+      desc: 'Iconic 1950s European dining room renowned for sizzling platters, warm wood panelling, and classic Kolkata nightlife aura.',
+      mustTry: 'Devilled Crab, Chicken Tetrazzini & Beckty Bell Vista',
+      timings: 'Lunch to Late Night',
+      image: 'food/Mocambo.webp',
+      locationUrl: 'https://www.google.com/maps/search/?api=1&query=Mocambo+Park+Street+Kolkata',
+      nearbyPandals: [
+        { name: 'Maddox Square', url: 'https://www.google.com/maps/search/?api=1&query=Maddox+Square+Durga+Puja+Kolkata' },
+        { name: 'Tridhara Sammilani', url: 'https://www.google.com/maps/search/?api=1&query=Tridhara+Sammilani+Durga+Puja+Kolkata' }
+      ]
     }
   ];
 
@@ -937,7 +972,7 @@
     {
       day: 'Mahalaya',
       tithi: 'Amavasya Dawn',
-      date: '10 October 2026 (Saturday)',
+      date: '30 September 2027 (Thursday)',
       ceremonies: [
         {
           name: 'Birendra Krishna Bhadra Chandi Path',
@@ -957,7 +992,7 @@
     {
       day: 'Maha Shasthi',
       tithi: 'Shasthi Tithi (Bodhon & Kalparambha)',
-      date: '16 October 2026 (Friday)',
+      date: '5 October 2027 (Tuesday)',
       ceremonies: [
         {
           name: 'Devi Bodhon under Bilva Tree',
@@ -977,7 +1012,7 @@
     {
       day: 'Maha Saptami',
       tithi: 'Saptami Tithi (Nabapatrika Snan & Prana Pratishtha)',
-      date: '17–18 October 2026 (Saturday & Sunday)',
+      date: '6 October 2027 (Wednesday)',
       ceremonies: [
         {
           name: 'Nabapatrika (Kola Bou) River Bathing',
@@ -997,7 +1032,7 @@
     {
       day: 'Maha Ashtami',
       tithi: 'Ashtami & Sandhi Tithi',
-      date: '19 October 2026 (Monday)',
+      date: '7 October 2027 (Thursday)',
       ceremonies: [
         {
           name: 'Grand Ashtami Pushpanjali',
@@ -1017,7 +1052,7 @@
     {
       day: 'Maha Navami',
       tithi: 'Navami Tithi',
-      date: '20 October 2026 (Tuesday)',
+      date: '8–9 October 2027 (Friday & Saturday)',
       ceremonies: [
         {
           name: 'Navami Maha Yajna / Homa',
@@ -1037,7 +1072,7 @@
     {
       day: 'Vijaya Dashami',
       tithi: 'Dashami Tithi',
-      date: '21 October 2026 (Wednesday)',
+      date: '10 October 2027 (Sunday)',
       ceremonies: [
         {
           name: 'Devi Baran & Sindoor Khela',
@@ -1826,8 +1861,8 @@
     const secsEl = document.getElementById('cd-secs');
     const zeroMsg = document.getElementById('countdown-zero-message');
 
-    // Mahalaya Dawn Awakening target: 10 October 2026, 4:00 AM IST
-    const targetDate = new Date('2026-10-10T04:00:00+05:30');
+    // Mahalaya Dawn Awakening target: 30 September 2027, 4:00 AM IST
+    const targetDate = new Date('2027-09-30T04:00:00+05:30');
 
     function update() {
       const current = new Date();
@@ -1895,20 +1930,55 @@
 
   let currentPandalFilter = 'recommended';
   let currentSubZone = 'all';
+  let currentMetroFilter = 'all';
+
+  // Helper: Match pandal to metro station with canonical aliases
+  function matchPandalToMetro(pandal, metroStation) {
+    if (!metroStation || metroStation === 'all') return true;
+    const stn = metroStation.toLowerCase();
+    const t = (pandal.transit || '').toLowerCase();
+    const z = (pandal.zone || '').toLowerCase();
+    const pName = (pandal.name || '').toLowerCase();
+    const pId = (pandal.id || '').toLowerCase();
+    if (t.includes(stn)) return true;
+    if (stn === 'mg road' && (t.includes('mahatma gandhi road') || t.includes('mg road') || t.includes('burrabazar'))) return true;
+    if (stn === 'ruby crossing' && (t.includes('ruby') || t.includes('hemanta mukherjee') || t.includes('kasba connector'))) return true;
+    if (stn === 'karunamoyee' && (t.includes('karunamoyee') || t.includes('city centre'))) return true;
+    if (stn === 'gitanjali' && (t.includes('naktala') || t.includes('gitanjali'))) return true;
+    if (stn === 'central' && (t.includes('central metro') || z === 'central')) return true;
+    if (stn === 'esplanade' && (t.includes('esplanade') || t.includes('chandni') || t.includes('new market') || z === 'central')) return true;
+    if (stn === 'park street' && (t.includes('park street') || pId === 'maddox-square' || pName.includes('maddox'))) return true;
+    if (stn === 'dum dum' && (t.includes('dum dum') || t.includes('ultadanga'))) return true;
+    if (stn === 'belgachia' && (t.includes('belgachia') || pName.includes('tala prattoy'))) return true;
+    if (stn === 'taratala' && (t.includes('taratala') || t.includes('majerhat'))) return true;
+    if (stn === 'behala chowrasta' && (t.includes('behala chowrasta') || pName.includes('barisha club'))) return true;
+    if (stn === 'rabindra sarobar' && (t.includes('rabindra sarobar') || t.includes('southern avenue') || t.includes('lake kalibari'))) return true;
+    if (stn === 'kalighat' && (t.includes('kalighat') || t.includes('rashbehari') || t.includes('gariahat') || t.includes('deshapriya'))) return true;
+    if (stn === 'shyambazar' && (t.includes('shyambazar') || t.includes('hatibagan') || t.includes('bagbazar'))) return true;
+    if (stn === 'sovabazar sutanuti' && (t.includes('sovabazar') || t.includes('ahiritola') || t.includes('kumartuli') || t.includes('beniatola'))) return true;
+    if (stn === 'girish park' && (t.includes('girish park') || t.includes('chaltabagan') || t.includes('chorbagan') || t.includes('kashi bose'))) return true;
+    if (stn === 'netaji bhavan' && (t.includes('netaji bhavan') || t.includes('maddox') || t.includes('hazra'))) return true;
+    if (stn === 'tollygunge' && (t.includes('tollygunge') || t.includes('haridevpur'))) return true;
+    if (stn === 'kavi subhash' && (t.includes('kavi subhash') || t.includes('kendua'))) return true;
+    if (stn === 'salt lake stadium' && (t.includes('salt lake stadium') || t.includes('ib block'))) return true;
+    return false;
+  }
 
   // --- 7. RENDER PANDALS ---
-  function renderPandals(filterType = currentPandalFilter, subZone = currentSubZone, searchQuery = '') {
+  function renderPandals(filterType = currentPandalFilter, subZone = currentSubZone, searchQuery = '', metroFilter = currentMetroFilter) {
     currentPandalFilter = filterType;
     currentSubZone = subZone;
+    currentMetroFilter = metroFilter;
 
     const container = document.getElementById('pandals-grid-container');
     if (!container) return;
 
     let list = PANDALS_DATA;
 
+    // 1. Primary Category / Zone / Metro from main dropdown
     if (filterType === 'recommended') {
       list = list.filter(p => RECOMMENDED_PANDAL_IDS.includes(p.id));
-    } else if (filterType === 'rajbari') {
+    } else if (filterType === 'rajbari' || filterType === 'bonedi') {
       list = list.filter(p => 
         p.id !== 'barisha-club' && (
           RAJBARI_PANDAL_IDS.includes(p.id) || 
@@ -1919,11 +1989,23 @@
       if (subZone && subZone !== 'all') {
         list = list.filter(p => p.zone.toLowerCase() === subZone.toLowerCase());
       }
+    } else if (filterType && filterType.startsWith('zone-')) {
+      const z = filterType.replace('zone-', '').toLowerCase();
+      list = list.filter(p => p.zone.toLowerCase() === z);
+    } else if (filterType && filterType.startsWith('metro-')) {
+      const station = filterType.replace('metro-', '');
+      list = list.filter(p => matchPandalToMetro(p, station));
     } else if (filterType !== 'all') {
-      // Backward compatibility if called with zone name directly
+      // Direct zone name fallback
       list = list.filter(p => p.zone.toLowerCase() === filterType.toLowerCase());
     }
 
+    // 2. Dedicated Metro Dropdown Filter (if set and not 'all')
+    if (metroFilter && metroFilter !== 'all') {
+      list = list.filter(p => matchPandalToMetro(p, metroFilter));
+    }
+
+    // 3. Search query (supports pandal name, theme, zone, and nearest metro station)
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(p =>
@@ -2156,8 +2238,14 @@
     });
   }
 
+  let currentFoodFilter = 'all';
+  let currentFoodMetroFilter = 'all';
+
   // --- 8. RENDER FOOD & SHOPPING ---
-  function renderFoodAndShopping(filter = 'all', searchQuery = '') {
+  function renderFoodAndShopping(filter = currentFoodFilter, searchQuery = '', metroFilter = currentFoodMetroFilter) {
+    currentFoodFilter = filter || 'all';
+    currentFoodMetroFilter = metroFilter || 'all';
+
     const foodContainer = document.getElementById('food-cards-container');
     const shopContainer = document.getElementById('shopping-cards-container');
     const foodSectionBlock = document.getElementById('food-section-block');
@@ -2184,6 +2272,39 @@
       if (shopSectionBlock) shopSectionBlock.classList.remove('hidden');
     }
 
+    // Metro Station Filter logic
+    if (currentFoodMetroFilter && currentFoodMetroFilter !== 'all') {
+      const stn = currentFoodMetroFilter.toLowerCase();
+      const matchesMetro = (item) => {
+        const m = (item.metro || '').toLowerCase();
+        const loc = (item.location || '').toLowerCase();
+        if (m.includes(stn) || loc.includes(stn)) return true;
+        if (stn === 'mg road' && (m.includes('mahatma gandhi road') || m.includes('mg road') || loc.includes('barabazar') || loc.includes('chitpur'))) return true;
+        if (stn === 'ruby crossing' && (m.includes('ruby') || m.includes('hemanta mukherjee') || m.includes('park circus') || loc.includes('ruby') || loc.includes('park circus') || loc.includes('kasba'))) return true;
+        if (stn === 'karunamoyee' && (m.includes('karunamoyee') || m.includes('city centre') || m.includes('salt lake') || loc.includes('salt lake'))) return true;
+        if (stn === 'esplanade' && (m.includes('esplanade') || m.includes('new market') || loc.includes('lindsay') || loc.includes('esplanade') || loc.includes('park street'))) return true;
+        if (stn === 'park street' && (m.includes('park street') || loc.includes('park street') || loc.includes('free school'))) return true;
+        if (stn === 'kalighat' && (m.includes('kalighat') || loc.includes('gariahat') || loc.includes('rashbehari') || loc.includes('deshapriya') || m.includes('ballygunge') || loc.includes('ballygunge'))) return true;
+        if (stn === 'shyambazar' && (m.includes('shyambazar') || loc.includes('shyambazar') || loc.includes('hatibagan'))) return true;
+        if (stn === 'sovabazar sutanuti' && (m.includes('sovabazar') || loc.includes('sovabazar') || loc.includes('kumartuli'))) return true;
+        if (stn === 'netaji bhavan' && (m.includes('netaji bhavan') || loc.includes('bhowanipore') || loc.includes('maddox'))) return true;
+        if (stn === 'central' && (m.includes('central') || loc.includes('college street') || loc.includes('chitpur') || m.includes('mg road'))) return true;
+        if (stn === 'girish park' && (m.includes('girish park') || loc.includes('chitpur') || loc.includes('manicktala') || loc.includes('chaltabagan') || m.includes('mahatma gandhi'))) return true;
+        if (stn === 'rabindra sarobar' && (m.includes('rabindra sarobar') || loc.includes('deshapriya') || loc.includes('southern avenue') || loc.includes('lake gardens'))) return true;
+        if (stn === 'tollygunge' && (m.includes('tollygunge') || loc.includes('naktala') || loc.includes('lake gardens'))) return true;
+        if (stn === 'gitanjali' && (m.includes('gitanjali') || loc.includes('naktala'))) return true;
+        if (stn === 'kavi subhash' && (m.includes('kavi subhash') || loc.includes('naktala') || loc.includes('garia'))) return true;
+        if (stn === 'taratala' && (m.includes('taratala') || loc.includes('bhowanipore') || loc.includes('rashbehari'))) return true;
+        if (stn === 'behala chowrasta' && (m.includes('behala') || loc.includes('bhowanipore'))) return true;
+        if (stn === 'dum dum' && (m.includes('dum dum') || loc.includes('ultadanga') || loc.includes('shyambazar'))) return true;
+        if (stn === 'belgachia' && (m.includes('belgachia') || loc.includes('shyambazar') || loc.includes('sovabazar'))) return true;
+        if (stn === 'salt lake stadium' && (m.includes('salt lake') || loc.includes('salt lake') || m.includes('city centre'))) return true;
+        return false;
+      };
+      foodList = foodList.filter(matchesMetro);
+      shopList = shopList.filter(matchesMetro);
+    }
+
     // Search query logic
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
@@ -2191,13 +2312,15 @@
         f.name.toLowerCase().includes(q) ||
         f.location.toLowerCase().includes(q) ||
         f.mustTry.toLowerCase().includes(q) ||
-        f.desc.toLowerCase().includes(q)
+        f.desc.toLowerCase().includes(q) ||
+        (f.metro && f.metro.toLowerCase().includes(q))
       );
       shopList = shopList.filter(s =>
         s.name.toLowerCase().includes(q) ||
         s.location.toLowerCase().includes(q) ||
         s.highlight.toLowerCase().includes(q) ||
-        s.desc.toLowerCase().includes(q)
+        s.desc.toLowerCase().includes(q) ||
+        (s.metro && s.metro.toLowerCase().includes(q))
       );
     }
 
@@ -2234,6 +2357,10 @@
                   <p class="text-[10px] sm:text-xs text-primary dark:text-amber-300 font-semibold mb-1 flex items-center gap-1 line-clamp-1">
                     <span class="material-symbols-outlined text-[13px] sm:text-[15px] shrink-0">pin_drop</span> <span class="truncate">${food.location}</span>
                   </p>
+                  <div class="flex items-center gap-1 sm:gap-2 text-on-surface-variant dark:text-[#f3ede2] text-[9px] sm:text-xs bg-surface-container-low dark:bg-[#282217] p-1.5 sm:p-2 rounded-lg border border-outline-variant/20 dark:border-amber-400/20 mb-1.5">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">directions_subway</span>
+                    <span class="truncate font-medium">${escapeHtml(food.metro)}</span>
+                  </div>
                   <p class="text-[10px] sm:text-sm text-on-surface-variant dark:text-[#ded5c7] leading-snug sm:leading-relaxed mb-1.5 sm:mb-2 line-clamp-2">${food.desc}</p>
                   
                   <div class="bg-surface-container-low dark:bg-[#282217] p-1.5 sm:p-2.5 rounded-lg border border-outline-variant/20 dark:border-amber-400/20 text-[9px] sm:text-xs text-on-surface dark:text-[#f3ede2] mb-1">
@@ -2313,6 +2440,10 @@
                   <p class="text-[10px] sm:text-xs text-primary dark:text-amber-300 font-semibold mb-1 flex items-center gap-1 line-clamp-1">
                     <span class="material-symbols-outlined text-[13px] sm:text-[15px] shrink-0">pin_drop</span> <span class="truncate">${shop.location}</span>
                   </p>
+                  <div class="flex items-center gap-1 sm:gap-2 text-on-surface-variant dark:text-[#f3ede2] text-[9px] sm:text-xs bg-surface-container-low dark:bg-[#282217] p-1.5 sm:p-2 rounded-lg border border-outline-variant/20 dark:border-amber-400/20 mb-1.5">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-primary dark:text-amber-300 shrink-0">directions_subway</span>
+                    <span class="truncate font-medium">${escapeHtml(shop.metro)}</span>
+                  </div>
                   <p class="text-[10px] sm:text-sm text-on-surface-variant dark:text-[#ded5c7] leading-snug sm:leading-relaxed mb-1.5 sm:mb-2 line-clamp-2">${shop.desc}</p>
                   
                   <div class="bg-surface-container-low dark:bg-[#282217] p-1.5 sm:p-2.5 rounded-lg border border-outline-variant/20 dark:border-amber-400/20 text-[9px] sm:text-xs text-on-surface dark:text-[#f3ede2] mb-1">
@@ -4795,7 +4926,7 @@
       title: 'Mahalaya Artisan Trail: Kumartuli Deity Eye-Drawing (Chokkhu Daan)',
       day_tag: 'Mahalaya',
       day_key: 'mahalaya',
-      date_str: '10 October 2026',
+      date_str: '30 September 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '🪔',
       creator_id: 'akalbodhon-official',
@@ -4813,7 +4944,7 @@
       title: 'Maha Shasthi North Kolkata Heritage & Bodhon Pandal Trail',
       day_tag: 'Maha Shasthi',
       day_key: 'shasthi',
-      date_str: '16 October 2026',
+      date_str: '5 October 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '🌺',
       creator_id: 'akalbodhon-official',
@@ -4830,7 +4961,7 @@
       title: 'Maha Saptami VIP Road & Central Lake Illumination Circuit',
       day_tag: 'Maha Saptami',
       day_key: 'saptami',
-      date_str: '17–18 October 2026',
+      date_str: '6 October 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '🔱',
       creator_id: 'akalbodhon-official',
@@ -4848,7 +4979,7 @@
       title: 'Maha Ashtami Sacred Pushpanjali & South Kolkata Grandeur Trail',
       day_tag: 'Maha Ashtami',
       day_key: 'ashtami',
-      date_str: '19 October 2026',
+      date_str: '7 October 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '🪷',
       creator_id: 'akalbodhon-official',
@@ -4872,7 +5003,7 @@
       title: 'Maha Navami All-Night Carnival & Mega Theme Pandal Hop',
       day_tag: 'Maha Navami',
       day_key: 'navami',
-      date_str: '20 October 2026',
+      date_str: '8–9 October 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '💃',
       creator_id: 'akalbodhon-official',
@@ -4890,7 +5021,7 @@
       title: 'Bijoya Dashami Devi Baran, Sindoor Khela & Bijoya Milita with Family & Friends',
       day_tag: 'Bijoya Dashami',
       day_key: 'dashami',
-      date_str: '21 October 2026',
+      date_str: '10 October 2027',
       creator_name: 'the.transparent.coder',
       creator_avatar: '🐚',
       creator_id: 'akalbodhon-official',
@@ -6649,22 +6780,93 @@
       }
     }
 
-    // Pandals list
+    // Pandals list with Zone and Metro Station Filtering inside Custom Plan
     const pandalsSec = document.getElementById('vp-pandals-section');
     const pandalsList = document.getElementById('vp-pandals-list');
     const pandalsCount = document.getElementById('vp-pandals-count');
+    const vpFiltersSec = document.getElementById('vp-filters-container');
+    const vpMetroFilter = document.getElementById('vp-metro-filter');
+    const vpZoneFilterContainer = document.getElementById('vp-zone-filter-container');
     const pandals = plan.pandals || [];
+
     if (pandalsSec) {
       if (pandals.length > 0) {
         pandalsSec.classList.remove('hidden');
+        if (vpFiltersSec) vpFiltersSec.classList.remove('hidden');
       } else {
         pandalsSec.classList.add('hidden');
+        if (vpFiltersSec) vpFiltersSec.classList.add('hidden');
       }
     }
-    if (pandalsCount) pandalsCount.textContent = `${pandals.length} Pandals`;
 
-    if (pandalsList) {
-      pandalsList.innerHTML = pandals.map(p => {
+    let vpActiveZone = 'all';
+    let vpActiveMetro = 'all';
+
+    // Reset filter controls in modal to default
+    if (vpMetroFilter) vpMetroFilter.value = 'all';
+    if (vpZoneFilterContainer) {
+      vpZoneFilterContainer.querySelectorAll('.vp-zone-btn').forEach(btn => {
+        if (btn.dataset.zone === 'all') {
+          btn.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          btn.classList.remove('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+        } else {
+          btn.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          btn.classList.add('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+        }
+      });
+    }
+
+    function renderVpPandals() {
+      if (!pandalsList) return;
+      let filteredPandals = [...pandals];
+
+      if (vpActiveZone && vpActiveZone !== 'all') {
+        if (vpActiveZone === 'bonedi' || vpActiveZone === 'rajbari') {
+          filteredPandals = filteredPandals.filter(p => {
+            const pName = typeof p === 'string' ? p : p.name;
+            const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
+            if (matched) {
+              return matched.id !== 'barisha-club' && (
+                RAJBARI_PANDAL_IDS.includes(matched.id) || 
+                /\b(rajbari|bari)\b/i.test(matched.name)
+              );
+            }
+            return /\b(rajbari|bari)\b/i.test(pName);
+          });
+        } else {
+          filteredPandals = filteredPandals.filter(p => {
+            const pName = typeof p === 'string' ? p : p.name;
+            const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
+            return matched && matched.zone.toLowerCase() === vpActiveZone.toLowerCase();
+          });
+        }
+      }
+
+      if (vpActiveMetro && vpActiveMetro !== 'all') {
+        filteredPandals = filteredPandals.filter(p => {
+          const pName = typeof p === 'string' ? p : p.name;
+          const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
+          return matched ? matchPandalToMetro(matched, vpActiveMetro) : false;
+        });
+      }
+
+      if (pandalsCount) {
+        pandalsCount.textContent = (filteredPandals.length === pandals.length)
+          ? `${pandals.length} Pandals`
+          : `Showing ${filteredPandals.length} of ${pandals.length} Pandals`;
+      }
+
+      if (filteredPandals.length === 0) {
+        pandalsList.innerHTML = `
+          <div class="col-span-full py-6 text-center text-xs text-on-surface-variant/80 dark:text-[#ded5c7]/70 bg-surface-container-low/50 dark:bg-[#252016]/50 rounded-xl border border-outline-variant/20 dark:border-amber-400/20">
+            <span class="material-symbols-outlined text-2xl text-primary dark:text-amber-300 block mb-1">filter_alt_off</span>
+            No pandals in this plan match the selected zone or metro filter.
+          </div>
+        `;
+        return;
+      }
+
+      pandalsList.innerHTML = filteredPandals.map(p => {
         const pName = typeof p === 'string' ? p : p.name;
         const isLocal = pName.toLowerCase().includes('local') || pName.toLowerCase().includes('respective');
         if (isLocal) {
@@ -6682,7 +6884,7 @@
         }
 
         const matched = PANDALS_DATA.find(pd => pd.name.toLowerCase() === pName.toLowerCase());
-        const metro = matched ? (matched.metro_station || matched.transit_info || matched.location) : null;
+        const metro = matched ? (matched.transit || matched.metro_station || matched.transit_info || matched.location) : null;
         const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pName + ' Durga Puja Kolkata')}`;
 
         return `
@@ -6703,6 +6905,35 @@
           </div>
         `;
       }).join('');
+    }
+
+    renderVpPandals();
+
+    if (vpZoneFilterContainer && !vpZoneFilterContainer._bound) {
+      vpZoneFilterContainer._bound = true;
+      vpZoneFilterContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.vp-zone-btn');
+        if (!btn) return;
+        vpActiveZone = btn.dataset.zone || 'all';
+        vpZoneFilterContainer.querySelectorAll('.vp-zone-btn').forEach(b => {
+          if (b === btn) {
+            b.classList.remove('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          } else {
+            b.classList.add('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          }
+        });
+        renderVpPandals();
+      });
+    }
+
+    if (vpMetroFilter && !vpMetroFilter._bound) {
+      vpMetroFilter._bound = true;
+      vpMetroFilter.addEventListener('change', (e) => {
+        vpActiveMetro = e.target.value || 'all';
+        renderVpPandals();
+      });
     }
 
     // Food stops list
@@ -6863,17 +7094,204 @@
     const form = document.getElementById('create-plan-form');
     const saveBtn = document.getElementById('save-new-plan-btn');
     const pandalsPicker = document.getElementById('plan-pandals-picker');
+    const foodPicker = document.getElementById('plan-food-picker');
+    const zoneFilterContainer = document.getElementById('plan-zone-filter-container');
+    const metroFilterSelect = document.getElementById('plan-metro-filter');
+    const pandalsSearchInput = document.getElementById('plan-pandals-search-input');
+    const selectedPandalCountBadge = document.getElementById('plan-selected-pandal-count');
+    const selectedFoodCountBadge = document.getElementById('plan-selected-food-count');
 
-    if (pandalsPicker) {
-      pandalsPicker.innerHTML = PANDALS_DATA.map(p => `
-        <label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container-high dark:hover:bg-[#252016] text-xs text-on-surface dark:text-white cursor-pointer select-none">
-          <input type="checkbox" value="${p.name}" class="rounded text-primary focus:ring-primary dark:accent-amber-400" />
-          <span class="truncate">${p.name}</span>
-        </label>
-      `).join('');
+    // Selection sets and filter state
+    const selectedPlanPandals = new Set();
+    const selectedPlanFood = new Set();
+    let currentPlanZone = 'all';
+    let currentPlanMetro = 'all';
+    let currentPlanSearch = '';
+
+    function updatePandalCountBadge() {
+      if (selectedPandalCountBadge) {
+        selectedPandalCountBadge.textContent = `${selectedPlanPandals.size} selected`;
+      }
     }
 
+    function updateFoodCountBadge() {
+      if (selectedFoodCountBadge) {
+        selectedFoodCountBadge.textContent = `${selectedPlanFood.size} selected`;
+      }
+    }
+
+    // Render Pandals Picker inside Custom Plan with Zone and Metro filtering
+    function renderPlanPandalsPicker() {
+      if (!pandalsPicker) return;
+      let list = PANDALS_DATA;
+      if (currentPlanZone && currentPlanZone !== 'all') {
+        if (currentPlanZone === 'bonedi' || currentPlanZone === 'rajbari') {
+          list = list.filter(p => 
+            p.id !== 'barisha-club' && (
+              RAJBARI_PANDAL_IDS.includes(p.id) || 
+              /\b(rajbari|bari)\b/i.test(p.name)
+            )
+          );
+        } else {
+          list = list.filter(p => p.zone.toLowerCase() === currentPlanZone.toLowerCase());
+        }
+      }
+      if (currentPlanMetro && currentPlanMetro !== 'all') {
+        list = list.filter(p => matchPandalToMetro(p, currentPlanMetro));
+      }
+      if (currentPlanSearch.trim()) {
+        const q = currentPlanSearch.toLowerCase();
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.transit.toLowerCase().includes(q) ||
+          p.zone.toLowerCase().includes(q)
+        );
+      }
+
+      if (list.length === 0) {
+        pandalsPicker.innerHTML = `
+          <div class="col-span-full py-4 text-center text-xs text-on-surface-variant/70 dark:text-[#ded5c7]/60">
+            No pandals match the selected zone / metro filter.
+          </div>
+        `;
+        return;
+      }
+
+      pandalsPicker.innerHTML = list.map(p => {
+        const isChecked = selectedPlanPandals.has(p.name);
+        const metroMatch = p.transit && p.transit.match(/🚇\s*([^•\(\n\r]+)/);
+        const metroHint = metroMatch ? metroMatch[1].trim() : p.zone;
+        return `
+          <label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container-high dark:hover:bg-[#2c261b] text-xs text-on-surface dark:text-white cursor-pointer select-none transition-colors ${isChecked ? 'bg-primary/8 dark:bg-amber-400/10' : ''}">
+            <input type="checkbox" value="${escapeHtml(p.name)}" class="plan-pandal-checkbox rounded text-primary focus:ring-primary dark:accent-amber-400" ${isChecked ? 'checked' : ''} />
+            <div class="min-w-0 flex-1">
+              <div class="truncate font-medium">${escapeHtml(p.name)}</div>
+              <div class="text-[10px] text-on-surface-variant/70 dark:text-[#ded5c7]/60 truncate">${escapeHtml(p.zone)} • 🚇 ${escapeHtml(metroHint)}</div>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      pandalsPicker.querySelectorAll('.plan-pandal-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (e.target.checked) {
+            selectedPlanPandals.add(val);
+          } else {
+            selectedPlanPandals.delete(val);
+          }
+          updatePandalCountBadge();
+        });
+      });
+    }
+
+    // Render Food Picker inside Custom Plan
+    function renderPlanFoodPicker() {
+      if (!foodPicker) return;
+      foodPicker.innerHTML = FOOD_DATA.map(f => {
+        const isChecked = selectedPlanFood.has(f.name);
+        return `
+          <label class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-container-high dark:hover:bg-[#2c261b] text-xs text-on-surface dark:text-white cursor-pointer select-none transition-colors ${isChecked ? 'bg-primary/8 dark:bg-amber-400/10' : ''}">
+            <input type="checkbox" value="${escapeHtml(f.name)}" class="plan-food-checkbox rounded text-primary focus:ring-primary dark:accent-amber-400" ${isChecked ? 'checked' : ''} />
+            <div class="min-w-0 flex-1">
+              <div class="truncate font-medium">${escapeHtml(f.name)}</div>
+              <div class="text-[10px] text-primary dark:text-amber-300 truncate">${escapeHtml(f.categoryLabel || f.category)}</div>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      foodPicker.querySelectorAll('.plan-food-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          const val = e.target.value;
+          if (e.target.checked) {
+            selectedPlanFood.add(val);
+          } else {
+            selectedPlanFood.delete(val);
+          }
+          updateFoodCountBadge();
+        });
+      });
+    }
+
+    // Zone filter buttons handler
+    if (zoneFilterContainer) {
+      zoneFilterContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('.plan-zone-btn');
+        if (!btn) return;
+        currentPlanZone = btn.dataset.zone || 'all';
+        zoneFilterContainer.querySelectorAll('.plan-zone-btn').forEach(b => {
+          if (b === btn) {
+            b.classList.remove('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          } else {
+            b.classList.add('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          }
+        });
+        renderPlanPandalsPicker();
+      });
+    }
+
+    // Metro filter dropdown handler
+    if (metroFilterSelect) {
+      metroFilterSelect.addEventListener('change', (e) => {
+        currentPlanMetro = e.target.value;
+        renderPlanPandalsPicker();
+      });
+    }
+
+    // Search input handler
+    if (pandalsSearchInput) {
+      pandalsSearchInput.addEventListener('input', (e) => {
+        currentPlanSearch = e.target.value;
+        renderPlanPandalsPicker();
+      });
+    }
+
+    function resetCreatePlanForm() {
+      if (form) form.reset();
+      selectedPlanPandals.clear();
+      selectedPlanFood.clear();
+      currentPlanZone = 'all';
+      currentPlanMetro = 'all';
+      currentPlanSearch = '';
+      if (zoneFilterContainer) {
+        zoneFilterContainer.querySelectorAll('.plan-zone-btn').forEach(b => {
+          if (b.dataset.zone === 'all') {
+            b.classList.remove('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          } else {
+            b.classList.add('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+            b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black', 'shadow-xs');
+          }
+        });
+      }
+      if (metroFilterSelect) metroFilterSelect.value = 'all';
+      if (pandalsSearchInput) pandalsSearchInput.value = '';
+      if (zoneFilterContainer) {
+        zoneFilterContainer.querySelectorAll('.plan-zone-btn').forEach((b, idx) => {
+          if (idx === 0) {
+            b.classList.add('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+            b.classList.remove('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+          } else {
+            b.classList.remove('bg-primary', 'text-white', 'dark:bg-amber-400', 'dark:text-black');
+            b.classList.add('bg-surface-container-high', 'dark:bg-[#2c261b]', 'text-on-surface-variant', 'dark:text-[#ded5c7]');
+          }
+        });
+      }
+      updatePandalCountBadge();
+      updateFoodCountBadge();
+      renderPlanPandalsPicker();
+      renderPlanFoodPicker();
+    }
+
+    // Initialize both pickers on load
+    renderPlanPandalsPicker();
+    renderPlanFoodPicker();
+
     function openModal() {
+      resetCreatePlanForm();
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
@@ -6881,6 +7299,7 @@
     function closeModal() {
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      resetCreatePlanForm();
     }
 
     if (openBtn && modal) {
@@ -6931,13 +7350,22 @@
       const rituals = document.getElementById('plan-rituals-input')?.value.trim() || '';
       const customDescription = document.getElementById('plan-description-input')?.value.trim() || '';
 
-      // Collect checked pandals (if user skips, remains empty)
-      let checkedPandals = Array.from(pandalsPicker?.querySelectorAll('input[type="checkbox"]:checked') || []).map(cb => cb.value);
+      // Collect checked pandals from set + custom pandals
+      let checkedPandals = Array.from(selectedPlanPandals);
       if (customPandals) {
-        customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => checkedPandals.push(p));
+        customPandals.split(',').map(s => s.trim()).filter(Boolean).forEach(p => {
+          if (!checkedPandals.includes(p)) checkedPandals.push(p);
+        });
       }
 
-      const foodStopsList = food ? food.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
+      // Collect checked food places from set + custom food input
+      let allFoodNames = Array.from(selectedPlanFood);
+      if (food) {
+        food.split(',').map(s => s.trim()).filter(Boolean).forEach(f => {
+          if (!allFoodNames.includes(f)) allFoodNames.push(f);
+        });
+      }
+      const foodStopsList = allFoodNames.map(s => ({ name: s }));
       const ritualsList = rituals ? rituals.split(',').map(s => ({ name: s.trim() })).filter(s => s.name) : [];
 
       // Determine creator identity
@@ -6964,15 +7392,15 @@
       }
 
       const PUJA_DAY_DATES = {
-        'Mahalaya': '10 October 2026',
-        'Maha Shasthi': '16 October 2026',
-        'Maha Saptami': '17–18 October 2026',
-        'Maha Ashtami': '19 October 2026',
-        'Maha Navami': '20 October 2026',
-        'Bijoya Dashami': '21 October 2026',
-        'Custom Festival Day': 'Durga Puja 2026'
+        'Mahalaya': '30 September 2027',
+        'Maha Shasthi': '5 October 2027',
+        'Maha Saptami': '6 October 2027',
+        'Maha Ashtami': '7 October 2027',
+        'Maha Navami': '8–9 October 2027',
+        'Bijoya Dashami': '10 October 2027',
+        'Custom Festival Day': 'Durga Puja 2027'
       };
-      const resolvedDateStr = day ? (PUJA_DAY_DATES[day] || (day.includes('2026') ? day : `${day} (Durga Puja 2026)`)) : '';
+      const resolvedDateStr = day ? (PUJA_DAY_DATES[day] || (day.includes('2027') ? day : `${day} (Durga Puja 2027)`)) : '';
 
       const newPlan = {
         id: 'plan_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5),
@@ -7312,7 +7740,7 @@
     if (navigator.share) {
       try {
         await navigator.share({
-          title: title || 'Akalbodhon — Kolkata Durga Puja 2026',
+          title: title || 'Akalbodhon — Kolkata Durga Puja 2027',
           text: fullText,
           url: shareUrl
         });
@@ -7335,7 +7763,7 @@
     if (!modal) return;
 
     let heading = 'Share Akalbodhon';
-    let subTitle = 'Kolkata Durga Puja 2026';
+    let subTitle = 'Kolkata Durga Puja 2027';
     let shareUrl = `${window.location.origin}${window.location.pathname}`;
     let message = '';
     let label = 'Direct Website Link';
@@ -7377,7 +7805,7 @@
         const pandalStops = (plan.pandals || []).slice(0, 3).map(p => typeof p === 'string' ? p : (p.name || p)).join(' ➔ ');
         const transitText = plan.route_summary ? `\n🚇 Route / Transit: ${plan.route_summary}` : '';
 
-        message = `🌺 *Durga Puja 2026 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
+        message = `🌺 *Durga Puja 2027 Plan: "${plan.title}"* (${plan.day_tag || 'Festive Days'})
 ✨ Curated Festival Plan: Akalbodhon
 🏛️ Curated Pandals: ${pandalStops || 'Iconic pandal hopping circuit'}${transitText}
 🪔 View the full itinerary, map directions & food pit-stops on Akalbodhon:`;
@@ -7392,7 +7820,7 @@
       shareUrl = `${window.location.origin}${window.location.pathname}?pandal=${encodeURIComponent(pandal.id)}`;
       label = 'Direct Pandal Link';
 
-      message = `🌸 *Durga Puja 2026: ${pandal.name}* (${pandal.zone || 'Kolkata'})
+      message = `🌸 *Durga Puja 2027: ${pandal.name}* (${pandal.zone || 'Kolkata'})
 ✨ Theme: ${pandal.theme || 'Heritage Pandal Art & Illumination'}
 🚇 Nearest Transit: ${pandal.transit || pandal.metro || 'Kolkata Metro'}
 📍 Explore pandal route, timings & nearby bhog spots on Akalbodhon:`;
@@ -7406,7 +7834,7 @@
       shareUrl = `${window.location.origin}${window.location.pathname}?food=${encodeURIComponent(food.id)}`;
       label = 'Direct Food Link';
 
-      message = `🍽️ *Durga Puja 2026 Food Trail: ${food.name}* (${food.location || 'Kolkata'})
+      message = `🍽️ *Durga Puja 2027 Food Trail: ${food.name}* (${food.location || 'Kolkata'})
 ⭐ Signature Delicacy: ${food.mustTry || 'Festive Specialty'}
 🚇 Transit: ${food.metro || 'Metro Accessible'}
 📍 Explore festive food trails & nearby pandals on Akalbodhon:`;
@@ -7420,7 +7848,7 @@
       shareUrl = `${window.location.origin}${window.location.pathname}?shop=${encodeURIComponent(shop.id)}`;
       label = 'Direct Shopping Link';
 
-      message = `🛍️ *Durga Puja 2026 Festive Shopping: ${shop.name}* (${shop.location || 'Kolkata'})
+      message = `🛍️ *Durga Puja 2027 Festive Shopping: ${shop.name}* (${shop.location || 'Kolkata'})
 ✨ Highlights: ${shop.highlight || 'Traditional Festive Shopping'}
 🚇 Transit: ${shop.metro || 'Metro Accessible'}
 📍 Explore shopping bazaars & festive guide on Akalbodhon:`;
@@ -7428,11 +7856,11 @@
     } else {
       // Website
       heading = 'Share Akalbodhon Website';
-      subTitle = 'Kolkata\'s Grand Durga Puja 2026 Guide';
+      subTitle = 'Kolkata\'s Grand Durga Puja 2027 Guide';
       shareUrl = `${window.location.origin}${window.location.pathname}`;
       label = 'Direct Website Link';
 
-      message = `🌸 *Akalbodhon — Kolkata Durga Puja 2026!*
+      message = `🌸 *Akalbodhon — Kolkata Durga Puja 2027!*
 Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio hits & Mahalaya streaming, rituals countdown, and collaborative puja plans!
 ✨ Check out the festive guide here:`;
     }
@@ -8788,7 +9216,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       }
 
       // Transit & Route Solver
-      const isTransit = (
+      let isTransit = (
         q.includes('how to get') ||
         q.includes('how to reach') ||
         q.includes('how do i get') ||
@@ -8912,7 +9340,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       // Domain keyword indicators
       const isFood = ['food', 'eat', 'dining', 'restaurant', 'biryani', 'roll', 'kathi roll', 'sweet', 'mishti', 'kabiraji', 'bhog', 'cafe', 'dhaba', 'snack', 'phuchka', 'puchka', 'chaap'].some(k => q.includes(k));
-      const isTransit = ['how to get', 'how to reach', 'how do i', 'how can i', 'direction', 'route', 'station', 'sealdah', 'howrah', 'airport', 'metro to', 'bus to', 'taxi to', 'to reach'].some(k => q.includes(k)) || (q.includes(' to ') && !isFood);
+      isTransit = isTransit || (q.includes(' to ') && !isFood);
       const isMetroGeneral = ['metro timing', 'midnight metro', 'night metro', 'metro train', 'special train', 'subway', 'metro schedule'].some(k => q.includes(k)) || ((q.includes('metro') || q.includes('train')) && (q.includes('timing') || q.includes('night') || q.includes('midnight') || q.includes('schedule')));
       const isRitual = ['ritual', 'sandhi', 'pushpanjali', 'anjali', 'kumari', 'dhunuchi', 'sindoor', 'baran', 'bhashan', 'bishorjon', 'visarjan', 'bodhon', 'akalbodhon', 'nabapatrika', 'kola bou', 'chakkhudaan', 'mahalaya', 'shashthi', 'sashthi', 'shasthi', 'saptami', 'ashtami', 'ashthami', 'navami', 'dashami', 'tithi', 'panjika', 'calendar', 'date', 'dates', 'schedule', 'when'].some(k => q.includes(k));
       const isPlan = ['itinerary', '1-day', 'oneday', 'master plan', 'trail', 'plan'].some(k => q.includes(k)) && !isFood && !isTransit;
@@ -8937,7 +9365,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       // 2. Metro & Midnight Special Trains Schedule
       if (isMetroGeneral) {
         return (
-          `**Kolkata Metro & Midnight Special Trains Schedule (2026)** 🚇🎫\n\n` +
+          `**Kolkata Metro & Midnight Special Trains Schedule (2027)** 🚇🎫\n\n` +
           `Kolkata Metro is the ultimate lifeline for seamless, traffic-free pandal hopping during Durga Puja:\n\n` +
           `• 🌙 **All-Night Special Midnight Trains**:\n` +
           `  - **Saptami, Ashtami & Navami**: Overnight trains operate on the **Blue Line (Dakshineswar ➔ Kavi Subhash)** continuously until **4:00 AM**!\n` +
@@ -9018,11 +9446,11 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         return (
           `**Durga Puja Fashion & Sartorial Guide (Day-by-Day)** 🥻👔\n\n` +
           `Each day of Durga Puja has its own distinctive sartorial vibe:\n\n` +
-          `• **Maha Shasthi (16 Oct)**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n` +
-          `• **Maha Saptami (17–18 Oct)**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n` +
-          `• **Maha Ashtami (19 Oct)**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Garad, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion, elegant suits or blazers for night pandal hopping.\n` +
-          `• **Maha Navami (20 Oct)**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n` +
-          `• **Bijoya Dashami (21 Oct)**: Red & white sarees for sacred *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n` +
+          `• **Maha Shasthi (5 Oct 2027)**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n` +
+          `• **Maha Saptami (6 Oct 2027)**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n` +
+          `• **Maha Ashtami (7 Oct 2027)**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Garad, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion, elegant suits or blazers for night pandal hopping.\n` +
+          `• **Maha Navami (8–9 Oct 2027)**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n` +
+          `• **Bijoya Dashami (10 Oct 2027)**: Red & white sarees for sacred *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n` +
           `👉 [Explore Rituals](action:nav:rituals) | [View Pandals](action:nav:pandals:all)`
         );
       }
@@ -9032,7 +9460,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         if (q.includes('sandhi')) {
           return (
             `**Sandhi Puja — The Divine Climax of Maha Ashtami** 🪔🕊️\n\n` +
-            `• **Astronomical Juncture & Timing**: Sandhi Puja takes place on **Maha Ashtami (Monday, 19 October 2026)** at the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a sacred **48-minute celestial window**).\n` +
+            `• **Astronomical Juncture & Timing**: Sandhi Puja takes place on **Maha Ashtami (Thursday, 7 October 2027)** at the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a sacred **48-minute celestial window**).\n` +
             `• **Mythology & Chamunda Avatara**: At this exact threshold, Devi Durga manifested in Her fierce, all-conquering aspect as **Devi Chamunda** to vanquish the demon chieftains Chanda and Munda.\n` +
             `• **108 Sacred Blue Lotuses (*Neel Kamal*)**: Exactly 108 lotuses are offered in memory of Lord Rama's devotion during his autumn invocation (*Akalbodhon*).\n` +
             `• **108 Earthen Diyas**: 108 clay lamps are lit in absolute synchronization as thunderous dhaak beats, conch shells (*shankha*), and Kanshi reverberate through the pandal.\n` +
@@ -9042,7 +9470,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         } else if (q.includes('pushpanjali') || q.includes('anjali')) {
           return (
             `**Maha Ashtami Pushpanjali — Sacred Sanskrit Floral Offering** 🌸🪔\n\n` +
-            `• **Timing**: Performed on the morning of **Maha Ashtami (Monday, 19 October 2026)** typically between **9:00 AM and 11:30 AM**, depending on the tithi.\n` +
+            `• **Timing**: Performed on the morning of **Maha Ashtami (Thursday, 7 October 2027)** typically between **9:00 AM and 11:30 AM**, depending on the tithi.\n` +
             `• **Ritual & Fasting**: Devotees traditionally observe a fast (*upavasa*) until Pushpanjali is concluded. Offering Bel leaves (*bel pata*), fresh flowers, and sandalwood paste in three sacred rounds.\n` +
             `• **Sacred Mantra**: Concluded with the revered prayer: *\"Om Jayanti Mangala Kali Bhadrakali Kapalini, Durga Shiva Kshama Dhatri Svaha Svadha Namostute.\"*\n` +
             `• **Traditional Attire**: Women traditionally wear Lal-Paad Shada Saree or silk ethnic suits; men wear crisp Dhoti-Panjabi or Kurta.\n\n` +
@@ -9052,14 +9480,14 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           return (
             `**Kumari Puja — Honoring the Living Goddess** 👑🌸\n\n` +
             `• **Spiritual Meaning**: Kumari Puja honors a young pre-pubescent girl (aged between 1 to 16) as the pure, unmanifested living embodiment of Devi Mahamaya / Durga.\n` +
-            `• **Belur Math Landmark**: Popularized in 1901 by **Swami Vivekananda** at Belur Math, where thousands gather on **Maha Ashtami morning (19 Oct 2026)** to witness the serene ritual.\n` +
+            `• **Belur Math Landmark**: Popularized in 1901 by **Swami Vivekananda** at Belur Math, where thousands gather on **Maha Ashtami morning (7 Oct 2027)** to witness the serene ritual.\n` +
             `• **Rituals**: The Kumari is dressed in fine red silk, adorned with flower garlands, and worshipped with sacred mantras, aarti, and bhog offerings.\n\n` +
             `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
           );
         } else if (q.includes('dhunuchi')) {
           return (
             `**Dhunuchi Naach — The Ecstatic Rhythm of Maha Navami** 🔥🥁\n\n` +
-            `• **The Tradition**: The exhilarating devotional dance performed during evening Aarti on **Maha Navami (Tuesday, 20 October 2026)** and Vijaya Dashami.\n` +
+            `• **The Tradition**: The exhilarating devotional dance performed during evening Aarti on **Maha Navami (Friday, 8 October 2027)** and Vijaya Dashami.\n` +
             `• **The Chalice (*Dhunuchi*)**: Earthen chalices filled with burning coconut husk, glowing camphor, and fragrant frankincense (*dhuno*), emitting dense, sacred aromatic smoke.\n` +
             `• **The Dance**: Devotees dance with one, two, or even balancing a burning dhunuchi in their teeth, matching step-for-step with rolling, frenetic dhaak beats and kanshi rhythms.\n\n` +
             `👉 **[Explore Sacred Rituals](action:nav:rituals)**`
@@ -9067,7 +9495,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
         } else if (q.includes('sindoor') || q.includes('baran')) {
           return (
             `**Sindoor Khela & Devi Baran — Bittersweet Farewell of Vijaya Dashami** 🌺❤️\n\n` +
-            `• **Devi Baran**: On the morning of **Bijoya Dashami (Wednesday, 21 October 2026)**, married women bid a tearful farewell to Maa Durga by wiping Her tears with betel leaves, feeding Her sweet sandesh, and touching Her feet.\n` +
+            `• **Devi Baran**: On the morning of **Bijoya Dashami (Sunday, 10 October 2027)**, married women bid a tearful farewell to Maa Durga by wiping Her tears with betel leaves, feeding Her sweet sandesh, and touching Her feet.\n` +
             `• **Sindoor Khela**: Women apply vibrant red vermilion (*sindoor*) on the Goddess's forehead, followed by joyously smearing sindoor on each other, praying for marital longevity and happiness.\n` +
             `• **Subho Bijoya**: Exchanging warm embraces (*kolakoli*), touching the feet of elders, and distributing sweet Rosogollas and Nimki.\n\n` +
             `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
@@ -9082,25 +9510,25 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
           );
         } else if (q.includes('date') || q.includes('when') || q.includes('schedule') || q.includes('calendar') || q.includes('panjika') || q.includes('shashthi') || q.includes('sashthi') || q.includes('shasthi') || q.includes('saptami') || q.includes('tithi')) {
           return (
-            `**Durga Puja 2026 Official Dates & Ritual Schedule (Web & Panjika)** 📅🪔\n\n` +
+            `**Durga Puja 2027 Official Dates & Ritual Schedule (Web & Panjika)** 📅🪔\n\n` +
             `According to traditional Bengali Panjika almanacs and official web calendars:\n\n` +
-            `• 🌅 **Mahalaya**: Saturday, 10 October 2026 — Dawn ancestral *Tarpan* along holy river ghats and Birendra Krishna Bhadra's *Mahishasuramardini* recitation at 4:00 AM IST.\n` +
-            `• 🥁 **Maha Shashthi**: Friday, 16 October 2026 — *Devi Bodhon* under the Bilva tree, *Kalparambha*, and formal awakening of Maa Durga (Shashthi tithi commences on Oct 16).\n` +
-            `• 🌿 **Maha Saptami**: Saturday, 17 October & Sunday, 18 October 2026 — *Nabapatrika Snan* (dawn river bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*. The auspicious Saptami tithi commences on Oct 17 and spans across into Oct 18 across panjikas.\n` +
-            `• 🔥 **Maha Ashtami**: Monday, 19 October 2026 — Morning Sanskrit **Pushpanjali**, revered **Kumari Puja** at Belur Math, and the celestial **Sandhi Puja** (48-minute astronomical window with 108 blue lotuses & 108 earthen lamps).\n` +
-            `• ✨ **Maha Navami**: Tuesday, 20 October 2026 — Sacred *Maha Yajna / Homa*, festive community *Bhog*, and electrifying **Dhunuchi Naach** to rolling dhaak rhythms.\n` +
-            `• 🪷 **Bijoya Dashami**: Wednesday, 21 October 2026 — Bittersweet farewell *Devi Baran*, vibrant *Sindoor Khela*, touching elders' feet (*Kolakoli*), and holy Ganga immersion (*Bishorjon*).\n\n` +
+            `• 🌅 **Mahalaya**: Thursday, 30 September 2027 — Dawn ancestral *Tarpan* along holy river ghats and Birendra Krishna Bhadra's *Mahishasuramardini* recitation at 4:00 AM IST.\n` +
+            `• 🥁 **Maha Shashthi**: Tuesday, 5 October 2027 — *Devi Bodhon* under the Bilva tree, *Kalparambha*, and formal awakening of Maa Durga.\n` +
+            `• 🌿 **Maha Saptami**: Wednesday, 6 October 2027 — *Nabapatrika Snan* (dawn river bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*.\n` +
+            `• 🔥 **Maha Ashtami**: Thursday, 7 October 2027 — Morning Sanskrit **Pushpanjali**, revered **Kumari Puja** at Belur Math, and the celestial **Sandhi Puja** (48-minute astronomical window with 108 blue lotuses & 108 earthen lamps).\n` +
+            `• ✨ **Maha Navami**: Friday, 8 October – Saturday, 9 October 2027 — Sacred *Maha Yajna / Homa*, festive community *Bhog*, and electrifying **Dhunuchi Naach** to rolling dhaak rhythms.\n` +
+            `• 🪷 **Bijoya Dashami**: Sunday, 10 October 2027 — Bittersweet farewell *Devi Baran*, vibrant *Sindoor Khela*, touching elders' feet (*Kolakoli*), and holy Ganga immersion (*Bishorjon*).\n\n` +
             `👉 **[Explore Sacred Rituals Timeline](action:nav:rituals)**`
           );
         } else {
           return (
-            `**Sacred Vedic Durga Puja Rituals Schedule (2026)** 🪔🕊️\n\n` +
-            `• **Mahalaya (10 Oct 2026)**: Dawn ancestral *Tarpan* along holy river ghats and *Mahishasuramardini* recitation.\n` +
-            `• **Maha Shashthi (16 Oct 2026)**: *Devi Bodhon* under the sacred Bel tree, *Kalparambha*, and formal awakening.\n` +
-            `• **Maha Saptami (17–18 Oct 2026)**: *Nabapatrika Snan* (dawn bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha* spanning the 17th–18th tithi.\n` +
-            `• **Maha Ashtami (19 Oct 2026)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n` +
-            `• **Maha Navami (20 Oct 2026)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n` +
-            `• **Bijoya Dashami (21 Oct 2026)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n` +
+            `**Sacred Vedic Durga Puja Rituals Schedule (2027)** 🪔🕊️\n\n` +
+            `• **Mahalaya (30 Sep 2027)**: Dawn ancestral *Tarpan* along holy river ghats and *Mahishasuramardini* recitation.\n` +
+            `• **Maha Shashthi (5 Oct 2027)**: *Devi Bodhon* under the sacred Bel tree, *Kalparambha*, and formal awakening.\n` +
+            `• **Maha Saptami (6 Oct 2027)**: *Nabapatrika Snan* (dawn bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*.\n` +
+            `• **Maha Ashtami (7 Oct 2027)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n` +
+            `• **Maha Navami (8–9 Oct 2027)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n` +
+            `• **Bijoya Dashami (10 Oct 2027)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n` +
             `👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**`
           );
         }
@@ -9109,7 +9537,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       // 6. Curated 1-Day Master Itinerary Solver
       if (isPlan) {
         return (
-          `**Curated 1-Day Master Pandal Hopping Itinerary (Kolkata 2026)** 🗺️🚶‍♂️\n\n` +
+          `**Curated 1-Day Master Pandal Hopping Itinerary (Kolkata 2027)** 🗺️🚶‍♂️\n\n` +
           `An optimized morning-to-midnight route balancing heritage, art, and iconic culinary pitstops:\n\n` +
           `• 🌅 **Morning (9:00 AM – 1:00 PM) • North Kolkata Heritage Circuit**:\n` +
           `  - Start at **Shyambazar Metro** ➔ Walk to centenary **Bagbazar Sarbojanin** (pure Sabeki Daaker Saaj idol).\n` +
@@ -9149,7 +9577,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       // 7. Regional Zone Circuits
       if (q.includes('south') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route') || q.includes('list') || q.includes('circuit'))) {
         return (
-          `**Top South Kolkata Durga Puja Pandals (2026)** 🏛️✨\n\n` +
+          `**Top South Kolkata Durga Puja Pandals (2027)** 🏛️✨\n\n` +
           `South Kolkata is the epicenter of monumental architectural innovation, conceptual art installations, and vibrant youth carnival energy:\n\n` +
           `1. **Chetla Agrani Club** (Kalighat Metro): Sublime concept art, master earthen terracotta craft, and soulful lighting pavilions.\n` +
           `2. **Tridhara Sammilani** (Ballygunge / Kalighat Metro): Avant-garde sensory concepts blending contemporary architecture with timeless spiritual reverence.\n` +
@@ -9164,7 +9592,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if (q.includes('north') && (q.includes('pandal') || q.includes('zone') || q.includes('best') || q.includes('route') || q.includes('list') || q.includes('circuit'))) {
         return (
-          `**Top North Kolkata Durga Puja Pandals (2026)** 🏛️🪔\n\n` +
+          `**Top North Kolkata Durga Puja Pandals (2027)** 🏛️🪔\n\n` +
           `North Kolkata is the soul of authentic heritage, colonial aristocracy, and classical Bengali sabeki craftsmanship:\n\n` +
           `1. **Bagbazar Sarbojanin**: The centenary benchmark of pure traditional Sabeki idol draped in shimmering Daaker Saaj.\n` +
           `2. **Kumartuli Park**: Cutting-edge creative brilliance nestled inside the centuries-old idol-sculptors' quarters.\n` +
@@ -9177,7 +9605,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if ((q.includes('east') || q.includes('salt lake')) && (q.includes('pandal') || q.includes('zone') || q.includes('best'))) {
         return (
-          `**Top East Kolkata & Salt Lake Pandals (2026)** 🏛️\n\n` +
+          `**Top East Kolkata & Salt Lake Pandals (2027)** 🏛️\n\n` +
           `1. **Sreebhumi Sporting Club** (Lake Town / VIP Road): Spectacular royal palace architectural replicas with dazzling Chandannagar illumination.\n` +
           `2. **FD Block & BJ Block** (Salt Lake): Grand community festivals with spacious park setups and high-concept creative pavilions.\n` +
           `3. **Dum Dum Park Tarun Sangha & Bharat Chakra**: High-concept fine art installations and innovative socio-cultural themes.\n\n` +
@@ -9207,7 +9635,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
       if (isGreeting) {
         return (
-          `Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n` +
+          `Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2027!**\n\n` +
           `I am **sharod.ai**, your personal AI Guide. I am here to help you navigate Kolkata's greatest celebration:\n\n` +
           `• 🏛️ **Pandals & Routes**: North, South, East/Salt Lake, Central circuits and Rajbari heritage\n` +
           `• 🪔 **Vedic Rituals & Timings**: Pushpanjali, Sandhi Puja, Dhunuchi Naach, Kumari Puja\n` +
@@ -9528,22 +9956,43 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
 
     // Pandal Filter Dropdown Menu Handler
     const pandalDropdown = document.getElementById('pandal-filter-dropdown');
+    const pandalMetroDropdown = document.getElementById('pandal-metro-dropdown');
+    const searchInput = document.getElementById('pandal-search-input');
+
     if (pandalDropdown) {
       pandalDropdown.addEventListener('change', (e) => {
         const val = e.target.value;
-        const searchInput = document.getElementById('pandal-search-input');
         const q = searchInput ? searchInput.value : '';
+        const metroVal = pandalMetroDropdown ? pandalMetroDropdown.value : 'all';
 
-        if (val === 'recommended') {
-          renderPandals('recommended', 'all', q);
-        } else if (val === 'rajbari') {
-          renderPandals('rajbari', 'all', q);
-        } else if (val === 'all') {
-          renderPandals('all', 'all', q);
+        if (val.startsWith('metro-')) {
+          const metroName = val.replace('metro-', '');
+          if (pandalMetroDropdown && [...pandalMetroDropdown.options].some(o => o.value === metroName)) {
+            pandalMetroDropdown.value = metroName;
+          }
+          renderPandals('all', 'all', q, metroName);
         } else if (val.startsWith('zone-')) {
           const subzone = val.replace('zone-', '');
-          renderPandals('zones', subzone, q);
+          renderPandals('zones', subzone, q, metroVal);
+        } else {
+          renderPandals(val, 'all', q, metroVal);
         }
+      });
+    }
+
+    // Dedicated Nearest Metro Dropdown Handler
+    if (pandalMetroDropdown) {
+      pandalMetroDropdown.addEventListener('change', (e) => {
+        const metroVal = e.target.value;
+        const q = searchInput ? searchInput.value : '';
+        const catVal = pandalDropdown ? pandalDropdown.value : 'all';
+
+        if (catVal.startsWith('metro-') && catVal !== `metro-${metroVal}`) {
+          if (pandalDropdown) pandalDropdown.value = 'all';
+        } else if (metroVal !== 'all' && catVal === 'recommended') {
+          if (pandalDropdown) pandalDropdown.value = 'all';
+        }
+        renderPandals('all', 'all', q, metroVal);
       });
     }
 
@@ -9559,17 +10008,40 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // Pandal Search (Debounced 150ms)
     const handlePandalSearch = debounce((e) => {
       const query = e.target.value;
-      renderPandals(currentPandalFilter, currentSubZone, query);
+      const metroVal = pandalMetroDropdown ? pandalMetroDropdown.value : 'all';
+      renderPandals(currentPandalFilter, currentSubZone, query, metroVal);
     }, 150);
     document.getElementById('pandal-search-input')?.addEventListener('input', handlePandalSearch);
 
-    // Food & Shopping Dropdown Filter
+    // Food & Shopping Dropdown Filter & Metro Filter
     const foodFilterDropdown = document.getElementById('food-filter-dropdown');
+    const foodMetroDropdown = document.getElementById('food-metro-dropdown');
     if (foodFilterDropdown) {
       foodFilterDropdown.addEventListener('change', (e) => {
         const filter = e.target.value || 'all';
         const searchInput = document.getElementById('food-shop-search-input');
-        renderFoodAndShopping(filter, searchInput ? searchInput.value : '');
+        const metroVal = foodMetroDropdown ? foodMetroDropdown.value : 'all';
+        if (filter.startsWith('metro-')) {
+          const metroName = filter.replace('metro-', '');
+          if (foodMetroDropdown && [...foodMetroDropdown.options].some(o => o.value === metroName)) {
+            foodMetroDropdown.value = metroName;
+          }
+          renderFoodAndShopping('all', searchInput ? searchInput.value : '', metroName);
+        } else {
+          renderFoodAndShopping(filter, searchInput ? searchInput.value : '', metroVal);
+        }
+      });
+    }
+
+    if (foodMetroDropdown) {
+      foodMetroDropdown.addEventListener('change', (e) => {
+        const metroVal = e.target.value || 'all';
+        const searchInput = document.getElementById('food-shop-search-input');
+        const cat = foodFilterDropdown ? foodFilterDropdown.value : 'all';
+        if (cat.startsWith('metro-') && cat !== `metro-${metroVal}`) {
+          if (foodFilterDropdown) foodFilterDropdown.value = 'all';
+        }
+        renderFoodAndShopping(cat.startsWith('metro-') ? 'all' : cat, searchInput ? searchInput.value : '', metroVal);
       });
     }
 
@@ -9577,8 +10049,9 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     const handleFoodShopSearch = debounce((e) => {
       const query = e.target.value;
       const foodDropdown = document.getElementById('food-filter-dropdown');
+      const metroVal = foodMetroDropdown ? foodMetroDropdown.value : 'all';
       const filter = foodDropdown ? foodDropdown.value : 'all';
-      renderFoodAndShopping(filter, query);
+      renderFoodAndShopping(filter, query, metroVal);
     }, 150);
     document.getElementById('food-shop-search-input')?.addEventListener('input', handleFoodShopSearch);
 
@@ -10033,7 +10506,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
     // About Modal Section 3 Social Share Buttons
     document.getElementById('about-share-wa')?.addEventListener('click', (e) => {
       e.preventDefault();
-      shareToWhatsApp('🌸 Celebrate Kolkata Durga Puja 2026 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
+      shareToWhatsApp('🌸 Celebrate Kolkata Durga Puja 2027 with Akalbodhon! Pandal maps, transit guide, food trails & custom plans:', window.location.origin + window.location.pathname);
     });
 
     // Share Modal Close
@@ -10088,7 +10561,7 @@ Explore 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio 
       const gateDismiss = document.getElementById('gate-dismiss-btn');
 
       if (gateModal) {
-        if (gateEyebrow) gateEyebrow.textContent = 'Welcome to Kolkata Durga Puja 2026';
+        if (gateEyebrow) gateEyebrow.textContent = 'Welcome to Kolkata Durga Puja 2027';
         if (gateTitle) gateTitle.textContent = 'Welcome to Akalbodhon';
         if (gateDesc) gateDesc.textContent = 'Explore Kolkata\'s most immersive Durga Puja guide. Discover 30+ iconic pandals, heritage Bonedi Bari circuits, live Sharodiya radio, and collaborative festival plans.';
         if (gateDismiss) gateDismiss.textContent = 'Explore Akalbodon';

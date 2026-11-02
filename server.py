@@ -76,7 +76,7 @@ class AkalbodhonHandler(http.server.SimpleHTTPRequestHandler):
         if clean_path == '/api/health':
             payload = json.dumps({
                 "status": "online",
-                "festival": "Akalbodhon Sharodiya Durga Puja 2026",
+                "festival": "Akalbodhon Sharodiya Durga Puja 2027",
                 "supabase_project": get_env_setting('SUPABASE_PROJECT_ID', '')
             }).encode('utf-8')
             self.send_response(200)
@@ -480,7 +480,7 @@ def generate_local_puja_response(query, web_snippets=None):
     # 3. METRO & MIDNIGHT TRANSIT GUIDE
     if is_metro_general or (('metro' in q or 'train' in q) and ('timing' in q or 'night' in q or 'midnight' in q or 'schedule' in q or 'hours' in q)):
         return (
-            "**Kolkata Metro & Midnight Special Trains Schedule (2026)** 🚇🎫\n\n"
+            "**Kolkata Metro & Midnight Special Trains Schedule (2027)** 🚇🎫\n\n"
             "Kolkata Metro is the ultimate lifeline for seamless, traffic-free pandal hopping during Durga Puja:\n\n"
             "• 🌙 **All-Night Special Midnight Trains**:\n"
             "  - **Saptami, Ashtami & Navami**: Overnight trains operate on the **Blue Line (Dakshineswar ➔ Kavi Subhash)** continuously until **4:00 AM**!\n"
@@ -567,11 +567,11 @@ def generate_local_puja_response(query, web_snippets=None):
         return (
             "**Durga Puja Fashion & Dress Code Guide (Day-by-Day)** 🥻👔\n\n"
             "Each day of Durga Puja has its own distinctive sartorial vibe:\n\n"
-            "• **Maha Shasthi (16 Oct)**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n"
-            "• **Maha Saptami (17–18 Oct)**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n"
-            "• **Maha Ashtami (19 Oct)**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Silk, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion or blazers for night pandal hopping.\n"
-            "• **Maha Navami (20 Oct)**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n"
-            "• **Bijoya Dashami (21 Oct)**: Red & white sarees for *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n"
+            "• **Maha Shasthi (5 Oct 2027)**: Casual chic or contemporary Indo-Western wear to kick off the festive week.\n"
+            "• **Maha Saptami (6 Oct 2027)**: Vibrant handloom sarees (Tant, Dhakai Jamdani), printed kurtas, stylish co-ord sets, or smart ethnic fusion.\n"
+            "• **Maha Ashtami (7 Oct 2027)**: The grand traditional showcase! Traditional Bengali sarees (Tussar, Silk, Lal-Paad Shada), Dhoti-Kurtas, and heavy ethnic suits for morning Pushpanjali. Sleek contemporary fashion or blazers for night pandal hopping.\n"
+            "• **Maha Navami (8–9 Oct 2027)**: High glamor, royal silhouettes, festive gowns, Indo-western suits, and statement ethnic wear.\n"
+            "• **Bijoya Dashami (10 Oct 2027)**: Red & white sarees for *Sindoor Khela*; classic formal ethnic or crisp white kurtas for *Bijoya Shubhechha*.\n\n"
             "👉 [Explore Rituals](action:nav:rituals) | [View Pandals](action:nav:pandals:all)"
         )
 
@@ -580,7 +580,7 @@ def generate_local_puja_response(query, web_snippets=None):
         if 'sandhi' in q:
             return (
                 "**Sandhi Puja — The Divine Climax of Maha Ashtami** 🪔🕊️\n\n"
-                "• **Astronomical Juncture & Timing**: Sandhi Puja takes place on **Maha Ashtami (Monday, 19 October 2026)** at the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a sacred **48-minute celestial window**).\n"
+                "• **Astronomical Juncture & Timing**: Sandhi Puja takes place on **Maha Ashtami (Thursday, 7 October 2027)** at the precise astronomical juncture between the final 24 minutes of Maha Ashtami and the first 24 minutes of Maha Navami (a sacred **48-minute celestial window**).\n"
                 "• **Mythology & Chamunda Avatara**: At this exact threshold, Devi Durga manifested in Her fierce, all-conquering aspect as **Devi Chamunda** to vanquish the demon chieftains Chanda and Munda.\n"
                 "• **108 Sacred Blue Lotuses (*Neel Kamal*)**: Exactly 108 lotuses are offered in memory of Lord Rama's devotion during his autumn invocation (*Akalbodhon*).\n"
                 "• **108 Earthen Diyas**: 108 clay lamps are lit in absolute synchronization as thunderous dhaak beats, conch shells (*shankha*), and Kanshi reverberate through the pandal.\n"
@@ -590,7 +590,7 @@ def generate_local_puja_response(query, web_snippets=None):
         elif 'pushpanjali' in q or 'anjali' in q:
             return (
                 "**Maha Ashtami Pushpanjali — Sacred Sanskrit Floral Offering** 🌸🪔\n\n"
-                "• **Timing**: Performed on the morning of **Maha Ashtami (Monday, 19 October 2026)** typically between **9:00 AM and 11:30 AM**, depending on the tithi.\n"
+                "• **Timing**: Performed on the morning of **Maha Ashtami (Thursday, 7 October 2027)** typically between **9:00 AM and 11:30 AM**, depending on the tithi.\n"
                 "• **Ritual & Fasting**: Devotees traditionally observe a fast (*upavasa*) until Pushpanjali is concluded. Offering Bel leaves (*bel pata*), fresh flowers, and sandalwood paste in three sacred rounds.\n"
                 "• **Sacred Mantra**: Concluded with the revered prayer: *\"Om Jayanti Mangala Kali Bhadrakali Kapalini, Durga Shiva Kshama Dhatri Svaha Svadha Namostute.\"*\n"
                 "• **Traditional Attire**: Women traditionally wear Lal-Paad Shada Saree or silk ethnic suits; men wear crisp Dhoti-Panjabi or Kurta.\n\n"
@@ -600,14 +600,14 @@ def generate_local_puja_response(query, web_snippets=None):
             return (
                 "**Kumari Puja — Honoring the Living Goddess** 👑🌸\n\n"
                 "• **Spiritual Meaning**: Kumari Puja honors a young pre-pubescent girl (aged between 1 to 16) as the pure, unmanifested living embodiment of Devi Mahamaya / Durga.\n"
-                "• **Belur Math Landmark**: Popularized in 1901 by **Swami Vivekananda** at Belur Math, where thousands gather on **Maha Ashtami morning (19 Oct 2026)** to witness the serene ritual.\n"
+                "• **Belur Math Landmark**: Popularized in 1901 by **Swami Vivekananda** at Belur Math, where thousands gather on **Maha Ashtami morning (7 Oct 2027)** to witness the serene ritual.\n"
                 "• **Rituals**: The Kumari is dressed in fine red silk, adorned with flower garlands, and worshipped with sacred mantras, aarti, and bhog offerings.\n\n"
                 "👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**"
             )
         elif 'dhunuchi' in q:
             return (
                 "**Dhunuchi Naach — The Ecstatic Rhythm of Maha Navami** 🔥🥁\n\n"
-                "• **The Tradition**: The exhilarating devotional dance performed during evening Aarti on **Maha Navami (Tuesday, 20 October 2026)** and Vijaya Dashami.\n"
+                "• **The Tradition**: The exhilarating devotional dance performed during evening Aarti on **Maha Navami (Friday, 8 October 2027)** and Vijaya Dashami.\n"
                 "• **The Chalice (*Dhunuchi*)**: Earthen chalices filled with burning coconut husk, glowing camphor, and fragrant frankincense (*dhuno*), emitting dense, sacred aromatic smoke.\n"
                 "• **The Dance**: Devotees dance with one, two, or even balancing a burning dhunuchi in their teeth, matching step-for-step with rolling, frenetic dhaak beats and kanshi rhythms.\n\n"
                 "👉 **[Explore Sacred Rituals](action:nav:rituals)**"
@@ -615,7 +615,7 @@ def generate_local_puja_response(query, web_snippets=None):
         elif 'sindoor' in q or 'baran' in q:
             return (
                 "**Sindoor Khela & Devi Baran — Bittersweet Farewell of Vijaya Dashami** 🌺❤️\n\n"
-                "• **Devi Baran**: On the morning of **Bijoya Dashami (Wednesday, 21 October 2026)**, married women bid a tearful farewell to Maa Durga by wiping Her tears with betel leaves, feeding Her sweet sandesh, and touching Her feet.\n"
+                "• **Devi Baran**: On the morning of **Bijoya Dashami (Sunday, 10 October 2027)**, married women bid a tearful farewell to Maa Durga by wiping Her tears with betel leaves, feeding Her sweet sandesh, and touching Her feet.\n"
                 "• **Sindoor Khela**: Women apply vibrant red vermilion (*sindoor*) on the Goddess's forehead, followed by joyously smearing sindoor on each other, praying for marital longevity and happiness.\n"
                 "• **Subho Bijoya**: Exchanging warm embraces (*kolakoli*), touching the feet of elders, and distributing sweet Rosogollas and Nimki.\n\n"
                 "👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**"
@@ -630,32 +630,32 @@ def generate_local_puja_response(query, web_snippets=None):
             )
         elif any(k in q for k in ['date', 'when', 'schedule', 'calendar', 'panjika', 'shashthi', 'sashthi', 'shasthi', 'saptami', 'tithi']):
             return (
-                "**Durga Puja 2026 Official Dates & Ritual Schedule (Web & Panjika)** 📅🪔\n\n"
+                "**Durga Puja 2027 Official Dates & Ritual Schedule (Web & Panjika)** 📅🪔\n\n"
                 "According to traditional Bengali Panjika almanacs and official web calendars:\n\n"
-                "• 🌅 **Mahalaya**: Saturday, 10 October 2026 — Dawn ancestral *Tarpan* along holy river ghats and Birendra Krishna Bhadra's *Mahishasuramardini* recitation at 4:00 AM IST.\n"
-                "• 🥁 **Maha Shashthi**: Friday, 16 October 2026 — *Devi Bodhon* under the Bilva tree, *Kalparambha*, and formal awakening of Maa Durga (Shashthi tithi commences on Oct 16).\n"
-                "• 🌿 **Maha Saptami**: Saturday, 17 October & Sunday, 18 October 2026 — *Nabapatrika Snan* (dawn river bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*. The auspicious Saptami tithi commences on Oct 17 and spans across into Oct 18 across panjikas.\n"
-                "• 🔥 **Maha Ashtami**: Monday, 19 October 2026 — Morning Sanskrit **Pushpanjali**, revered **Kumari Puja** at Belur Math, and the celestial **Sandhi Puja** (48-minute astronomical window with 108 blue lotuses & 108 earthen lamps).\n"
-                "• ✨ **Maha Navami**: Tuesday, 20 October 2026 — Sacred *Maha Yajna / Homa*, festive community *Bhog*, and electrifying **Dhunuchi Naach** to rolling dhaak rhythms.\n"
-                "• 🪷 **Bijoya Dashami**: Wednesday, 21 October 2026 — Bittersweet farewell *Devi Baran*, vibrant *Sindoor Khela*, touching elders' feet (*Kolakoli*), and holy Ganga immersion (*Bishorjon*).\n\n"
+                "• 🌅 **Mahalaya**: Thursday, 30 September 2027 — Dawn ancestral *Tarpan* along holy river ghats and Birendra Krishna Bhadra's *Mahishasuramardini* recitation at 4:00 AM IST.\n"
+                "• 🥁 **Maha Shashthi**: Tuesday, 5 October 2027 — *Devi Bodhon* under the Bilva tree, *Kalparambha*, and formal awakening of Maa Durga.\n"
+                "• 🌿 **Maha Saptami**: Wednesday, 6 October 2027 — *Nabapatrika Snan* (dawn river bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*.\n"
+                "• 🔥 **Maha Ashtami**: Thursday, 7 October 2027 — Morning Sanskrit **Pushpanjali**, revered **Kumari Puja** at Belur Math, and the celestial **Sandhi Puja** (48-minute astronomical window with 108 blue lotuses & 108 earthen lamps).\n"
+                "• ✨ **Maha Navami**: Friday, 8 October – Saturday, 9 October 2027 — Sacred *Maha Yajna / Homa*, festive community *Bhog*, and electrifying **Dhunuchi Naach** to rolling dhaak rhythms.\n"
+                "• 🪷 **Bijoya Dashami**: Sunday, 10 October 2027 — Bittersweet farewell *Devi Baran*, vibrant *Sindoor Khela*, touching elders' feet (*Kolakoli*), and holy Ganga immersion (*Bishorjon*).\n\n"
                 "👉 **[Explore Sacred Rituals Timeline](action:nav:rituals)**"
             )
         else:
             return (
-                "**Sacred Vedic Durga Puja Rituals Schedule (2026)** 🪔🕊️\n\n"
-                "• **Mahalaya (10 Oct 2026)**: Dawn ancestral *Tarpan* along holy river ghats and *Mahishasuramardini* recitation.\n"
-                "• **Maha Shashthi (16 Oct 2026)**: *Devi Bodhon* under the sacred Bel tree, *Kalparambha*, and formal awakening.\n"
-                "• **Maha Saptami (17–18 Oct 2026)**: *Nabapatrika Snan* (dawn bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha* spanning the 17th–18th tithi.\n"
-                "• **Maha Ashtami (19 Oct 2026)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n"
-                "• **Maha Navami (20 Oct 2026)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n"
-                "• **Bijoya Dashami (21 Oct 2026)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n"
+                "**Sacred Vedic Durga Puja Rituals Schedule (2027)** 🪔🕊️\n\n"
+                "• **Mahalaya (30 Sep 2027)**: Dawn ancestral *Tarpan* along holy river ghats and *Mahishasuramardini* recitation.\n"
+                "• **Maha Shashthi (5 Oct 2027)**: *Devi Bodhon* under the sacred Bel tree, *Kalparambha*, and formal awakening.\n"
+                "• **Maha Saptami (6 Oct 2027)**: *Nabapatrika Snan* (dawn bathing of *Kola Bou* in the holy Hooghly) and *Prana Pratishtha*.\n"
+                "• **Maha Ashtami (7 Oct 2027)**: Morning **Pushpanjali** flower offerings; **Kumari Puja**; and the celestial **Sandhi Puja** with 108 blue lotuses and 108 burning clay lamps.\n"
+                "• **Maha Navami (8–9 Oct 2027)**: Sacred Vedic fire sacrifice followed by electrifying *Dhunuchi Naach* to rolling dhaak rhythms.\n"
+                "• **Bijoya Dashami (10 Oct 2027)**: Bidding farewell to Maa Durga, vibrant *Sindoor Khela*, and holy immersion (*Bhashan*).\n\n"
                 "👉 **[Explore Rituals on Akalbodhon](action:nav:rituals)**"
             )
 
     # 6. CURATED 1-DAY MASTER ITINERARY SOLVER
     if is_plan:
         return (
-            "**Curated 1-Day Master Pandal Hopping Itinerary (Kolkata 2026)** 🗺️🚶‍♂️\n\n"
+            "**Curated 1-Day Master Pandal Hopping Itinerary (Kolkata 2027)** 🗺️🚶‍♂️\n\n"
             "An optimized morning-to-midnight route balancing heritage, art, and iconic culinary pitstops:\n\n"
             "• 🌅 **Morning (9:00 AM – 1:00 PM) • North Kolkata Heritage Circuit**:\n"
             "  - Start at **Shyambazar Metro** ➔ Walk to centenary **Bagbazar Sarbojanin** (pure Sabeki Daaker Saaj idol).\n"
@@ -706,7 +706,7 @@ def generate_local_puja_response(query, web_snippets=None):
     # 8. REGIONAL ZONE CIRCUITS
     if 'south' in q and ('pandal' in q or 'zone' in q or 'best' in q or 'which' in q or 'circuit' in q or 'list' in q):
         return (
-            "**Top South Kolkata Durga Puja Pandals (2026)** 🏛️✨\n\n"
+            "**Top South Kolkata Durga Puja Pandals (2027)** 🏛️✨\n\n"
             "South Kolkata is world-renowned for monumental modern thematic architecture, museum-grade conceptual art, and electrifying carnival energy:\n\n"
             "1. **Chetla Agrani Club** (Kalighat Metro): Sublime concept art, master earthen terracotta craft, and soulful lighting pavilions.\n"
             "2. **Tridhara Sammilani** (Ballygunge / Kalighat Metro): Avant-garde sensory and spatial installations that redefine contemporary art.\n"
@@ -720,7 +720,7 @@ def generate_local_puja_response(query, web_snippets=None):
 
     if 'north' in q and ('pandal' in q or 'zone' in q or 'best' in q or 'which' in q or 'circuit' in q or 'list' in q):
         return (
-            "**Top North Kolkata Durga Puja Pandals (2026)** 🏛️🪔\n\n"
+            "**Top North Kolkata Durga Puja Pandals (2027)** 🏛️🪔\n\n"
             "North Kolkata preserves the pure soul, aristocracy, and heritage of traditional Durga Puja:\n\n"
             "1. **Bagbazar Sarbojanin**: The 100+ year-old benchmark of pure traditional Sabeki idol adorned in shimmering Daaker Saaj.\n"
             "2. **Kumartuli Park**: Conceptual artistic wonder created right in the heart of Kolkata's legendary idol-makers' colony.\n"
@@ -732,7 +732,7 @@ def generate_local_puja_response(query, web_snippets=None):
 
     if ('east' in q or 'salt lake' in q) and ('pandal' in q or 'zone' in q or 'best' in q):
         return (
-            "**Top East Kolkata & Salt Lake Pandals (2026)** 🏛️\n\n"
+            "**Top East Kolkata & Salt Lake Pandals (2027)** 🏛️\n\n"
             "1. **Sreebhumi Sporting Club** (Lake Town / VIP Road): Spectacular royal palace architectural replicas with dazzling Chandannagar illumination.\n"
             "2. **FD Block & BJ Block** (Salt Lake): Grand community festivals with spacious park setups and high-concept creative pavilions.\n"
             "3. **Dum Dum Park Tarun Sangha & Bharat Chakra**: High-concept fine art installations and innovative socio-cultural themes.\n\n"
@@ -773,7 +773,7 @@ def generate_local_puja_response(query, web_snippets=None):
     )
     if is_greeting and not has_domain:
         return (
-            "Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2026!**\n\n"
+            "Joy Maa Durga! 🌺 **Nomoshkar and welcome to Akalbodhon 2027!**\n\n"
             "I am **sharod.ai**, your personal AI Guide modeled with the intelligence of Gemini. I am here to help you with:\n"
             "• 🏛️ **Finding & Filtering Pandals**: North, South, East, or Central Kolkata circuits\n"
             "• 🪔 **Vedic Rituals & Timings**: Sandhi Puja, Pushpanjali, Dhunuchi Naach\n"
@@ -822,21 +822,21 @@ def process_durga_puja_chat(user_msg, history, client_key=None):
         "You are sharod.ai, the intelligent AI Assistant and festival concierge modeled after Google Gemini on Akalbodhon "
         "(the premier Kolkata Durga Puja web platform).\n\n"
         "CRITICAL DIRECTIVE ON RESPONSES & ZERO-GREETING RULE:\n"
-        "1. NEVER output a generic introductory menu, capability checklist, or greeting like 'Joy Maa Durga! Nomoshkar and welcome... I am sharod.ai... I am here to help you navigate: Pandals, Rituals, Food...' when the user asks a question or clicks a quick-chip (such as 'Sandhi Puja Rituals', 'Best South Pandals', '1-Day Itinerary', 'Puja Dates 2026', 'Food near Maddox', 'How to reach Chetla').\n"
+        "1. NEVER output a generic introductory menu, capability checklist, or greeting like 'Joy Maa Durga! Nomoshkar and welcome... I am sharod.ai... I am here to help you navigate: Pandals, Rituals, Food...' when the user asks a question or clicks a quick-chip (such as 'Sandhi Puja Rituals', 'Best South Pandals', '1-Day Itinerary', 'Puja Dates 2027', 'Food near Maddox', 'How to reach Chetla').\n"
         "2. ALWAYS provide the direct, deep, comprehensive, and specific answer immediately to the topic requested!\n\n"
-        "CANONICAL 2026 DURGA PUJA DATES & RITUAL CALENDAR (Official Web & Panjika):\n"
-        "- Mahalaya: Saturday, 10 October 2026 (Dawn Tarpan & 4:00 AM Birendra Krishna Bhadra Mahishasuramardini recitation)\n"
-        "- Maha Shashthi: Friday, 16 October 2026 (Devi Bodhon & Kalparambha under the Bilva tree; Shashthi tithi commences on Oct 16)\n"
-        "- Maha Saptami: Saturday, 17 October & Sunday, 18 October 2026 (Saptami tithi commences on Oct 17 and spans across into Oct 18 across Bengali panjikas; Nabapatrika / Kola Bou Snan in the holy Hooghly river observed across this period)\n"
-        "- Maha Ashtami: Monday, 19 October 2026 (Morning Sanskrit Pushpanjali, Kumari Puja at Belur Math, and celestial Sandhi Puja 48-minute astronomical juncture with 108 blue lotuses & 108 clay lamps)\n"
-        "- Maha Navami: Tuesday, 20 October 2026 (Sacred Maha Yajna / Homa, community Bhog distribution, and electrifying evening Dhunuchi Naach)\n"
-        "- Bijoya Dashami: Wednesday, 21 October 2026 (Devi Baran, sacred Sindoor Khela, touching elders' feet / Kolakoli, and holy Ganga immersion / Bishorjon)\n\n"
+        "CANONICAL 2027 DURGA PUJA DATES & RITUAL CALENDAR (Official Web & Panjika):\n"
+        "- Mahalaya: Thursday, 30 September 2027 (Dawn Tarpan & 4:00 AM Birendra Krishna Bhadra Mahishasuramardini recitation)\n"
+        "- Maha Shashthi: Tuesday, 5 October 2027 (Devi Bodhon & Kalparambha under the Bilva tree; formal awakening of Maa Durga)\n"
+        "- Maha Saptami: Wednesday, 6 October 2027 (Nabapatrika / Kola Bou Snan in the holy Hooghly river and Prana Pratishtha)\n"
+        "- Maha Ashtami: Thursday, 7 October 2027 (Morning Sanskrit Pushpanjali, Kumari Puja at Belur Math, and celestial Sandhi Puja 48-minute astronomical juncture with 108 blue lotuses & 108 clay lamps)\n"
+        "- Maha Navami: Friday, 8 October – Saturday, 9 October 2027 (Sacred Maha Yajna / Homa, community Bhog distribution, and electrifying evening Dhunuchi Naach)\n"
+        "- Bijoya Dashami: Sunday, 10 October 2027 (Devi Baran, sacred Sindoor Khela, touching elders' feet / Kolakoli, and holy Ganga immersion / Bishorjon)\n\n"
         "UNCONSTRAINED AI CAPABILITIES:\n"
         "1. VERSATILE & BROAD: You can answer ANY question the user asks—including general knowledge, science, coding, "
         "lifestyle, history, mathematics, philosophy, creative writing, or opinions. Do NOT restrict yourself or refuse "
         "questions simply because they are outside Durga Puja. Answer with Gemini's signature clarity, depth, and helpfulness.\n"
         "2. DURGA PUJA & BENGALI CULTURE EXPERTISE: While versatile on all topics, you have profound, vivid expertise in "
-        "Kolkata Durga Puja 2026, Vedic rituals, Bonedi Bari traditions, idol sculpting in Kumartuli, culinary trails, and transit.\n"
+        "Kolkata Durga Puja 2027, Vedic rituals, Bonedi Bari traditions, idol sculpting in Kumartuli, culinary trails, and transit.\n"
         "3. DIRECT WEBSITE NAVIGATION ACTIONS: When answering questions regarding pandals, zones, food, rituals, radio, or itinerary, "
         "you MUST include direct clickable navigation actions in your markdown so the user can immediately jump to that section:\n"
         "   - South Pandals: `👉 [Explore South Kolkata Pandals](action:nav:pandals:South)`\n"

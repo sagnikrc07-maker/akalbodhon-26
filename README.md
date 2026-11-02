@@ -24,7 +24,7 @@ May the divine blessings of Maa Durga bring peace, health, prosperity, and endle
 - **📅 Date-Wise Master Puja Plans & Custom Itinerary Builder**: Pre-curated schedules for Mahalaya, Shasthi, Saptami, Ashtami, Navami, and Dashami with route navigation, food stops, and rituals.
 - **👥 Collaborative Plan Sharing & Member Stack**: Share itineraries directly via WhatsApp and direct links with protected login gates and live member avatar rings.
 - **⏱️ Sacred Device Timers & Audio Synthesizer**: Countdown timers and ritual alerts with traditional temple chime/Dhak sounds.
-- **⏳ Countdown to Akalbodhon**: Dynamic real-time ticker calculating exact days, hours, minutes, and seconds to 16th October 2026, 6:30 PM IST.
+- **⏳ Countdown to Akalbodhon**: Dynamic real-time ticker calculating exact days, hours, minutes, and seconds to Mahalaya (30 September 2027, 4:00 AM IST) & Durga Puja 2027.
 - **🥁 Web Audio Ceremonial Dhak Resonator**: Synthesized rhythmic Dhak drum tempo engine that runs natively in the browser with soundwave ripple micro-animations.
 - **🗺️ Pandal Explorer & Transit Guide**: Interactive directory of iconic Kolkata pujas (Bagbazar, Maddox Square, Sreebhumi, Ekdalia, College Square, Sovabazar Rajbari) with crowd-density badges, metro walking directions, and Google Maps integration.
 - **🚶‍♂️ Curated Walking & Transit Trails**: Optimized multi-pandal circuits (North Kolkata Heritage Walk, South Grandeur Circuit, Salt Lake / VIP Road Spectacle) with culinary pit-stops.
@@ -37,5 +37,5 @@ May the divine blessings of Maa Durga bring peace, health, prosperity, and endle
 ---
 
 <p align="center">
-  <sub>Crafted with devotion for Durga Puja 2026 • <b>Shubho Sharodiya!</b> 🌺</sub>
+  <sub>Crafted with devotion for Durga Puja 2027 • <b>Shubho Sharodiya!</b> 🌺</sub>
 </p>
